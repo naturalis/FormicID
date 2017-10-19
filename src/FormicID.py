@@ -16,11 +16,16 @@ __status__ = "Production"
 # Version: 0.1b                                                                #
 ################################################################################
 
+"""
+Link to the cloud?
+Openstack from naturalis!
+"""
+
 from __future__ import print_function
-# allow use of print as a function. Needed when loading Python 2.x
+# allow use of print as a function. Needed when loading in Python 2.x
 
 """
-Import libraries and modules
+Import libraries and modules·
     1.	Keras
         a.	from keras.models import Sequential
         b.	Core layers: from keras.layers import Dense, Dropout, Activation,
@@ -29,20 +34,28 @@ Import libraries and modules
     2.	Numpy
         a.	e.g. np.random.seed
 """
-import numpy
-import os  # provides a way of using operating system dependent functionality.
-import time
-
 import keras
 from keras.models import Sequential  # for creating the model
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
+from keras.layers import BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator #for image augmentation
 from keras import backend as K
+
+import numpy
+import os  # provides a way of using operating system dependent functionality.
+import time
+import matplotlib.pyplot as plt #for plotting images°
+import cv2 # for importing and converting imagees
+
 
 
 """
 Some settings and hyperparameters
+Verbose:
+    0 for no logging to stdout,
+    1 for progress bar logging,
+    2 for one log line per epoch.
 """
 SEED = 63
 np.random.seed(SEED)
@@ -77,6 +90,9 @@ DROPOUT_P = 0.25  # probability of keeping a unit active. higher = less dropout
 # of examples. To be clear, one pass = one forward pass + one backward pass (we # do not count the forward pass and backward pass as two different passes).
 
 
+save_dir = os.path.join(os.getcwd(), 'saved_models')
+model_name = 'keras_FormicID_trained_model.h5'
+
 """
 Importing images - Acquiring data and put them in variables
     1.	Download images with labels from AntWeb API
@@ -91,6 +107,9 @@ Load ready-made data
         c.	record_bytes = label_bytes + image_bytes ?
     3.	(X_training, Y_traning), (X_test, Y_test)
 """
+
+keras.utils.get_file() # can use url?
+
 train_data_dir = '/Users/nijram13/Google Drive/4. Biologie/Studie   Biologie/Master Year 2/Internship CNN/probeersel/data/train'
 validation_data_dir = '/Users/nijram13/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/probeersel/data/validation'
 
@@ -174,6 +193,12 @@ w = np.random.randn(n) * sqrt(2.0 / n)  # where n is the number of its inputs
 
 keras.layers.BatchNormalization()
 
+#from keras.regularizers import l2
+#model.add(Dense(64, 64, W_regularizer = l2(.01)))
+
+#noise layer?
+keras.layers.GaussianNoise(stddev)
+
 """
 Define model architecture
 Forward pass and backward pass (backpropagation)
@@ -216,43 +241,33 @@ Forward pass and backward pass (backpropagation)
     11.	Batch_size and batch_shape?
 """
 # example of a simple deep CNN as a function
-def create_model():
-    model = Sequential()
 
-    model.add(Conv2D(32, (3, 3), padding='same', input_shape=x_train.shape[1:]))
-    # first layers needs to specify the input_shape. Following layers will reshape
-    model.add(Activation('relu'))
-    model.add(Conv2D(32, (3, 3)))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(DROPOUT_P))
+model = Sequential()
 
-    model.add(Conv2D(64, (3, 3), padding='same'))
-    model.add(Activation('relu'))
-    model.add(Conv2D(64, (3, 3)))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(DROPOUT_P))
+# first layers needs to specify the input_shape. Following layers will reshape
+model.add(Conv2D(32, (3, 3), padding='same', input_shape=x_train.shape[1:]))
+model.add(Activation('relu'))
+model.add(Conv2D(32, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(DROPOUT_P))
 
-    model.add(Flatten())
-    model.add(Dense(512))
-    model.add(Activation('relu'))
-    model.add(Dropout(DROPOUT_P))
-    model.add(Dense(num_species))
-    model.add(Activation('softmax'))
+model.add(Conv2D(64, (3, 3), padding='same'))
+model.add(Activation('relu'))
+model.add(Conv2D(64, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(DROPOUT_P))
 
-    return model
-
+model.add(Flatten())
+model.add(Dense(512))
+model.add(Activation('relu'))
+model.add(Dropout(DROPOUT_P))
+model.add(Dense(num_species))
+model.add(Activation('softmax'))
 
 """
-Link to the cloud?
-Openstack?
-"""
-# Code
-
-
-"""
-Compiling of the model
+Compiling of the model = configuring the learning process
     Before training a model, you need to configure the learning process, which
     is done via the compile method.
     1.	Model.compile()
@@ -287,32 +302,41 @@ optimzer_nadam = keras.optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999,
 # Default parameters follow those provided in the paper. It is recommended to
 # leave the parameters of this optimizer at their default values.
 
-#this line should be in the create_model funtion
+
+# top_k_categorical_accuracy --> default value = 5
+# code to change to top 3
+# top3_acc = functools.partial(keras.metrics.top_k_categorical_accuracy, k=3)
+# top3_acc.__name__ = 'top3_acc'
+
 model.compile(loss='categorical_crossentropy',
-              optimizer=optimzer_#xxx ,
-              metrics=['accuracy'])
-"""
-    when using the categorical_crossentropy loss, your targets should be in
-    categorical format (e.g. if you have 10 classes, the target for each
-    sample should be a 10-dimensional vector that is all-zeros expect for a
-    1 at the index corresponding to the class of the sample). In order to
-    convert integer targets into categorical targets, you can use the Keras
-    utility to_categorical
-"""
+              optimizer=optimzer_nadam ,
+              metrics=['accuracy','top_k_categorical_accuracy']) #
+
+#   when using the categorical_crossentropy loss, your targets should be in
+#   categorical format (e.g. if you have 10 classes, the target for each
+#   sample should be a 10-dimensional vector that is all-zeros expect for a
+#   1 at the index corresponding to the class of the sample). In order to
+#   convert integer targets into categorical targets, you can use the Keras
+#   utility to_categorical
+
 
 """
-Fit model on training data = training?
+Training the model (by using the fit function)
     1.	Connect to cloud
     2.	Fit() function
     3.	How many epoch?
         a.	Think about hundreds of thousands
         b.	Every epoch, check training and validation accuracy and decay learning rate
 """
+model.fit()
+
 train_generator = train_datagen.flow_from_directory(
     train_data_dir,
     target_size=(img_width, img_height),
     batch_size=BATCH_SIZE,
     class_mode='binary')
+
+
 
 
 """
@@ -327,11 +351,20 @@ Evaluate model on test data
     7.	Iterations?
     8.	Top 5 or top 1 accuracy?
 """
+model.evaluate()
+
+model.predict()
+
 validation_generator = test_datagen.flow_from_directory(
     validation_data_dir,
     target_size=(150, 150),
     batch_size=BATCH_SIZE,
     class_mode='binary')
+
+# Score trained model.
+scores = model.evaluate(x_test, y_test, verbose=1)
+print('Test loss:', scores[0])
+print('Test accuracy:', scores[1])
 
 """
 Predict
@@ -347,11 +380,17 @@ model.fit_generator(
 """
 Model visualization?
 """
-# code
+# Save model and weights
+if not os.path.isdir(save_dir):
+    os.makedirs(save_dir) #if "saved models" folder is not present, make one
+model_path = os.path.join(save_dir, model_name) #path to the model
+model.save(model_path) #save the model to the model path
+print('Saved trained model at %s ' % model_path) #print if it worked
+
+keras.utils.plot_model() #needs graphvidz and pydot package
 
 
 ################################################################################
-import keras
 # if this code is seen as the 'main page' then print the version of Keras
 if __name__ == '__main__':
     print('Keras version: {}'.format(keras.__version__))
