@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 __author__ = "Marijn Boer"
-#__copyright__ = ""
-__credits__ = ["Marijn Boer"]
-#__license__ = ""
+__copyright__ = "2017 Naturalis Biodiversity Center"
+__credits__ = "Marijn Boer"
+__license__ = "MIT License"
 __version__ = "0.1"
 __maintainer__ = "Marijn Boer"
 __email__ = "marijn.j.a.boer@gmail.com"
@@ -18,7 +18,7 @@ __status__ = "Production"
 
 """
 Link to the cloud?
-Openstack from naturalis!
+Openstack from Naturalis!
 """
 
 from __future__ import print_function
@@ -45,7 +45,7 @@ from keras.callbacks import TensorBoard
 
 import numpy
 import os  # provides a way of using operating system dependent functionality.
-import time
+import time # to keep track of time and create time based log folders
 import matplotlib.pyplot as plt  # for plotting images°
 import cv2  # for importing and converting imagees
 
@@ -325,31 +325,79 @@ model.compile(loss='categorical_crossentropy',
 #   utility to_categorical
 
 # Callbacks
-TensorBoard = TensorBoard(log_dir='./Graphs', histogram_freq=0, batch_size=32,
-                         write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
+TensorBoard = TensorBoard(log_dir='./Graphs/Logs{}'.format(time), histogram_freq=0,
+                        batch_size=32, write_graph=True, write_grads=False,
+                        write_images=False, embeddings_freq=0,
+                        embeddings_layer_names=None, embeddings_metadata=None)
 
 TensorBoard.set_model(model)
-Callbacks = []
-Callbacks.append(TensorBoard)
+Callbacks_Tensorboard = []
+Callbacks_Tensorboard.append(TensorBoard)
+# launch TensorBoard from the command line:
+# tensorboard --logdir=/Users/nijram13/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/FormicID/Graphs
 
+
+"""
+Training Set:
+    this data set is used to adjust the weights on the neural network.
+
+Validation Set:
+    this data set is used to minimize overfitting. You're not
+    adjusting the weights of the network with this data set, you're just
+    verifying that any increase in accuracy over the training data set actually
+    yields an increase in accuracy over a data set that has not been shown to
+    the network before, or at least the network hasn't trained on it (i.e.
+    validation data set). If the accuracy over the training data set increases,
+    but the accuracy over then validation data set stays the same or decreases,
+    then you're overfitting your neural network and you should stop training.
+
+Testing Set:
+    this data set is used only for testing the final solution in order
+    to confirm the actual predictive power of the network.
+
+            for each epoch
+                for each training data instance
+                    propagate error through the network
+                    adjust the weights
+                    calculate the accuracy over training data
+                for each validation data instance
+                    calculate the accuracy over the validation data
+                if the threshold validation accuracy is met
+                    exit training
+                else
+                    continue training
+
+"""
 
 """
 Training the model (by using the fit function)
     1.	Connect to cloud
     2.	Fit() function
+        a. fit_generator: Fits the model on data generated batch-by-batch by a
+        Python generator.
     3.	How many epoch?
         a.	Think about hundreds of thousands
-        b.	Every epoch, check training and validation accuracy and decay learning rate
+        b.	Every epoch, check training and validation accuracy and decay
+        learning rate
 """
-model.fit()
+model.fit() #training
 
-train_generator = train_datagen.flow_from_directory(
-    train_data_dir,
-    target_size=(img_width, img_height),
+# train_generator = train_datagen.flow_from_directory(
+#    train_data_dir,
+#    target_size=(img_width, img_height),
+#    batch_size=BATCH_SIZE,
+#    class_mode='binary',
+#    callbacks = Callbacks_Tensorboard)
+
+# Prediction
+model.predict() # predicts the labels ?
+
+# validation
+validation_generator = test_datagen.flow_from_directory(
+    validation_data_dir,
+    target_size=(150, 150),
     batch_size=BATCH_SIZE,
-    class_mode='binary',
-    callbacks = Callbacks)
-
+    class_mode='binary')
 
 """
 Evaluate model on test data
@@ -364,15 +412,12 @@ Evaluate model on test data
     8.	Top 5 or top 1 accuracy?
     9. visualize how the model performs with tensorboard
 """
+
+# test on testset
 model.evaluate()
 
-model.predict()
 
-validation_generator = test_datagen.flow_from_directory(
-    validation_data_dir,
-    target_size=(150, 150),
-    batch_size=BATCH_SIZE,
-    class_mode='binary')
+
 
 # Score trained model.
 scores = model.evaluate(x_test, y_test, verbose=1)
@@ -383,14 +428,10 @@ print('Test accuracy:', scores[1])
 # loss curve (y:loss, x: epochs),
 # train and val accuracy vs epoch
 
-# If you have installed TensorFlow with pip, you should be able to launch
-# TensorBoard from the command line:
-# tensorboard --logdir=/full_path_to_your_logs
-
-
 
 """
-Predict
+Predict:
+    Generates output predictions for the input samples.
 """
 model.fit_generator(
     train_generator,
@@ -398,7 +439,7 @@ model.fit_generator(
     epochs=EPOCHS,
     validation_data=validation_generator,
     validation_steps=800,
-    callbacks = Callbacks)
+    callbacks = Callbacks_Tensorboard)
 
 
 """

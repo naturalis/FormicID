@@ -1,0 +1,23 @@
+################################################################################
+#                                                                              #
+#                       proposed folder / file structure                       #
+#                                                                              #
+################################################################################
+
+# input of training data
+src/FormicID_input
+
+# input of test data
+src/FormicID_input_test
+
+# builds the network
+src/FormicID_build
+
+# train the network
+src/FormicID_train
+
+# evaluate the network
+src/FormicID_eval
+
+# test the network
+src/FormicID_test
