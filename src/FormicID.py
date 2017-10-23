@@ -4,7 +4,7 @@ __author__ = "Marijn Boer"
 __copyright__ = "2017 Naturalis Biodiversity Center"
 __credits__ = "Marijn Boer"
 __license__ = "MIT License"
-__version__ = "0.1"
+__version__ = "0.1.3"
 __maintainer__ = "Marijn Boer"
 __email__ = "marijn.j.a.boer@gmail.com"
 __status__ = "Production"
@@ -16,23 +16,11 @@ __status__ = "Production"
 # Version: 0.1b                                                                #
 ################################################################################
 
-"""
-Link to the cloud?
-Openstack from Naturalis!
-"""
-
 from __future__ import print_function
 # allow use of print as a function. Needed when loading in Python 2.x
 
 """
 Import libraries and modules·
-    1.	Keras
-        a.	from keras.models import Sequential
-        b.	Core layers: from keras.layers import Dense, Dropout, Activation,
-        Flatten
-        c.	CNN layers: from keras.layers import Convolution2D, MaxPooling2D
-    2.	Numpy
-        a.	e.g. np.random.seed
 """
 import keras
 from keras.models import Sequential  # for creating the model
@@ -49,6 +37,10 @@ import time # to keep track of time and create time based log folders
 import matplotlib.pyplot as plt  # for plotting images°
 import cv2  # for importing and converting imagees
 
+"""
+Link to the cloud?
+Openstack from Naturalis!
+"""
 
 """
 Some settings and hyperparameters
