@@ -416,9 +416,6 @@ Evaluate model on test data
 # test on testset
 model.evaluate()
 
-
-
-
 # Score trained model.
 scores = model.evaluate(x_test, y_test, verbose=1)
 print('Test loss:', scores[0])
