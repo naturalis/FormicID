@@ -39,15 +39,15 @@ from keras.models import Sequential  # for creating the model
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import BatchNormalization
-from keras.preprocessing.image import ImageDataGenerator #for image augmentation
+from keras.preprocessing.image import ImageDataGenerator  # for image augmentation
 from keras import backend as K
+from keras.callbacks import TensorBoard
 
 import numpy
 import os  # provides a way of using operating system dependent functionality.
 import time
-import matplotlib.pyplot as plt #for plotting images°
-import cv2 # for importing and converting imagees
-
+import matplotlib.pyplot as plt  # for plotting images°
+import cv2  # for importing and converting imagees
 
 
 """
@@ -60,7 +60,7 @@ Verbose:
 SEED = 63
 np.random.seed(SEED)
 
-img_width, img_height = 150, 150 #input for width and height
+img_width, img_height = 150, 150  # input for width and height
 
 if K.image_data_format() == 'channels_first':
     input_shape = (3, img_width, img_height)
@@ -71,7 +71,7 @@ else:
 # The higher the batch size, the more memory space you'll need.
 BATCH_SIZE = 16
 
-num_species =  2 # species
+num_species = 2  # species
 
 # one epoch = one forward pass and one backward pass of all the training
 # examples
@@ -108,7 +108,7 @@ Load ready-made data
     3.	(X_training, Y_traning), (X_test, Y_test)
 """
 
-keras.utils.get_file() # can use url?
+keras.utils.get_file()  # can use url?
 
 train_data_dir = '/Users/nijram13/Google Drive/4. Biologie/Studie   Biologie/Master Year 2/Internship CNN/probeersel/data/train'
 validation_data_dir = '/Users/nijram13/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/probeersel/data/validation'
@@ -149,17 +149,6 @@ X_test = X_test.astype('float32')
 X_train /= 255
 X_test /= 255
 
-"""
-Data augumentation
-with keras modules
-"""
-ImageDataGenerator()
-# https://keras.io/preprocessing/image/
-train_datagen = ImageDataGenerator(
-    rescale=1. / 255,
-    shear_range=0.2,
-    zoom_range=0.2,
-    horizontal_flip=True)
 
 """
 pre-process class labels
@@ -176,7 +165,7 @@ Visualize 10 random labels with 10 images
 
 """
 Weight and batch initialization and regularization --> to get loss as low
-as possible
+as possible  and Data augumentation
     In practice, the current recommendation is to use ReLU units and use
     the w = np.random.randn(n) * sqrt(2.0/n), as discussed in He et al..
 
@@ -187,6 +176,10 @@ as possible
         Normalize the activations of the previous layer at each batch, i.e.
         applies a transformation that maintains the mean activation close
         to 0 and the activation standard deviation close to 1.
+
+    Common pattern for regularization:
+        Dropout > Batch normalization > Data Augmentation > Dropconnect
+
 """
 n =  # number of inputs
 w = np.random.randn(n) * sqrt(2.0 / n)  # where n is the number of its inputs
@@ -196,8 +189,19 @@ keras.layers.BatchNormalization()
 #from keras.regularizers import l2
 #model.add(Dense(64, 64, W_regularizer = l2(.01)))
 
-#noise layer?
-keras.layers.GaussianNoise(stddev)
+# Noise layer?
+# keras.layers.GaussianNoise(stddev)
+
+# Data augmentation
+ImageDataGenerator()
+# https://keras.io/preprocessing/image/
+train_datagen = ImageDataGenerator(
+    rescale=1. / 255,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True)
+
+# Dropconnect?
 
 """
 Define model architecture
@@ -284,7 +288,8 @@ Compiling of the model = configuring the learning process
             ii. In practice Adam is currently recommended as the default
             algorithm to use, and often works slightly better than RMSProp.
             However, it is often also worth trying SGD+Nesterov Momentum as an
-            alternative.
+            alternative.]
+    2. Visualizing the model optimization using TensorBoard
 """
 # SGD can also be an optimzer
 optimzer_sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
@@ -309,8 +314,8 @@ optimzer_nadam = keras.optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999,
 # top3_acc.__name__ = 'top3_acc'
 
 model.compile(loss='categorical_crossentropy',
-              optimizer=optimzer_nadam ,
-              metrics=['accuracy','top_k_categorical_accuracy']) #
+              optimizer=optimzer_nadam,
+              metrics=['accuracy', 'top_k_categorical_accuracy'])
 
 #   when using the categorical_crossentropy loss, your targets should be in
 #   categorical format (e.g. if you have 10 classes, the target for each
@@ -318,6 +323,14 @@ model.compile(loss='categorical_crossentropy',
 #   1 at the index corresponding to the class of the sample). In order to
 #   convert integer targets into categorical targets, you can use the Keras
 #   utility to_categorical
+
+# Callbacks
+TensorBoard = TensorBoard(log_dir='./Graphs', histogram_freq=0, batch_size=32,
+                         write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
+
+TensorBoard.set_model(model)
+Callbacks = []
+Callbacks.append(TensorBoard)
 
 
 """
@@ -334,9 +347,8 @@ train_generator = train_datagen.flow_from_directory(
     train_data_dir,
     target_size=(img_width, img_height),
     batch_size=BATCH_SIZE,
-    class_mode='binary')
-
-
+    class_mode='binary',
+    callbacks = Callbacks)
 
 
 """
@@ -350,6 +362,7 @@ Evaluate model on test data
     6.	How many steps and epochs?
     7.	Iterations?
     8.	Top 5 or top 1 accuracy?
+    9. visualize how the model performs with tensorboard
 """
 model.evaluate()
 
@@ -366,6 +379,16 @@ scores = model.evaluate(x_test, y_test, verbose=1)
 print('Test loss:', scores[0])
 print('Test accuracy:', scores[1])
 
+# graphs:
+# loss curve (y:loss, x: epochs),
+# train and val accuracy vs epoch
+
+# If you have installed TensorFlow with pip, you should be able to launch
+# TensorBoard from the command line:
+# tensorboard --logdir=/full_path_to_your_logs
+
+
+
 """
 Predict
 """
@@ -374,7 +397,8 @@ model.fit_generator(
     steps_per_epoch=2000,
     epochs=EPOCHS,
     validation_data=validation_generator,
-    validation_steps=800)
+    validation_steps=800,
+    callbacks = Callbacks)
 
 
 """
@@ -382,12 +406,13 @@ Model visualization?
 """
 # Save model and weights
 if not os.path.isdir(save_dir):
-    os.makedirs(save_dir) #if "saved models" folder is not present, make one
-model_path = os.path.join(save_dir, model_name) #path to the model
-model.save(model_path) #save the model to the model path
-print('Saved trained model at %s ' % model_path) #print if it worked
+    os.makedirs(save_dir)  # if "saved models" folder is not present, make one
+model_path = os.path.join(save_dir, model_name)  # path to the model
+model.save(model_path)  # save the model to the model path
+print('Saved trained model at %s ' % model_path)  # print if it worked
 
-keras.utils.plot_model() #needs graphvidz and pydot package
+# plot the model
+keras.utils.plot_model()  # needs graphvidz and pydot package
 
 
 ################################################################################
