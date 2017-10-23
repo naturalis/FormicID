@@ -20,14 +20,14 @@ from __future__ import print_function
 # allow use of print as a function. Needed when loading in Python 2.x
 
 """
-Import libraries and modules·
+Importing libraries and modules
 """
 import keras
 from keras.models import Sequential  # for creating the model
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import BatchNormalization
-from keras.preprocessing.image import ImageDataGenerator  # for image augmentation
+from keras.preprocessing.image import ImageDataGenerator #for image augmentation
 from keras import backend as K
 from keras.callbacks import TensorBoard
 
@@ -374,15 +374,21 @@ Training the model (by using the fit function)
 """
 model.fit() #training
 
+model.fit_generator(
+    train_generator,
+    steps_per_epoch=2000,
+    epochs=EPOCHS,
+    validation_data=validation_generator,
+    validation_steps=800,
+    callbacks = Callbacks_Tensorboard)
+
+
 # train_generator = train_datagen.flow_from_directory(
 #    train_data_dir,
 #    target_size=(img_width, img_height),
 #    batch_size=BATCH_SIZE,
 #    class_mode='binary',
 #    callbacks = Callbacks_Tensorboard)
-
-# Prediction
-model.predict() # predicts the labels ?
 
 # validation
 validation_generator = test_datagen.flow_from_directory(
@@ -394,7 +400,9 @@ validation_generator = test_datagen.flow_from_directory(
 """
 Evaluate model on test data
     1.	Evaluate()
-        a.	Computes the loss on some input data, batch by batch.
+        a.	.evaluate() computes the loss based on the input you pass it, along
+        with any other metrics that you requested in the metrics param when you
+        compiled your model
     2.	Score of the model
     3.	Accuracy of the training model
     4.	Speed of the model
@@ -402,10 +410,10 @@ Evaluate model on test data
     6.	How many steps and epochs?
     7.	Iterations?
     8.	Top 5 or top 1 accuracy?
-    9. visualize how the model performs with tensorboard
+    9   Visualize how the model performs with tensorboard
 """
 
-# test on testset
+# evaluates the loss based on the input
 model.evaluate()
 
 # Score trained model.
@@ -420,15 +428,14 @@ print('Test accuracy:', scores[1])
 
 """
 Predict:
-    Generates output predictions for the input samples.
+    Generates output predictions for the input samples (the labels)
 """
-model.fit_generator(
-    train_generator,
-    steps_per_epoch=2000,
-    epochs=EPOCHS,
-    validation_data=validation_generator,
-    validation_steps=800,
-    callbacks = Callbacks_Tensorboard)
+predictions = model.predict(x_test)
+print('First prediction:', predictions[0]
+print('Second prediction:', predictions[1]
+print('Third prediction:', predictions[2]
+print('Fourth prediction:', predictions[3]
+print('Fifth prediction:', predictions[4]
 
 
 """
