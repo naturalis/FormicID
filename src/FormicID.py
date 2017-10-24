@@ -102,8 +102,8 @@ Load ready-made data
 
 keras.utils.get_file()  # can use url?
 
-train_data_dir = '/Users/nijram13/Google Drive/4. Biologie/Studie   Biologie/Master Year 2/Internship CNN/probeersel/data/train'
-validation_data_dir = '/Users/nijram13/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/probeersel/data/validation'
+train_data_dir = './data/train'
+validation_data_dir = './data/validation'
 
 X_train = []
 Y_train = []
