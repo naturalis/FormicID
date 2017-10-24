@@ -22,7 +22,7 @@ AW_base_url = 'http://www.antweb.org/api/v2/?'
 AW_arguments = {
     'subfamily':    'formicinae',
     'caste':        'worker',
-    'img_type':     'h',
+    #'img_type':     'h',
     'limit':        100,
     #'country':      'netherlands'
 }
@@ -42,7 +42,7 @@ def get_url_info(input_url):
         print('Request status: the request was not fulfilled.')
     print('Time elapsed to connect to URL:', input_url.elapsed)
 
-get_url_info(AW_url)
+# get_url_info(AW_url)
 
 
 # Getting JSON text format from the url and put that in a dictionary
@@ -53,40 +53,9 @@ def get_json(input_url):
 
 
 AW_data_json = get_json(AW_url)
+#print(AW_data_json)
 
-AW_data_json['specimens'][7]['images']['1']['shot_types']['d'].keys()
-
-def get_shot_types(data):
-    # loop through all specimens
-    for specimen in data['specimens']:
-
-        # if the specimen has images, continue
-        if 'images' in specimen:
-
-            #only view head, profile and dorsal view
-            wanted_shot_types = ['h', 'p', 'd']
-            AW_images = \
-            dict((k, specimen['images']['1']['shot_types'][k]) for \
-            k in wanted_shot_types if \
-            k in specimen['images']['1']['shot_types'])
-
-            print(AW_images)
-
-            #for item in AW_images['h']['img']:
-            #    if 'med' in item:
-            #        print(item)
-
-get_shot_types(AW_data_json)
-
-
-
-
-
-
-def print_urls(data):
-
-    AW_dict = {}
-
+"""def print_urls(data):
     # loop through all specimens
     for specimen in data['specimens']:
         # if the specimen has images, continue
@@ -96,29 +65,99 @@ def print_urls(data):
             for image_head in specimen['images']['1']['shot_types']['h']['img']:
                 if "thumbview" in image_head:
                     img_head = image_head
-                    print(img_head)
+                    return(img_head)
 
             # find the thumbview link for the dorsal image
             for image_dorsal in specimen['images']['1']['shot_types']['d']['img']:
                 if "thumbview" in image_dorsal:
-                    print(image_dorsal)
+                    return(image_dorsal)
 
             # find the thumbview link for the profile image
             for image_profile in specimen['images']['1']['shot_types']['p']['img']:
                 if "thumbview" in image_profile:
-                    print(image_profile)
+                    return(image_profile)
 
     for specimen in data['specimens']:
-        print(specimen['scientific_name'])
+        return(specimen['scientific_name'])
 
-    #def dict_update(dict):
-    #    dict.update(self, *args)
-    #    return self
-    #    print(dict(AW_dict))
+print(print_urls(AW_data_json))
+"""
 
 
-print_urls(AW_data_json)
 
+
+
+def get_imaged_specimens(data):
+    # loop through all specimens
+    imaged_specimen_lst = []
+    for specimen in data['specimens']:
+        if 'images' in specimen:
+            imaged_specimen_lst.append(specimen)
+    return imaged_specimen_lst
+
+
+AW_imaged_specimens = get_imaged_specimens(AW_data_json)
+#print(AW_imaged_specimens)
+
+
+
+def get_images_urls(data):
+    image_lst = []
+    wanted_shot_types = ['h', 'p', 'd']
+    for x in data:
+            AW_images = \
+            dict((k, data[0]['images']['1']['shot_types'][k]) for \
+            k in wanted_shot_types if \
+            k in data[0]['images']['1']['shot_types'])
+    return AW_images
+
+img_lst = get_images_urls(AW_imaged_specimens)
+print(img_lst)
+
+
+
+
+
+def get_shot_types(data):
+    # loop through all specimens
+    for specimen in data['specimens']:
+
+        # if the specimen has images, continue
+        if 'images' in specimen:
+
+            # creating a new dictionary
+            # only view head, profile and dorsal view
+            wanted_shot_types = ['h', 'p', 'd']
+            AW_images = \
+            dict((k, specimen['images']['1']['shot_types'][k]) for \
+            k in wanted_shot_types if \
+            k in specimen['images']['1']['shot_types'])
+            return AW_images
+
+image_urls = get_shot_types(AW_data_json)
+print(image_urls)
+
+
+def make_url_lst(data):
+    url_lst = []
+    for x in data:
+        for item in data[x]['img']:
+            if 'med' in item:
+                url_lst.append(item)
+    return url_lst
+
+AW_url_lst = make_url_lst(image_urls)
+
+print(AW_url_lst)
+
+
+# Downloading the images
+# //////////////////////////////////////////////////////////////////////////////
+
+"""
+
+names = []
+labels = []
 
 ################################################################################
 
@@ -142,47 +181,46 @@ def download_photo(self, img_url, filename):
 
 download_photo(
     'http://www.AW.org/images/casent0005326/casent0005326_d_1_high.jpg', 'test_image.jpg')
-
-
-for i in my_dict:
-    print(i.get('specimens'))
-
-"""
-Wouldn’t it be awesome if you could simply do this?
-
-for item in animals:
-    print item.get("animal/type")
-Note the / in the get method.
-
-Unfortunately, this is not possible in vanilla Python, but with a really small helper class you can easily make this happen:
 """
 
 
-class DictQuery(dict):
-    def get(self, path, default=None):
-        keys = path.split("/")
-        val = None
-
-        for key in keys:
-            if val:
-                if isinstance(val, list):
-                    val = [v.get(key, default) if v else None for v in val]
-                else:
-                    val = val.get(key, default)
-            else:
-                val = dict.get(self, key, default)
-
-            if not val:
-                break
-
-        return val
-
-
-for item in my_dict:
-    print(DictQuery(item).get("specimens//images/1/shot_types/p"))
-
-#   json format     [dict]   [lst]  [dict] [dict]   [dict]    [dict][dict][lst]
-image_test = (my_dict['specimens'][0]['images']
-              ['1']['shot_types']['p']['img'][0:3])
-
-print(image_test)
+"""
+{
+  'url': 'http://antweb.org/api/v2/?occurrenceId=CAS:ANTWEB:14d618c',
+  'catalogNumber': '14d618c',
+  'family': 'formicidae',
+  'subfamily': 'formicinae',
+  'genus': 'Lepisiota',
+  'specificEpithet': 'kgac-afr04',
+  'scientific_name': 'lepisiota kgac-afr04',
+  'typeStatus': '',
+  'stateProvince': 'Tigray',
+  'country': 'Ethiopia',
+  'dateIdentified': '',
+  'habitat': '',
+  'minimumElevationInMeters': '912',
+  'geojson': {
+    'type': 'point',
+    'coord': ['13.945647', '36.86088']
+  },
+  'images': {
+    '1': {
+      'upload_date': '2016-08-25 09:23:51',
+      'shot_types': {
+        'd': {
+          'img': ['http://www.antweb.org/images/14d618c/14d618c_d_1_high.jpg', 'http://www.antweb.org/images/14d618c/14d618c_d_1_low.jpg', 'http://www.antweb.org/images/14d618c/14d618c_d_1_med.jpg', 'http://www.antweb.org/images/14d618c/14d618c_d_1_thumbview.jpg']
+        },
+        'l': {
+          'img': ['http://www.antweb.org/images/14d618c/14d618c_l_1_high.jpg', 'http://www.antweb.org/images/14d618c/14d618c_l_1_low.jpg', 'http://www.antweb.org/images/14d618c/14d618c_l_1_med.jpg', 'http://www.antweb.org/images/14d618c/14d618c_l_1_thumbview.jpg']
+        },
+        'h': {
+          'img': ['http://www.antweb.org/images/14d618c/14d618c_h_1_high.jpg', 'http://www.antweb.org/images/14d618c/14d618c_h_1_low.jpg', 'http://www.antweb.org/images/14d618c/14d618c_h_1_med.jpg', 'http://www.antweb.org/images/14d618c/14d618c_h_1_thumbview.jpg']
+        },
+        'p': {
+          'img': ['http://www.antweb.org/images/14d618c/14d618c_p_1_high.jpg', 'http://www.antweb.org/images/14d618c/14d618c_p_1_low.jpg', 'http://www.antweb.org/images/14d618c/14d618c_p_1_med.jpg', 'http://www.antweb.org/images/14d618c/14d618c_p_1_thumbview.jpg']
+        }
+      }
+    }
+  }
+}
+"""
