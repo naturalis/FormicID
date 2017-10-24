@@ -1,84 +1,120 @@
 ################################################################################
-# API                                                                          #
+#                                                                              #
+#                                  ANTWEB API                                  #
+#                                                                              #
 ################################################################################
+
+# Packages
+# //////////////////////////////////////////////////////////////////////////////
 from __future__ import print_function
 # allow use of print as a function. Needed when loading in Python 2.x
-
+import datetime
 import requests
 import json
-from PIL import Image
-import urllib
-import urllib.parse
+# from PIL import Image
+# import urllib
+# import urllib.parse
+
+# AntWeb basic information
+# //////////////////////////////////////////////////////////////////////////////
+AW_base_url = 'http://www.antweb.org/api/v2/?'
 
 AW_arguments = {
     'subfamily':    'formicinae',
     'caste':        'worker',
     'img_type':     'h',
-    'limit':        100
+    'limit':        100,
+    #'country':      'netherlands'
 }
 
-AW_base_url = 'http://www.antweb.org/api/v2/?'
+# Creating the AntWeb url from the base url and the API arguments
 AW_url = requests.get(url=AW_base_url, params=AW_arguments)
 
-
+# Get basic url information
 def get_url_info(input_url):
-    print("URL:", input_url.url)
-    print("URL headers:", input_url.headers)
-    print("URL type:", type(input_url.content))
-    print("Connection status:", input_url.status_code)
-
+    print('URL:', input_url.url)
+    print('URL headers:', input_url.headers)
+    print('URL type:', type(input_url.content))
+    print('Connection status:', input_url.status_code)
     if input_url.status_code == 200:
-        print("Request: the request was fulfilled.")
-
+        print('Request status: the request was fulfilled.')
     else:
-        print("Request: the request was not fulfilled.")
-
-    print("Time elapsed to connect to URL:", input_url.elapsed)
+        print('Request status: the request was not fulfilled.')
+    print('Time elapsed to connect to URL:', input_url.elapsed)
 
 get_url_info(AW_url)
 
 
+# Getting JSON text format from the url and put that in a dictionary
+# //////////////////////////////////////////////////////////////////////////////
 def get_json(input_url):
     AW_data = json.loads(input_url.text)
     return AW_data
 
 
 AW_data_json = get_json(AW_url)
-# print(AW_data_json)
-class AW_dict(x)
-    def print_urls(data):
 
-        AW_dict = {}
+AW_data_json['specimens'][7]['images']['1']['shot_types']['d'].keys()
 
-        # loop through all specimens
-        for x in data["specimens"]:
+def get_shot_types(data):
+    # loop through all specimens
+    for specimen in data['specimens']:
 
-            # if the specimen has images, continue
-            if "images" in x:
-                sc_name = x["scientific_name"]
-                print(sc_name)
+        # if the specimen has images, continue
+        if 'images' in specimen:
 
-                # find the thumbview link for the head image
-                for image_head in x['images']['1']['shot_types']['h']['img']:
-                    if "thumbview" in image_head:
-                        img_head = image_head
-                        AW_dict = AW_dict.update(dict(sc_name = img_head))
+            #only view head, profile and dorsal view
+            wanted_shot_types = ['h', 'p', 'd']
+            AW_images = \
+            dict((k, specimen['images']['1']['shot_types'][k]) for \
+            k in wanted_shot_types if \
+            k in specimen['images']['1']['shot_types'])
 
-                # find the thumbview link for the dorsal image
-                for image_dorsal in x['images']['1']['shot_types']['d']['img']:
-                    if "thumbview" in image_dorsal:
-                        return(image_dorsal)
+            print(AW_images)
 
-                # find the thumbview link for the profile image
-                for image_profile in x['images']['1']['shot_types']['p']['img']:
-                    if "thumbview" in image_profile:
-                        return(image_profile)
+            #for item in AW_images['h']['img']:
+            #    if 'med' in item:
+            #        print(item)
+
+get_shot_types(AW_data_json)
 
 
-    def dict_update(dict):
-        dict.update(self, *args)
-        return self
-        print(dict(AW_dict))
+
+
+
+
+def print_urls(data):
+
+    AW_dict = {}
+
+    # loop through all specimens
+    for specimen in data['specimens']:
+        # if the specimen has images, continue
+        if 'images' in specimen:
+
+            # find the thumbview link for the head image
+            for image_head in specimen['images']['1']['shot_types']['h']['img']:
+                if "thumbview" in image_head:
+                    img_head = image_head
+                    print(img_head)
+
+            # find the thumbview link for the dorsal image
+            for image_dorsal in specimen['images']['1']['shot_types']['d']['img']:
+                if "thumbview" in image_dorsal:
+                    print(image_dorsal)
+
+            # find the thumbview link for the profile image
+            for image_profile in specimen['images']['1']['shot_types']['p']['img']:
+                if "thumbview" in image_profile:
+                    print(image_profile)
+
+    for specimen in data['specimens']:
+        print(specimen['scientific_name'])
+
+    #def dict_update(dict):
+    #    dict.update(self, *args)
+    #    return self
+    #    print(dict(AW_dict))
 
 
 print_urls(AW_data_json)
