@@ -24,9 +24,11 @@ AW_arguments = {
     'subfamily':    'formicinae',
     'caste':        'worker',
     #'img_type':     'h',
-    'limit':        8,
+    'limit':        25,
     #'country':      'netherlands'
 }
+
+# with 25 limit, specimen 8 and 25 have images
 
 # Creating the AntWeb url from the base url and the API arguments
 AW_url = requests.get(url=AW_base_url, params=AW_arguments)
@@ -57,6 +59,18 @@ def get_json(input_url):
 AW_data_json = get_json(AW_url)
 # print(AW_data_json)
 
+def get_name_and_image(data):
+    data_processed = jmespath.search('specimens[].[catalogNumber,'
+    'scientific_name, images."1".shot_types]', data)
+    return data_processed
+
+AW_name_and_image = get_name_and_image(AW_name_plus_image)
+
+for x in AW_name_and_image:
+    if
+
+
+
 
 """
 def get_imaged_specimens(data):
@@ -76,15 +90,6 @@ AW_imaged_specimens_json = json.dumps(AW_imaged_specimens)
 #print(AW_imaged_specimens_json)
 """
 
-AW_name_plus_image = jmespath.search('"specimens"[].["catalogNumber", "scientific_name", "images"]', AW_data_json)
-
-print(AW_name_plus_image)
-
-
-
-
-
-
 
 
 
@@ -96,7 +101,7 @@ print(AW_name_plus_image)
 
 def get_images_urls(imaged_lst):
     image_lst = []
-    wanted_shot_types = ['h', 'p', 'd']
+    wanted_shot_types = [h', 'p', 'd']
     for x in imaged_lst[0:1]:
             AW_images = \
             dict((k, data[0]['images']['1']['shot_types'][k]) for \
