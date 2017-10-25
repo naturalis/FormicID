@@ -11,6 +11,7 @@ from __future__ import print_function
 import datetime
 import requests
 import json
+import jmespath
 # from PIL import Image
 # import urllib
 # import urllib.parse
@@ -23,7 +24,7 @@ AW_arguments = {
     'subfamily':    'formicinae',
     'caste':        'worker',
     #'img_type':     'h',
-    'limit':        100,
+    'limit':        8,
     #'country':      'netherlands'
 }
 
@@ -45,48 +46,19 @@ def get_url_info(input_url):
 # get_url_info(AW_url)
 
 
+
+
 # Getting JSON text format from the url and put that in a dictionary
 # //////////////////////////////////////////////////////////////////////////////
 def get_json(input_url):
     AW_data = json.loads(input_url.text)
     return AW_data
 
-
 AW_data_json = get_json(AW_url)
-#print(AW_data_json)
+# print(AW_data_json)
 
-"""def print_urls(data):
-    # loop through all specimens
-    for specimen in data['specimens']:
-        # if the specimen has images, continue
-        if 'images' in specimen:
 
-            # find the thumbview link for the head image
-            for image_head in specimen['images']['1']['shot_types']['h']['img']:
-                if "thumbview" in image_head:
-                    img_head = image_head
-                    return(img_head)
-
-            # find the thumbview link for the dorsal image
-            for image_dorsal in specimen['images']['1']['shot_types']['d']['img']:
-                if "thumbview" in image_dorsal:
-                    return(image_dorsal)
-
-            # find the thumbview link for the profile image
-            for image_profile in specimen['images']['1']['shot_types']['p']['img']:
-                if "thumbview" in image_profile:
-                    return(image_profile)
-
-    for specimen in data['specimens']:
-        return(specimen['scientific_name'])
-
-print(print_urls(AW_data_json))
 """
-
-
-
-
-
 def get_imaged_specimens(data):
     # loop through all specimens
     imaged_specimen_lst = []
@@ -95,16 +67,37 @@ def get_imaged_specimens(data):
             imaged_specimen_lst.append(specimen)
     return imaged_specimen_lst
 
-
 AW_imaged_specimens = get_imaged_specimens(AW_data_json)
 #print(AW_imaged_specimens)
 
+AW_imaged_specimens = AW_imaged_specimens[0]
+#print(AW_imaged_specimens)
+AW_imaged_specimens_json = json.dumps(AW_imaged_specimens)
+#print(AW_imaged_specimens_json)
+"""
+
+AW_name_plus_image = jmespath.search('"specimens"[].["catalogNumber", "scientific_name", "images"]', AW_data_json)
+
+print(AW_name_plus_image)
 
 
-def get_images_urls(data):
+
+
+
+
+
+
+
+
+
+
+"""
+
+
+def get_images_urls(imaged_lst):
     image_lst = []
     wanted_shot_types = ['h', 'p', 'd']
-    for x in data:
+    for x in imaged_lst[0:1]:
             AW_images = \
             dict((k, data[0]['images']['1']['shot_types'][k]) for \
             k in wanted_shot_types if \
@@ -149,7 +142,7 @@ def make_url_lst(data):
 AW_url_lst = make_url_lst(image_urls)
 
 print(AW_url_lst)
-
+"""
 
 # Downloading the images
 # //////////////////////////////////////////////////////////////////////////////
