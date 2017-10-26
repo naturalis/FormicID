@@ -4,20 +4,24 @@
 #                                                                              #
 ################################################################################
 
-# input of training data
-src/FormicID_input
+# Source
+  # get images from AntWeb
+  src/formicID_AntWeb
 
-# input of test data
-src/FormicID_input_test
+  # input of training data
+  src/FormicID_input
 
-# builds the network
-src/FormicID_build
+  # input of test data
+  src/FormicID_input_test
 
-# train the network
-src/FormicID_train
+  # builds the network
+  src/FormicID_build
 
-# evaluate the network
-src/FormicID_eval
+  # train the network
+  src/FormicID_train
 
-# test the network
-src/FormicID_test
+  # evaluate the network
+  src/FormicID_eval
+
+  # test the network
+  src/FormicID_test
