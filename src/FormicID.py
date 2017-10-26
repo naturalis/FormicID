@@ -343,6 +343,8 @@ Validation Set:
     but the accuracy over then validation data set stays the same or decreases,
     then you're overfitting your neural network and you should stop training.
 
+    you tune parameters according to these results.?
+
 Testing Set:
     this data set is used only for testing the final solution in order
     to confirm the actual predictive power of the network.

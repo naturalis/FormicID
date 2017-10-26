@@ -68,3 +68,6 @@ def json_filter(data):
 
 
 AW_name_and_image = json_filter(AW_name_plus_image)
+
+
+if range > 4 place in new lst ?
