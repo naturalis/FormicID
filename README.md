@@ -7,4 +7,4 @@ Txt
 # Usage
 text
 
-<img src="https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true"
+<img src="https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true">
