@@ -130,12 +130,12 @@ and normalize its scale to [-1, 1] along each feature
     3.	transpose data, so that the channels come first # see lines above
     4.	package data into a dictionary
 """
-X_train = X_train.reshape(X_train.shape[0], 1, 28, 28)
-X_test = X_test.reshape(X_test.shape[0], 1, 28, 28)
-X_train = X_train.astype('float32')
-X_test = X_test.astype('float32')
-X_train /= 255
-X_test /= 255
+#X_train = X_train.reshape(X_train.shape[0], 1, 28, 28)
+#X_test = X_test.reshape(X_test.shape[0], 1, 28, 28)
+#X_train = X_train.astype('float32')
+#X_test = X_test.astype('float32')
+#X_train /= 255
+#X_test /= 255
 
 
 """

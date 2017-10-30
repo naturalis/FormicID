@@ -10,10 +10,16 @@ from __future__ import print_function
 from keras.models import Sequential  # for creating the model
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
-from keras.optimizers import SGD, RMSProp, Adam, Nadam
+from keras.optimizers import SGD, RMSprop, Adam, Nadam
+from keras import backend as K
+from formicID.FormicID_input import train_generator
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
+if K.image_data_format() == 'channels_first':
+    input_shape = (3, img_width, img_height)
+else:
+    input_shape = (img_width, img_height, 3)
 
 
 # Build the network
@@ -59,12 +65,15 @@ Forward pass and backward pass (backpropagation)
         b.	Why?
     11.	Batch_size and batch_shape?
 """
+
+
 def build_neural_network():
     model = Sequential()
 
     # First layers needs to specify the input_shape
     # Following layers will reshape
-    model.add(Conv2D(32, (3, 3), padding='same', input_shape=x_train.shape[1:]))
+    model.add(Conv2D(32, (3, 3), padding='same',
+                     input_shape=x_train.shape[1:]))
     model.add(Activation('relu'))
 
     model.add(Conv2D(32, (3, 3)))
@@ -89,8 +98,9 @@ def build_neural_network():
     model.add(Dropout(DROPOUT_P))
 
     model.add(Dense(num_species))
-    model.add(Activation('softmax')) # or use svm?
+    model.add(Activation('softmax'))  # or use svm?
 
+    print("Model was created succesfully")
     return model
 
 
@@ -134,6 +144,7 @@ optimzer_nadam = keras.optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999,
 # Default parameters follow those provided in the paper. It is recommended to
 # leave the parameters of this optimizer at their default values.
 
+
 def compile_neural_network(model):
     #   when using the categorical_crossentropy loss, your targets should be in
     #   categorical format (e.g. if you have 10 classes, the target for each
@@ -152,7 +163,6 @@ def compile_neural_network(model):
                   optimizer=optimzer_nadam,
                   metrics=['accuracy', 'top_k_categorical_accuracy'])
     return model
-
 
 
 # Callbacks

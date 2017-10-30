@@ -105,18 +105,26 @@ test_datagen = ImageDataGenerator(
                 ...
 
 """
-train_generator = train_datagen.flow_from_directory(
-    train_data_dir,  # directory
-    # dimensions to which all images will be resized
-    target_size=(img_height, img_width),
-    batch_size=32,  # Size of batches
-    class_mode='categorical',)  # needed because of 2D data
-# Don't set classes. It will take the classes from subdirectories.
-# save_dir= 'dir' # can use to save the augmentated images
-# also use (save_prefix, save_format) then
 
-validation_generator = test_datagen.flow_from_directory(
-    validation_data_dir,
-    target_size=(img_height, img_width),
-    batch_size=32,
-    class_mode='categorical')
+
+def train_generator(train_data_dir):
+    train_datagen.flow_from_directory(
+        train_data_dir,  # directory
+        target_size=(img_height, img_width),  # dimensions to which all images
+        # will be resized
+        batch_size=32,  # Size of batches
+        class_mode='categorical',
+    )
+    # needed because of 2D data
+    # Don't set classes. It will take the classes from subdirectories.
+    # save_dir= 'dir' # can use to save the augmentated images
+    # also use (save_prefix, save_format) then
+
+
+def validation_generator(validation_data_dir):
+    test_datagen.flow_from_directory(
+        validation_data_dir,
+        target_size=(img_height, img_width),
+        batch_size=32,
+        class_mode='categorical'
+    )
