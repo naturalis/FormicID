@@ -27,6 +27,8 @@ from keras.layers import BatchNormalization
 from keras import backend as K
 from keras.callbacks import TensorBoard
 
+from src.FormicID_build import build_neural_network
+
 import numpy
 import os  # provides a way of using operating system dependent functionality.
 import time # to keep track of time and create time based log folders
@@ -69,7 +71,7 @@ NUM_PREDICTIONS =
 #save_dir = os.path.join(os.getcwd(), 'saved_models')
 #model_name = 'keras_formicidae_trained_model.h5'
 
-DROPOUT_P = 0.25  # probability of keeping a unit active. higher = less dropout
+DROPOUT_P = 0.50  # probability of keeping a unit active. higher = less dropout
 # 0.5 is a reasonable default
 
 # number of iterations = number of passes, each pass using [batch size] number
@@ -77,7 +79,7 @@ DROPOUT_P = 0.25  # probability of keeping a unit active. higher = less dropout
 
 
 save_dir = os.path.join(os.getcwd(), 'saved_models')
-model_name = 'keras_FormicID_trained_model.h5'
+model_name = 'FormicID_keras_trained_model.h5'
 
 """
 Importing images - Acquiring data and put them in variables
@@ -93,6 +95,9 @@ Load ready-made data
         c.	record_bytes = label_bytes + image_bytes ?
     3.	(X_training, Y_traning), (X_test, Y_test)
 """
+
+Use FormicidID_input
+train_generator
 
 keras.utils.get_file()  # can use url?
 
@@ -184,78 +189,13 @@ train_datagen = ImageDataGenerator(
     rescale=1. / 255,
     shear_range=0.2,
     zoom_range=0.2,
-    horizontal_flip=True)"""
+    horizontal_flip=True)
+
+"""
 
 # Dropconnect?
 
-"""
 
-
-"""
-Compiling of the model = configuring the learning process
-    Before training a model, you need to configure the learning process, which
-    is done via the compile method.
-    1.	Model.compile()
-        a.	Learning rate?
-            i. In training deep networks, it is usually helpful to anneal the
-            learning rate over time. Use step decay
-        b.	Decay = learning rate / epoch
-        c.	Loss function (e.g. softmax)
-        d.	Metric function
-            i. For any classification problem you will want to set this to
-            metrics=['accuracy']
-        e.	Optimizer function
-            i. sgd = Stochastic gradient descent optimizer
-            ii. In practice Adam is currently recommended as the default
-            algorithm to use, and often works slightly better than RMSProp.
-            However, it is often also worth trying SGD+Nesterov Momentum as an
-            alternative.]
-    2. Visualizing the model optimization using TensorBoard
-"""
-# SGD can also be an optimzer
-optimzer_sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
-
-optimizer_rmsprpop = keras.optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08,
-                                              decay=0.0)
-# It is recommended to leave the parameters of this optimizer at their default
-# values (except the learning rate, which can be freely tuned).
-# This optimizer is usually a good choice for recurrent neural networks.
-# very effective
-# cite slide 29 of Lecture 6 of Geoff Hinton’s Coursera class.
-
-optimzer_nadam = keras.optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999,
-                                        epsilon=1e-08, schedule_decay=0.004)
-# Default parameters follow those provided in the paper. It is recommended to
-# leave the parameters of this optimizer at their default values.
-
-
-# top_k_categorical_accuracy --> default value = 5
-# code to change to top 3
-# top3_acc = functools.partial(keras.metrics.top_k_categorical_accuracy, k=3)
-# top3_acc.__name__ = 'top3_acc'
-
-model.compile(loss='categorical_crossentropy',
-              optimizer=optimzer_nadam,
-              metrics=['accuracy', 'top_k_categorical_accuracy'])
-
-#   when using the categorical_crossentropy loss, your targets should be in
-#   categorical format (e.g. if you have 10 classes, the target for each
-#   sample should be a 10-dimensional vector that is all-zeros expect for a
-#   1 at the index corresponding to the class of the sample). In order to
-#   convert integer targets into categorical targets, you can use the Keras
-#   utility to_categorical
-
-# Callbacks
-TensorBoard = TensorBoard(log_dir='./Graphs/Logs{}'.format(time), histogram_freq=0,
-                        batch_size=32, write_graph=True, write_grads=False,
-                        write_images=False, embeddings_freq=0,
-                        embeddings_layer_names=None, embeddings_metadata=None)
-
-TensorBoard.set_model(model)
-Callbacks_Tensorboard = []
-Callbacks_Tensorboard.append(TensorBoard)
-# launch TensorBoard from the command line:
-# tensorboard --logdir=/Users/nijram13/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/FormicID/Graphs
 
 
 """
