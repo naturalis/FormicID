@@ -12,7 +12,7 @@ from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.optimizers import SGD, RMSprop, Adam, Nadam
 from keras import backend as K
-from formicID.FormicID_input import train_generator
+
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
@@ -24,50 +24,49 @@ else:
 
 # Build the network
 # //////////////////////////////////////////////////////////////////////////////
-"""
-Define model architecture
-Forward pass and backward pass (backpropagation)
-    1.	Sequential model()
-        a.	Convolutional--> Dropout--> Convolutional and Max Pooling-->
-        Convolutional--> Dropout--> Convolutional and Max Pooling-->
-        Convolutional--> Dropout--> Convolutional and Max Pooling--> flatten-->
-        dropout--> fully connected--> dropout--> fully connected--> dropout-->
-        fully connected
-
-        also need batch normalization, usually after FC and before
-        nonlinearity, you want to have this a lot, IMPORTANT!
-    2.	Convolution (Convolution2D)
-        a.	Filter size
-        b.	Stride
-        c.	Padding
-        d.	Bias
-        e.	What is the input and output dimension?
-    3.	Maxpooling2D
-        a.	Pool size
-        b.	Stride
-        c.	Padding
-        d.	What is the input and output dimension?
-    4.	Dense layers (fully connected)
-    5.	Kernel initializer (weights)
-    6.	Bias initializer (weights)
-    7.	Dropout
-        a.	Rate
-        b.	Noise_shape()
-            i.	batch_size, 1, features
-        c.	Seed
-    8.	Which activations?
-        a.	First try ReLU
-    9.	Flatten() layer
-        a.	Flattens the input
-        b.	Why?
-    10.	Reshape() layer
-        a.	Reshapes the input
-        b.	Why?
-    11.	Batch_size and batch_shape?
-"""
-
 
 def build_neural_network():
+    """
+    Define model architecture
+    Forward pass and backward pass (backpropagation)
+        1.	Sequential model()
+            a.	Convolutional--> Dropout--> Convolutional and Max Pooling-->
+            Convolutional--> Dropout--> Convolutional and Max Pooling-->
+            Convolutional--> Dropout--> Convolutional and Max Pooling--> flatten-->
+            dropout--> fully connected--> dropout--> fully connected--> dropout-->
+            fully connected
+
+            also need batch normalization, usually after FC and before
+            nonlinearity, you want to have this a lot, IMPORTANT!
+        2.	Convolution (Convolution2D)
+            a.	Filter size
+            b.	Stride
+            c.	Padding
+            d.	Bias
+            e.	What is the input and output dimension?
+        3.	Maxpooling2D
+            a.	Pool size
+            b.	Stride
+            c.	Padding
+            d.	What is the input and output dimension?
+        4.	Dense layers (fully connected)
+        5.	Kernel initializer (weights)
+        6.	Bias initializer (weights)
+        7.	Dropout
+            a.	Rate
+            b.	Noise_shape()
+                i.	batch_size, 1, features
+            c.	Seed
+        8.	Which activations?
+            a.	First try ReLU
+        9.	Flatten() layer
+            a.	Flattens the input
+            b.	Why?
+        10.	Reshape() layer
+            a.	Reshapes the input
+            b.	Why?
+        11.	Batch_size and batch_shape?
+    """
     model = Sequential()
 
     # First layers needs to specify the input_shape
@@ -105,29 +104,9 @@ def build_neural_network():
 
 
 # Compile the network
-# //////////////////////////////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////////////////////////
 
-"""
-Compiling of the model = configuring the learning process
-    Before training a model, you need to configure the learning process, which
-    is done via the compile method.
-    1.	Model.compile()
-        a.	Learning rate?
-            i. In training deep networks, it is usually helpful to anneal the
-            learning rate over time. Use step decay
-        b.	Decay = learning rate / epoch
-        c.	Loss function (e.g. softmax)
-        d.	Metric function
-            i. For any classification problem you will want to set this to
-            metrics=['accuracy']
-        e.	Optimizer function
-            i. sgd = Stochastic gradient descent optimizer
-            ii. In practice Adam is currently recommended as the default
-            algorithm to use, and often works slightly better than RMSProp.
-            However, it is often also worth trying SGD+Nesterov Momentum as an
-            alternative.]
-    2. Visualizing the model optimization using TensorBoard
-"""
+
 # SGD can also be an optimzer
 optimzer_sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
 
@@ -146,6 +125,27 @@ optimzer_nadam = keras.optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999,
 
 
 def compile_neural_network(model):
+    """
+    Compiling of the model = configuring the learning process
+        Before training a model, you need to configure the learning process, which
+        is done via the compile method.
+        1.	Model.compile()
+            a.	Learning rate?
+                i. In training deep networks, it is usually helpful to anneal the
+                learning rate over time. Use step decay
+            b.	Decay = learning rate / epoch
+            c.	Loss function (e.g. softmax)
+            d.	Metric function
+                i. For any classification problem you will want to set this to
+                metrics=['accuracy']
+            e.	Optimizer function
+                i. sgd = Stochastic gradient descent optimizer
+                ii. In practice Adam is currently recommended as the default
+                algorithm to use, and often works slightly better than RMSProp.
+                However, it is often also worth trying SGD+Nesterov Momentum as an
+                alternative.]
+        2. Visualizing the model optimization using TensorBoard
+    """
     #   when using the categorical_crossentropy loss, your targets should be in
     #   categorical format (e.g. if you have 10 classes, the target for each
     #   sample should be a 10-dimensional vector that is all-zeros expect for a

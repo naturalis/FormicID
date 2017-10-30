@@ -1,14 +1,5 @@
 #!/usr/bin/env python
 
-__author__ = "Marijn Boer"
-__copyright__ = "2017 Naturalis Biodiversity Center"
-__credits__ = "Marijn Boer"
-__license__ = "MIT License"
-__version__ = "0.1.3"
-__maintainer__ = "Marijn Boer"
-__email__ = "marijn.j.a.boer@gmail.com"
-__status__ = "Production"
-
 ################################################################################
 # FormicID                                                                     #
 # Species identification from AntWeb images using a convolutional neural       #
