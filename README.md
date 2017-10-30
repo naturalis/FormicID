@@ -1,18 +1,21 @@
 # FormicID
 Code repository for CNN-based image classification of AntWeb images
 
-# AntWeb
+### AntWeb
+Txt
 <img src="https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true">
 
-# Architecture
+### Architecture
 Txt
 
-# Usage
+### Usage
 Txt
 
-# Requirements
+### Requirements
 - keras
+  - Version:
 - TensorFlow
+  - Version:
 
-# Credits
+### Credits
 Txt

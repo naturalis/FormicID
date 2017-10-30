@@ -16,6 +16,10 @@ from keras import backend as K
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
+num_species = 3  # species
+
+img_height, img_width = 120, 148  # input for width and height
+
 if K.image_data_format() == 'channels_first':
     input_shape = (3, img_width, img_height)
 else:
@@ -71,15 +75,14 @@ def build_neural_network():
 
     # First layers needs to specify the input_shape
     # Following layers will reshape
-    model.add(Conv2D(32, (3, 3), padding='same',
-                     input_shape=x_train.shape[1:]))
+    model.add(Conv2D(32, (3, 3), padding='same', input_shape=input_shape))
     model.add(Activation('relu'))
 
     model.add(Conv2D(32, (3, 3)))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
-    model.add(Dropout(DROPOUT_P))
+    model.add(Dropout(0.5))
 
     model.add(Conv2D(64, (3, 3), padding='same'))
     model.add(Activation('relu'))
@@ -88,13 +91,13 @@ def build_neural_network():
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
-    model.add(Dropout(DROPOUT_P))
+    model.add(Dropout(0.5))
 
     model.add(Flatten())
     model.add(Dense(512))
     model.add(Activation('relu'))
 
-    model.add(Dropout(DROPOUT_P))
+    model.add(Dropout(0.5))
 
     model.add(Dense(num_species))
     model.add(Activation('softmax'))  # or use svm?
@@ -110,7 +113,7 @@ def build_neural_network():
 # SGD can also be an optimzer
 optimzer_sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
 
-optimizer_rmsprpop = keras.optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08,
+optimizer_rmsprpop = RMSprop(lr=0.001, rho=0.9, epsilon=1e-08,
                                               decay=0.0)
 # It is recommended to leave the parameters of this optimizer at their default
 # values (except the learning rate, which can be freely tuned).
@@ -118,7 +121,7 @@ optimizer_rmsprpop = keras.optimizers.RMSprop(lr=0.001, rho=0.9, epsilon=1e-08,
 # very effective
 # cite slide 29 of Lecture 6 of Geoff Hinton’s Coursera class.
 
-optimzer_nadam = keras.optimizers.Nadam(lr=0.002, beta_1=0.9, beta_2=0.999,
+optimzer_nadam = Nadam(lr=0.002, beta_1=0.9, beta_2=0.999,
                                         epsilon=1e-08, schedule_decay=0.004)
 # Default parameters follow those provided in the paper. It is recommended to
 # leave the parameters of this optimizer at their default values.
@@ -155,18 +158,18 @@ def compile_neural_network(model):
 
     # top_k_categorical_accuracy --> default value = 5
     # code to change to top 3
-    # top3_acc = functools.partial(keras.metrics.top_k_categorical_accuracy,
-    # k=3)
+    # top3_acc = functools.partial(keras.metrics.top_k_categorical_accuracy,k=3)
     # top3_acc.__name__ = 'top3_acc'
 
     model.compile(loss='categorical_crossentropy',
                   optimizer=optimzer_nadam,
                   metrics=['accuracy', 'top_k_categorical_accuracy'])
+    print("Model was compiled Succesfully")
     return model
 
 
 # Callbacks
-def build_tensorboard():
+def build_tensorboard(model):
     # launch TensorBoard from the command line:
     # tensorboard --logdir=/Users/nijram13/Google Drive/4. Biologie/Studie
     # Biologie/Master Year 2/Internship CNN/FormicID/graphs

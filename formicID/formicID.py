@@ -50,7 +50,7 @@ else:
 # The higher the batch size, the more memory space you'll need.
 BATCH_SIZE = 16
 
-num_species = 2  # species
+
 
 # one epoch = one forward pass and one backward pass of all the training
 # examples
