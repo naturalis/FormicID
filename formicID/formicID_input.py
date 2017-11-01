@@ -106,7 +106,7 @@ test_datagen = ImageDataGenerator(
 """
 
 
-def train_data(directory):
+def train_data_generator(directory):
     train_generator = train_datagen.flow_from_directory(
             directory,  # directory
             target_size=(img_height, img_width),  # dimensions to which all

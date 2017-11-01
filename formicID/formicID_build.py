@@ -166,21 +166,3 @@ def compile_neural_network(model):
                   metrics=['accuracy', 'top_k_categorical_accuracy'])
     print("Model was compiled Succesfully")
     return model
-
-
-# Callbacks
-def build_tensorboard(model):
-    # launch TensorBoard from the command line:
-    # tensorboard --logdir=/Users/nijram13/Google Drive/4. Biologie/Studie
-    # Biologie/Master Year 2/Internship CNN/FormicID/graphs
-
-    TensorBoard = TensorBoard(log_dir='./graphs/Logs{}'.format(time),
-                              histogram_freq=0, batch_size=32,
-                              write_graph=True, write_grads=False,
-                              write_images=False, embeddings_freq=0,
-                              embeddings_layer_names=None,
-                              embeddings_metadata=None)
-    TensorBoard.set_model(model)
-    Callbacks_Tensorboard = []
-    Callbacks_Tensorboard.append(TensorBoard)
-    return Tensorboard
