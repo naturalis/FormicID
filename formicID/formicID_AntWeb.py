@@ -67,8 +67,10 @@ def json_filter(data):
     return data_processed
 
 
-AW_name_and_image = json_filter(AW_name_plus_image)
+AW_name_and_image = json_filter(AW_data_json)
+
+print(AW_name_and_image)
 
 # to do: download images and put them in the folder strucutre mentioned in
 # FormicID_input
-if range > 4 place in new lst ?
+# if range > 4 place in new lst ?
