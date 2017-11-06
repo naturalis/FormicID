@@ -16,7 +16,7 @@ from keras import backend as K
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
-NUM_SPECIES = 3  # species
+NUM_SPECIES = 3  # Todo: implement NUM_SPECIES from _train.py file
 
 IMG_HEIGHT, IMG_WIDTH = 120, 148  # input for height and width
 
@@ -116,7 +116,7 @@ def build_neural_network():
 optimzer_sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
 
 optimizer_rmsprpop = RMSprop(lr=0.001, rho=0.9, epsilon=1e-08,
-                                              decay=0.0)
+                             decay=0.0)
 # It is recommended to leave the parameters of this optimizer at their default
 # values (except the learning rate, which can be freely tuned).
 # This optimizer is usually a good choice for recurrent neural networks.
@@ -124,7 +124,7 @@ optimizer_rmsprpop = RMSprop(lr=0.001, rho=0.9, epsilon=1e-08,
 # cite slide 29 of Lecture 6 of Geoff Hinton’s Coursera class.
 
 optimzer_nadam = Nadam(lr=0.002, beta_1=0.9, beta_2=0.999,
-                                        epsilon=1e-08, schedule_decay=0.004)
+                       epsilon=1e-08, schedule_decay=0.004)
 # Default parameters follow those provided in the paper. It is recommended to
 # leave the parameters of this optimizer at their default values.
 
