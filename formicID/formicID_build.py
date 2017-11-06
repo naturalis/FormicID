@@ -21,9 +21,9 @@ NUM_SPECIES = 3  # Todo: implement NUM_SPECIES from _train.py file
 IMG_HEIGHT, IMG_WIDTH = 120, 148  # input for height and width
 
 if K.image_data_format() == 'channels_first':
-    input_shape = (3, img_width, img_height)
+    input_shape = (3, IMG_WIDTH, IMG_HEIGHT)
 else:
-    input_shape = (img_width, img_height, 3)
+    input_shape = (IMG_WIDTH, IMG_HEIGHT, 3)
 
 DROPOUT = 0.5
 
@@ -109,27 +109,8 @@ def build_neural_network():
 
 
 # Compile the network
-# //////////////////////////////////////////////////////////////////////////
-
-
-# SGD can also be an optimzer
-optimzer_sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
-
-optimizer_rmsprpop = RMSprop(lr=0.001, rho=0.9, epsilon=1e-08,
-                             decay=0.0)
-# It is recommended to leave the parameters of this optimizer at their default
-# values (except the learning rate, which can be freely tuned).
-# This optimizer is usually a good choice for recurrent neural networks.
-# very effective
-# cite slide 29 of Lecture 6 of Geoff Hinton’s Coursera class.
-
-optimzer_nadam = Nadam(lr=0.002, beta_1=0.9, beta_2=0.999,
-                       epsilon=1e-08, schedule_decay=0.004)
-# Default parameters follow those provided in the paper. It is recommended to
-# leave the parameters of this optimizer at their default values.
-
-
-def compile_neural_network(model):
+# //////////////////////////////////////////////////////////////////////////////
+def compile_neural_network(model, optimizer):
     """
     Compiling of the model = configuring the learning process
         Before training a model, you need to configure the learning process, which
@@ -151,6 +132,26 @@ def compile_neural_network(model):
                 alternative.]
         2. Visualizing the model optimization using TensorBoard
     """
+    # SGD can also be an optimzer
+    if optimizer == "SGD":
+        opt = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
+    if optimizer == "RMSprop":
+        opt = RMSprop(lr=0.001, rho=0.9, epsilon=1e-08,
+                                 decay=0.0)
+    # It is recommended to leave the parameters of RMSprop at their default
+    # values (except the learning rate, which can be freely tuned).
+    # This optimizer is usually a good choice for recurrent neural networks.
+    # very effective
+    # cite slide 29 of Lecture 6 of Geoff Hinton’s Coursera class.
+
+    if optimizer == "Nadam":
+        opt = Nadam(lr=0.002, beta_1=0.9, beta_2=0.999,
+                           epsilon=1e-08, schedule_decay=0.004)
+    # Default parameters follow those provided in the paper. It is recommended
+    # to leave the parameters of this optimizer at their default values.
+
+    # /////////////////
+
     #   when using the categorical_crossentropy loss, your targets should be in
     #   categorical format (e.g. if you have 10 classes, the target for each
     #   sample should be a 10-dimensional vector that is all-zeros expect for a
@@ -164,7 +165,7 @@ def compile_neural_network(model):
     # top3_acc.__name__ = 'top3_acc'
 
     model.compile(loss='categorical_crossentropy',
-                  optimizer=optimzer_nadam,
+                  optimizer=opt,
                   metrics=['accuracy', 'top_k_categorical_accuracy'])
-    print("Model was compiled Succesfully")
+    print("Model was compiled succesfully")
     return model

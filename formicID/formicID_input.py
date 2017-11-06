@@ -50,8 +50,7 @@ BATCH_SIZE = 32
 
 # Train en test data augumentation
 # //////////////////////////////////////////////////////////////////////////////
-train_datagen = ImageDataGenerator(
-    """
+"""
 rescale: Rescaling factor; normalizing the data to [0:1]
 rotation_range: degree range for random rotations (integer)
 width_shift_range: range for random horizontal shifts (float)
@@ -60,6 +59,7 @@ shear_range: shear intensity (float)
 zoom_range: range for random zoom (float)
 horizontal_flip: randomly flip inputs horizontally (boolean)
 """
+train_datagen = ImageDataGenerator(
     rescale=1. / 255,
     rotation_range=40,
     width_shift_range=0.2,
@@ -70,7 +70,7 @@ horizontal_flip: randomly flip inputs horizontally (boolean)
 )
 
 # Don't augment the testdata. Only rescale to normalize the data
-test_datagen = ImageDataGenerator(
+validation_gen = ImageDataGenerator(
     rescale=1. / 255
 )
 
@@ -110,7 +110,7 @@ def validation_data_generator(directory):
     # also use (save_prefix, save_format) then
 
     """
-    validation_generator = test_datagen.flow_from_directory(
+    validation_generator = validation_gen.flow_from_directory(
         directory,
         target_size=(IMG_HEIGHT, IMG_WIDTH),
         batch_size=BATCH_SIZE,

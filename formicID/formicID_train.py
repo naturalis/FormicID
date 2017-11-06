@@ -17,24 +17,12 @@ from datetime import datetime
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
 train_data_dir = './data/train'
+validation_data_dir = './data/validation'
 EPOCHS = 5
 STEPS_PER_EPOCH = 5
 
-# Training
-# //////////////////////////////////////////////////////////////////////////////
-AW_model = build_neural_network()
-AW_model_comp = compile_neural_network(AW_model)
-
-# AW_model_comp.summary()
-
-AW_generated_data = train_data_generator(train_data_dir)
-
-print(AW_generated_data.class_mode) # shows the class mode
-print(AW_generated_data.class_indices) # Shows a dictionary of species and class number
-print(AW_generated_data.classes) # shows all classes per specimen
-NUM_SPECIES = len(AW_generated_data.class_indices)
-
 # Callbacks
+# //////////////////////////////////////////////////////////////////////////////
 def build_tensorboard(model):
     """
     In order to launch TensorBoard from the terminal, copy between ():
@@ -50,16 +38,29 @@ def build_tensorboard(model):
     return Callbacks_Tensorboard
 
 
+# Training
+# //////////////////////////////////////////////////////////////////////////////
+AW_model = build_neural_network()
+AW_model_comp = compile_neural_network(AW_model, 'Nadam')
+# AW_model_comp.summary()
+
+AW_generated_data = train_data_generator(train_data_dir)
+AW_generated_data_val = validation_data_generator(validation_data_dir)
+print(AW_generated_data.class_mode)  # shows the class mode
+print(AW_generated_data.class_indices) # shows dictionary of classes and indices
+print(AW_generated_data.classes)  # shows all classes per specimen
+
+NUM_SPECIES = len(AW_generated_data.class_indices) # the number of species
+
+
 def train_model(model):
     print('Training network...')
     AW_model_fit = model.fit_generator(
         AW_generated_data,
         steps_per_epoch=STEPS_PER_EPOCH,
         epochs=EPOCHS,
-        # validation_split=(1/7), # 1/7th of the total (which divides
-        # everything in 5:1:1 (train:val:test))
-        # validation_data=validation_generator,
-        # validation_steps=10,
+        validation_data=AW_generated_data_val,
+        validation_steps=10,
         callbacks=build_tensorboard(model)
     )
     return AW_model_fit
