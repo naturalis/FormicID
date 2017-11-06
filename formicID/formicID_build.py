@@ -16,14 +16,16 @@ from keras import backend as K
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
-num_species = 3  # species
+NUM_SPECIES = 3  # species
 
-img_height, img_width = 120, 148  # input for width and height
+IMG_HEIGHT, IMG_WIDTH = 120, 148  # input for height and width
 
 if K.image_data_format() == 'channels_first':
     input_shape = (3, img_width, img_height)
 else:
     input_shape = (img_width, img_height, 3)
+
+DROPOUT = 0.5
 
 
 # Build the network
@@ -82,7 +84,7 @@ def build_neural_network():
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
-    model.add(Dropout(0.5))
+    model.add(Dropout(DROPOUT))
 
     model.add(Conv2D(64, (3, 3), padding='same'))
     model.add(Activation('relu'))
@@ -91,18 +93,18 @@ def build_neural_network():
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
-    model.add(Dropout(0.5))
+    model.add(Dropout(DROPOUT))
 
     model.add(Flatten())
     model.add(Dense(512))
     model.add(Activation('relu'))
 
-    model.add(Dropout(0.5))
+    model.add(Dropout(DROPOUT))
 
-    model.add(Dense(num_species))
+    model.add(Dense(NUM_SPECIES))
     model.add(Activation('softmax'))  # or use svm?
 
-    print("Model was created succesfully")
+    print("Model was build succesfully")
     return model
 
 

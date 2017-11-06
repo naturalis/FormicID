@@ -16,6 +16,8 @@ from datetime import datetime
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
 train_data_dir = './data/train'
+EPOCHS = 5
+STEPS_PER_EPOCH = 5
 
 
 # Training
@@ -23,13 +25,17 @@ train_data_dir = './data/train'
 AW_model = build_neural_network()
 AW_model_comp = compile_neural_network(AW_model)
 
-x = train_data_generator(train_data_dir)
+# AW_model_comp.summary()
+
+AW_generated_data = train_data_generator(train_data_dir)
+
+print(AW_generated_data)
 
 # Callbacks
 def build_tensorboard(model):
     """
-    In order to launch TensorBoard from the terminal:
-    "tensorboard --logdir="/Users/nijram13/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/graphs/logs""
+    In order to launch TensorBoard from the terminal, copy between ():
+    (tensorboard --logdir="/Users/nijram13/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/graphs/logs")
     """
     AW_tensorboard = TensorBoard(
                     log_dir='./graphs/logs/{0}'.format(datetime.now()),
@@ -43,10 +49,11 @@ def build_tensorboard(model):
 
 
 def train_model(model):
+    print('Training network...')
     AW_model_fit = model.fit_generator(
-        x,
-        steps_per_epoch=5,
-        epochs=5,
+        AW_generated_data,
+        steps_per_epoch=STEPS_PER_EPOCH,
+        epochs=EPOCHS,
         #validation_split=(1/7), # 1/7th of the total (which divides
         # everything in 5:1:1 (train:val:test))
         #validation_data=validation_generator,
