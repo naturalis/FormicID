@@ -7,3 +7,6 @@ if __name__ == "__main__":
                         help='info on the argument')
 
     args = parser.parse_args()
+
+if __name__ == '__main__':
+    print('Keras version: {}'.format(keras.__version__))

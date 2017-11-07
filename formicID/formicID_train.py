@@ -44,14 +44,17 @@ AW_model = build_neural_network()
 AW_model_comp = compile_neural_network(AW_model, 'Nadam')
 # AW_model_comp.summary()
 
+# Generate data using the generator from the image directories.
 AW_generated_data = train_data_generator(train_data_dir)
 AW_generated_data_val = validation_data_generator(validation_data_dir)
-print(AW_generated_data.class_mode)  # shows the class mode
-print(AW_generated_data.class_indices) # shows dictionary of classes and indices
-print(AW_generated_data.classes)  # shows all classes per specimen
+
+# Print information about the generated test data.
+# print('Class mode is:', AW_generated_data.class_mode)  # shows the class mode
+# print(AW_generated_data.class_indices) # shows dict of classes and indices
+# print(AW_generated_data.classes)  # shows all classes per specimen
 
 NUM_SPECIES = len(AW_generated_data.class_indices) # the number of species
-
+print('Number of species found:', NUM_SPECIES, 'species.')
 
 def train_model(model):
     print('Training network...')
