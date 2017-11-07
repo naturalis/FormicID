@@ -21,9 +21,9 @@ NUM_SPECIES = 3  # Todo: implement NUM_SPECIES from _train.py file
 IMG_HEIGHT, IMG_WIDTH = 120, 148  # input for height and width
 
 if K.image_data_format() == 'channels_first':
-    input_shape = (3, IMG_WIDTH, IMG_HEIGHT)
+    input_shape = (3, IMG_HEIGHT, IMG_WIDTH)
 else:
-    input_shape = (IMG_WIDTH, IMG_HEIGHT, 3)
+    input_shape = (IMG_HEIGHT, IMG_WIDTH, 3)
 
 DROPOUT = 0.5
 
@@ -104,7 +104,7 @@ def build_neural_network():
     model.add(Dense(NUM_SPECIES))
     model.add(Activation('softmax'))  # or use svm?
 
-    print("Model was build succesfully")
+    print("Model was build succesfully.")
     return model
 
 
@@ -167,5 +167,5 @@ def compile_neural_network(model, optimizer):
     model.compile(loss='categorical_crossentropy',
                   optimizer=opt,
                   metrics=['accuracy', 'top_k_categorical_accuracy'])
-    print("Model was compiled succesfully")
+    print("Model was compiled succesfully.")
     return model

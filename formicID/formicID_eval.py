@@ -28,4 +28,4 @@ def model_evaluate(model):
     loss, accuracy = model.evaluate(X, Y)
     print("\nLoss: {:2f}, Accuracy: {:2f}".format(loss, accuracy*100))
 
-model_evalute(AW_model_trained)
+model_evaluate(AW_model_trained)
