@@ -7,8 +7,8 @@
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
 from __future__ import print_function
-from formicID.formicID_build import *
-from formicID.formicID_input import *
+# from formicID.formicID_build import *
+# from formicID.formicID_input import *
 from keras.callbacks import TensorBoard
 from datetime import datetime
 

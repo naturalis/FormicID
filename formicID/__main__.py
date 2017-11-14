@@ -14,7 +14,7 @@ def run():
     AW_network = neuralNetwork(NUM_SPECIES=3,
                                input_shape=(3,IMG_HEIGHT,IMG_WIDTH),
                                optimizer="Nadam")
- 
+
     AW_network.build_neural_network()
     AW_network.compile_neural_network()
 
