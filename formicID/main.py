@@ -1,12 +1,24 @@
-import argparse
+################################################################################
+#                                                                              #
+#                                  main.py                                     #
+#                          Main will run everything                            #
+#                                                                              #
+################################################################################
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='FormiciID - '
-    'Identification of ant images')
-    parser.add_argument('', type=str, nargs='+',
-                        help='info on the argument')
+from keras import __version__ as keras_version
 
-    args = parser.parse_args()
+def run():
+    """
+    Run everything
+    """
+    AW_network = neuralNetwork(NUM_SPECIES=3,
+                               input_shape=(3,IMG_HEIGHT,IMG_WIDTH),
+                               optimizer="Nadam")
+ 
+    AW_network.build_neural_network()
+    AW_network.compile_neural_network()
+
 
 if __name__ == '__main__':
-    print('Keras version: {}'.format(keras.__version__))
+    print('Keras version: {}'.format(keras_version))
+    run()

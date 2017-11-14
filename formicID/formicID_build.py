@@ -37,17 +37,16 @@ class neuralNetwork(object):
     Attributes:
         input_shape: a tuple of IMG_HEIGHT, IMG_WIDTH and 3 channels
     """
-    def __init__(self, NUM_SPECIES, input_shape, optimizer):
+    def __init__(self, model):
         """
         returns a neural network model. The input_shape needs to be specified
         """
-        self.NUM_SPECIES = NUM_SPECIES
-        self.input_shape = input_shape
-        self.optimizer = optimizers
+        self.model = model
 
-    def build_neural_network():
+    def build_neural_network(self, model, DROPOUT, input_shape, NUM_SPECIES):
         """
-
+        # Returns
+            A keras model
         """
         model = Sequential()
         model.add(Conv2D(32, (3, 3), padding='same', input_shape=input_shape))
@@ -72,7 +71,7 @@ class neuralNetwork(object):
         print("Model was build succesfully.")
         return model
 
-    def compile_neural_network(model, optimizer):
+    def compile_neural_network(self, model, optimizer):
         """
 
         """

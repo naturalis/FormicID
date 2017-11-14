@@ -40,13 +40,12 @@ def build_tensorboard(model):
 
 # Training
 # //////////////////////////////////////////////////////////////////////////////
-AW_model = build_neural_network()
-AW_model_comp = compile_neural_network(AW_model, 'Nadam')
-# AW_model_comp.summary()
 
-# Generate data using the generator from the image directories.
-AW_generated_data = train_data_generator(train_data_dir)
-AW_generated_data_val = validation_data_generator(validation_data_dir)
+
+
+#AW_model = build_neural_network()
+# AW_model_comp = compile_neural_network(AW_model, 'Nadam')
+# AW_model_comp.summary()
 
 # Print information about the generated test data.
 # print('Class mode is:', AW_generated_data.class_mode)  # shows the class mode
@@ -58,6 +57,11 @@ print('Number of species found:', NUM_SPECIES, 'species.')
 
 def train_model(model):
     print('Training network...')
+
+    # Generate data using the generator from the image directories.
+    AW_generated_data = train_data_generator(train_data_dir)
+    AW_generated_data_val = validation_data_generator(validation_data_dir)
+
     AW_model_fit = model.fit_generator(
         AW_generated_data,
         steps_per_epoch=STEPS_PER_EPOCH,
@@ -69,4 +73,4 @@ def train_model(model):
     return AW_model_fit
 
 
-AW_model_trained = train_model(AW_model_comp)
+#AW_model_trained = train_model(AW_model_comp)
