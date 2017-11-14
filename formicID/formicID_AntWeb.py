@@ -65,7 +65,8 @@ AW_data_json = get_json(AW_url)
 def json_filter(data):
     # filters for catalognumber, scientific_name and the images per shot_type
     data_processed = jmespath.search('specimens[].[catalogNumber,'
-                                     'scientific_name, images."1".shot_types]', data)
+                                     'scientific_name, images."1".shot_types]',
+                                      data)
     return data_processed
 
 
