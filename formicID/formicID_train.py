@@ -7,19 +7,18 @@
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
 from __future__ import print_function
-# from formicID.formicID_build import *
-# from formicID.formicID_input import *
 from keras.callbacks import TensorBoard
 from datetime import datetime
+from keras import backend as K
+
+from formicID.formicID_input import train_data_generator
+from formicID.formicID_input import validation_data_generator
 
 # To Do: store all images in different batches and loop over batches while training. This is better for the memory.
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
-train_data_dir = './data/train'
-validation_data_dir = './data/validation'
-EPOCHS = 5
-STEPS_PER_EPOCH = 5
+
 
 # Callbacks
 # //////////////////////////////////////////////////////////////////////////////
@@ -41,19 +40,13 @@ def build_tensorboard(model):
 # Training
 # //////////////////////////////////////////////////////////////////////////////
 
-
-
-#AW_model = build_neural_network()
-# AW_model_comp = compile_neural_network(AW_model, 'Nadam')
-# AW_model_comp.summary()
-
 # Print information about the generated test data.
 # print('Class mode is:', AW_generated_data.class_mode)  # shows the class mode
 # print(AW_generated_data.class_indices) # shows dict of classes and indices
 # print(AW_generated_data.classes)  # shows all classes per specimen
 
-NUM_SPECIES = len(AW_generated_data.class_indices) # the number of species
-print('Number of species found:', NUM_SPECIES, 'species.')
+#NUM_SPECIES = len(AW_generated_data.class_indices) # the number of species
+#print('Number of species found:', NUM_SPECIES, 'species.')
 
 def train_model(model):
     print('Training network...')
@@ -71,6 +64,3 @@ def train_model(model):
         callbacks=build_tensorboard(model)
     )
     return AW_model_fit
-
-
-#AW_model_trained = train_model(AW_model_comp)

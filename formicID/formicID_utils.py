@@ -13,6 +13,8 @@ def split_validation_set():
 def show_image():
     #show image
 
+def model_summary(model):
+    return model.summary()
 
 # Data augmentation
 # //////////////////////////////////////////////////////////////////////////////
