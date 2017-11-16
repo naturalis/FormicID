@@ -112,22 +112,23 @@ class create_database(object):
                                          'scientific_name, images."1".shot_types]',
                                          data)
 
-        # lst = []
-        # for row in data_filtered:
-        #     if row[2] != None:
-        #         # print(row)
-        #         catalogNumber = row[0]
-        #         name = row[1]
-        #         url = {}
-        #         url['h'] = row[2]['h']['img'][1]
-        #         url['p'] = row[2]['p']['img'][1]
-        #         url['d'] = row[2]['d']['img'][1]
-        #         for key in url:
-        #             new_row = [catalogNumber, name, key, url[key]]
-        #             lst.append(new_row)
+        lst = []
+        for row in data_filtered:
+            if row[2] != None:
+                # print(row)
+                catalogNumber = row[0]
+                name = row[1]
+                url = {}
+                url['h'] = row[2]['h']['img'][1]
+                url['p'] = row[2]['p']['img'][1]
+                url['d'] = row[2]['d']['img'][1]
+                for key in url:
+                    new_row = [catalogNumber, name, key, url[key]]
+                    lst.append(new_row)
 
-        return data_filtered
+        return lst
 
+# PROBLEM: NOT EVERY SPECIMEN HAS A HEAD, PROFILE AND DORSAL VIEW!!!
 db = create_database(formicinae_url)
 db = db.get_json()
 print(db)
