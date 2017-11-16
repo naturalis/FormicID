@@ -1,108 +1,157 @@
-################################################################################
-#                                                                              #
-#                                  ANTWEB API                                  #
-#                                                                              #
-################################################################################
+###############################################################################
+#                                                                             #
+#                                  ANTWEB API
+#                                                                             #
+###############################################################################
 
 # Packages
-# //////////////////////////////////////////////////////////////////////////////
+# /////////////////////////////////////////////////////////////////////////////
 from __future__ import print_function
 # allow use of print as a function. Needed when loading in Python 2.x
 import datetime
 import requests
 import json
 import jmespath
-# import ijson # need this?
-
+import pandas as pd
 # from PIL import Image
 # import urllib
 # import urllib.parse
 
 # AntWeb basic information
-# //////////////////////////////////////////////////////////////////////////////
-AW_base_url = 'http://www.antweb.org/api/v2/?'
+# /////////////////////////////////////////////////////////////////////////////
+class get_url(object):
+    """
+    Description
 
-offset = 0
-limit = 1000
-while true:
-    offset += limit
+    Attributes:
+        subfamily:
+        limit:
+        offset:
+    """
+    def __init__(self, subfamily, limit, offset):
+        """
+        # Returns
+            text
+        """
+        self.subfamily = subfamily,
+        self.limit = limit,
+        self.offset = offset
 
-    AW_arguments = {    # API arguments for in the url
-        'subfamily':    'formicinae',
-        'caste':        'worker',
-        #'img_type':     'h',
-        'limit':         limit,
-        #'country':      'netherlands',
-        'offset':       offset
-    }
-    # with 25 limit, specimen 8 and 25 have images
+    def create_url(self):
+        """
+        # Returns
+            text
+        """
+        base_url = 'http://www.antweb.org/api/v2/?'
 
-    # Creating the AntWeb url from the base url and the API arguments
-    AW_url = requests.get(url=AW_base_url, params=AW_arguments)
+        offset = self.offset
+        limit = self.limit
+        # while true:
+        #     offset += limit
+        arguments = {    # API arguments for in the url
+            'subfamily':    self.subfamily,
+            'caste':        'worker',
+            'limit':        self.limit,
+            'offset':       self.offset
+        }
+        # Creating the AntWeb url from the base url and the API arguments
+        url = requests.get(url=base_url, params=arguments)
 
+        return url
 
-def get_url_info(input_url):
-    # Get basic url information
-    print('URL:', input_url.url)
-    print('URL headers:', input_url.headers)
-    print('URL type:', type(input_url.content))
-    print('Connection status:', input_url.status_code)
-    if input_url.status_code == 200:
-        print('Request status: the request was fulfilled.')
-    else:
-        print('Request status: the request was not fulfilled.')
-    print('Time elapsed to connect to URL:', input_url.elapsed)
-
-
-# get_url_info(AW_url)
-
-
-# Getting JSON text format from the url and put that in a dictionary
-# //////////////////////////////////////////////////////////////////////////////
-def get_json(input_url):
-    # loads the json formatted text from the url
-    AW_data = json.loads(input_url.text)
-    return AW_data
-
-
-AW_data_json = get_json(AW_url)
-
-
-def json_filter(data):
-    # filters for catalognumber, scientific_name and the images per shot_type
-    data_processed = jmespath.search('specimens[].[catalogNumber,'
-                                     'scientific_name, images."1".shot_types]',
-                                      data)
-    return data_processed
-
-
-AW_name_and_image = json_filter(AW_data_json)
-
-# print(AW_name_and_image)
-
-lst = []
-for row in AW_name_and_image:
-    if row[2] != None:
-        # print(row)
-        catalogNumber = row[0]
-        name = row[1]
-        url = {}
-        url['h'] = row[2]['h']['img'][1]
-        url['p'] = row[2]['p']['img'][1]
-        url['d'] = row[2]['d']['img'][1]
-        for key in url:
-            new_row = [catalogNumber, name, key, url[key]]
-            lst.append(new_row)
-
-print(lst)
-
-df = pd.DataFrame(lst)
-df.columns = ['catalogNumber', 'name', 'type', 'url']
-print(df.head())
+    # def get_url_info(self, input_url):
+    #     """
+    #     # Returns
+    #         text
+    #     """
+    #     # Get basic url information
+    #     print('URL:', url.url) # does not work yet???
+    #     print('URL headers:', input_url.headers)
+    #     print('URL type:', type(input_url.content))
+    #     print('Connection status:', input_url.status_code)
+    #     if input_url.status_code == 200:
+    #         print('Request status: the request was fulfilled.')
+    #     else:
+    #         print('Request status: the request was not fulfilled.')
+    #     print('Time elapsed to connect to URL:', input_url.elapsed)
 
 
-df.to_csv('pandas.csv')
+formicinae_url = get_url("formicinae",limit=1000, offset=0)
+formicinae_url = formicinae_url.create_url()
+# print(formicinae_url)
 
-with open('rows.csv', 'a') as f:
-    for row in lst:
-        f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
+
+# Getting JSON text format and put that in a db
+# /////////////////////////////////////////////////////////////////////////////
+class create_database(object):
+    """
+    Description
+
+    Attributes:
+        subfamily:
+        limit:
+        offset:
+
+    """
+    def __init__(self, urllink):
+        """
+        # Returns
+            text
+        """
+        self.urllink = urllink
+
+    def get_json(self):
+        """
+        # Returns
+            text
+        """
+        # loads the json formatted text from the url
+        data = formicinae_url.json()
+
+        data_filtered = jmespath.search('specimens[].[catalogNumber,'
+                                         'scientific_name, images."1".shot_types]',
+                                         data)
+
+        # lst = []
+        # for row in data_filtered:
+        #     if row[2] != None:
+        #         # print(row)
+        #         catalogNumber = row[0]
+        #         name = row[1]
+        #         url = {}
+        #         url['h'] = row[2]['h']['img'][1]
+        #         url['p'] = row[2]['p']['img'][1]
+        #         url['d'] = row[2]['d']['img'][1]
+        #         for key in url:
+        #             new_row = [catalogNumber, name, key, url[key]]
+        #             lst.append(new_row)
+
+        return data_filtered
+
+db = create_database(formicinae_url)
+db = db.get_json()
+print(db)
+
+# print(lst)
+def create():
+    """
+    # Returns
+        text
+    """
+    df = pd.DataFrame(lst)
+    df.columns = ['catalogNumber', 'name', 'type', 'url']
+    print(df.head())
+
+
+    df.to_csv('pandas.csv')
+
+    with open('rows.csv', 'a') as f:
+        for row in lst:
+            f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
+
+
+
+formicinae_json = get_json(formicinae)
+print(formicinae_json)
+AW_name_and_image = json_filter(formicinae_json)
+print(AW_name_and_image)
