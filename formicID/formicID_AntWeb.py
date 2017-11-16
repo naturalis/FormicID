@@ -78,8 +78,31 @@ def json_filter(data):
 
 AW_name_and_image = json_filter(AW_data_json)
 
-print(AW_name_and_image)
+# print(AW_name_and_image)
 
-# to do: download images and put them in the folder strucutre mentioned in
-# FormicID_input
-# if range > 4 place in new lst ?
+lst = []
+for row in AW_name_and_image:
+    if row[2] != None:
+        # print(row)
+        catalogNumber = row[0]
+        name = row[1]
+        url = {}
+        url['h'] = row[2]['h']['img'][1]
+        url['p'] = row[2]['p']['img'][1]
+        url['d'] = row[2]['d']['img'][1]
+        for key in url:
+            new_row = [catalogNumber, name, key, url[key]]
+            lst.append(new_row)
+
+print(lst)
+
+df = pd.DataFrame(lst)
+df.columns = ['catalogNumber', 'name', 'type', 'url']
+print(df.head())
+
+
+df.to_csv('pandas.csv')
+
+with open('rows.csv', 'a') as f:
+    for row in lst:
+        f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
