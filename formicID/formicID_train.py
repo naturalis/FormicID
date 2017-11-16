@@ -48,19 +48,17 @@ def build_tensorboard(model):
 #NUM_SPECIES = len(AW_generated_data.class_indices) # the number of species
 #print('Number of species found:', NUM_SPECIES, 'species.')
 
-def train_model(model):
+def train_nn(model):
     print('Training network...')
 
     # Generate data using the generator from the image directories.
     AW_generated_data = train_data_generator(train_data_dir)
     AW_generated_data_val = validation_data_generator(validation_data_dir)
 
-    AW_model_fit = model.fit_generator(
-        AW_generated_data,
-        steps_per_epoch=STEPS_PER_EPOCH,
-        epochs=EPOCHS,
-        validation_data=AW_generated_data_val,
-        validation_steps=10,
-        callbacks=build_tensorboard(model)
-    )
+    AW_model_fit = model.fit_generator(AW_generated_data,
+                                       steps_per_epoch=STEPS_PER_EPOCH,
+                                       epochs=EPOCHS,
+                                       validation_data=AW_generated_data_val,
+                                       validation_steps=10,
+                                       callbacks=build_tensorboard(model))
     return AW_model_fit

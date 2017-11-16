@@ -9,7 +9,7 @@ from keras import __version__ as keras_version
 from keras import backend as K
 
 from formicID.formicID_build import neuralNetwork
-from formicID.formicID_train import build_tensorboard, train_model
+from formicID.formicID_train import build_tensorboard, train_nn
 from formicID.formicID_input import train_data_generator
 from formicID.formicID_input import validation_data_generator
 
@@ -43,8 +43,8 @@ def run():
                           num_species=num_species,
                           optimizer="Nadam")
     AW_nn = AW_nn.build_neural_network()
-    AW_model_trained = train_model(AW_nn)
-    return AW_model_trained
+    AW_nn_trained = train_nn(AW_nn)
+    return AW_nn_trained
 
 if __name__ == '__main__':
     print('Keras version: {}'.format(keras_version))

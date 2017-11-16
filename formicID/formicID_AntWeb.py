@@ -22,17 +22,23 @@ import jmespath
 # //////////////////////////////////////////////////////////////////////////////
 AW_base_url = 'http://www.antweb.org/api/v2/?'
 
-AW_arguments = {    # API arguments for in the url
-    'subfamily':    'formicinae',
-    'caste':        'worker',
-    #'img_type':     'h',
-    'limit':         25,
-    #'country':      'netherlands'
-}
-# with 25 limit, specimen 8 and 25 have images
+offset = 0
+limit = 1000
+while true:
+    offset += limit
 
-# Creating the AntWeb url from the base url and the API arguments
-AW_url = requests.get(url=AW_base_url, params=AW_arguments)
+    AW_arguments = {    # API arguments for in the url
+        'subfamily':    'formicinae',
+        'caste':        'worker',
+        #'img_type':     'h',
+        'limit':         limit,
+        #'country':      'netherlands',
+        'offset':       offset
+    }
+    # with 25 limit, specimen 8 and 25 have images
+
+    # Creating the AntWeb url from the base url and the API arguments
+    AW_url = requests.get(url=AW_base_url, params=AW_arguments)
 
 
 def get_url_info(input_url):
@@ -48,7 +54,7 @@ def get_url_info(input_url):
     print('Time elapsed to connect to URL:', input_url.elapsed)
 
 
-get_url_info(AW_url)
+# get_url_info(AW_url)
 
 
 # Getting JSON text format from the url and put that in a dictionary
