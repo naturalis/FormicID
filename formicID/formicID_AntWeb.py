@@ -19,6 +19,8 @@ import pandas as pd
 
 # AntWeb basic information
 # /////////////////////////////////////////////////////////////////////////////
+
+
 class get_url(object):
     """
     Description
@@ -28,6 +30,7 @@ class get_url(object):
         limit:
         offset:
     """
+
     def __init__(self, subfamily, limit, offset):
         """
         # Returns
@@ -88,6 +91,7 @@ class create_database(object):
         offset:
 
     """
+
     def __init__(self, urllink):
         """
         # Returns
@@ -104,8 +108,8 @@ class create_database(object):
         data = formicinae_url.json()
 
         data_filtered = jmespath.search('specimens[].[catalogNumber,'
-                                         'scientific_name, images."1".shot_types]',
-                                         data)
+                                        'scientific_name, images."1".shot_types]',
+                                        data)
 
         lst = []
         for row in data_filtered:
@@ -126,37 +130,29 @@ class create_database(object):
 
         return lst
 
-# PROBLEM: NOT EVERY SPECIMEN HAS A HEAD, PROFILE AND DORSAL VIEW!!!
 
-
-def create():
+def create(lst):
     """
     # Returns
         text
     """
     df = pd.DataFrame(lst)
     df.columns = ['catalogNumber', 'name', 'type', 'url']
-    print(df.head())
+    # print(df.head())
+    df.to_csv('formicID_db_h.csv')
+    # return df
 
-
-    df.to_csv('pandas.csv')
-
-    with open('rows.csv', 'a') as f:
-        for row in lst:
-            f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
+    # with open('formicID_db.csv', 'a') as f:
+    #     for row in lst:
+    #         f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
 
 
 # Executing
 # /////////////////////////////////////////////////////////////////////////////
-formicinae_url = get_url("formicinae",limit=1000, offset=0)
+formicinae_url = get_url("formicinae", limit=1000, offset=0)
 formicinae_url = formicinae_url.create_url()
 # print(formicinae_url)
-
 db = create_database(formicinae_url)
 db = db.get_json()
-print(db)
-
-formicinae_json = get_json(formicinae)
-print(formicinae_json)
-AW_name_and_image = json_filter(formicinae_json)
-print(AW_name_and_image)
+# print(db)
+create(db)
