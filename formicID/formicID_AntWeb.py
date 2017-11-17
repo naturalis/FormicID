@@ -76,12 +76,7 @@ class get_url(object):
     #     print('Time elapsed to connect to URL:', input_url.elapsed)
 
 
-formicinae_url = get_url("formicinae",limit=1000, offset=0)
-formicinae_url = formicinae_url.create_url()
-# print(formicinae_url)
-
-
-# Getting JSON text format and put that in a db
+# get JSON > database
 # /////////////////////////////////////////////////////////////////////////////
 class create_database(object):
     """
@@ -119,9 +114,12 @@ class create_database(object):
                 catalogNumber = row[0]
                 name = row[1]
                 url = {}
-                url['h'] = row[2]['h']['img'][1]
-                url['p'] = row[2]['p']['img'][1]
-                url['d'] = row[2]['d']['img'][1]
+                if 'h' in row[2]:
+                    url['h'] = row[2]['h']['img'][1]
+                if 'p' in row[2]:
+                    url['p'] = row[2]['p']['img'][1]
+                if 'd' in row[2]:
+                    url['d'] = row[2]['d']['img'][1]
                 for key in url:
                     new_row = [catalogNumber, name, key, url[key]]
                     lst.append(new_row)
@@ -129,11 +127,8 @@ class create_database(object):
         return lst
 
 # PROBLEM: NOT EVERY SPECIMEN HAS A HEAD, PROFILE AND DORSAL VIEW!!!
-db = create_database(formicinae_url)
-db = db.get_json()
-print(db)
 
-# print(lst)
+
 def create():
     """
     # Returns
@@ -151,6 +146,15 @@ def create():
             f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
 
 
+# Executing
+# /////////////////////////////////////////////////////////////////////////////
+formicinae_url = get_url("formicinae",limit=1000, offset=0)
+formicinae_url = formicinae_url.create_url()
+# print(formicinae_url)
+
+db = create_database(formicinae_url)
+db = db.get_json()
+print(db)
 
 formicinae_json = get_json(formicinae)
 print(formicinae_json)
