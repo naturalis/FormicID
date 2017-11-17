@@ -14,121 +14,85 @@ import json
 import jmespath
 import pandas as pd
 # from PIL import Image
-# import urllib
 # import urllib.parse
 
 # AntWeb basic information
 # /////////////////////////////////////////////////////////////////////////////
-
-
-class get_url(object):
+def create_url(limit, offset):
     """
-    Description
-
-    Attributes:
-        subfamily:
-        limit:
-        offset:
+    # Returns
+        text
     """
+    base_url = 'http://www.antweb.org/api/v2/?'
 
-    def __init__(self, subfamily, limit, offset):
-        """
-        # Returns
-            text
-        """
-        self.subfamily = subfamily,
-        self.limit = limit,
-        self.offset = offset
+    arguments = {    # API arguments for in the url
+        'caste':        'worker',
+        'limit':        limit,
+        'offset':       offset
+    }
+    # Creating the AntWeb url from the base url and the API arguments
+    url = requests.get(url=base_url, params=arguments)
 
-    def create_url(self):
-        """
-        # Returns
-            text
-        """
-        base_url = 'http://www.antweb.org/api/v2/?'
+    return url
 
-        offset = self.offset
-        limit = self.limit
-        # while true:
-        #     offset += limit
-        arguments = {    # API arguments for in the url
-            'subfamily':    self.subfamily,
-            'caste':        'worker',
-            'limit':        self.limit,
-            'offset':       self.offset
-        }
-        # Creating the AntWeb url from the base url and the API arguments
-        url = requests.get(url=base_url, params=arguments)
 
-        return url
-
-    # def get_url_info(self, input_url):
-    #     """
-    #     # Returns
-    #         text
-    #     """
-    #     # Get basic url information
-    #     print('URL:', url.url) # does not work yet???
-    #     print('URL headers:', input_url.headers)
-    #     print('URL type:', type(input_url.content))
-    #     print('Connection status:', input_url.status_code)
-    #     if input_url.status_code == 200:
-    #         print('Request status: the request was fulfilled.')
-    #     else:
-    #         print('Request status: the request was not fulfilled.')
-    #     print('Time elapsed to connect to URL:', input_url.elapsed)
-
+def get_url_info(input_url):
+    """
+    # Returns
+        text
+    """
+    # Get basic url information
+    print('URL:', input_url.url) # does not work yet???
+    print('URL headers:', input_url.headers)
+    print('URL type:', type(input_url.content))
+    print('Connection status:', input_url.status_code)
+    if input_url.status_code == 200:
+        print('Request status: the request was fulfilled.')
+    else:
+        print('Request status: the request was not fulfilled.')
+    print('Time elapsed to connect to URL:', input_url.elapsed)
 
 # get JSON > database
 # /////////////////////////////////////////////////////////////////////////////
-class create_database(object):
+def get_json(urllink):
     """
-    Description
-
-    Attributes:
-        subfamily:
-        limit:
-        offset:
-
+    # Returns
+        text
     """
+    # loads the json formatted text from the url
+    data = urllink.json()
+    if data = None:
+        print("JSON is empty!")
+    return data
 
-    def __init__(self, urllink):
-        """
-        # Returns
-            text
-        """
-        self.urllink = urllink
+def filter_json(json):
+    """
+    # Returns
+        text
+    """
+    data_filtered = jmespath.search('specimens[].[catalogNumber,'
+                                    'scientific_name, images."1".shot_types]',
+                                    json)
 
-    def get_json(self):
-        """
-        # Returns
-            text
-        """
-        # loads the json formatted text from the url
-        data = formicinae_url.json()
+    lst = []
+    for row in data_filtered:
+        if row[2] != None:
+            # print(row)
+            catalog_number = row[0]
+            scientific_name = row[1]
+            image_url = {}
+            if 'h' in row[2]:
+                image_url['h'] = row[2]['h']['img'][1]
+            if 'p' in row[2]:
+                image_url['p'] = row[2]['p']['img'][1]
+            if 'd' in row[2]:
+                image_url['d'] = row[2]['d']['img'][1]
+            for key in image_url:
+                new_row = [catalog_number, scientific_name, key, image_url[key]]
+                lst.append(new_row)
 
-        data_filtered = jmespath.search('specimens[].[catalogNumber,'
-                                        'scientific_name, images."1".shot_types]',
-                                        data)
+    return lst
 
-        lst = []
-        for row in data_filtered:
-            if row[2] != None:
-                # print(row)
-                catalog_number = row[0]
-                scientific_name = row[1]
-                image_url = {}
-                if 'h' in row[2]:
-                    image_url['h'] = row[2]['h']['img'][1]
-                if 'p' in row[2]:
-                    image_url['p'] = row[2]['p']['img'][1]
-                if 'd' in row[2]:
-                    image_url['d'] = row[2]['d']['img'][1]
-                for key in image_url:
-                    new_row = [catalog_number, scientific_name, key, image_url[key]]
-                    lst.append(new_row)
-
-        return lst
 
 
 def create(lst):
@@ -136,23 +100,50 @@ def create(lst):
     # Returns
         text
     """
+    columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
+    df = pd.DataFrame(columns=columns)
     df = pd.DataFrame(lst)
-    df.columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
+
+    return df
     # print(df.head())
-    df.to_csv('formicID_db_h.csv')
+    # df_def = pd.DataFrame(columns=columns)
+    # df_def.append(df)
+    # df_def.to_csv('formicID_db_h.csv')
     # return df
 
-    with open('formicID_db.csv', 'a') as f:
-        for row in lst:
-            f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
-
+    # with open('formicID_db.csv', 'a') a÷s f:
+    #     for row in lst:
+    #         f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
 
 # Executing
 # /////////////////////////////////////////////////////////////////////////////
-formicinae_url = get_url("formicinae", limit=1000, offset=0)
-formicinae_url = formicinae_url.create_url()
-# print(formicinae_url)
-db = create_database(formicinae_url)
-db = db.get_json()
-# print(db)
-create(db)
+offset_set = 0
+limit_set = 11515
+
+df2 = pd.DataFrame()
+# 621810 / 11515 = 54
+# 621810 / 9870 = 63
+
+while offset_set < 621810:
+    offset_set += limit_set
+    print("The dataset has {} specimens.".format(offset_set))
+    url = create_url(limit=limit_set, offset=offset_set)
+    json = get_json(url)
+    lst = filter_json(json)
+    df = create(lst)
+    df2 = df2.append(df)
+
+
+
+df2.columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
+df2.to_csv('formicID_db_h.csv')
+
+
+#
+# AW_url = create_url(limit=15500, offset=0)
+# # get_url_info(AW_url)
+# # print(AW_url)
+# AW_json = get_json(AW_url)
+# lst = filter_json(AW_json)
+# # print(lst)
+# df = create(AW_json)
