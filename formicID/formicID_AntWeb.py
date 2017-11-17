@@ -18,6 +18,8 @@ import pandas as pd
 
 # AntWeb basic information
 # /////////////////////////////////////////////////////////////////////////////
+
+
 def create_url(limit, offset):
     """
     # Returns
@@ -42,7 +44,7 @@ def get_url_info(input_url):
         text
     """
     # Get basic url information
-    print('URL:', input_url.url) # does not work yet???
+    print('URL:', input_url.url)  # does not work yet???
     print('URL headers:', input_url.headers)
     print('URL type:', type(input_url.content))
     print('Connection status:', input_url.status_code)
@@ -54,6 +56,8 @@ def get_url_info(input_url):
 
 # get JSON > database
 # /////////////////////////////////////////////////////////////////////////////
+
+
 def get_json(urllink):
     """
     # Returns
@@ -64,6 +68,7 @@ def get_json(urllink):
     if data = None:
         print("JSON is empty!")
     return data
+
 
 def filter_json(json):
     """
@@ -88,11 +93,11 @@ def filter_json(json):
             if 'd' in row[2]:
                 image_url['d'] = row[2]['d']['img'][1]
             for key in image_url:
-                new_row = [catalog_number, scientific_name, key, image_url[key]]
+                new_row = [catalog_number,
+                           scientific_name, key, image_url[key]]
                 lst.append(new_row)
 
     return lst
-
 
 
 def create(lst):
@@ -115,6 +120,7 @@ def create(lst):
     #     for row in lst:
     #         f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
 
+
 # Executing
 # /////////////////////////////////////////////////////////////////////////////
 offset_set = 0
@@ -132,8 +138,6 @@ while offset_set < 621810:
     lst = filter_json(json)
     df = create(lst)
     df2 = df2.append(df)
-
-
 
 df2.columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
 df2.to_csv('formicID_db_h.csv')
