@@ -115,17 +115,17 @@ class create_database(object):
         for row in data_filtered:
             if row[2] != None:
                 # print(row)
-                catalogNumber = row[0]
-                name = row[1]
-                url = {}
+                catalog_number = row[0]
+                scientific_name = row[1]
+                image_url = {}
                 if 'h' in row[2]:
-                    url['h'] = row[2]['h']['img'][1]
+                    image_url['h'] = row[2]['h']['img'][1]
                 if 'p' in row[2]:
-                    url['p'] = row[2]['p']['img'][1]
+                    image_url['p'] = row[2]['p']['img'][1]
                 if 'd' in row[2]:
-                    url['d'] = row[2]['d']['img'][1]
-                for key in url:
-                    new_row = [catalogNumber, name, key, url[key]]
+                    image_url['d'] = row[2]['d']['img'][1]
+                for key in image_url:
+                    new_row = [catalog_number, scientific_name, key, image_url[key]]
                     lst.append(new_row)
 
         return lst
@@ -137,14 +137,14 @@ def create(lst):
         text
     """
     df = pd.DataFrame(lst)
-    df.columns = ['catalogNumber', 'name', 'type', 'url']
+    df.columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
     # print(df.head())
     df.to_csv('formicID_db_h.csv')
     # return df
 
-    # with open('formicID_db.csv', 'a') as f:
-    #     for row in lst:
-    #         f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
+    with open('formicID_db.csv', 'a') as f:
+        for row in lst:
+            f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
 
 
 # Executing

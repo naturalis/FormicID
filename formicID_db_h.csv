@@ -1,4 +1,4 @@
-,catalogNumber,name,type,url
+,catalog_number,scientific_name,shot_type,image_url
 0,14d618c,lepisiota kgac-afr04,h,http://www.antweb.org/images/14d618c/14d618c_h_1_low.jpg
 1,14d618c,lepisiota kgac-afr04,p,http://www.antweb.org/images/14d618c/14d618c_p_1_low.jpg
 2,14d618c,lepisiota kgac-afr04,d,http://www.antweb.org/images/14d618c/14d618c_d_1_low.jpg
