@@ -1,6 +1,6 @@
 
 /graphs/
-
+*.csv
 /notes.txt
 
 # Gitignore template from Github
