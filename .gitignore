@@ -2,6 +2,7 @@
 /graphs/
 *.csv
 /notes.txt
+/data/scrape_test
 
 # Gitignore template from Github
 # https://github.com/github/gitignore/blob/master/Python.gitignore
