@@ -16,6 +16,7 @@ import time
 from functools import wraps
 from urllib.request import urlretrieve
 import csv
+import itertools
 
 # AntWeb basic information
 # /////////////////////////////////////////////////////////////////////////////
@@ -205,7 +206,7 @@ def download_to_csv(offset_set, limit_set):
 
 
 @profile
-def image_scrape(csvfile):
+def image_scrape(csvfile, start, end):
     """
     Input:
         input = path to the file.csv
@@ -216,13 +217,13 @@ def image_scrape(csvfile):
     """
     with open(csvfile) as images:
         images = csv.reader(images)
-        for image in images:
+        start = start
+        end = end
+        nb_images = end - start
+        for image in itertools.islice(images, start, end):
             if image[3] != 'image_url':
-                # print(image[3])
-                urlretrieve(url=image[3],
-                            filename='./data/scrape_test/{} {} {}.jpg'.format(
-                    image[1], image[0], image[2]))
-
+                urlretrieve(url=image[3], filename='./data/scrape_test/{} {} {}.jpg'.format(image[1], image[0], image[2]))
+        print('{} images were downloaded.'.format(nb_images))
     #
     # for row in df['image_url']:
     #     name = (df['scientific_name']+'_'+df['catalog_number']+'.jpg')
@@ -230,5 +231,5 @@ def image_scrape(csvfile):
 
 
 # download_to_csv(offset_set=0, limit_set=9000)
-image_scrape(csvfile='./data/formicID_db_h2.csv')
+image_scrape(csvfile='./data/formicID_db_h2.csv', start=0, end=128)
 print_prof_data()
