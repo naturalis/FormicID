@@ -14,12 +14,13 @@ import jmespath
 import pandas as pd
 import time
 from functools import wraps
-# from PIL import Image
 from urllib.request import urlretrieve
 import csv
 
 # AntWeb basic information
 # /////////////////////////////////////////////////////////////////////////////
+
+
 def create_url(limit, offset):
     """
     # Returns
@@ -56,6 +57,8 @@ def get_url_info(input_url):
 
 # get JSON > database
 # /////////////////////////////////////////////////////////////////////////////
+
+
 def get_json(urllink):
     """
     # loads the json formatted text from the url
@@ -69,6 +72,7 @@ def get_json(urllink):
     else:
         return data
 
+
 def max_specimens(json):
     """
     # Returns
@@ -76,6 +80,7 @@ def max_specimens(json):
     """
     nb_specimens = json["count"]
     return int(nb_specimens)
+
 
 def filter_json(json):
     """
@@ -127,12 +132,14 @@ def create(lst):
     #     for row in lst:
     #         f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
 
-# Time it function
+# Time-it function
 # /////////////////////////////////////////////////////////////////////////////
 # https://stackoverflow.com/questions/3620943/
 # measuring-elapsed-time-with-the-time-module
 
+
 PROF_DATA = {}
+
 
 def profile(fn):
     @wraps(fn)
@@ -152,17 +159,18 @@ def profile(fn):
 
     return with_profiling
 
+
 def print_prof_data():
     for fname, data in PROF_DATA.items():
         max_time = max(data[1])
         avg_time = sum(data[1]) / len(data[1])
-        print( "Function %s called %d times. " % (fname, data[0])),
+        print("Function %s called %d times. " % (fname, data[0])),
         print('Execution time max: %.3f, average: %.3f' % (max_time, avg_time))
+
 
 def clear_prof_data():
     global PROF_DATA
     PROF_DATA = {}
-
 
 
 # Executing
@@ -171,8 +179,8 @@ def clear_prof_data():
 def download_to_csv(offset_set, limit_set):
     offset = offset_set
     limit = limit_set
-        # 621810 / 11515 = 54
-        # 621810 / 9870 = 63
+    # 621810 / 11515 = 54
+    # 621810 / 9870 = 63
 
     df2 = pd.DataFrame()
 
@@ -191,12 +199,9 @@ def download_to_csv(offset_set, limit_set):
             df2 = df2.append(df)
             offset += limit
 
-    df2.columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
+    df2.columns = ['catalog_number',
+                   'scientific_name', 'shot_type', 'image_url']
     df2.to_csv('./data/formicID_db_h2.csv', index=False)
-
-
-# download_to_csv(offset_set=0, limit_set=9000)
-# print_prof_data()
 
 
 @profile
@@ -215,13 +220,15 @@ def image_scrape(csvfile):
             if image[3] != 'image_url':
                 # print(image[3])
                 urlretrieve(url=image[3],
-                filename='./data/scrape_test/{} {} {}.jpg'.format(
-                image[1],image[0], image[2]))
+                            filename='./data/scrape_test/{} {} {}.jpg'.format(
+                    image[1], image[0], image[2]))
 
     #
     # for row in df['image_url']:
     #     name = (df['scientific_name']+'_'+df['catalog_number']+'.jpg')
     #     urllib.request.urlretrieve(row, str(name))
 
+
+# download_to_csv(offset_set=0, limit_set=9000)
 image_scrape(csvfile='./data/formicID_db_h2.csv')
 print_prof_data()
