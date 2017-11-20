@@ -179,7 +179,7 @@ def download_to_csv(offset_set, limit_set):
     nb_specimens = max_specimens(get_json(create_url(limit=1, offset=1)))
 
     while offset < nb_specimens:
-        print("AntWeb is checked for {} specimens...".format(offset))
+        print("{} specimens have been checked.".format(offset))
         url = create_url(limit=limit, offset=offset)
         json = get_json(url)
         if 'empty_set' in json['specimens']:
@@ -192,12 +192,13 @@ def download_to_csv(offset_set, limit_set):
             offset += limit
 
     df2.columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
-    df2.to_csv('./data/formicID_db_h.csv', index=False)
+    df2.to_csv('./data/formicID_db_h2.csv', index=False)
 
 
-download_to_csv(offset_set=0, limit_set=11515)
-
+download_to_csv(offset_set=0, limit_set=9000)
 print_prof_data()
+
+
 
 #
 # AW_url = create_url(limit=10, offset=0)
@@ -208,3 +209,7 @@ print_prof_data()
 # lst = filter_json(AW_json)
 # print(lst)
 # df = create(AW_json)
+
+
+# replace spaces with underscore
+# name.replace(" ", "_")
