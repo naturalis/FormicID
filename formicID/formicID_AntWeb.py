@@ -13,13 +13,13 @@ import requests
 import json
 import jmespath
 import pandas as pd
+import time
+from functools import wraps
 # from PIL import Image
 # import urllib.parse
 
 # AntWeb basic information
 # /////////////////////////////////////////////////////////////////////////////
-
-
 def create_url(limit, offset):
     """
     # Returns
@@ -56,19 +56,26 @@ def get_url_info(input_url):
 
 # get JSON > database
 # /////////////////////////////////////////////////////////////////////////////
-
-
 def get_json(urllink):
+    """
+    # loads the json formatted text from the url
+
+    # Returns
+        text
+    """
+    data = urllink.json()
+    if data == None:
+        print("JSON is empty!")
+    else:
+        return data
+
+def max_specimens(json):
     """
     # Returns
         text
     """
-    # loads the json formatted text from the url
-    data = urllink.json()
-    if data = None:
-        print("JSON is empty!")
-    return data
-
+    nb_specimens = json["count"]
+    return int(nb_specimens)
 
 def filter_json(json):
     """
@@ -120,34 +127,84 @@ def create(lst):
     #     for row in lst:
     #         f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
 
+# Time it function
+# /////////////////////////////////////////////////////////////////////////////
+# https://stackoverflow.com/questions/3620943/
+# measuring-elapsed-time-with-the-time-module
+
+PROF_DATA = {}
+
+def profile(fn):
+    @wraps(fn)
+    def with_profiling(*args, **kwargs):
+        start_time = time.time()
+
+        ret = fn(*args, **kwargs)
+
+        elapsed_time = time.time() - start_time
+
+        if fn.__name__ not in PROF_DATA:
+            PROF_DATA[fn.__name__] = [0, []]
+        PROF_DATA[fn.__name__][0] += 1
+        PROF_DATA[fn.__name__][1].append(elapsed_time)
+
+        return ret
+
+    return with_profiling
+
+def print_prof_data():
+    for fname, data in PROF_DATA.items():
+        max_time = max(data[1])
+        avg_time = sum(data[1]) / len(data[1])
+        print( "Function %s called %d times. " % (fname, data[0])),
+        print('Execution time max: %.3f, average: %.3f' % (max_time, avg_time))
+
+def clear_prof_data():
+    global PROF_DATA
+    PROF_DATA = {}
+
+
 
 # Executing
 # /////////////////////////////////////////////////////////////////////////////
-offset_set = 0
-limit_set = 11515
+@profile
+def download_to_csv(offset_set, limit_set):
+    offset = offset_set
+    limit = limit_set
+        # 621810 / 11515 = 54
+        # 621810 / 9870 = 63
 
-df2 = pd.DataFrame()
-# 621810 / 11515 = 54
-# 621810 / 9870 = 63
+    df2 = pd.DataFrame()
 
-while offset_set < 621810:
-    offset_set += limit_set
-    print("The dataset has {} specimens.".format(offset_set))
-    url = create_url(limit=limit_set, offset=offset_set)
-    json = get_json(url)
-    lst = filter_json(json)
-    df = create(lst)
-    df2 = df2.append(df)
+    nb_specimens = max_specimens(get_json(create_url(limit=1, offset=1)))
 
-df2.columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
-df2.to_csv('formicID_db_h.csv')
+    while offset < nb_specimens:
+        print("AntWeb is checked for {} specimens...".format(offset))
+        url = create_url(limit=limit, offset=offset)
+        json = get_json(url)
+        if 'empty_set' in json['specimens']:
+            print("Every json batch is checked for images.")
+            break
+        else:
+            lst = filter_json(json)
+            df = create(lst)
+            df2 = df2.append(df)
+            offset += limit
 
+    df2.columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
+    df2.to_csv('./data/formicID_db_h.csv', index=False)
+
+
+download_to_csv(offset_set=0, limit_set=11515)
+
+print_prof_data()
 
 #
-# AW_url = create_url(limit=15500, offset=0)
+# AW_url = create_url(limit=10, offset=0)
 # # get_url_info(AW_url)
-# # print(AW_url)
+# print(AW_url)
 # AW_json = get_json(AW_url)
+# max_specimens(AW_json)
 # lst = filter_json(AW_json)
-# # print(lst)
+# print(lst)
 # df = create(AW_json)
