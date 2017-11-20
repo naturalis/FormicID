@@ -7,8 +7,7 @@
 # Packages
 # /////////////////////////////////////////////////////////////////////////////
 from __future__ import print_function
-# allow use of print as a function. Needed when loading in Python 2.x
-import datetime
+
 import requests
 import json
 import jmespath
@@ -16,7 +15,8 @@ import pandas as pd
 import time
 from functools import wraps
 # from PIL import Image
-# import urllib.parse
+from urllib.request import urlretrieve
+import csv
 
 # AntWeb basic information
 # /////////////////////////////////////////////////////////////////////////////
@@ -195,21 +195,33 @@ def download_to_csv(offset_set, limit_set):
     df2.to_csv('./data/formicID_db_h2.csv', index=False)
 
 
-download_to_csv(offset_set=0, limit_set=9000)
+# download_to_csv(offset_set=0, limit_set=9000)
+# print_prof_data()
+
+
+@profile
+def image_scrape(csvfile):
+    """
+    Input:
+        input = path to the file.csv
+
+    Description:
+        this function scrapes images of urls in the csv file made with
+        the download_to_csv function.
+    """
+    with open(csvfile) as images:
+        images = csv.reader(images)
+        for image in images:
+            if image[3] != 'image_url':
+                # print(image[3])
+                urlretrieve(url=image[3],
+                filename='./data/scrape_test/{} {} {}.jpg'.format(
+                image[1],image[0], image[2]))
+
+    #
+    # for row in df['image_url']:
+    #     name = (df['scientific_name']+'_'+df['catalog_number']+'.jpg')
+    #     urllib.request.urlretrieve(row, str(name))
+
+image_scrape(csvfile='./data/formicID_db_h2.csv')
 print_prof_data()
-
-
-
-#
-# AW_url = create_url(limit=10, offset=0)
-# # get_url_info(AW_url)
-# print(AW_url)
-# AW_json = get_json(AW_url)
-# max_specimens(AW_json)
-# lst = filter_json(AW_json)
-# print(lst)
-# df = create(AW_json)
-
-
-# replace spaces with underscore
-# name.replace(" ", "_")
