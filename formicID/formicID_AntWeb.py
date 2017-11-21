@@ -229,7 +229,8 @@ def image_scrape(csvfile, start, end):
     #     name = (df['scientific_name']+'_'+df['catalog_number']+'.jpg')
     #     urllib.request.urlretrieve(row, str(name))
 
-
-# download_to_csv(offset_set=0, limit_set=9000)
-image_scrape(csvfile='./data/formicID_db_h2.csv', start=0, end=128)
-print_prof_data()
+if __name__ == '__main__':
+    # download_to_csv(offset_set=0, limit_set=9000)
+    print('Downloading is starting...')
+    image_scrape(csvfile='./data/formicID_db_h.csv', start=0, end=10000)
+    print_prof_data()
