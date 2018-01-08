@@ -1,5 +1,4 @@
 # Bookmarks and rescources 
-## Table of Contents
 * [AntWeb](#antweb)
 * [Documentation](#documentation)
 * [Tutorials and Guides](#tutorials-and-guides)
