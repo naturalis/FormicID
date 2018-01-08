@@ -244,7 +244,7 @@ def image_scraper(csvfile, start, end):
         start = start
         end = end
         nb_images = end - start
-
+        folder = '../data/scrape_test2/'
         images = csv.reader(images)
         nb_lines = sum(1 for row in images)
 
@@ -254,10 +254,11 @@ def image_scraper(csvfile, start, end):
         for image in itertools.islice(images, start, end):
             # for i in trange(nb_lines, desc='Downloading all images'):
             # for j in trange(50, desc='Downloading a set of 50 images'):
+            filename = '{}_{}_{}.jpg'.format(image[1], image[0], image[2])
             if image[3] != 'image_url':
                 urlretrieve(
                     url = image[3],
-                    filename = '../data/scrape_test2/{}_{}_{}.jpg'.format(image[1], image[0], image[2]))
+                    filename = os.path.join(folder, filename))
 
         print('\n {} images were downloaded.'.format(nb_images))
 
@@ -265,7 +266,7 @@ def image_scraper(csvfile, start, end):
     # for row in df['image_url']:
     #     name = (df['scientific_name']+'_'+df['catalog_number']+'.jpg')
     #     urllib.request.urlretrieve(row, str(name))
-image_scraper(csvfile="../data/formicID_db_test.csv", start=0, end=400)
+image_scraper(csvfile="../data/formicID_db_test.csv", start=0, end=10000)
 
 #
 # if __name__ == '__main__':
