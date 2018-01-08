@@ -1,8 +1,6 @@
 # Bookmarks and rescources 
-
 ## AntWeb 
 * [AntWeb API documentation](https://www.antweb.org/api/v2/)
-
 ## Python
 ### Python tutorials
 * [CS50 Harvard Python lecture](https://www.youtube.com/watch?v=5aP9Bl9hcqI)
@@ -11,7 +9,6 @@
 * [Python tutorial: JSON.DUMP(S) & JSON.LOAD(S)](http://www.bogotobogo.com/python/python-json-dumps-loads-file-read-write.php)
 ### Courses
 * [Py.CheckIO - Python coding game](https://py.checkio.org/)
-
 ## Neural Networks
 ### Keras and Keras tutorials 
 * [Keras documentation](https://keras.io)
@@ -28,7 +25,6 @@
 * [Plot hidden layers in Keras](https://gist.github.com/hadim/9fedb72b54eb3bc453362274cd347a6a)
 * [A toy convolutional neural network for image classification with Keras](https://www.kernix.com/blog/a-toy-convolutional-neural-network-for-image-classification-with-keras_p14)
 * [How to Deploy Keras Models to Production - Siraj Raval](https://www.youtube.com/watch?v=f6Bf3gl4hWY)
-
 ### Neural Network guides and tutorials
 * [A Beginner's Guide To Understanding Convolutional Neural Networks](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/)
 * [Convolutional Neural Network CNN with TensorFlow tutorial](https://pythonprogramming.net/cnn-tensorflow-convolutional-nerual-network-machine-learning-tutorial/?completed=/convolutional-neural-network-cnn-machine-learning-tutorial/)
@@ -50,17 +46,14 @@
 * [850k Images in 24 hours: Automating Deep Learning Dataset Creation](https://gab41.lab41.org/850k-images-in-24-hours-automating-deep-learning-dataset-creation-60bdced04275)
 * [Ritchie Ng - Exploring notMNIST with TensorFlow](http://www.ritchieng.com/machine-learning/deep-learning/tensorflow/notmnist/)
 * [Best Practices when training with PPO](https://github.com/EmbersArc/PPO/blob/master/best-practices-ppo.md)
-
 ### Visualizing NN's
 * [Visualization - Using the UI to Tune Your Network](https://deeplearning4j.org/visualization#usingui)
 * [Visualizing Outputs of each layer of a CNN Model during Training Phase](http://www.ir.com/blog/visualizing-outputs-cnn-model-training-phase)
-
 ## Papers and books
 * https://medium.com/machine-learning-for-humans/why-machine-learning-matters-6164faf1df12
 * [Book on deep learning](http://neuralnetworksanddeeplearning.com/chap6.html)
 * [Neural Network Papers](https://github.com/robertsdionne/neural-network-papers\)
 * [Awesome Deep Learning papers](https://github.com/terryum/awesome-deep-learning-papers)
-
 ## Misc
 * [Deep learning – Convolutional neural networks and feature extraction with Python](http://blog.christianperone.com/2015/08/convolutional-neural-networks-and-feature-extraction-with-python/)
 * [MXnet Documentation](https://media.readthedocs.org/pdf/mxnet-test/latest/mxnet-test.pdf)
