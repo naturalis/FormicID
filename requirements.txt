@@ -7,11 +7,11 @@
 # formicID/formicID_train.py: 10,12
 Keras == 2.1.1
 
-# formicID/formicID_AntWeb.py: 14
+# formicID/formicID_AntWeb.py: 13
 jmespath == 0.9.3
 
-# formicID/formicID_AntWeb.py: 15
+# formicID/formicID_AntWeb.py: 14
 pandas == 0.21.0
 
-# formicID/formicID_AntWeb.py: 12
+# formicID/formicID_AntWeb.py: 11
 requests == 2.18.4
