@@ -11,6 +11,7 @@
 * [Use of __main__.py](https://gist.github.com/rochacbruno/ed19c5d9ba9bb50391a2)
 
 ### Courses
+* [Learn Python | CodeAcademy](https://www.codecademy.com/learn/learn-python)
 * [Py.CheckIO - Python coding game](https://py.checkio.org/)
 
 ## Neural Networks
