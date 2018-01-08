@@ -1,3 +1,4 @@
+# Bookmarks and rescources 
 ## Table of Contents
 * [AntWeb](#antweb)
 * [Documentation](#documentation)
@@ -5,13 +6,13 @@
 * [Python](#python)
 * [Misc](#misc)
 
-### AntWeb 
+## AntWeb 
 * [AntWeb API documentation](https://www.antweb.org/api/v2/)
 
-### Documentation
+## Documentation
 * [Keras documentation](https://keras.io)
 
-### Tutorials and guides
+## Tutorials and guides
 * [Building powerful image classification models using very little data](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html)
 * [A Beginner's Guide To Understanding Convolutional Neural Networks](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/)
 * [Convolutional Neural Network CNN with TensorFlow tutorial](https://pythonprogramming.net/cnn-tensorflow-convolutional-nerual-network-machine-learning-tutorial/?completed=/convolutional-neural-network-cnn-machine-learning-tutorial/)
@@ -24,10 +25,10 @@
 * [Stanford University CS231 - Youtube playlist](https://www.youtube.com/playlist?list=PL3FW7Lu3i5JvHM8ljYj-zLfQRF3EO8sYv)\
 * [Stanford University CS231 - Google Cloud tutorial](http://cs231n.github.io/gce-tutorial/)
 
-### Courses
+## Courses
 * [Py.CheckIO - Python coding game](https://py.checkio.org/)
 
-### Python
+## Python
 * [CS50 Harvard Python lecture](https://www.youtube.com/watch?v=5aP9Bl9hcqI)
 * [Python API tutorial - An Introduction to using APIs](https://www.dataquest.io/blog/python-api-tutorial/)
 
