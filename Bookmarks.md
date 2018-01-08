@@ -21,6 +21,7 @@
 * [Understanding CNN's](http://timdettmers.com/2015/03/26/convolution-deep-learning/)
 * [Hinton's Dropout in 3 Lines of Python](http://iamtrask.github.io/2015/07/28/dropout/)
 * [Convolutional Neural Networks - The Math of Intelligence (Week 4) - Sirarj Raval](https://www.youtube.com/watch?v=FTr3n7uBIuE)
+* [Code for "Convolutional Neural Networks - The Math of Intelligence (Week 4)" By Siraj Raval on Youtube](https://github.com/llSourcell/Convolutional_neural_network)
 * [Stanford University CS231 - Youtube playlist](https://www.youtube.com/playlist?list=PL3FW7Lu3i5JvHM8ljYj-zLfQRF3EO8sYv)\
 * [Stanford University CS231 - Google Cloud tutorial](http://cs231n.github.io/gce-tutorial/)
 
@@ -34,7 +35,7 @@
 ### Misc
 * [Deep learning – Convolutional neural networks and feature extraction with Python](http://blog.christianperone.com/2015/08/convolutional-neural-networks-and-feature-extraction-with-python/)
 * [MXnet Documentation](https://media.readthedocs.org/pdf/mxnet-test/latest/mxnet-test.pdf)
-* [Code for "Convolutional Neural Networks - The Math of Intelligence (Week 4)" By Siraj Raval on Youtube](https://github.com/llSourcell/Convolutional_neural_network)
+
 * [Book on deep learning](http://neuralnetworksanddeeplearning.com/chap6.html)
 * [data-science-ipython-notebooks/deep-learning/](https://github.com/donnemartin/data-science-ipython-notebooks/tree/master/deep-learning)
 
