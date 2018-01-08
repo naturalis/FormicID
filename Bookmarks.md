@@ -1,5 +1,9 @@
 ## Table of Contents
-[AntWeb](#AntWeb)
+* [AntWeb](#antweb)
+* [Documentation](#documentation)
+* [Tutorials and Guides](#tutorials-and-guides)
+* [Python](#python)
+* [Misc](#misc)
 
 ### AntWeb 
 * [AntWeb API documentation](https://www.antweb.org/api/v2/)
