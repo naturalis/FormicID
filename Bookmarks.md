@@ -58,7 +58,7 @@
 ## Papers and books
 * https://medium.com/machine-learning-for-humans/why-machine-learning-matters-6164faf1df12
 * [Book on deep learning](http://neuralnetworksanddeeplearning.com/chap6.html)
-* [Neural Network Papers](https://github.com/robertsdionne/neural-network-papers\)
+* [Neural Network Papers](https://github.com/robertsdionne/neural-network-papers)
 * [Awesome Deep Learning papers](https://github.com/terryum/awesome-deep-learning-papers)
 
 ### Misc
