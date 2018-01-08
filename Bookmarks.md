@@ -63,7 +63,7 @@
 * [Awesome - Most Cited Deep Learning Papers](https://github.com/terryum/awesome-deep-learning-papers)
 * [A curated list of awesome Deep Learning tutorials, projects and communities.](https://github.com/ChristosChristofidis/awesome-deep-learning)
 
-### Misc
+## Misc
 * [Deep learning – Convolutional neural networks and feature extraction with Python](http://blog.christianperone.com/2015/08/convolutional-neural-networks-and-feature-extraction-with-python/)
 * [MXnet Documentation](https://media.readthedocs.org/pdf/mxnet-test/latest/mxnet-test.pdf)
 * [Travis CI](https://travis-ci.org/)
