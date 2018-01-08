@@ -25,50 +25,50 @@
 * [Stanford University CS231 - Google Cloud tutorial](http://cs231n.github.io/gce-tutorial/)
 
 ### Courses
-* https://py.checkio.org/
+* [Py.CheckIO - Python coding game](https://py.checkio.org/)
 
 ### Python
 * [CS50 Harvard Python lecture](https://www.youtube.com/watch?v=5aP9Bl9hcqI)
-* https://www.dataquest.io/blog/python-api-tutorial/
+* [Python API tutorial - An Introduction to using APIs](https://www.dataquest.io/blog/python-api-tutorial/)
 
 ### Misc
 * (http://blog.christianperone.com/2015/08/convolutional-neural-networks-and-feature-extraction-with-python/)
 * (https://media.readthedocs.org/pdf/mxnet-test/latest/mxnet-test.pdf)
-https://github.com/llSourcell/Convolutional_neural_network
-* [Book on deep learning]](http://neuralnetworksanddeeplearning.com/chap6.html)
+* [Code for "Convolutional Neural Networks - The Math of Intelligence (Week 4)" By Siraj Raval on Youtube](https://github.com/llSourcell/Convolutional_neural_network)
+* [Book on deep learning](http://neuralnetworksanddeeplearning.com/chap6.html)
 * [data-science-ipython-notebooks/deep-learning/](https://github.com/donnemartin/data-science-ipython-notebooks/tree/master/deep-learning)
 
 
 ---
 ### To sort
-https://www.youtube.com/watch?v=bxe2T-V8XRs&list=PLiaHhY2iBX9hdHaRr6b7XevZtgZRa1PoU
-http://cs231n.github.io/
-http://www.bogotobogo.com/python/python-json-dumps-loads-file-read-write.php
-https://deeplearning4j.org/visualization#usingui
-https://lossfunctions.tumblr.com/
-https://www.kernix.com/blog/a-toy-convolutional-neural-network-for-image-classification-with-keras_p14
-http://yeephycho.github.io/2016/08/15/image-data-in-tensorflow/
-https://stackoverflow.com/questions/40466303/using-keras-how-can-i-input-an-x-train-of-images-more-than-a-thousand-images
-https://github.com/fchollet/keras/blob/master/keras/losses.py
-https://elitedatascience.com/keras-tutorial-deep-learning-in-python
-https://github.com/robertsdionne/neural-network-papers
-https://github.com/rstudio/keras
-https://gist.github.com/hadim/9fedb72b54eb3bc453362274cd347a6a
-https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/
-http://www.ir.com/blog/visualizing-outputs-cnn-model-training-phase
-http://playground.tensorflow.org/
-https://jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/
-https://github.com/deeplearning4j/DataVec
-https://gab41.lab41.org/850k-images-in-24-hours-automating-deep-learning-dataset-creation-60bdced04275
-http://www.ritchieng.com/machine-learning/deep-learning/tensorflow/notmnist/
-https://www.youtube.com/watch?v=f6Bf3gl4hWY
-https://travis-ci.org/
-https://programtalk.com/vs2/?source=python/12182/keras-fractalnet/src/cifar10_fractal.py
-https://machinelearningmastery.com/5-step-life-cycle-neural-network-models-keras/
-https://github.com/Damnever/pigar
-https://github.com/ZFTurbo/KAGGLE_DISTRACTED_DRIVER
-https://towardsdatascience.com/train-test-split-and-cross-validation-in-python-80b61beca4b6
-http://www.ritchieng.com/machine-learning-cross-validation/
-https://github.com/fchollet/keras/issues/4278
-https://www.codeproject.com/Articles/1216535/Deep-Learning
-https://medium.com/machine-learning-for-humans/why-machine-learning-matters-6164faf1df12
+* https://www.youtube.com/watch?v=bxe2T-V8XRs&list=PLiaHhY2iBX9hdHaRr6b7XevZtgZRa1PoU
+* http://cs231n.github.io/
+* http://www.bogotobogo.com/python/python-json-dumps-loads-file-read-write.php
+* https://deeplearning4j.org/visualization#usingui
+* https://lossfunctions.tumblr.com/
+* https://www.kernix.com/blog/a-toy-convolutional-neural-network-for-image-classification-with-keras_p14
+* http://yeephycho.github.io/2016/08/15/image-data-in-tensorflow/
+* https://stackoverflow.com/questions/40466303/using-keras-how-can-i-input-an-x-train-of-images-more-than-a-thousand-images
+* https://github.com/fchollet/keras/blob/master/keras/losses.py
+* https://elitedatascience.com/keras-tutorial-deep-learning-in-python
+* https://github.com/robertsdionne/neural-network-papers
+* https://github.com/rstudio/keras
+* https://gist.github.com/hadim/9fedb72b54eb3bc453362274cd347a6a
+* https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/
+* http://www.ir.com/blog/visualizing-outputs-cnn-model-training-phase
+* http://playground.tensorflow.org/
+* https://jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/
+* https://github.com/deeplearning4j/DataVec
+* https://gab41.lab41.org/850k-images-in-24-hours-automating-deep-learning-dataset-creation-60bdced04275
+* http://www.ritchieng.com/machine-learning/deep-learning/tensorflow/notmnist/
+* https://www.youtube.com/watch?v=f6Bf3gl4hWY
+* https://travis-ci.org/
+* https://programtalk.com/vs2/?source=python/12182/keras-fractalnet/src/cifar10_fractal.py
+* https://machinelearningmastery.com/5-step-life-cycle-neural-network-models-keras/
+* https://github.com/Damnever/pigar
+* https://github.com/ZFTurbo/KAGGLE_DISTRACTED_DRIVER
+* https://towardsdatascience.com/train-test-split-and-cross-validation-in-python-80b61beca4b6
+* http://www.ritchieng.com/machine-learning-cross-validation/
+* https://github.com/fchollet/keras/issues/4278
+* https://www.codeproject.com/Articles/1216535/Deep-Learning
+* https://medium.com/machine-learning-for-humans/why-machine-learning-matters-6164faf1df12
