@@ -32,8 +32,8 @@
 * [Python API tutorial - An Introduction to using APIs](https://www.dataquest.io/blog/python-api-tutorial/)
 
 ### Misc
-* (http://blog.christianperone.com/2015/08/convolutional-neural-networks-and-feature-extraction-with-python/)
-* (https://media.readthedocs.org/pdf/mxnet-test/latest/mxnet-test.pdf)
+* [Deep learning – Convolutional neural networks and feature extraction with Python](http://blog.christianperone.com/2015/08/convolutional-neural-networks-and-feature-extraction-with-python/)
+* [MXnet Documentation](https://media.readthedocs.org/pdf/mxnet-test/latest/mxnet-test.pdf)
 * [Code for "Convolutional Neural Networks - The Math of Intelligence (Week 4)" By Siraj Raval on Youtube](https://github.com/llSourcell/Convolutional_neural_network)
 * [Book on deep learning](http://neuralnetworksanddeeplearning.com/chap6.html)
 * [data-science-ipython-notebooks/deep-learning/](https://github.com/donnemartin/data-science-ipython-notebooks/tree/master/deep-learning)
