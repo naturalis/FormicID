@@ -60,6 +60,8 @@
 * [Book on deep learning](http://neuralnetworksanddeeplearning.com/chap6.html)
 * [Neural Network Papers](https://github.com/robertsdionne/neural-network-papers)
 * [Awesome Deep Learning papers](https://github.com/terryum/awesome-deep-learning-papers)
+* [Awesome - Most Cited Deep Learning Papers](https://github.com/terryum/awesome-deep-learning-papers)
+* [A curated list of awesome Deep Learning tutorials, projects and communities.](https://github.com/ChristosChristofidis/awesome-deep-learning)
 
 ### Misc
 * [Deep learning – Convolutional neural networks and feature extraction with Python](http://blog.christianperone.com/2015/08/convolutional-neural-networks-and-feature-extraction-with-python/)
