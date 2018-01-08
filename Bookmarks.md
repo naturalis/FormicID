@@ -1,3 +1,6 @@
+## Table of Contents
+[AntWeb](AntWeb)
+
 ## AntWeb 
 * [AntWeb API documentation](https://www.antweb.org/api/v2/)
 
@@ -5,13 +8,13 @@
 * [Keras documentation](https://keras.io)
 
 ## Tutorials and guides
-* [building-powerful-image-classification-models-using-very-little-data](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html)
-* [A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/)
-* [cnn-tensorflow-convolutional-nerual-network-machine-learning-tutorial](https://pythonprogramming.net/cnn-tensorflow-convolutional-nerual-network-machine-learning-tutorial/?completed=/convolutional-neural-network-cnn-machine-learning-tutorial/)
-* [LeNet tutorial] (http://deeplearning.net/tutorial/lenet.html)
+* [Building powerful image classification models using very little data](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html)
+* [A Beginner's -Guide To Understanding Convolutional Neural Networks](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/)
+* [CNN tensorflow convolutional nerual network machine learning tutorial](https://pythonprogramming.net/cnn-tensorflow-convolutional-nerual-network-machine-learning-tutorial/?completed=/convolutional-neural-network-cnn-machine-learning-tutorial/)
+* [LeNet tutorial](http://deeplearning.net/tutorial/lenet.html)
 
 ## Python
-* (https://www.youtube.com/watch?v=5aP9Bl9hcqI
+* [CS50 Harvard Python lecture](https://www.youtube.com/watch?v=5aP9Bl9hcqI)
 
 ## Misc
 * (http://blog.christianperone.com/2015/08/convolutional-neural-networks-and-feature-extraction-with-python/)
