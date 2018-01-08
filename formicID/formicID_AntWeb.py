@@ -17,6 +17,13 @@ from functools import wraps
 from urllib.request import urlretrieve
 import csv
 import itertools
+from tqdm import tqdm, trange
+import os
+
+# Parameters and settings
+# //////////////////////////////////////////////////////////////////////////////
+# print('current working directory', os.getcwd())
+
 
 # AntWeb basic information
 # /////////////////////////////////////////////////////////////////////////////
@@ -32,7 +39,8 @@ def create_url(limit, offset):
     arguments = {    # API arguments for in the url
         'caste':        'worker',
         'limit':        limit,
-        'offset':       offset
+        'offset':       offset,
+        'country':      'Netherlands'
     }
     # Creating the AntWeb url from the base url and the API arguments
     url = requests.get(url=base_url, params=arguments)
@@ -178,17 +186,28 @@ def clear_prof_data():
 # /////////////////////////////////////////////////////////////////////////////
 @profile
 def download_to_csv(offset_set, limit_set):
+    """
+    Input:
+        offset_set = set the offset for downloading AntWeb records in batches
+        limit_set = set a limit for downloading a set of records from AntWeb
+
+    Description:
+        this function downloads imaged only specimens with catalog number and
+        scientific names into an csv file
+    """
     offset = offset_set
     limit = limit_set
     # 621810 / 11515 = 54
     # 621810 / 9870 = 63
+    check = limit - offset
 
     df2 = pd.DataFrame()
 
+    # Obtain the max number of specimens
     nb_specimens = max_specimens(get_json(create_url(limit=1, offset=1)))
 
     while offset < nb_specimens:
-        print("{} specimens have been checked.".format(offset))
+        print("{} specimens have been checked.".format(check))
         url = create_url(limit=limit, offset=offset)
         json = get_json(url)
         if 'empty_set' in json['specimens']:
@@ -202,11 +221,17 @@ def download_to_csv(offset_set, limit_set):
 
     df2.columns = ['catalog_number',
                    'scientific_name', 'shot_type', 'image_url']
-    df2.to_csv('./data/formicID_db_h2.csv', index=False)
+
+    # replace spaces with underscores
+    df2.replace('\s+', '_', regex=True, inplace=True)
+
+    df2.to_csv('../data/formicID_db_test.csv', index=False)
+
+# download_to_csv(offset_set=0, limit_set=500)
 
 
 @profile
-def image_scrape(csvfile, start, end):
+def image_scraper(csvfile, start, end):
     """
     Input:
         input = path to the file.csv
@@ -216,21 +241,34 @@ def image_scrape(csvfile, start, end):
         the download_to_csv function.
     """
     with open(csvfile) as images:
-        images = csv.reader(images)
         start = start
         end = end
         nb_images = end - start
+
+        images = csv.reader(images)
+        nb_lines = sum(1 for row in images)
+
+
+        print("Starting scraping...")
+
         for image in itertools.islice(images, start, end):
+            # for i in trange(nb_lines, desc='Downloading all images'):
+            # for j in trange(50, desc='Downloading a set of 50 images'):
             if image[3] != 'image_url':
-                urlretrieve(url=image[3], filename='./data/scrape_test/{} {} {}.jpg'.format(image[1], image[0], image[2]))
-        print('{} images were downloaded.'.format(nb_images))
+                urlretrieve(
+                    url = image[3],
+                    filename = '../data/scrape_test2/{}_{}_{}.jpg'.format(image[1], image[0], image[2]))
+
+        print('\n {} images were downloaded.'.format(nb_images))
+
     #
     # for row in df['image_url']:
     #     name = (df['scientific_name']+'_'+df['catalog_number']+'.jpg')
     #     urllib.request.urlretrieve(row, str(name))
+image_scraper(csvfile="../data/formicID_db_test.csv", start=0, end=400)
 
-if __name__ == '__main__':
-    # download_to_csv(offset_set=0, limit_set=9000)
-    print('Downloading is starting...')
-    image_scrape(csvfile='./data/formicID_db_h.csv', start=0, end=10000)
-    print_prof_data()
+#
+# if __name__ == '__main__':
+#     print('Downloading is starting...')
+#     image_scrape(csvfile='./data/formicID_db_test.csv', start=0, end=400)
+#     print_prof_data()
