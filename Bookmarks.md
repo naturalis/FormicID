@@ -8,6 +8,7 @@
 * [Python API tutorial - An Introduction to using APIs](https://www.dataquest.io/blog/python-api-tutorial/)
 * [Open Sourcing a Python Project the Right Way](https://jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/)
 * [Python tutorial: JSON.DUMP(S) & JSON.LOAD(S)](http://www.bogotobogo.com/python/python-json-dumps-loads-file-read-write.php)
+* [Use of __main__.py](https://gist.github.com/rochacbruno/ed19c5d9ba9bb50391a2)
 
 ### Courses
 * [Py.CheckIO - Python coding game](https://py.checkio.org/)
@@ -28,6 +29,7 @@
 * [Plot hidden layers in Keras](https://gist.github.com/hadim/9fedb72b54eb3bc453362274cd347a6a)
 * [A toy convolutional neural network for image classification with Keras](https://www.kernix.com/blog/a-toy-convolutional-neural-network-for-image-classification-with-keras_p14)
 * [How to Deploy Keras Models to Production - Siraj Raval](https://www.youtube.com/watch?v=f6Bf3gl4hWY)
+* [Collection of Keras models used for classification](https://github.com/titu1994/Keras-Classification-Models)
 
 ### Neural Network guides and tutorials
 * [A Beginner's Guide To Understanding Convolutional Neural Networks](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/)
@@ -50,6 +52,7 @@
 * [850k Images in 24 hours: Automating Deep Learning Dataset Creation](https://gab41.lab41.org/850k-images-in-24-hours-automating-deep-learning-dataset-creation-60bdced04275)
 * [Ritchie Ng - Exploring notMNIST with TensorFlow](http://www.ritchieng.com/machine-learning/deep-learning/tensorflow/notmnist/)
 * [Best Practices when training with PPO](https://github.com/EmbersArc/PPO/blob/master/best-practices-ppo.md)
+* [How to Grid Search Hyperparameters for Deep Learning Models in Python With Keras](https://machinelearningmastery.com/grid-search-hyperparameters-deep-learning-models-python-keras/)
 
 ### Visualizing NN's
 * [Visualization - Using the UI to Tune Your Network](https://deeplearning4j.org/visualization#usingui)
