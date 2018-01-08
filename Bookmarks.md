@@ -1,22 +1,22 @@
 ## Table of Contents
-[AntWeb](AntWeb)
+[AntWeb](###AntWeb)
 
-## AntWeb 
+### AntWeb 
 * [AntWeb API documentation](https://www.antweb.org/api/v2/)
 
-## Documentation
+### Documentation
 * [Keras documentation](https://keras.io)
 
-## Tutorials and guides
+### Tutorials and guides
 * [Building powerful image classification models using very little data](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html)
 * [A Beginner's -Guide To Understanding Convolutional Neural Networks](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/)
 * [CNN tensorflow convolutional nerual network machine learning tutorial](https://pythonprogramming.net/cnn-tensorflow-convolutional-nerual-network-machine-learning-tutorial/?completed=/convolutional-neural-network-cnn-machine-learning-tutorial/)
 * [LeNet tutorial](http://deeplearning.net/tutorial/lenet.html)
 
-## Python
+### Python
 * [CS50 Harvard Python lecture](https://www.youtube.com/watch?v=5aP9Bl9hcqI)
 
-## Misc
+### Misc
 * (http://blog.christianperone.com/2015/08/convolutional-neural-networks-and-feature-extraction-with-python/)
 * (https://media.readthedocs.org/pdf/mxnet-test/latest/mxnet-test.pdf)
 
