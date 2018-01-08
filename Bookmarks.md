@@ -9,10 +9,13 @@
 * [Open Sourcing a Python Project the Right Way](https://jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/)
 * [Python tutorial: JSON.DUMP(S) & JSON.LOAD(S)](http://www.bogotobogo.com/python/python-json-dumps-loads-file-read-write.php)
 * [Use of __main__.py](https://gist.github.com/rochacbruno/ed19c5d9ba9bb50391a2)
+* [Read set of images into 4D Numpy array with dimension (num_img,channel, dim1, dim2](https://stackoverflow.com/questions/38287077/read-set-of-images-into-4d-numpy-array-with-dimension-num-img-channel-dim1-di)
+* [How to get list of values in ImageDataGenerator.flow_from_directory Keras?](https://stackoverflow.com/questions/44842097/how-to-get-list-of-values-in-imagedatagenerator-flow-from-directory-keras)
 
 ### Courses
 * [Learn Python | CodeAcademy](https://www.codecademy.com/learn/learn-python)
 * [Py.CheckIO - Python coding game](https://py.checkio.org/)
+* [Practice programming | Codefights](https://codefights.com/)
 
 ## Neural Networks
 ### Keras and Keras tutorials 
