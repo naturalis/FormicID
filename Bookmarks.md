@@ -15,10 +15,11 @@
 ## Neural Networks
 ### Keras and Keras tutorials 
 * [Keras documentation](https://keras.io)
-* https://github.com/rstudio/keras
-* https://github.com/fchollet/keras/issues/4278
-* https://machinelearningmastery.com/5-step-life-cycle-neural-network-models-keras/
-* https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/
+* [Keras resources](https://github.com/fchollet/keras-resources)
+* [R Interface to Keras](https://github.com/rstudio/keras)
+* [How to pass callbacks to scikit_learn wrappers (e.g. KerasClassifier)](https://github.com/fchollet/keras/issues/4278)
+* [5 Step Life-Cycle for Neural Network Models in Keras](https://machinelearningmastery.com/5-step-life-cycle-neural-network-models-keras/)
+* [Display Deep Learning Model Training History in Keras](https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/)
 * [Building powerful image classification models using very little data](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html)
 * [keras-fractalnet/src/cifar10_fractal.py](https://programtalk.com/vs2/?source=python/12182/keras-fractalnet/src/cifar10_fractal.py)
 * [Keras Tutorial: The Ultimate Beginner’s Guide to Deep Learning in Python](https://elitedatascience.com/keras-tutorial-deep-learning-in-python)
@@ -48,6 +49,7 @@
 * [Deep learning convolutional neural network by tensorflow python, complete and easy understanding.](https://www.codeproject.com/Articles/1216535/Deep-Learning)
 * [850k Images in 24 hours: Automating Deep Learning Dataset Creation](https://gab41.lab41.org/850k-images-in-24-hours-automating-deep-learning-dataset-creation-60bdced04275)
 * [Ritchie Ng - Exploring notMNIST with TensorFlow](http://www.ritchieng.com/machine-learning/deep-learning/tensorflow/notmnist/)
+* [Best Practices when training with PPO](https://github.com/EmbersArc/PPO/blob/master/best-practices-ppo.md)
 
 ### Visualizing NN's
 * [Visualization - Using the UI to Tune Your Network](https://deeplearning4j.org/visualization#usingui)
@@ -57,6 +59,7 @@
 * https://medium.com/machine-learning-for-humans/why-machine-learning-matters-6164faf1df12
 * [Book on deep learning](http://neuralnetworksanddeeplearning.com/chap6.html)
 * [Neural Network Papers](https://github.com/robertsdionne/neural-network-papers\)
+* [Awesome Deep Learning papers](https://github.com/terryum/awesome-deep-learning-papers)
 
 ## Misc
 * [Deep learning – Convolutional neural networks and feature extraction with Python](http://blog.christianperone.com/2015/08/convolutional-neural-networks-and-feature-extraction-with-python/)
@@ -68,7 +71,4 @@
 * [A fantastic tool to generate requirements file for your Python project, and more than that.](https://github.com/Damnever/pigar)
 * [KAGGLE_DISTRACTED_DRIVER](https://github.com/ZFTurbo/KAGGLE_DISTRACTED_DRIVER)
 * [Datavec - ETL Library for Machine Learning - data pipelines, data munging and wrangling](https://github.com/deeplearning4j/DataVec)
-
-
-
-
+* [Ranking Popular Deep Learning Libraries for Data Science](https://www.kdnuggets.com/2017/10/ranking-popular-deep-learning-libraries-data-science.html)
