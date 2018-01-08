@@ -1,21 +1,21 @@
 ## AntWeb 
-* https://www.antweb.org/api/v2/
+* [AntWeb API documentation](https://www.antweb.org/api/v2/)
 
 ## Documentation
 * [Keras documentation](https://keras.io)
 
 ## Tutorials and guides
-* https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
-* https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/
-* https://pythonprogramming.net/cnn-tensorflow-convolutional-nerual-network-machine-learning-tutorial/?completed=/convolutional-neural-network-cnn-machine-learning-tutorial/
-* http://deeplearning.net/tutorial/lenet.html
+* [building-powerful-image-classification-models-using-very-little-data](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html)
+* [A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/)
+* [cnn-tensorflow-convolutional-nerual-network-machine-learning-tutorial](https://pythonprogramming.net/cnn-tensorflow-convolutional-nerual-network-machine-learning-tutorial/?completed=/convolutional-neural-network-cnn-machine-learning-tutorial/)
+* [LeNet tutorial] (http://deeplearning.net/tutorial/lenet.html)
 
 ## Python
-* https://www.youtube.com/watch?v=5aP9Bl9hcqI
+* (https://www.youtube.com/watch?v=5aP9Bl9hcqI
 
 ## Misc
-* http://blog.christianperone.com/2015/08/convolutional-neural-networks-and-feature-extraction-with-python/
-* https://media.readthedocs.org/pdf/mxnet-test/latest/mxnet-test.pdf
+* (http://blog.christianperone.com/2015/08/convolutional-neural-networks-and-feature-extraction-with-python/)
+* (https://media.readthedocs.org/pdf/mxnet-test/latest/mxnet-test.pdf)
 
 
 https://ujjwalkarn.me/2016/08/11/intuitive-explanation-convnets/
