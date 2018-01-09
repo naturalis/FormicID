@@ -75,7 +75,7 @@ def image_scraper(csvfile, start, end, dir_name):
 if __name__ == '__main__':
     image_scraper(
         csvfile = os.path.join(os.path.dirname(__file__),
-        '../data/formicID_db_test.csv'),
+        '../data/formicID_db_AW.csv'),
         start = 0,
         end = 30976,
         dir_name = 'AW_images')
