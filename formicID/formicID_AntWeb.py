@@ -1,7 +1,7 @@
 ################################################################################
 #                                                                              #
 #                                  ANTWEB API                                  #
-#                                                                              #
+#                                 AntWeb 2 csv                                 #
 ################################################################################
 
 # Packages
@@ -16,10 +16,8 @@ import time
 import datetime
 import os
 import csv
-import itertools
 from functools import wraps
 from urllib.request import urlretrieve
-from tqdm import tqdm, trange
 
 
 # Parameters and settings
@@ -32,40 +30,40 @@ todaystr = datetime.date.today().isoformat()
 # https://stackoverflow.com/questions/3620943/
 # measuring-elapsed-time-with-the-time-module
 
-
-PROF_DATA = {}
-
-
-def profile(fn):
-    @wraps(fn)
-    def with_profiling(*args, **kwargs):
-        start_time = time.time()
-
-        ret = fn(*args, **kwargs)
-
-        elapsed_time = time.time() - start_time
-
-        if fn.__name__ not in PROF_DATA:
-            PROF_DATA[fn.__name__] = [0, []]
-        PROF_DATA[fn.__name__][0] += 1
-        PROF_DATA[fn.__name__][1].append(elapsed_time)
-
-        return ret
-
-    return with_profiling
-
-
-def print_prof_data():
-    for fname, data in PROF_DATA.items():
-        max_time = max(data[1])
-        avg_time = sum(data[1]) / len(data[1])
-        print("Function %s called %d times. " % (fname, data[0])),
-        print('Execution time max: %.3f, average: %.3f' % (max_time, avg_time))
-
-
-def clear_prof_data():
-    global PROF_DATA
-    PROF_DATA = {}
+#
+# PROF_DATA = {}
+#
+#
+# def profile(fn):
+#     @wraps(fn)
+#     def with_profiling(*args, **kwargs):
+#         start_time = time.time()
+#
+#         ret = fn(*args, **kwargs)
+#
+#         elapsed_time = time.time() - start_time
+#
+#         if fn.__name__ not in PROF_DATA:
+#             PROF_DATA[fn.__name__] = [0, []]
+#         PROF_DATA[fn.__name__][0] += 1
+#         PROF_DATA[fn.__name__][1].append(elapsed_time)
+#
+#         return ret
+#
+#     return with_profiling
+#
+#
+# def print_prof_data():
+#     for fname, data in PROF_DATA.items():
+#         max_time = max(data[1])
+#         avg_time = sum(data[1]) / len(data[1])
+#         print("Function %s called %d times. " % (fname, data[0])),
+#         print('Execution time max: %.3f, average: %.3f' % (max_time, avg_time))
+#
+#
+# def clear_prof_data():
+#     global PROF_DATA
+#     PROF_DATA = {}
 
 
 # AntWeb basic information
@@ -186,6 +184,8 @@ def create(lst):
 
 # Executing
 # //////////////////////////////////////////////////////////////////////////////
+
+
 @profile
 def download_to_csv(offset_set, limit_set):
     """
@@ -211,18 +211,18 @@ def download_to_csv(offset_set, limit_set):
     df2 = pd.DataFrame()
 
     # Obtain the max number of specimens
-    nb_specimens = max_specimens(get_json(create_url(limit = 1, offset = 1)))
+    nb_specimens = max_specimens(get_json(create_url(limit=1, offset=1)))
     nb_batch = 1
     total_batches = limit
     while offset < nb_specimens:
         print('Batch {} of {}: {} specimens have been checked '
-        'for a total of {}'.format(
-        nb_batch, nb_specimens//limit, check, total_batches))
+              'for a total of {}'.format(
+                  nb_batch, nb_specimens // limit, check, total_batches))
 
-        nb_batch +=1
+        nb_batch += 1
         total_batches += limit
 
-        url = create_url(limit = limit, offset = offset)
+        url = create_url(limit=limit, offset=offset)
         json = get_json(url)
         if 'empty_set' in json['specimens']:
             print("Every json batch is checked for images.")
@@ -234,73 +234,17 @@ def download_to_csv(offset_set, limit_set):
             offset += limit
 
     # replace spaces between genus and species names with underscores
-    df2.replace('\s+', '_', regex = True, inplace = True)
+    df2.replace('\s+', '_', regex=True, inplace=True)
     df2.columns = [
         'catalog_number',
         'scientific_name',
         'shot_type',
         'image_url'
-        ]
+    ]
     # file_path = os.path.join(path, file_name)
 
-    df2.to_csv(os.path.join(path, file_name), index = False, header = True)
-
-@profile
-def image_scraper(csvfile, start, end, dir_name):
-    """
-    Input:
-        csvfile = set the csv file to use
-        start = set the starting row for downloading
-        end = set the end row for downloading
-        dir_name = a string of text to name the output folder, with the current
-            date as prefix
-
-    Description:
-        this function scrapes images of urls found in the csv file that is made
-        with the download_to_csv function.
-    """
-    nb_start, nb_end = start, end
-    nb_images = nb_end - nb_start
-
-    dir_name = todaystr + '_' + dir_name
-
-    if not os.path.exists(os.path.join('../data/', dir_name)):
-        os.mkdir(os.path.join('../data/', dir_name))
-
-    with open(csvfile, 'rt') as images:
-        imagereader = csv.reader(
-            itertools.islice(images, nb_start, nb_end + 1))
-        # nb_lines = sum(1 for row in imagereader)
-
-        print("Starting scraping...")
-        for image in tqdm(imagereader, desc = 'Scraping images...', total =
-        nb_images):
-            # for i in trange(nb_lines, desc='Downloading all images'):
-            # for j in trange(50, desc='Downloading a set of 50 images'):
-
-            if image[3] != 'image_url': # Don't scrape the header line
-                filename = os.path.join('../data/', dir_name,
-                '{}_{}_{}.jpg'.format(image[2], image[1], image[0]))
-                urlretrieve(url = image[3], filename = filename)
-
-        print('{} images were downloaded.'.format(nb_images))
-
-    # for row in df['image_url']:
-    #     name = (df['scientific_name']+'_'+df['catalog_number']+'.jpg')
-    #     urllib.request.urlretrieve(row, str(name))
-
-# Call scraper
-# //////////////////////////////////////////////////////////////////////////////
-
+    df2.to_csv(os.path.join(path, file_name), index=False, header=True)
 
 if __name__ == '__main__':
     download_to_csv(offset_set = 0, limit_set = 9859)
-
-    # image_scraper(
-    #     csvfile = os.path.join(os.path.dirname(__file__),
-    #     '../data/formicID_db_test.csv'),
-    #     start = 0,
-    #     end = 369,
-    #     dir_name = 'scrape_netherlands')
-
-    # print_prof_data()
+    # @profile
