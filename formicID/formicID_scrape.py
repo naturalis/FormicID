@@ -78,4 +78,4 @@ if __name__ == '__main__':
         '../data/formicID_db_test.csv'),
         start = 0,
         end = 30976,
-        dir_name = 'scrape_netherlands')
+        dir_name = 'AW_images')
