@@ -24,6 +24,7 @@ from tqdm import tqdm, trange
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
+todaystr = datetime.date.today().isoformat()
 
 
 # Time-it function
@@ -82,7 +83,7 @@ def create_url(limit, offset):
         'caste':        'worker',
         'limit':        limit,
         'offset':       offset,
-        'country':      'Netherlands'
+        # 'country':      'Netherlands'
     }
     # Creating the AntWeb url from the base url and the API arguments
     url = requests.get(url=base_url, params=arguments)
@@ -198,18 +199,27 @@ def download_to_csv(offset_set, limit_set):
     """
     offset = offset_set
     limit = limit_set
-    # 621810 / 11515 = 54
-    # 621810 / 9870 = 63
+    # limit / offset = number of batches to download
+    # 630976 / 9859 = 64
     check = limit - offset
+
+    file_name = todaystr + '_formicID_db_AW.csv'
+    path = '../data/'
+    if not os.path.exists(path):
+        os.mkdir(path)
 
     df2 = pd.DataFrame()
 
     # Obtain the max number of specimens
-    nb_specimens = max_specimens(get_json(create_url(limit=1, offset=1)))
-
+    nb_specimens = max_specimens(get_json(create_url(limit = 1, offset = 1)))
+    nb_batch = 1
+    total_batches = 0
     while offset < nb_specimens:
-        print("{} specimens have been checked.".format(check))
-        url = create_url(limit=limit, offset=offset)
+        print("Batch {} of {}: {} specimens have been checked for a total of
+        {}".format(nb_batch, nb_specimens//limit, check, total_batches))
+        nb_batch +=1
+        total_batches += limit
+        url = create_url(limit = limit, offset = offset)
         json = get_json(url)
         if 'empty_set' in json['specimens']:
             print("Every json batch is checked for images.")
@@ -220,13 +230,17 @@ def download_to_csv(offset_set, limit_set):
             df2 = df2.append(df)
             offset += limit
 
-    df2.columns = ['catalog_number',
-                   'scientific_name', 'shot_type', 'image_url']
+    # replace spaces between genus and species names with underscores
+    df2.replace('\s+', '_', regex = True, inplace = True)
+    df2.columns = [
+        'catalog_number',
+        'scientific_name',
+        'shot_type',
+        'image_url'
+        ]
+    # file_path = os.path.join(path, file_name)
 
-    # replace spaces with underscores
-    df2.replace('\s+', '_', regex=True, inplace=True)
-
-    df2.to_csv('/data/formicID_db.csv', index=False)
+    df2.to_csv(os.path.join(path, file_name), index = False, header = True)
 
 @profile
 def image_scraper(csvfile, start, end, dir_name):
@@ -245,7 +259,6 @@ def image_scraper(csvfile, start, end, dir_name):
     nb_start, nb_end = start, end
     nb_images = nb_end - nb_start
 
-    todaystr = datetime.date.today().isoformat()
     dir_name = todaystr + '_' + dir_name
 
     if not os.path.exists(os.path.join('../data/', dir_name)):
@@ -257,11 +270,12 @@ def image_scraper(csvfile, start, end, dir_name):
         # nb_lines = sum(1 for row in imagereader)
 
         print("Starting scraping...")
-        for image in tqdm(imagereader, desc='Scraping images...', total = nb_images):
+        for image in tqdm(imagereader, desc = 'Scraping images...', total =
+        nb_images):
             # for i in trange(nb_lines, desc='Downloading all images'):
             # for j in trange(50, desc='Downloading a set of 50 images'):
 
-            if image[3] != 'image_url':
+            if image[3] != 'image_url': # Don't scrape the header line
                 filename = os.path.join('../data/', dir_name,
                 '{}_{}_{}.jpg'.format(image[2], image[1], image[0]))
                 urlretrieve(url = image[3], filename = filename)
@@ -277,7 +291,7 @@ def image_scraper(csvfile, start, end, dir_name):
 
 
 if __name__ == '__main__':
-    download_to_csv(offset_set=0, limit_set=9870)
+    download_to_csv(offset_set = 0, limit_set = 9859)
 
     # image_scraper(
     #     csvfile = os.path.join(os.path.dirname(__file__),
