@@ -213,12 +213,15 @@ def download_to_csv(offset_set, limit_set):
     # Obtain the max number of specimens
     nb_specimens = max_specimens(get_json(create_url(limit = 1, offset = 1)))
     nb_batch = 1
-    total_batches = 0
+    total_batches = limit
     while offset < nb_specimens:
-        print("Batch {} of {}: {} specimens have been checked for a total of
-        {}".format(nb_batch, nb_specimens//limit, check, total_batches))
+        print('Batch {} of {}: {} specimens have been checked '
+        'for a total of {}'.format(
+        nb_batch, nb_specimens//limit, check, total_batches))
+
         nb_batch +=1
         total_batches += limit
+
         url = create_url(limit = limit, offset = offset)
         json = get_json(url)
         if 'empty_set' in json['specimens']:
