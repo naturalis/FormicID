@@ -1,0 +1,80 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[fleqn,10pt]{MJA-Classfile} % Document font size and equations flushed left
+\usepackage[english]{babel} % Specify a different language here - english by default
+\usepackage{breakcites} %Break cites in a better way
+\usepackage{flushend} % balances the end of the document
+
+%----------------------------------------------------------------------------------------
+%	COLUMNS + COLORS + HYPERLINKS
+%----------------------------------------------------------------------------------------
+
+\setlength{\columnsep}{0.55cm} % Distance between the two columns of text
+\setlength{\fboxrule}{0.75pt} % Width of the border around the abstract
+
+\definecolor{color1}{RGB}{0.13, 0.67, 0.8} % Color of the article title and sections
+\definecolor{color2}{rgb}{0.13, 0.67, 0.8} % Color of the boxes behind the abstract and headings
+
+\usepackage{hyperref} % Required for hyperlinks
+\hypersetup{hidelinks,colorlinks,breaklinks=true,urlcolor=teal,citecolor=color1,linkcolor=color1,bookmarksopen=false,pdftitle={Title},pdfauthor={Author}}
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE INFORMATION
+%----------------------------------------------------------------------------------------
+\PaperTitle{Classification of Ant (Formicidae) Images using deep learning} % Article title
+
+\Authors{Marijn J. A. Boer \textsuperscript{1,2,*}} % Author
+
+\affiliation{\textit{\textbf{1} Rutger Vos Lab, Endless Forms, Naturalis Biodiversity Center, Leiden, Pesthuislaan 7, 2333 BA, Leiden, Netherlands
+\linebreak \textbf{2} Masterstudent Biology; Evolution, Conservation and Biodiversity, Institute of Biology Leiden, Sylviusweg 72, 2333 BE, Leiden, Netherlands}} % Author affiliation
+
+\affiliation{\textbf{\textbf{*} Corresponding author}: \href{mailto:marijn.boer@naturalis.nl}{marijn.boer@naturalis.nl}} % Corresponding author
+
+\Keywords{Keyword1 --- Keyword2 --- Keyword3} % Keywords
+\newcommand{\keywordname}{Keywords} % Defines the keywords heading name
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT + TITLE + TOC
+%----------------------------------------------------------------------------------------
+
+\Abstract{\input{Content/Abstract}}
+\begin{document}
+\flushbottom % Makes all text pages the same height
+\maketitle % Print the title and abstract box
+\tableofcontents % Print the contents section
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+
+\section{General Background} % The \section*{} command stops section numbering
+\input{Content/general_background}
+
+\section{Specific Background}
+\input{Content/specific_background}
+
+\section{Proposed Approach \& Methods}
+\input{Content/approach_methods}
+
+%----------------------------------------------------------------------------------------
+%	ACKNOWLEDGEMENTS
+%----------------------------------------------------------------------------------------
+
+\phantomsection
+\section*{Acknowledgments} % The \section*{} command stops section numbering
+\addcontentsline{toc}{section}{Acknowledgments} % Adds this section to the table of contents
+\input{Content/Acknowledgments}
+
+%----------------------------------------------------------------------------------------
+%	REFERENCE LIST
+%----------------------------------------------------------------------------------------
+
+\phantomsection % fixes references to be clickable
+\bibliographystyle{apalike}
+\bibliography{Content/Ref}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

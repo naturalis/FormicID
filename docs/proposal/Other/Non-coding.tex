@@ -1,0 +1,66 @@
+%----------------------------------------------------------------------------------------
+% Codes that can be used in the template file
+%----------------------------------------------------------------------------------------
+
+\JournalInfo{Journal, Vol. XXI, No. 1, 1-5, 2013} % Journal information (see .cls to active)
+\Archive{Additional note} % Additional notes (e.g. copyright, DOI, review/research article) (see .cls to active)
+
+% Adds this section to the table of contents
+\addcontentsline{toc}{section}{Introduction}
+
+% Removes page numbering from the first page
+\thispagestyle{empty} 
+
+\Authors{Marijn J A Boer\textsuperscript{1}*, James Smith\textsuperscript{2}} % 2 Authors
+
+% Author 2 affiliation
+\affiliation{\textsuperscript{2}\textit{Department of Chemistry, University of Examples, London, United Kingdom}} 
+
+
+%----------------------------------------------------------------------------------------
+\Authors{Marijn J A Boer\textsuperscript{1}*}
+
+\affiliation{\textsuperscript{1}\textit{Masterstudent Biology; Evolution, Conservation and Biodiversity, Institute of Biology Leiden, Sylviusweg 72, 2333 BE, Leiden, Netherlands}} % Author affiliation
+
+\affiliation{*\textbf{Corresponding author}: \href{mailto:m.j.a.boer@leidenuniv.nl}{m.j.a.boer@leidenuniv.nl}} % Corresponding author
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+% Figures
+%----------------------------------------------------------------------------------------
+
+\begin{figure}[ht]\centering
+% Using \begin{figure*} makes the figure take up the entire width of the page
+%\begin{figure*}[ht]\centering 
+\includegraphics[width=\linewidth]{NAMEOFFIGUREFILEWITHOUTEXTENSION}
+\caption{In-text Picture}
+\label{fig:CAPTION}
+\end{figure}
+
+%Reference to Figure 
+\ref{fig:results}.
+
+%----------------------------------------------------------------------------------------
+% Appendix
+%----------------------------------------------------------------------------------------
+
+\appendix
+\include{Map/file}
+\include{Map/file}
+\include{Map/file}
+
+%----------------------------------------------------------------------------------------
+% Nomenclature
+%----------------------------------------------------------------------------------------
+
+\mbox{} 
+\nomenclature{$c$}{Speed of light in a vacuum inertial frame}
+\nomenclature{$h$}{Planck constant}
+\printnomenclature
+
+%----------------------------------------------------------------------------------------
+% .CLS file
+%----------------------------------------------------------------------------------------
+
+\RequirePackage{times}      % Loads the Times-Roman Fonts
+\RequirePackage{mathptmx}   % Loads the Times-Roman Math Fonts
