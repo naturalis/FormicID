@@ -1,4 +1,21 @@
 # Bookmarks and rescources 
+
+* [Antweb](AntWeb) 
+* [Python](Python)
+  * [Learning Python and project managing](Learning-Python-and-project-managing)
+  * [Courses](Courses)
+* [Neural Networks](Neural-Networks)
+  * [Keras](Keras)
+    * [Keras and Keras tutorials](Keras-and-Keras-tutorials)
+    * [Visuazizing Keras](Visuazizing-Keras)
+    * [Optimizing Keras](Optimizing-Keras)
+  * [Neural Network guides and tutorials](Neural-Network-guides-and-tutorials)
+  * [Optimization](Optimization)
+  * [Visualizing NN's](Visualizing-NNs)
+* [Dataset creation](Dataset-creation)
+* [Papers and books](Papers-and-books)
+* [Misc](Misc)
+
 ## AntWeb 
 * [AntWeb](https://antweb.org/)
 * [AntWeb API documentation](https://www.antweb.org/api/v2/)
@@ -10,7 +27,7 @@
 * [Python API tutorial - An Introduction to using APIs](https://www.dataquest.io/blog/python-api-tutorial/)
 * [Open Sourcing a Python Project the Right Way](https://jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/)
 * [Python tutorial: JSON.DUMP(S) & JSON.LOAD(S)](http://www.bogotobogo.com/python/python-json-dumps-loads-file-read-write.php)
-* [Use of __main__.py](https://gist.github.com/rochacbruno/ed19c5d9ba9bb50391a2)
+* [Use of '__main__'.py](https://gist.github.com/rochacbruno/ed19c5d9ba9bb50391a2)
 * [Read set of images into 4D Numpy array with dimension (num_img,channel, dim1, dim2](https://stackoverflow.com/questions/38287077/read-set-of-images-into-4d-numpy-array-with-dimension-num-img-channel-dim1-di)
 * [How to get list of values in ImageDataGenerator.flow_from_directory Keras?](https://stackoverflow.com/questions/44842097/how-to-get-list-of-values-in-imagedatagenerator-flow-from-directory-keras)
 * [tqdm - progress bar](https://pypi.python.org/pypi/tqdm)
@@ -22,7 +39,8 @@
 * [Practice programming | Codefights](https://codefights.com/)
 
 ## Neural Networks
-### Keras and Keras tutorials 
+### Keras
+#### Keras and Keras tutorials 
 * [Keras documentation](https://keras.io)
 * [Keras resources](https://github.com/fchollet/keras-resources)
 * [R Interface to Keras](https://github.com/rstudio/keras)
@@ -72,7 +90,7 @@
 * [What is a CapsNet or Capsule Network?](https://hackernoon.com/what-is-a-capsnet-or-capsule-network-2bfbe48769cc)
 * [How to choose the number of hidden layers and nodes in a feedforward neural network?](https://stats.stackexchange.com/questions/181/how-to-choose-the-number-of-hidden-layers-and-nodes-in-a-feedforward-neural-netw)
 
-### Visualizing NN's
+### Visualizing NNs
 * [Visualization - Using the UI to Tune Your Network](https://deeplearning4j.org/visualization#usingui)
 * [Visualizing Outputs of each layer of a CNN Model during Training Phase](http://www.ir.com/blog/visualizing-outputs-cnn-model-training-phase)
 
