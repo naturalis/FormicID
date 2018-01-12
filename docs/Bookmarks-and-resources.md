@@ -59,6 +59,7 @@
 * [Best Practices when training with PPO](https://github.com/EmbersArc/PPO/blob/master/best-practices-ppo.md)
 * [How to Grid Search Hyperparameters for Deep Learning Models in Python With Keras](https://machinelearningmastery.com/grid-search-hyperparameters-deep-learning-models-python-keras/)
 * [We Need to Go Deeper: A Practical Guide to Tensorflow and Inception](https://medium.com/initialized-capital/we-need-to-go-deeper-a-practical-guide-to-tensorflow-and-inception-50e66281804f)
+* [What is a CapsNet or Capsule Network?](https://hackernoon.com/what-is-a-capsnet-or-capsule-network-2bfbe48769cc)
 
 ### Visualizing NN's
 * [Visualization - Using the UI to Tune Your Network](https://deeplearning4j.org/visualization#usingui)
