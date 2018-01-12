@@ -58,6 +58,7 @@
 * [Ritchie Ng - Exploring notMNIST with TensorFlow](http://www.ritchieng.com/machine-learning/deep-learning/tensorflow/notmnist/)
 * [Best Practices when training with PPO](https://github.com/EmbersArc/PPO/blob/master/best-practices-ppo.md)
 * [How to Grid Search Hyperparameters for Deep Learning Models in Python With Keras](https://machinelearningmastery.com/grid-search-hyperparameters-deep-learning-models-python-keras/)
+* [We Need to Go Deeper: A Practical Guide to Tensorflow and Inception](https://medium.com/initialized-capital/we-need-to-go-deeper-a-practical-guide-to-tensorflow-and-inception-50e66281804f)
 
 ### Visualizing NN's
 * [Visualization - Using the UI to Tune Your Network](https://deeplearning4j.org/visualization#usingui)
