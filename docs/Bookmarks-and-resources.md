@@ -116,4 +116,5 @@
 * [A fantastic tool to generate requirements file for your Python project, and more than that.](https://github.com/Damnever/pigar)
 * [KAGGLE_DISTRACTED_DRIVER](https://github.com/ZFTurbo/KAGGLE_DISTRACTED_DRIVER)
 * [Ranking Popular Deep Learning Libraries for Data Science](https://www.kdnuggets.com/2017/10/ranking-popular-deep-learning-libraries-data-science.html)
+* [Python implementation of a photo mosaic software](https://github.com/cinemast/OpenMosaic)
 * [Tumblr on funny loss functions](https://lossfunctions.tumblr.com/)
