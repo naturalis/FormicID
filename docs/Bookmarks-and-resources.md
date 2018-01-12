@@ -66,7 +66,7 @@
 * [Visualizing Outputs of each layer of a CNN Model during Training Phase](http://www.ir.com/blog/visualizing-outputs-cnn-model-training-phase)
 
 ## Papers and books
-* https://medium.com/machine-learning-for-humans/why-machine-learning-matters-6164faf1df12
+* [Machine Learning for Humans](https://medium.com/machine-learning-for-humans/why-machine-learning-matters-6164faf1df12)
 * [Book on deep learning](http://neuralnetworksanddeeplearning.com/chap6.html)
 * [Neural Network Papers](https://github.com/robertsdionne/neural-network-papers)
 * [Awesome Deep Learning papers](https://github.com/terryum/awesome-deep-learning-papers)
