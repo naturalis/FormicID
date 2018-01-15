@@ -27,7 +27,7 @@ How to use
 Text on how the neural network architecture looks like
 
 ## Requirements
-[Requirements](../requirements.txt)
+[Requirements](requirements.txt)
 
 ## Credits
 Txt
