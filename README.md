@@ -9,11 +9,13 @@ AntWeb is the world's largest online database of images, specimen records, and n
 <br>
 Our mission is to publish for the scientific community high quality images of all the world's ant species. AntWeb provides tools for submitting images, specimen records, annotating species pages, and managing regional species lists.<br> <br>
 Text taken from Antweb.org <br> <br>
-![](https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true)<br>
+<img src="https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true" width="100">
+<br>
 
 ### Dataset
 How does the dataset looks like
-![](https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true)<br>
+<img src="https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true" width="100">
+<br>
 
 
 ## Quickstart
