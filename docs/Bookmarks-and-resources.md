@@ -80,6 +80,8 @@
 * [Introduction to Deep Neural Networks](https://deeplearning4j.org/neuralnet-overview.html)
 * [Deep learning convolutional neural network by tensorflow python, complete and easy understanding.](https://www.codeproject.com/Articles/1216535/Deep-Learning)
 * [MetaQNN](https://github.com/bowenbaker/metaqnn)
+* [Conv Nets: A Modular Perspective](http://colah.github.io/posts/2014-07-Conv-Nets-Modular/)
+* [Understanding Convolutions](http://colah.github.io/posts/2014-07-Understanding-Convolutions/)
 
 ### Optimization
 * [Hinton's Dropout in 3 Lines of Python](http://iamtrask.github.io/2015/07/28/dropout/)
@@ -93,6 +95,7 @@
 ### Visualizing NNs
 * [Visualization - Using the UI to Tune Your Network](https://deeplearning4j.org/visualization#usingui)
 * [Visualizing Outputs of each layer of a CNN Model during Training Phase](http://www.ir.com/blog/visualizing-outputs-cnn-model-training-phase)
+* [Visualizing Representations: Deep Learning and Human Beings](http://colah.github.io/posts/2015-01-Visualizing-Representations/)
 
 ### Dataset creation
 * [Welcome to Kaggle Datasets | The best place to discover and seamlessly analyze open data](https://www.kaggle.com/datasets)
@@ -118,3 +121,4 @@
 * [Ranking Popular Deep Learning Libraries for Data Science](https://www.kdnuggets.com/2017/10/ranking-popular-deep-learning-libraries-data-science.html)
 * [Python implementation of a photo mosaic software](https://github.com/cinemast/OpenMosaic)
 * [Tumblr on funny loss functions](https://lossfunctions.tumblr.com/)
+* [Deep Learning Glossary](http://www.wildml.com/deep-learning-glossary/)
