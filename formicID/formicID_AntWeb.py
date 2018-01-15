@@ -75,10 +75,10 @@ def create_url(limit, offset):
     # Returns
         text
     """
-    base_url = 'http://www.antweb.org/api/v2/?'
+    base_url = 'http://api.antweb.org/v3/taxaImages?'
 
     arguments = {    # API arguments for in the url
-        'caste':        'worker',
+        'caste':        worker,
         'limit':        limit,
         'offset':       offset,
         # 'country':      'Netherlands'
