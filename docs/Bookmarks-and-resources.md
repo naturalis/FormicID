@@ -11,7 +11,7 @@
     * [Optimizing Keras](#optimizing-Keras)
   * [Neural Network guides and tutorials](#neural-Network-guides-and-tutorials)
   * [Optimization](#optimization)
-  * [Visualizing NNs]#(visualizing-NNs)
+  * [Visualizing NNs](#visualizing-NNs)
 * [Dataset creation](#dataset-creation)
 * [Papers and books](#papers-and-books)
 * [Misc](#misc)
