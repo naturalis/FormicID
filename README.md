@@ -1,8 +1,10 @@
 # FormicID
+_Classification of images of ants using deep learning_
 <!-- travis-ci -->
 
 ## Description
-Code repository for CNN-based image classification of AntWeb images
+Code repository for CNN-based image classification of AntWeb images <br>
+_FormicID is Formicidae / IDentification_
 
 ### AntWeb
 AntWeb is the world's largest online database of images, specimen records, and natural history information on ants. It is community driven and open to contribution from anyone with specimen records, natural history comments, or images.<br>
