@@ -82,7 +82,7 @@ def create_url(limit, offset, country_set, genus):
             'offset':       offset,
             # 'shot_type':    shot_type,
             'genus':        genus
-            }
+            }s
     else:
         arguments = {    # API arguments for in the url
             # 'caste':        worker,
