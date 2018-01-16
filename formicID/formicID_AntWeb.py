@@ -70,21 +70,33 @@ todaystr = datetime.date.today().isoformat()
 # //////////////////////////////////////////////////////////////////////////////
 
 
-def create_url(limit, offset):
+def create_url(limit, offset, country_set, genus):
     """
     # Returns
         text
     """
+    if country_set == 'None':
+        arguments = {    # API arguments for in the url
+            # 'caste':        worker,
+            'limit':        limit,
+            'offset':       offset,
+            # 'shot_type':    shot_type,
+            'genus':        genus
+            }
+    else:
+        arguments = {    # API arguments for in the url
+            # 'caste':        worker,
+            'limit':        limit,
+            'offset':       offset,
+            'country':      country_set,
+            # 'shot_type':    shot_type,
+            'genus':        genus
+            }
+    # AntWeb API v3 base url
     base_url = 'http://api.antweb.org/v3/taxaImages?'
 
-    arguments = {    # API arguments for in the url
-        'caste':        worker,
-        'limit':        limit,
-        'offset':       offset,
-        # 'country':      'Netherlands'
-    }
     # Creating the AntWeb url from the base url and the API arguments
-    url = requests.get(url=base_url, params=arguments)
+    url = requests.get(url=base_url, params=arguments, timeout=(5))
 
     return url
 
@@ -104,6 +116,7 @@ def get_url_info(input_url):
     else:
         print('Request status: the request was not fulfilled.')
     print('Time elapsed to connect to URL:', input_url.elapsed)
+    return input_url.raise_for_status()
 
 # get JSON > database
 # //////////////////////////////////////////////////////////////////////////////
@@ -118,17 +131,21 @@ def get_json(urllink):
     """
     data = urllink.json()
     if data == None:
-        print("JSON is empty!")
+        print('JSON is empty!')
     else:
+        print('The JSON file is loaded from the URL.')
         return data
 
-
+# This function does not work for now...
+# TODO: fix this function!
 def max_specimens(json):
     """
     # Returns
         text
     """
-    nb_specimens = json["count"]
+    nb_specimens = json['metaData']['parameters']['specimenCount']
+    print('The maximum number of specimens found are',
+    '{}'.formatint(nb_specimens))
     return int(nb_specimens)
 
 
@@ -137,29 +154,52 @@ def filter_json(json):
     # Returns
         text
     """
-    data_filtered = jmespath.search('specimens[].[catalogNumber,'
-                                    'scientific_name, images."1".shot_types]',
-                                    json)
-
     lst = []
-    for row in data_filtered:
-        if row[2] != None:
-            # print(row)
-            catalog_number = row[0]
-            scientific_name = row[1]
-            image_url = {}
-            if 'h' in row[2]:
-                image_url['h'] = row[2]['h']['img'][1]
-            if 'p' in row[2]:
-                image_url['p'] = row[2]['p']['img'][1]
-            if 'd' in row[2]:
-                image_url['d'] = row[2]['d']['img'][1]
-            for key in image_url:
-                new_row = [catalog_number,
-                           scientific_name, key, image_url[key]]
-                lst.append(new_row)
+    for taxaImage in json['taxaImages']:
 
-    return lst
+        subfamily_name = taxaImage['subfamily']
+        genus_name = taxaImage['genus']
+        species_name = taxaImage['species']
+
+        specimens = {}
+
+        for specimen in taxaImage['specimen'][0]['images']:
+            # shot_type = taxaImage['specimen'][0]['images']['shotType']
+            specimens = taxaImage['specimen'][0]['images']
+
+            for specimen in specimens:
+                print(specimen)
+            # if 'l' in species['specimen']['images'].value == False:
+            #     print('True')
+
+
+    #     new_row = [subfamily_name, genus_name, species_name]
+    #     lst.append(new_row)
+    # print(lst)
+
+    # data_filtered = jmespath.search('specimens[].[catalogNumber,'
+    #                                 'scientific_name, images."1".shot_types]',
+    #                                 json)
+    #
+    # lst = []
+    # for row in data_filtered:
+    #     if row[2] != None:
+    #         # print(row)
+    #         catalog_number = row[0]
+    #         scientific_name = row[1]
+    #         image_url = {}
+    #         if 'h' in row[2]:
+    #             image_url['h'] = row[2]['h']['img'][1]
+    #         if 'p' in row[2]:
+    #             image_url['p'] = row[2]['p']['img'][1]
+    #         if 'd' in row[2]:
+    #             image_url['d'] = row[2]['d']['img'][1]
+    #         for key in image_url:
+    #             new_row = [catalog_number,
+    #                        scientific_name, key, image_url[key]]
+    #             lst.append(new_row)
+    #
+    # return lst
 
 
 def create(lst):
@@ -186,7 +226,7 @@ def create(lst):
 # //////////////////////////////////////////////////////////////////////////////
 
 
-@profile
+# @profile
 def download_to_csv(offset_set, limit_set):
     """
     Input:
@@ -246,5 +286,21 @@ def download_to_csv(offset_set, limit_set):
     df2.to_csv(os.path.join(path, file_name), index=False, header=True)
 
 if __name__ == '__main__':
-    download_to_csv(offset_set = 0, limit_set = 9859)
+    url = create_url(
+        offset = 0,
+        limit = 50,
+        country_set=None,
+        # shot_type='h',
+        genus='Pheidole')
+
+    # print(get_url_info(url))
+
+    if get_url_info(url) == None: # If there is no error, perform actions
+        json = get_json(url)
+
+        filter_json(json)
+
+    else:
+        print('There was a server error.')
+    # download_to_csv(offset_set = 0, limit_set = 500, country='Netherlands')
     # @profile
