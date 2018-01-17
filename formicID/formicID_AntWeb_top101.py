@@ -191,7 +191,7 @@ def create(lst):
     #         f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
 
 def open_csv(path_to_csv):
-    df = pd.read_csv(path_to_csv, sep=';', header = 0)
+    df = pd.read_csv(path_to_csv, sep = ';', header = 0)
     return df
 
 # Executing
