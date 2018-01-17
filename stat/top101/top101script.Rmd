@@ -1,0 +1,25 @@
+---
+title: "top101 visualization"
+author: "MarijnJABoer"
+date: "17/01/2018"
+output: html_document
+---
+
+```{r setup}
+setwd("~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/stat/top101")
+
+library(ggplot2)
+
+top101 = read.csv('top101.csv')
+head(top101)
+```
+
+
+```{r ggplot histogram}
+# Plot
+g <- ggplot(top101, aes(scientific_name))
+g + geom_bar(aes(fill=shot_type), width = 0.5) + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + 
+  labs(title="Histogram on species distrubition per shot_type", 
+       subtitle="Only species with over 300 images are shown") 
+```
