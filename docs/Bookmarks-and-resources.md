@@ -82,6 +82,7 @@
 * [MetaQNN](https://github.com/bowenbaker/metaqnn)
 * [Conv Nets: A Modular Perspective](http://colah.github.io/posts/2014-07-Conv-Nets-Modular/)
 * [Understanding Convolutions](http://colah.github.io/posts/2014-07-Understanding-Convolutions/)
+* [Neural Network Architecture Design](https://stackoverflow.com/questions/20009078/neural-network-architecture-design)
 
 ### Optimization
 * [Hinton's Dropout in 3 Lines of Python](http://iamtrask.github.io/2015/07/28/dropout/)
