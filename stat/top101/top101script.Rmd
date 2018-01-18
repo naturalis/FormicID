@@ -5,21 +5,50 @@ date: "17/01/2018"
 output: html_document
 ---
 
-```{r setup}
+```{r Setup}
 setwd("~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/stat/top101")
 
 library(ggplot2)
 
-top101 = read.csv('top101.csv')
+top101 <- read.csv('top101.csv')
 head(top101)
 ```
 
 
-```{r ggplot histogram}
+```{r Image distribution}
 # Plot
 g <- ggplot(top101, aes(scientific_name))
-g + geom_bar(aes(fill=shot_type), width = 0.5) + 
-  theme(axis.text.x = element_text(angle=90, vjust=0.6)) + 
-  labs(title="Histogram on species distrubition per shot_type", 
-       subtitle="Only species with over 300 images are shown") 
+g + geom_bar(aes(fill = shot_type), width = 0.5) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) + 
+  labs(title = "Histogram on species distrubition per shot_type", 
+       subtitle = "Only species with over 300 images are shown") + 
+    coord_flip() + scale_x_reverse()
 ```
+
+```{r File size}
+data_dir <- "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data/2018-01-17_top101-images"
+info <- file.info(list.files(path=data_dir, pattern=".jpg", full.names=TRUE))
+head(info)
+
+# Convert bytes to kilobytes
+info$size2 <- info$size / 1000
+
+# https://www.statmethods.net/graphs/density.html
+
+# Histogram with normal curve plot
+x <- info$size2 
+cat('The mean size is ', mean(x), 'kb')
+h<-hist(x, breaks=50, col="red", xlab="File size (kb)", 
+  	main="File size distribution of the top 101 most imaged species") 
+xfit<-seq(min(x),max(x),length=40) 
+yfit<-dnorm(xfit,mean=mean(x),sd=sd(x)) 
+yfit <- yfit*diff(h$mids[1:2])*length(x) 
+lines(xfit, yfit, col="blue", lwd=2)
+
+# Kernel density plot
+d <- density(info$size2)
+plot(d, main="File size distribution of the top 101 most imaged species")
+polygon(d, col="red", border="blue")
+
+```
+

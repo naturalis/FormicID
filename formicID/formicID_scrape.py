@@ -140,6 +140,6 @@ if __name__ == '__main__':
     image_scraper(
         csvfile = os.path.join(os.path.dirname(__file__),
                              '../data/top101.csv'),
-        start = 6001,
-        end = 7000,
+        start = 7501,
+        end = 8000,
         dir_name = 'top101-images')
