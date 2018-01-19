@@ -22,7 +22,7 @@ g + geom_bar(aes(fill = shot_type), width = 0.5) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) + 
   labs(title = "Histogram on species distrubition per shot_type", 
        subtitle = "Only species with over 300 images are shown") + 
-    coord_flip() + scale_x_reverse()
+    coord_flip()
 ```
 
 ```{r File size}
@@ -36,8 +36,13 @@ info$size2 <- info$size / 1000
 # https://www.statmethods.net/graphs/density.html
 
 # Histogram with normal curve plot
-x <- info$size2 
-cat('The mean size is ', mean(x), 'kb')
+size_kb <- info$size2 
+cat('The mean size is ', mean(size_kb), 'kb')
+
+summary(size_kb)
+boxplot(size_kb)
+
+
 h<-hist(x, breaks=50, col="red", xlab="File size (kb)", 
   	main="File size distribution of the top 101 most imaged species") 
 xfit<-seq(min(x),max(x),length=40) 
