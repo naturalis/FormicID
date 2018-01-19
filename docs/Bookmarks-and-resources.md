@@ -54,7 +54,8 @@
 * [A toy convolutional neural network for image classification with Keras](https://www.kernix.com/blog/a-toy-convolutional-neural-network-for-image-classification-with-keras_p14)
 * [How to Deploy Keras Models to Production - Siraj Raval](https://www.youtube.com/watch?v=f6Bf3gl4hWY)
 * [Collection of Keras models used for classification](https://github.com/titu1994/Keras-Classification-Models)
-* [10 misconceptions about Neural Networks](http://www.turingfinance.com/misconceptions-about-neural-networks/)
+* [10 misconceptions about Neural Networks](http://www.turingfinance.com/misconceptions-about-neural-networks/).
+* [Deep learning for complete beginners: neural network fine-tuning techniques](https://cambridgespark.com/content/tutorials/neural-networks-tuning-techniques/index.html)
 
 #### Visuazizing Keras
 * [Plot hidden layers in Keras](https://gist.github.com/hadim/9fedb72b54eb3bc453362274cd347a6a)
