@@ -12,7 +12,7 @@ import os
 import csv
 import itertools
 from urllib.request import urlretrieve
-from tqdm import tqdm, trange
+from tqdm import tqdm
 import pandas as pd
 
 
@@ -47,8 +47,6 @@ def csv_update(csvfile_input):
         Filter for indet species
         Place these rows in a 'bad specimen' csv file
     """
-    # if csvfile does not exist:
-    #     make
     columns = [
         'catalog_number',
         'scientific_name',

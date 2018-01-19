@@ -1,12 +1,11 @@
 ################################################################################
 #                                                                              #
 #                                  ANTWEB API                                  #
-#                                 AntWeb 2 csv                                 #
+#                                AntWeb to csv                                 #
 ################################################################################
 
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
-from __future__ import print_function
 
 import requests
 import json
@@ -18,52 +17,12 @@ import os
 import csv
 from functools import wraps
 from urllib.request import urlretrieve
+from tqdm import tqdm
 
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
 todaystr = datetime.date.today().isoformat()
-
-
-# Time-it function
-# //////////////////////////////////////////////////////////////////////////////
-# https://stackoverflow.com/questions/3620943/
-# measuring-elapsed-time-with-the-time-module
-
-#
-# PROF_DATA = {}
-#
-#
-# def profile(fn):
-#     @wraps(fn)
-#     def with_profiling(*args, **kwargs):
-#         start_time = time.time()
-#
-#         ret = fn(*args, **kwargs)
-#
-#         elapsed_time = time.time() - start_time
-#
-#         if fn.__name__ not in PROF_DATA:
-#             PROF_DATA[fn.__name__] = [0, []]
-#         PROF_DATA[fn.__name__][0] += 1
-#         PROF_DATA[fn.__name__][1].append(elapsed_time)
-#
-#         return ret
-#
-#     return with_profiling
-#
-#
-# def print_prof_data():
-#     for fname, data in PROF_DATA.items():
-#         max_time = max(data[1])
-#         avg_time = sum(data[1]) / len(data[1])
-#         print("Function %s called %d times. " % (fname, data[0])),
-#         print('Execution time max: %.3f, average: %.3f' % (max_time, avg_time))
-#
-#
-# def clear_prof_data():
-#     global PROF_DATA
-#     PROF_DATA = {}
 
 
 # AntWeb basic information
@@ -72,8 +31,26 @@ todaystr = datetime.date.today().isoformat()
 
 def create_url(limit, offset, genus, species):
     """
-    # Returns
-        <Placeholder for notes>
+    # Description:
+        Creation of the url to access AntWebs API, using a base_url and
+        arguments
+
+    # Input:
+        limit = sets the limit for accessing specimens
+        offset = sets the offset for accessing specimens
+        genus = specifies the genus
+        species = specifies the species
+
+    # Returns:
+        Returns an URL as response object that can be opened by the function
+        request.get()
+
+    # TODO:
+        make genus and species optional
+        - https://stackoverflow.com/questions/35265234/
+        passing-an-optional-argument-in-a-function-python
+        - https://stackoverflow.com/questions/9539921/
+        how-do-i-create-a-python-function-with-optional-arguments
     """
     base_url = 'http://www.antweb.org/api/v2/?'
 
@@ -93,8 +70,14 @@ def create_url(limit, offset, genus, species):
 
 def get_url_info(input_url):
     """
-    # Returns
-        <Placeholder for notes>
+    # Description:
+        Provides information on the URL
+
+    # Input:
+        input_url = the url as response object, created by create_url()
+
+    # Returns:
+        returns information on the URL
     """
     # Get basic url information
     print('URL:', input_url.url)  # does not work yet???
@@ -111,18 +94,18 @@ def get_url_info(input_url):
 # //////////////////////////////////////////////////////////////////////////////
 
 
-def get_json(urllink):
+def get_json(input_url):
     """
-    Description:
-        # loads the json formatted <Placeholder for notes> from the url
+    # Description:
+        Scrapes JSON files using an URL from AntWebs API
 
     # Input:
-        <Placeholder for notes>
+        input_url = the url as response object, created by create_url()
 
-    # Returns
-        Json
+    # Returns:
+        A JSON object
     """
-    r = requests.get(url=urllink)
+    r = requests.get(url=input_url)
     data = r.json()
     if data == None:
         print("JSON is empty!")
@@ -132,8 +115,14 @@ def get_json(urllink):
 
 def max_specimens(json):
     """
-    # Returns
-        <Placeholder for notes>
+    # Description:
+        View the maximum number of specimens for a JSON object.
+
+    # Input:
+        json = A JSON object
+
+    # Returns:
+        An integer of the maximum number of specimens in a JSON object.
     """
     nb_specimens = json["count"]
     return int(nb_specimens)
@@ -141,8 +130,17 @@ def max_specimens(json):
 
 def filter_json(json_file):
     """
-    # Returns
-        <Placeholder for notes>
+    # Description:
+        Load a JSON object and filter for only relevant values.
+
+    # Input:
+        json_file = path to a JSON file
+
+    # Returns:
+        A list of lists with 4 values
+
+    # TODO:
+        combine with create() ?
     """
     json_txt = json.load(json_file)
     data_filtered = jmespath.search('specimens[].[catalogNumber,'
@@ -172,26 +170,38 @@ def filter_json(json_file):
 
 def create(lst):
     """
-    # Returns
-        <Placeholder for notes>
+    # Description:
+        Creates a pandas dataframe with 4 specific column names from the list created by the filter_json() function
+
+    # Input:
+        A list of lists containing 4 items, corresponding to the columnnames
+
+    # Returns:
+        A 4 column pandas dataframe
+
     """
     columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
     df = pd.DataFrame(columns=columns)
     df = pd.DataFrame(lst)
 
     return df
-    # print(df.head())
-    # df_def = pd.DataFrame(columns=columns)
-    # df_def.append(df)
-    # df_def.to_csv('formicID_db_h.csv')
-    # return df
 
-    # with open('formicID_db.csv', 'a') a÷s f:
-    #     for row in lst:
-    #         f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
 
 def open_csv(path_to_csv):
-    df = pd.read_csv(path_to_csv, sep = ';', header = 0)
+    """
+    # Description:
+        This function opens a csv file and stores it in a pandas dataframe
+
+    # Input:
+        path_to_csv = The 'pathway' to a .csv file with header, seperated by comma
+
+    # Returns:
+        A pandas dataframe created from a .csv file
+
+    # TODO:
+        Fix relative / absolute pathways. What to use?
+    """
+    df = pd.read_csv(path_to_csv, sep=';', header=0)
     return df
 
 # Executing
@@ -199,21 +209,24 @@ def open_csv(path_to_csv):
 
 
 # @profile
-def urls_to_json(offset_set, limit_set):
+def urls_to_json(csv_species, offset_set, limit_set):
     """
+    # Description:
+        This function downloads JSON files for a list of species and places them in a drecitory.
+
     # Input:
+        csv_species = a csv file with 2 columns of genus and species names
         offset_set = set the offset for downloading AntWeb records in batches
         limit_set = set a limit for downloading a set of records from AntWeb
 
-    # Description:
-        this function downloads imaged only specimens with catalog number and
-        scientific names into an csv file
+    # Returns:
+        A directory of JSON files for different species
 
-    # Returns :
-        <Placeholder for notes>
+    # TODO:
+        Fix pathways
+        Add directory as argument
     """
-    df_top101 = open_csv(
-    './data/2018-01-09-db-Top101imagedspecies.csv')
+    df_top101 = open_csv(csv_species)
 
     offset = offset_set
     limit = limit_set
@@ -225,18 +238,20 @@ def urls_to_json(offset_set, limit_set):
     if not os.path.exists(path):
         os.mkdir(path)
 
-
     # Obtain the max number of specimens
     nb_specimens = df_top101.shape[0]
     nb_batch = 1
     total_batches = limit
 
-    for index, row in df_top101.iterrows():
+    for index, row in tqdm(df_top101.iterrows(),
+                           desc='Downloading JSON files'):
+
         url = create_url(
-            limit = limit_set,
-            offset = offset_set,
-            genus = row['genus'],
-            species = row['species'])
+            limit=limit_set,
+            offset=offset_set,
+            genus=row['genus'],
+            species=row['species'])
+
         url = url.url
         file_name = row['genus'] + '_' + row['species'] + '.json'
         species = get_json(url)
@@ -249,17 +264,34 @@ def urls_to_json(offset_set, limit_set):
 
 
 def batch_filter_to_csv(directory):
+    """
+    # Description:
+        Download all images found from a batch of JSON files in a directory
+
+    # Input:
+        directory = path and name of the output directory.
+
+    # Returns:
+        <placeholder for txt>
+
+    # TODO:
+        create input for:
+        - the input directory
+        - output directory
+        - filename
+    """
     df2 = pd.DataFrame()
-    for filename in os.listdir(directory):
+    for filename in tqdm(os.listdir(directory),
+                         desc='Reading JSON files'):
         if filename.endswith('.json'):
             with open(os.path.join(directory, filename)) as data_file:
-                print('Filtering {}'.format(filename))
+                # print('Filtering {}'.format(filename))
                 lst = filter_json(data_file)
                 df = create(lst)
                 df2 = df2.append(df)
 
     # replace spaces between genus and species names with underscores
-    df2.replace('\s+', '_', regex = True, inplace = True)
+    df2.replace('\s+', '_', regex=True, inplace=True)
     df2.columns = [
         'catalog_number',
         'scientific_name',
@@ -269,11 +301,18 @@ def batch_filter_to_csv(directory):
     # file_path = os.path.join(path, file_name)
     path = './data/top101-JSON/'
     file_name = 'top101.csv'
-    df2.to_csv(os.path.join(path, file_name), index = False, header = True)
-    print('All JSON files are filtered and added to the csv file.')
+    df2.to_csv(os.path.join(path, file_name), index=False, header=True)
+    print('All JSON files are read, filtered and added to the csv file.')
+
 
 if __name__ == '__main__':
-    # urls_to_json(offset_set=0, limit_set=6000)
-    batch_filter_to_csv(directory='./data/top101-JSON')
 
-    # @profile
+    # urls_to_json(
+    #     csvfile='./data/2018-01-09-db-Top101imagedspecies.csv',
+    #     offset_set=0,
+    #     limit_set=6000
+    # )
+
+    batch_filter_to_csv(
+        directory='./data/top101-JSON'
+    )
