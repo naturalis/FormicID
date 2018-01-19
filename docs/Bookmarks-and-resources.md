@@ -125,3 +125,4 @@
 * [Python implementation of a photo mosaic software](https://github.com/cinemast/OpenMosaic)
 * [Tumblr on funny loss functions](https://lossfunctions.tumblr.com/)
 * [Deep Learning Glossary](http://www.wildml.com/deep-learning-glossary/)
+* [Behind the Magic: How we built the ARKit Sudoku Solver](https://blog.prototypr.io/behind-the-magic-how-we-built-the-arkit-sudoku-solver-e586e5b685b0)
