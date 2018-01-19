@@ -6,8 +6,6 @@
 
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
-from __future__ import print_function
-
 import requests
 import datetime
 import os
@@ -23,51 +21,66 @@ import pandas as pd
 todaystr = datetime.date.today().isoformat()
 
 
-# Packages
+# Make changes to the csv file
 # //////////////////////////////////////////////////////////////////////////////
 
-# def csv_update(csvfile_input):
-#     """
-#     # Description:
-#         This function will remove broken links to a different csvfile
-#
-#     # Input:
-#         <text placeholder>
-#
-#     # Returns:
-#         <text placeholder>
-#     """
-#     # if csvfile does not exist:
-#     #     make
-#     columns = [
-#         'catalog_number',
-#         'scientific_name',
-#         'shot_type',
-#         'image_url'
-#     ]
-#
-#     df_good = pd.DataFrame(columns = columns)
-#     df_bad = pd.DataFrame(columns = columns)
-#
-#     with open(csvfile_input, 'rt') as r:
-#
-#         reader = pd.read_csv(r, sep = ';', header = 0)
-#
-#         for index, row in reader.itertuples():
-#             if ' ' in reader.loc['image_url']:
-#                 print(row)
-#                 df_bad.append(row)
-#             else:
-#                 df_good.append(row)
-#
-#     path = './data/'
-#
-#     file_name_good = 'top101_good.csv'
-#     df_good.to_csv(os.path.join(path, file_name_good), header = True)
-#
-#     file_name_bad = 'top101_bad.csv'
-#     df_bad.to_csv(os.path.join(path, file_name_good), header = True)
+def csv_update(csvfile_input):
+    """
+    # Description:
+        This function will remove broken links to a different csvfile
+        and remove species that are indet.
 
+    # Input:
+        A .csv file, created by formicID_Antweb(_...).py, that contains all the
+        specimen and image information with 4 columns, namely:
+            - 'catalog_number'
+            - 'scientific_name'
+            - 'shot_type'
+            - 'image_url'
+
+    # Returns:
+        A cleaned csv file ready for downloading.
+
+    # TODO:
+        Make this function work
+        Filter for broken links, usually containing spaces
+        Filter for indet species
+        Place these rows in a 'bad specimen' csv file
+    """
+    # if csvfile does not exist:
+    #     make
+    columns = [
+        'catalog_number',
+        'scientific_name',
+        'shot_type',
+        'image_url'
+    ]
+
+    df_good = pd.DataFrame(columns=columns)
+    df_bad = pd.DataFrame(columns=columns)
+
+    with open(csvfile_input, 'rt') as r:
+
+        reader = pd.read_csv(r, sep=';', header=0)
+
+        for index, row in reader.itertuples():
+            if ' ' in reader.loc['image_url']:
+                print(row)
+                df_bad.append(row)
+            else:
+                df_good.append(row)
+
+    path = './data/'
+
+    file_name_good = 'top101_good.csv'
+    df_good.to_csv(os.path.join(path, file_name_good), header=True)
+
+    file_name_bad = 'top101_bad.csv'
+    df_bad.to_csv(os.path.join(path, file_name_good), header=True)
+
+
+# Downloading of images
+# //////////////////////////////////////////////////////////////////////////////
 
 def image_scraper(csvfile, start, end, dir_name):
     """
@@ -84,6 +97,10 @@ def image_scraper(csvfile, start, end, dir_name):
 
     # Returns
         A folder with images.
+
+    # TODO:
+        before downloading split in 3 folders for each shot_type
+        put each species in it own folder in the right shot_type folder
     """
 
     # Number of images that will be downloaded
@@ -123,23 +140,20 @@ def image_scraper(csvfile, start, end, dir_name):
 
         print('{} images were downloaded.'.format(nb_images))
 
-    # for row in df['image_url']:
-    #     name = (df['scientific_name']+'_'+df['catalog_number']+'.jpg')
-    #     urllib.request.urlretrieve(row, str(name))
 
-# Call scraper
+# Update csv file and scrape images
 # //////////////////////////////////////////////////////////////////////////////
-
-
 if __name__ == '__main__':
 
-    # csv_update(
-    #         csvfile_input = os.path.join(os.path.dirname(__file__),
-    #                         '../data/test1.csv'))
+    csv_update(
+        csvfile_input=os.path.join(
+            os.path.dirname(__file__),
+            '../data/test1.csv')
+    )
 
     image_scraper(
-        csvfile = os.path.join(os.path.dirname(__file__),
-                             '../data/top101.csv'),
-        start = 7501,
-        end = 8000,
-        dir_name = 'top101-images')
+        csvfile=os.path.join(os.path.dirname(__file__), '../data/top101.csv'),
+        start=0,
+        end=1,
+        dir_name='top101-images'
+    )
