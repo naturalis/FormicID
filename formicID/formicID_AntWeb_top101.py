@@ -269,10 +269,10 @@ def batch_filter_to_csv(directory):
         Download all images found from a batch of JSON files in a directory
 
     # Input:
-        directory = path and name of the output directory.
+        directory = path and name of the output directory
 
     # Returns:
-        <placeholder for txt>
+        creates a .csv file in the output directory
 
     # TODO:
         create input for:
