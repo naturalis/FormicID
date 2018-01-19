@@ -2,7 +2,7 @@
 _Classification of images of ants using deep learning_
 
 ## Status
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/naturalis/FormicID/blob/master/LICENSE
+![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)(https://github.com/naturalis/FormicID/blob/master/LICENSE
 <!-- travis-ci -->
 
 ## Description
