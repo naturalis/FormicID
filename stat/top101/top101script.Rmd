@@ -9,9 +9,14 @@ output: html_document
 setwd("~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/stat/top101")
 
 library(ggplot2)
+library(jpeg)
 
 top101 <- read.csv('top101.csv')
+```
+
+```{r}
 head(top101)
+summary(top101)
 ```
 
 
@@ -27,16 +32,16 @@ g + geom_bar(aes(fill = shot_type), width = 0.5) +
 
 ```{r File size}
 data_dir <- "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data/2018-01-17_top101-images"
-info <- file.info(list.files(path=data_dir, pattern=".jpg", full.names=TRUE))
-head(info)
+files_info <- file.info(list.files(path=data_dir, pattern=".jpg", full.names=TRUE))
+head(files_info)
 
 # Convert bytes to kilobytes
-info$size2 <- info$size / 1000
+files_info$size2 <- files_info$size / 1000
 
 # https://www.statmethods.net/graphs/density.html
 
 # Histogram with normal curve plot
-size_kb <- info$size2 
+size_kb <- files_info$size2 
 cat('The mean size is ', mean(size_kb), 'kb')
 
 summary(size_kb)
@@ -51,9 +56,34 @@ yfit <- yfit*diff(h$mids[1:2])*length(x)
 lines(xfit, yfit, col="blue", lwd=2)
 
 # Kernel density plot
-d <- density(info$size2)
+d <- density(files_info$size2)
 plot(d, main="File size distribution of the top 101 most imaged species")
 polygon(d, col="red", border="blue")
 
 ```
+
+```{r Image dimensions}
+images <- list.files(path=data_dir, pattern=".jpg", full.names=TRUE)
+
+lst2 <- c()
+
+# print dimensions for all files
+for (image in images){
+    x <- readJPEG(source=image, native=FALSE)
+    lst <- list(dim(x))
+    lst2 <- c(lst2,lst)
+}
+
+# remove line 8672 because it was not the correct dimension
+
+
+
+df <- data.frame(matrix(unlist(lst2), nrow = 10204, byrow=TRUE, ncol=3))
+colnames(df) <- c('hight', 'width', 'channel')
+
+head(df)
+summary(df)
+boxplot(df$hight, df$width)
+```
+
 
