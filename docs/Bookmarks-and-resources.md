@@ -13,6 +13,7 @@
   * [Optimization](#optimization)
   * [Visualizing NNs](#visualizing-nns)
 * [Dataset creation](#dataset-creation)
+  * [Image handeling(#image-handeling)
 * [Papers and books](#papers-and-books)
 * [Misc](#misc)
 
@@ -106,8 +107,9 @@
 * [Step by Step, A Tutorial on How to Feed Your Own Image Data to Tensorflow](http://yeephycho.github.io/2016/08/15/image-data-in-tensorflow/)
 * [Datavec - ETL Library for Machine Learning - data pipelines, data munging and wrangling](https://github.com/deeplearning4j/DataVec)
 
-#### Image handling
+#### Image handeling
 * [imager: an R package for image processing](https://dahtah.github.io/imager/imager.html)
+* [Getting started with imager](https://cran.r-project.org/web/packages/imager/vignettes/gettingstarted.html)
 
 ## Papers and books
 * [Machine Learning for Humans](https://medium.com/machine-learning-for-humans/why-machine-learning-matters-6164faf1df12)
