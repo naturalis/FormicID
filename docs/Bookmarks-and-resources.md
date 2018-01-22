@@ -13,7 +13,7 @@
   * [Optimization](#optimization)
   * [Visualizing NNs](#visualizing-nns)
 * [Dataset creation](#dataset-creation)
-  * [Image handeling(#image-handeling)
+  * [Image handeling](#image-handeling)
 * [Papers and books](#papers-and-books)
 * [Misc](#misc)
 
