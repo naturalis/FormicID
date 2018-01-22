@@ -101,13 +101,13 @@
 * [Visualizing Outputs of each layer of a CNN Model during Training Phase](http://www.ir.com/blog/visualizing-outputs-cnn-model-training-phase)
 * [Visualizing Representations: Deep Learning and Human Beings](http://colah.github.io/posts/2015-01-Visualizing-Representations/)
 
-### Dataset creation
+## Dataset creation
 * [Welcome to Kaggle Datasets | The best place to discover and seamlessly analyze open data](https://www.kaggle.com/datasets)
 * [850k Images in 24 hours: Automating Deep Learning Dataset Creation](https://gab41.lab41.org/850k-images-in-24-hours-automating-deep-learning-dataset-creation-60bdced04275)
 * [Step by Step, A Tutorial on How to Feed Your Own Image Data to Tensorflow](http://yeephycho.github.io/2016/08/15/image-data-in-tensorflow/)
 * [Datavec - ETL Library for Machine Learning - data pipelines, data munging and wrangling](https://github.com/deeplearning4j/DataVec)
 
-#### Image handeling
+### Image handeling
 * [imager: an R package for image processing](https://dahtah.github.io/imager/imager.html)
 * [Getting started with imager](https://cran.r-project.org/web/packages/imager/vignettes/gettingstarted.html)
 * [What are the Different Methods we can use to Reshape an Image](https://github.com/ostegm/resizing/blob/master/Resizing.ipynb)
