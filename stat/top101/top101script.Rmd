@@ -2,37 +2,57 @@
 title: "top101 visualization"
 author: "MarijnJABoer"
 date: "17/01/2018"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r Setup}
-setwd("~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/stat/top101")
+setwd(
+    "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/stat/top101"
+)
 
-library(ggplot2)
+library(ggplot2) # for plotting
 library(jpeg)
+library(imager) # for reading jpg files
+library(reshape2) # for using melt()
+library(magick) # for image conversion because jpg files are read
 
-top101 <- read.csv('top101.csv')
+top101 <- read.csv('top101.csv') # spreadsheat containing catalognumber, scientific name, 
+                                 # shot_type and image url
 ```
 
-```{r}
+# Dataset
+
+```{r small data set inspection}
 head(top101)
 summary(top101)
 ```
 
+# Image distribution per species
+
 
 ```{r Image distribution}
-# Plot
-g <- ggplot(top101, aes(scientific_name))
-g + geom_bar(aes(fill = shot_type), width = 0.5) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) + 
-  labs(title = "Histogram on species distrubition per shot_type", 
-       subtitle = "Only species with over 300 images are shown") + 
+# Ploting image distribution per shot type
+g <- ggplot(top101)
+g + geom_bar(aes(scientific_name, fill = shot_type), width = 0.5) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) +
+    labs(title = "Histogram on species distrubition per shot_type",
+         subtitle = "Only species with over 300 images are shown") +
     coord_flip()
 ```
 
+# File size distribution 
 ```{r File size}
-data_dir <- "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data/2018-01-17_top101-images"
-files_info <- file.info(list.files(path=data_dir, pattern=".jpg", full.names=TRUE))
+data_dir <-
+    "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data/2018-01-17_top101-images"
+
+files_info <-
+    file.info(list.files(
+        path = data_dir,
+        pattern = ".jpg",
+        full.names = TRUE
+    ))
 head(files_info)
 
 # Convert bytes to kilobytes
@@ -41,49 +61,96 @@ files_info$size2 <- files_info$size / 1000
 # https://www.statmethods.net/graphs/density.html
 
 # Histogram with normal curve plot
-size_kb <- files_info$size2 
+size_kb <- files_info$size2
 cat('The mean size is ', mean(size_kb), 'kb')
 
 summary(size_kb)
 boxplot(size_kb)
 
 
-h<-hist(x, breaks=50, col="red", xlab="File size (kb)", 
-  	main="File size distribution of the top 101 most imaged species") 
-xfit<-seq(min(x),max(x),length=40) 
-yfit<-dnorm(xfit,mean=mean(x),sd=sd(x)) 
-yfit <- yfit*diff(h$mids[1:2])*length(x) 
-lines(xfit, yfit, col="blue", lwd=2)
+h <- hist(
+    size_kb,
+    breaks = 50,
+    col = "red",
+    xlab = "File size (kb)",
+    main = "File size distribution of the top 101 most imaged species"
+)
+xfit <- seq(min(size_kb), max(size_kb), length = 40)
+yfit <- dnorm(xfit, mean = mean(size_kb), sd = sd(size_kb))
+yfit <- yfit * diff(h$mids[1:2]) * length(size_kb)
+lines(xfit, yfit, col = "blue", lwd = 2)
 
 # Kernel density plot
 d <- density(files_info$size2)
-plot(d, main="File size distribution of the top 101 most imaged species")
-polygon(d, col="red", border="blue")
+plot(d, main = "File size distribution of the top 101 most imaged species")
+polygon(d, col = "red", border = "blue")
 
 ```
 
-```{r Image dimensions}
-images <- list.files(path=data_dir, pattern=".jpg", full.names=TRUE)
+# Plotting the dimensions of all the images for inspection
 
+```{r Image dimensions, error=TRUE}
+# Reading all images paths in to a 'list'
+images <-
+    list.files(path = data_dir,
+               pattern = ".jpg",
+               full.names = TRUE)
+str(images)
+
+x <- image_read(images[1])
+str(x)
+# Creates an empty list to be filled in the next function
 lst2 <- c()
 
-# print dimensions for all files
-for (image in images){
-    x <- readJPEG(source=image, native=FALSE)
-    lst <- list(dim(x))
-    lst2 <- c(lst2,lst)
+# Returns dimensions, depth, and channels for the images
+for (image in images) {
+    # x <- image_read(image)
+    x <- load.image(image)
+    x <- dim(x)
+    x <- as.numeric(unlist(x))
+    lst2 <- c(lst2, x)
 }
 
-# remove line 8672 because it was not the correct dimension
+# Converting to a Dataframe and get rid of images without 3 channels (RGB)
+df <-
+    data.frame(matrix(
+        unlist(lst2),
+        nrow = 10204,
+        byrow = TRUE,
+        ncol = 4
+    ))
+colnames(df) <- c('hight', 'width', 'depth', 'channel')
+rownames(df) <- images
+df_channel_wrong <- subset(df, channel <= 2)
+df_good <- subset(df, channel > 2)
+df_good_melt <- melt(df_good[1:2])
+summary(df_good_melt)
 
+# Boxplot of the hight and width distribution
+g <- ggplot(df_good_melt)
+g + geom_boxplot(aes(x = variable, y = value), alpha = 0.7) +
+    scale_y_continuous(name = "Number of Pixels",
+                       breaks = seq(0, 225, 25),
+                       limits = c(0, 225)) +
+    scale_x_discrete(name = "Dimensions") +
+    ggtitle("Boxplot of hight and width distribution")
 
-
-df <- data.frame(matrix(unlist(lst2), nrow = 10204, byrow=TRUE, ncol=3))
-colnames(df) <- c('hight', 'width', 'channel')
-
-head(df)
-summary(df)
-boxplot(df$hight, df$width)
+# histogram of distribution of the width
+h <- hist(
+    df_good$width,
+    breaks = 50,
+    col = "red",
+    xlab = "Number of pixels",
+    main = "Pixel width distribution of the top 101 most imaged species"
+)
+# Plotting a normal distribution over the histogram
+xfit <- seq(min(df_good$width), max(df_good$width), length = 40)
+yfit <-
+    dnorm(xfit,
+          mean = mean(df_good$width),
+          sd = sd(df_good$width))
+yfit <- yfit * diff(h$mids[1:2]) * length(df_good$width)
+lines(xfit, yfit, col = "blue", lwd = 2)
 ```
 
 
