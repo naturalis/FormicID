@@ -110,6 +110,7 @@
 #### Image handeling
 * [imager: an R package for image processing](https://dahtah.github.io/imager/imager.html)
 * [Getting started with imager](https://cran.r-project.org/web/packages/imager/vignettes/gettingstarted.html)
+* [What are the Different Methods we can use to Reshape an Image](https://github.com/ostegm/resizing/blob/master/Resizing.ipynb)
 
 ## Papers and books
 * [Machine Learning for Humans](https://medium.com/machine-learning-for-humans/why-machine-learning-matters-6164faf1df12)
