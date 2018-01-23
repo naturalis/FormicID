@@ -121,6 +121,9 @@
 * [A curated list of awesome Deep Learning tutorials, projects and communities.](https://github.com/ChristosChristofidis/awesome-deep-learning)
 * [Neural Network Design](http://hagan.okstate.edu/NNDesign.pdf)
 
+## Writing / LaTeX
+* [How to use multiple URLs for one bibtex reference?](https://tex.stackexchange.com/questions/57865/how-to-use-multiple-urls-for-one-bibtex-reference)
+
 ## Misc
 * [MXnet Documentation](https://media.readthedocs.org/pdf/mxnet-test/latest/mxnet-test.pdf)
 * [data-science-ipython-notebooks/deep-learning/](https://github.com/donnemartin/data-science-ipython-notebooks/tree/master/deep-learning)
