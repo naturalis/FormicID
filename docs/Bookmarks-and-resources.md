@@ -125,6 +125,7 @@
 
 ## Writing / LaTeX
 * [How to use multiple URLs for one bibtex reference?](https://tex.stackexchange.com/questions/57865/how-to-use-multiple-urls-for-one-bibtex-reference)
+* [Gantt diagrams](http://jldiaz.wikidot.com/en-tikz-example%3agantt)
 
 ## Misc
 * [MXnet Documentation](https://media.readthedocs.org/pdf/mxnet-test/latest/mxnet-test.pdf)
