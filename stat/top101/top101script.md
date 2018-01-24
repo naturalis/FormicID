@@ -2,6 +2,7 @@
     -   [Shot type plot](#shot-type-plot)
 -   [Image distribution per species](#image-distribution-per-species)
 -   [File size distribution](#file-size-distribution)
+    -   [What is the mean size in kilobytes?](#what-is-the-mean-size-in-kilobytes)
     -   [Plotting file size](#plotting-file-size)
 -   [Image dimensions](#image-dimensions)
     -   [Plotting the image dimensions](#plotting-the-image-dimensions)
@@ -47,6 +48,132 @@ summary(top101)
     ##  http://www.antweb.org/images/anic32-002153/anic32-002153_p_1_low.jpg:    1  
     ##  (Other)                                                             :10219
 
+``` r
+str(top101)
+```
+
+    ## 'data.frame':    10225 obs. of  4 variables:
+    ##  $ catalog_number : Factor w/ 3441 levels "anic32-002152",..: 544 544 544 547 547 547 552 552 552 595 ...
+    ##  $ scientific_name: Factor w/ 97 levels "amblyopone_australis",..: 1 1 1 1 1 1 1 1 1 1 ...
+    ##  $ shot_type      : Factor w/ 3 levels "d","h","p": 2 3 1 2 3 1 2 3 1 2 ...
+    ##  $ image_url      : Factor w/ 10225 levels "http://www.antweb.org/images/anic32-002152/anic32-002152_d_1_low.jpg",..: 1615 1616 1614 1624 1625 1623 1639 1640 1638 1768 ...
+
+``` r
+top101_melt <- melt(top101)
+```
+
+    ## Using catalog_number, scientific_name, shot_type, image_url as id variables
+
+``` r
+species <- data.frame(count(top101_melt$scientific_name))
+species[order(species[,2],decreasing=T),]
+```
+
+    ##                             x freq
+    ## 14       camponotus_maculatus  462
+    ## 64       pheidole_megacephala  377
+    ## 12            camponotus_hova  269
+    ## 92  tetramorium_sericeiventre  192
+    ## 39   hypoponera_punctatissima  190
+    ## 36          dorylus_nigricans  183
+    ## 80        solenopsis_geminata  157
+    ## 33           diacamma_rugosum  154
+    ## 63            pheidole_indica  153
+    ## 93     tetramorium_simillimum  145
+    ## 69             pheidole_parva  134
+    ## 68         pheidole_pallidula  133
+    ## 30  crematogaster_ranavalonae  129
+    ## 61           pheidole_fervens  129
+    ## 49          mystrium_camillae  125
+    ## 57   paratrechina_longicornis  122
+    ## 21       cardiocondyla_emeryi  120
+    ## 2   anochetus_madagascarensis  117
+    ## 3   aphaenogaster_swammerdami  114
+    ## 46       monomorium_floricola  114
+    ## 86      technomyrmex_pallipes  114
+    ## 91    tetramorium_lanuginosum  114
+    ## 34             dorylus_fulvus  113
+    ## 13        camponotus_irritans  112
+    ## 74        pheidole_variabilis  111
+    ## 72       pheidole_sculpturata  108
+    ## 84    tapinoma_melanocephalum  108
+    ## 16     camponotus_punctulatus  107
+    ## 18     camponotus_rufoglaucus  107
+    ## 44        leptogenys_diminuta  106
+    ## 11     camponotus_grandidieri  105
+    ## 25     crematogaster_castanea  105
+    ## 38     gnamptogenys_striatula  105
+    ## 43         lepisiota_capensis  105
+    ## 65         pheidole_mooreorum  105
+    ## 62           pheidole_flavens  104
+    ## 7         camponotus_atriceps  103
+    ## 17 camponotus_quadrimaculatus  102
+    ## 5       bothroponera_cambouei  101
+    ## 96     wasmannia_auropunctata  101
+    ## 20      camponotus_variegatus  100
+    ## 35              dorylus_kohli   99
+    ## 66             pheidole_nodus   99
+    ## 75      platythyrea_parallela   99
+    ## 52            mystrium_rogeri   96
+    ## 89    tetramorium_bicarinatum   95
+    ## 94    trichomyrmex_destructor   95
+    ## 31  crematogaster_rasoherinae   94
+    ## 10         camponotus_christi   93
+    ## 54      nylanderia_bourbonica   93
+    ## 81          strumigenys_emmae   91
+    ## 27      crematogaster_dentata   90
+    ## 82     strumigenys_louisianae   90
+    ## 6   brachyponera_sennaarensis   89
+    ## 45         monomorium_exiguum   88
+    ## 70        pheidole_punctulata   88
+    ## 1        amblyopone_australis   87
+    ## 58        pheidole_aurivillii   87
+    ## 71     pheidole_radoszkowskii   84
+    ## 79           solenopsis_fugax   84
+    ## 85       technomyrmex_albipes   84
+    ## 26      crematogaster_crinosa   82
+    ## 8       camponotus_auropubens   81
+    ## 23       cataulacus_intrudens   81
+    ## 32  crematogaster_stadelmanni   81
+    ## 51          mystrium_mysticum   81
+    ## 53      nomamyrmex_esenbeckii   80
+    ## 56          ochetellus_glaber   78
+    ## 78        pseudoponera_stigma   78
+    ## 88      tetramorium_aculeatum   78
+    ## 42             labidus_coecus   77
+    ## 29      crematogaster_kelleri   75
+    ## 67          pheidole_oceanica   75
+    ## 73          pheidole_susannae   75
+    ## 83         strumigenys_rogeri   75
+    ## 95        vollenhovia_oblonga   75
+    ## 48     monomorium_termitobium   74
+    ## 19          camponotus_thraso   72
+    ## 24          colobopsis_vitrea   72
+    ## 28 crematogaster_gerstaeckeri   72
+    ## 37          eciton_burchellii   72
+    ## 60            pheidole_caffra   72
+    ## 90      tetramorium_caespitum   72
+    ## 76          polyrhachis_dives   71
+    ## 47       monomorium_subopacum   70
+    ## 59      pheidole_biconstricta   70
+    ## 9      camponotus_bonariensis   69
+    ## 22           carebara_diversa   69
+    ## 40         iridomyrmex_anceps   69
+    ## 41       kalathomyrmex_emeryi   69
+    ## 50            mystrium_mirror   69
+    ## 55 nylanderia_madagascarensis   69
+    ## 77      pseudomyrmex_gracilis   69
+    ## 97      zasphinctus_imbecilis   69
+    ## 4               azteca_alfari   68
+    ## 15          camponotus_planus   68
+    ## 87     technomyrmex_vitiensis   68
+
+``` r
+levels(top101$shot_type)[levels(top101$shot_type)=='d'] <- 'dorsal'
+levels(top101$shot_type)[levels(top101$shot_type)=='h'] <- 'head'
+levels(top101$shot_type)[levels(top101$shot_type)=='p'] <- 'profile'
+```
+
 Shot type plot
 --------------
 
@@ -57,124 +184,59 @@ Image distribution per species
 
 Here we can see how images are distributed per species. Within species there are 3 different shot types. p = profile, d = dorsal, and h = head view.
 
-![](top101script_files/figure-markdown_github/Image%20distribution-1.png)
+![](top101script_files/figure-markdown_github/Image-species%20distribution-1.png)
 
 File size distribution
 ======================
 
 File size is important because it is related to the pixel dimensions of images and therefore it will have an impact on training / validation speed.
 
+What is the mean size in kilobytes?
+-----------------------------------
+
 ``` r
-data_dir <- # Setting the directory that contains all the images
-    "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data/2018-01-17_top101-images"
-
-files_info <- # Reading all the images in the directory
-    file.info(list.files(
-        path = data_dir,
-        pattern = ".jpg",
-        full.names = TRUE
-    ))
-# head(files_info)
-
 files_info$size2 <-
     files_info$size / 1000 # Convert bytes to kilobytes
 size_kb <-
-    files_info$size2 # creating a variable containing only the file size in Kb
+    files_info$size2 # Creating a variable containing only the file size in Kb
+# summary(size_kb)
+# boxplot(size_kb) 
 cat('The mean size is ', mean(size_kb), 'kb') # What is the mean size?
 ```
 
     ## The mean size is  19.87619 kb
 
-``` r
-# summary(size_kb)
-# boxplot(size_kb) 
-```
-
 Plotting file size
 ------------------
 
-File sizes is viewed in Kb's.
+File size is viewed in Kb's.
 
-![](top101script_files/figure-markdown_github/File%20size%20-%20plotting-1.png)![](top101script_files/figure-markdown_github/File%20size%20-%20plotting-2.png)
+![](top101script_files/figure-markdown_github/File%20size%20-%20plotting-1.png)
 
 Image dimensions
 ================
 
 to inspect if all images are the same dimension and if they are RGB or gray-scale.
 
-``` r
-# Reading all images paths in to a 'list'
-images <-
-    list.files(path = data_dir,
-               pattern = ".jpg",
-               full.names = TRUE)
-str(images)
-```
-
     ##  chr [1:10204] "/Users/nijram13/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data"| __truncated__ ...
-
-``` r
-x <- image_read(images[1])
-str(x)
-```
 
     ## Class 'magick-image' <externalptr>
 
-``` r
-# Creates an empty list to be filled in the next function
-lst2 <- c()
-
-# Returns dimensions, depth, and channels for the images
-for (image in images) {
-    # This function creates an error, but it works.
-    x <- load.image(image)
-    x <- dim(x)
-    x <- as.numeric(unlist(x))
-    lst2 <- c(lst2, x)
-}
-```
-
     ## Error in fun(file): Unsupported file format. Please convert to jpeg/png/bmp or install image magick
-
-``` r
-# Converting to a Dataframe and get rid of images without 3 channels (RGB)
-df <-
-    data.frame(matrix(
-        unlist(lst2),
-        nrow = 10204,
-        byrow = TRUE,
-        ncol = 4
-    ))
-```
 
     ## Warning in matrix(unlist(lst2), nrow = 10204, byrow = TRUE, ncol = 4):
     ## data length [10136] is not a sub-multiple or multiple of the number of rows
     ## [10204]
 
-``` r
-# Changing columnnames and rownames
-colnames(df) <- c('hight', 'width', 'depth', 'channel')
-rownames(df) <- images
-
-# Removing grayscale images to a different dataframe
-df_channel_wrong <- subset(df, channel <= 2)
-df_good <- subset(df, channel > 2)
-df_good_melt <- melt(df_good[1:2])
-```
-
     ## No id variables; using all as measure variables
 
-``` r
-summary(df_good_melt)
-```
-
-    ##   variable         value      
-    ##  hight:10200   Min.   : 34.0  
-    ##  width:10200   1st Qu.: 83.0  
-    ##                Median :112.0  
-    ##                Mean   : 98.1  
-    ##                3rd Qu.:112.0  
-    ##                Max.   :206.0
+    ##    variable         value      
+    ##  height:10200   Min.   : 34.0  
+    ##  width :10200   1st Qu.: 83.0  
+    ##                 Median :112.0  
+    ##                 Mean   : 98.1  
+    ##                 3rd Qu.:112.0  
+    ##                 Max.   :206.0
 
 Plotting the image dimensions
 -----------------------------

@@ -31,13 +31,20 @@ top101 <-
 ```{r small data set inspection}
 # head(top101)
 summary(top101)
+str(top101)
+top101_melt <- melt(top101)
+species <- data.frame(count(top101_melt$scientific_name))
+species[order(species[,2],decreasing=T),]
+levels(top101$shot_type)[levels(top101$shot_type)=='d'] <- 'dorsal'
+levels(top101$shot_type)[levels(top101$shot_type)=='h'] <- 'head'
+levels(top101$shot_type)[levels(top101$shot_type)=='p'] <- 'profile'
 ```
 
 ## Shot type plot
 
-```{r Shot type plot, echo = FALSE}
-p <- ggplot(top101)
-p + geom_bar(aes(shot_type), position = 'dodge') +
+```{r Shot type plot, fig.height = 3, echo = FALSE}
+g <- ggplot(top101)
+g + geom_bar(aes(shot_type), position = 'dodge') +
     coord_cartesian(ylim = c(3350, 3450)) +
     xlab("Shot types") + ylab("Number of images") +
     ggtitle("Shot type distribution")
@@ -46,20 +53,29 @@ p + geom_bar(aes(shot_type), position = 'dodge') +
 # Image distribution per species
 Here we can see how images are distributed per species. Within species there are 3 different shot types. p = profile, d = dorsal, and h = head view.
 
-```{r Image distribution, fig.height = 10, echo = FALSE}
+```{r Image-species distribution, fig.height = 10, echo = FALSE}
 g <-
     ggplot(top101) # Ploting image distribution per species per shot type
 g + geom_bar(aes(scientific_name, fill = shot_type), width = 0.5) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) +
-    labs(title = "Histogram on species distrubition per shot_type",
-         subtitle = "Only species with over 300 images are shown") +
-    coord_flip()
+    labs(title = "Histogram of species distrubition per shottype",
+         subtitle = "from FormicID-97") +
+    coord_flip() +
+    labs(x = "Number of images", y = "Species") +
+    theme(
+        plot.title = element_text(size = 25),
+        plot.subtitle = element_text(size = 15),
+        axis.title = element_text(size = 15),
+        legend.title = element_text(size = 15),
+        legend.text = element_text(size = 15),
+        legend.position = 'top'
+    )
 ```
 
 # File size distribution 
 File size is important because it is related to the pixel dimensions of images and therefore it will have an impact on training / validation speed.
 
-```{r File size - reading data}
+```{r File size - reading data, echo = FALSE}
 data_dir <- # Setting the directory that contains all the images
     "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data/2018-01-17_top101-images"
 
@@ -70,31 +86,34 @@ files_info <- # Reading all the images in the directory
         full.names = TRUE
     ))
 # head(files_info)
+```
 
+## What is the mean size in kilobytes?
+
+```{r File size - convert and mean}
 files_info$size2 <-
     files_info$size / 1000 # Convert bytes to kilobytes
 size_kb <-
-    files_info$size2 # creating a variable containing only the file size in Kb
-cat('The mean size is ', mean(size_kb), 'kb') # What is the mean size?
-
+    files_info$size2 # Creating a variable containing only the file size in Kb
 # summary(size_kb)
 # boxplot(size_kb) 
+cat('The mean size is ', mean(size_kb), 'kb') # What is the mean size?
 ```
 
 ## Plotting file size 
-File sizes is viewed in Kb's.
+File size is viewed in Kb's.
 
 ```{r File size - plotting, echo=FALSE}
 # Link to a small explanation on plotting histograms and density curves.
 # https://www.statmethods.net/graphs/density.html
-
+par(mfrow=c(1,2))
 # Histogram
 h <- hist(
     size_kb,
     breaks = 50,
     col = "red",
     xlab = "File size (kb)",
-    main = "File size distribution of the top 101 most imaged species"
+    main = "File size distribution of the top 97 most imaged species"
 )
 # Plotting a normal curve on the histogram
 xfit <- seq(min(size_kb), max(size_kb), length = 40)
@@ -104,13 +123,14 @@ lines(xfit, yfit, col = "blue", lwd = 2)
 
 # Kernel density plot
 d <- density(files_info$size2)
-plot(d, main = "File size distribution of the top 101 most imaged species")
+plot(d, main = "File size distribution of the top 97 most imaged species")
 polygon(d, col = "red", border = "blue")
+par(mfrow=c(1,1))
 ```
 
 # Image dimensions
 to inspect if all images are the same dimension and if they are RGB or gray-scale.
-```{r Image dimensions - Reading data, error=TRUE}
+```{r Image dimensions - Reading data, error=TRUE, echo = FALSE}
 # Reading all images paths in to a 'list'
 images <-
     list.files(path = data_dir,
@@ -142,7 +162,7 @@ df <-
     ))
 
 # Changing columnnames and rownames
-colnames(df) <- c('hight', 'width', 'depth', 'channel')
+colnames(df) <- c('height', 'width', 'depth', 'channel')
 rownames(df) <- images
 
 # Removing grayscale images to a different dataframe
