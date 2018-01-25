@@ -15,6 +15,9 @@ setwd(
     "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/stat/top101"
 )
 
+data_dir <- # Setting the directory that contains all the images
+    "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data/2018-01-17_top101-images"
+
 library(ggplot2) # for plotting
 library(jpeg)
 library(imager) # for reading jpg files
@@ -76,9 +79,6 @@ g + geom_bar(aes(scientific_name, fill = shot_type), width = 0.5) +
 File size is important because it is related to the pixel dimensions of images and therefore it will have an impact on training / validation speed.
 
 ```{r File size - reading data, echo = FALSE}
-data_dir <- # Setting the directory that contains all the images
-    "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data/2018-01-17_top101-images"
-
 files_info <- # Reading all the images in the directory
     file.info(list.files(
         path = data_dir,
@@ -202,4 +202,30 @@ yfit <- yfit * diff(h$mids[1:2]) * length(df_good$width)
 lines(xfit, yfit, col = "blue", lwd = 2)
 ```
 
+## Image examples
 
+```{r image examples, echo = FALSE}
+img_d <- image_read(images[1])
+img_h <- image_read(images[2])
+img_p <- image_read(images[3])
+casent0102125 <- c(img_h, img_d, img_p)
+image_info(casent0102125)
+a_australis <- image_append(image_scale(casent0102125, "x52"))
+image_write(a_australis, path = 'a_australis.png', format = 'png')
+
+top101_nobroken <- top101[-c(387:401,5111:5113),]
+unique_species <- top101_nobroken[!duplicated(top101[2:3]),]
+unique_species$image_url <- as.character(unique_species$image_url)
+str(unique_species)
+urllist <- unique_species[,4]
+
+urllist_test <- unique_species[1:25,4]
+images_all <- c()
+for (row in urllist_test) {
+    urllink <- urllist_test
+    img <- image_read(urllink)
+    images_all <- c(images_all, img)
+}
+images_all
+
+```
