@@ -2,6 +2,8 @@
 _Classification of images of ants using deep learning_
 <br>
 <img src="https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true">
+<br>
+_Images are taken from AntWeb.org_
 
 ## Status
 
