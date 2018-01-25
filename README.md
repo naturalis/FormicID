@@ -21,7 +21,8 @@ _Text taken from Antweb.org_ <br> <br>
 How does the dataset looks like
 <br> <br>
 <img src="https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true" width="500">
-<br>
+<br> <br>
+<img src="https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true" width="500">
 
 
 ## Quickstart
