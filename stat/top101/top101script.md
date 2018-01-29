@@ -6,6 +6,7 @@
     -   [Plotting file size](#plotting-file-size)
 -   [Image dimensions](#image-dimensions)
     -   [Plotting the image dimensions](#plotting-the-image-dimensions)
+    -   [Image examples](#image-examples)
 
 ``` r
 setwd(
@@ -17,6 +18,9 @@ library(jpeg)
 library(imager) # for reading jpg files
 library(reshape2) # for using melt()
 library(magick) # for image conversion because jpg files are read
+
+data_dir <- # Setting the directory that contains all the images
+    "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data/2018-01-17_top101-images"
 
 top101 <-
     read.csv('top101.csv') # spreadsheat containing catalognumber, scientific name,
@@ -59,14 +63,8 @@ str(top101)
     ##  $ image_url      : Factor w/ 10225 levels "http://www.antweb.org/images/anic32-002152/anic32-002152_d_1_low.jpg",..: 1615 1616 1614 1624 1625 1623 1639 1640 1638 1768 ...
 
 ``` r
-top101_melt <- melt(top101)
-```
-
-    ## Using catalog_number, scientific_name, shot_type, image_url as id variables
-
-``` r
-species <- data.frame(count(top101_melt$scientific_name))
-species[order(species[,2],decreasing=T),]
+species <- data.frame(count(top101$scientific_name))
+species[order(species[, 2], decreasing = T),]
 ```
 
     ##                             x freq
@@ -169,9 +167,19 @@ species[order(species[,2],decreasing=T),]
     ## 87     technomyrmex_vitiensis   68
 
 ``` r
-levels(top101$shot_type)[levels(top101$shot_type)=='d'] <- 'dorsal'
-levels(top101$shot_type)[levels(top101$shot_type)=='h'] <- 'head'
-levels(top101$shot_type)[levels(top101$shot_type)=='p'] <- 'profile'
+levels(top101$shot_type)[levels(top101$shot_type) == 'd'] <-
+    'dorsal'
+levels(top101$shot_type)[levels(top101$shot_type) == 'h'] <- 'head'
+levels(top101$shot_type)[levels(top101$shot_type) == 'p'] <-
+    'profile'
+
+# https://stackoverflow.com/questions/8186436/order-stacked-bar-graph-in-ggplot
+top101_transp <- read.csv('top101_transp.csv', sep = ';')
+top101_transp$total <- NULL # remove total
+top101_transp$scientific_name <-
+    reorder(top101_transp$scientific_name, rowSums(top101_transp[-1])) # reorder based on a non-created total
+melted <-
+    melt(top101_transp, id = 'scientific_name') # melt based on scientific_name
 ```
 
 Shot type plot
@@ -228,17 +236,749 @@ to inspect if all images are the same dimension and if they are RGB or gray-scal
     ## data length [10136] is not a sub-multiple or multiple of the number of rows
     ## [10204]
 
-    ## No id variables; using all as measure variables
+    ## 
+    ## Attaching package: 'stringr'
 
-    ##    variable         value      
-    ##  height:10200   Min.   : 34.0  
-    ##  width :10200   1st Qu.: 83.0  
-    ##                 Median :112.0  
-    ##                 Mean   : 98.1  
-    ##                 3rd Qu.:112.0  
-    ##                 Max.   :206.0
+    ## The following object is masked from 'package:imager':
+    ## 
+    ##     boundary
+
+    ## Using height, width, depth, channel, names, shot_type as id variables
+
+    ##  height          width      depth     channel  
+    ##  112:10200   84     :1265   1:10200   3:10200  
+    ##              83     : 588                      
+    ##              77     : 317                      
+    ##              79     : 281                      
+    ##              73     : 277                      
+    ##              76     : 262                      
+    ##              (Other):7210                      
+    ##                                   names        shot_type        
+    ##  amblyopone_australis_casent0102125_d:    1   Length:10200      
+    ##  amblyopone_australis_casent0102125_h:    1   Class :character  
+    ##  amblyopone_australis_casent0102125_p:    1   Mode  :character  
+    ##  amblyopone_australis_casent0102148_d:    1                     
+    ##  amblyopone_australis_casent0102148_h:    1                     
+    ##  amblyopone_australis_casent0102148_p:    1                     
+    ##  (Other)                             :10194
+
+    ## Using shot_type as id variables
 
 Plotting the image dimensions
 -----------------------------
 
 ![](top101script_files/figure-markdown_github/Image%20dimensions%20-%20Plotting-1.png)![](top101script_files/figure-markdown_github/Image%20dimensions%20-%20Plotting-2.png)
+
+Image examples
+--------------
+
+    ##   format width height colorspace matte filesize
+    ## 1   JPEG   112    118       sRGB FALSE    21553
+    ## 2   JPEG   112     52       sRGB FALSE    11856
+    ## 3   JPEG   112     58       sRGB FALSE    10240
+
+    ## 'data.frame':    291 obs. of  4 variables:
+    ##  $ catalog_number : Factor w/ 3441 levels "anic32-002152",..: 544 544 544 83 83 83 43 43 43 1118 ...
+    ##  $ scientific_name: Factor w/ 97 levels "amblyopone_australis",..: 1 1 1 2 2 2 3 3 3 4 ...
+    ##  $ shot_type      : Factor w/ 3 levels "dorsal","head",..: 2 3 1 2 3 1 2 3 1 2 ...
+    ##  $ image_url      : chr  "http://www.antweb.org/images/casent0102125/casent0102125_h_1_low.jpg" "http://www.antweb.org/images/casent0102125/casent0102125_p_1_low.jpg" "http://www.antweb.org/images/casent0102125/casent0102125_d_1_low.jpg" "http://www.antweb.org/images/casent0005966/casent0005966_h_1_low.jpg" ...
+
+    ## [[1]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[2]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[3]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[4]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[5]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[6]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[7]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[8]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[9]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[10]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[11]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[12]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[13]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[14]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[15]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[16]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[17]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[18]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[19]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[20]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[21]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[22]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[23]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[24]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890
+    ## 
+    ## [[25]]
+    ##    format width height colorspace matte filesize
+    ## 1    JPEG   112    118       sRGB FALSE    21553
+    ## 2    JPEG   112     58       sRGB FALSE    10240
+    ## 3    JPEG   112     52       sRGB FALSE    11856
+    ## 4    JPEG   112     95       sRGB FALSE    10695
+    ## 5    JPEG   112     76       sRGB FALSE    10139
+    ## 6    JPEG   112     77       sRGB FALSE     9750
+    ## 7    JPEG   112     99       sRGB FALSE    15762
+    ## 8    JPEG   112     84       sRGB FALSE    16154
+    ## 9    JPEG   112     84       sRGB FALSE    17058
+    ## 10   JPEG   112     91       sRGB FALSE    19619
+    ## 11   JPEG   112     80       sRGB FALSE    18675
+    ## 12   JPEG   112     74       sRGB FALSE    17959
+    ## 13   JPEG   112     84       sRGB FALSE     8182
+    ## 14   JPEG   112     84       sRGB FALSE     8637
+    ## 15   JPEG   112     84       sRGB FALSE     8642
+    ## 16   JPEG   112     93       sRGB FALSE    30927
+    ## 17   JPEG   112    100       sRGB FALSE    31037
+    ## 18   JPEG   112     86       sRGB FALSE    28624
+    ## 19   JPEG   112     82       sRGB FALSE    36229
+    ## 20   JPEG   112     75       sRGB FALSE    35097
+    ## 21   JPEG   112     61       sRGB FALSE    32989
+    ## 22   JPEG   112     79       sRGB FALSE     7963
+    ## 23   JPEG   112     79       sRGB FALSE     8914
+    ## 24   JPEG   112     82       sRGB FALSE     9321
+    ## 25   JPEG   112     95       sRGB FALSE    19890

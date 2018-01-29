@@ -15,14 +15,14 @@ setwd(
     "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/stat/top101"
 )
 
-data_dir <- # Setting the directory that contains all the images
-    "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data/2018-01-17_top101-images"
-
 library(ggplot2) # for plotting
 library(jpeg)
 library(imager) # for reading jpg files
 library(reshape2) # for using melt()
 library(magick) # for image conversion because jpg files are read
+
+data_dir <- # Setting the directory that contains all the images
+    "~/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data/2018-01-17_top101-images"
 
 top101 <-
     read.csv('top101.csv') # spreadsheat containing catalognumber, scientific name,
@@ -35,12 +35,21 @@ top101 <-
 # head(top101)
 summary(top101)
 str(top101)
-top101_melt <- melt(top101)
-species <- data.frame(count(top101_melt$scientific_name))
-species[order(species[,2],decreasing=T),]
-levels(top101$shot_type)[levels(top101$shot_type)=='d'] <- 'dorsal'
-levels(top101$shot_type)[levels(top101$shot_type)=='h'] <- 'head'
-levels(top101$shot_type)[levels(top101$shot_type)=='p'] <- 'profile'
+species <- data.frame(count(top101$scientific_name))
+species[order(species[, 2], decreasing = T),]
+levels(top101$shot_type)[levels(top101$shot_type) == 'd'] <-
+    'dorsal'
+levels(top101$shot_type)[levels(top101$shot_type) == 'h'] <- 'head'
+levels(top101$shot_type)[levels(top101$shot_type) == 'p'] <-
+    'profile'
+
+# https://stackoverflow.com/questions/8186436/order-stacked-bar-graph-in-ggplot
+top101_transp <- read.csv('top101_transp.csv', sep = ';')
+top101_transp$total <- NULL # remove total
+top101_transp$scientific_name <-
+    reorder(top101_transp$scientific_name, rowSums(top101_transp[-1])) # reorder based on a non-created total
+melted <-
+    melt(top101_transp, id = 'scientific_name') # melt based on scientific_name
 ```
 
 ## Shot type plot
@@ -50,23 +59,31 @@ g <- ggplot(top101)
 g + geom_bar(aes(shot_type), position = 'dodge') +
     coord_cartesian(ylim = c(3350, 3450)) +
     xlab("Shot types") + ylab("Number of images") +
-    ggtitle("Shot type distribution")
+    ggtitle("Shot type distribution") +
+    theme(
+        plot.title = element_text(size = 20),
+        plot.subtitle = element_text(size = 15),
+        axis.title = element_text(size = 15),
+        legend.title = element_text(size = 15),
+        legend.text = element_text(size = 15),
+        legend.position = 'top'
+    )
 ```
 
 # Image distribution per species
 Here we can see how images are distributed per species. Within species there are 3 different shot types. p = profile, d = dorsal, and h = head view.
 
-```{r Image-species distribution, fig.height = 10, echo = FALSE}
+```{r Image-species distribution, fig.height = 9, echo = FALSE}
 g <-
-    ggplot(top101) # Ploting image distribution per species per shot type
-g + geom_bar(aes(scientific_name, fill = shot_type), width = 0.5) +
+    ggplot(melted) # Ploting image distribution per species per shot type
+g + geom_bar(aes(x = scientific_name, y = value, fill = variable), stat = 'identity', width = 0.5) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) +
     labs(title = "Histogram of species distrubition per shottype",
          subtitle = "from FormicID-97") +
     coord_flip() +
     labs(x = "Number of images", y = "Species") +
     theme(
-        plot.title = element_text(size = 25),
+        plot.title = element_text(size = 20),
         plot.subtitle = element_text(size = 15),
         axis.title = element_text(size = 15),
         legend.title = element_text(size = 15),
@@ -168,21 +185,42 @@ rownames(df) <- images
 # Removing grayscale images to a different dataframe
 df_channel_wrong <- subset(df, channel <= 2)
 df_good <- subset(df, channel > 2)
-df_good_melt <- melt(df_good[1:2])
+df_good$names <- rownames(df_good)
+
+df_good2 <- as.data.frame(sapply(df_good,gsub,pattern="/Users/nijram13/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data/2018-01-17_top101-images/", replacement = ""))
+df_good2 <- as.data.frame(sapply(df_good2,gsub,pattern=".jpg", replacement = ""))
+library(stringr)
+df_shot_types <- str_sub(df_good2$names, -1, -1)
+df_good2$shot_type <- df_shot_types
+df_good_melt <- melt(df_good2[1:6])
 summary(df_good_melt)
+df_good_melt$height <- as.numeric(as.character(df_good_melt$height))
+df_good_melt$width <- as.numeric(as.character(df_good_melt$width))
+df_good_melt$shot_type <- as.factor(df_good_melt$shot_type)
+df_good_small <- df_good_melt[,c(1,2,6)]
+melted_df <- melt(df_good_small)
+
 ```
 
 ## Plotting the image dimensions
 
 ```{r Image dimensions - Plotting, echo=FALSE}
 # Boxplot of the hight and width distribution
-g <- ggplot(df_good_melt)
-g + geom_boxplot(aes(x = variable, y = value), alpha = 0.7) +
+g <- ggplot(melted_df, aes(x = variable, y = value))
+g + geom_boxplot(aes(fill = shot_type), alpha = 0.7) +
     scale_y_continuous(name = "Number of Pixels",
                        breaks = seq(0, 225, 25),
                        limits = c(0, 225)) +
     scale_x_discrete(name = "Dimensions") +
-    ggtitle("Boxplot of hight and width distribution")
+    ggtitle("Boxplot of hight and width distribution") +
+    theme(
+        plot.title = element_text(size = 20),
+        plot.subtitle = element_text(size = 15),
+        axis.title = element_text(size = 15),
+        legend.title = element_text(size = 15),
+        legend.text = element_text(size = 15),
+        legend.position = 'top'
+    )
 
 # histogram of distribution of the width
 h <- hist(
