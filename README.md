@@ -21,6 +21,11 @@ _Text taken from Antweb.org_ <br> <br>
 <img src="https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true" width="500">
 <br>
 
+### AntWeb API
+* [AntWeb API version 2](https://www.antweb.org/api/v2/)
+* [AntWeb API version 3 beta](https://www.antweb.org/documentation/api/apiV3.jsp)
+At this moment version 2 is used because version 3 was not released when the project started. Version 3 is also still in beta. Later, the scripts will be changed to use version 3.
+
 ### Dataset
 How does the dataset looks like
 <br> <br>
