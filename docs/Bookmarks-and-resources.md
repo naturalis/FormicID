@@ -101,6 +101,7 @@
 * [Visualization - Using the UI to Tune Your Network](https://deeplearning4j.org/visualization#usingui)
 * [Visualizing Outputs of each layer of a CNN Model during Training Phase](http://www.ir.com/blog/visualizing-outputs-cnn-model-training-phase)
 * [Visualizing Representations: Deep Learning and Human Beings](http://colah.github.io/posts/2015-01-Visualizing-Representations/)
+* [Feature Visualization | How neural networks build up their understanding of images](https://distill.pub/2017/feature-visualization/)
 
 ## Dataset creation
 * [Welcome to Kaggle Datasets | The best place to discover and seamlessly analyze open data](https://www.kaggle.com/datasets)
