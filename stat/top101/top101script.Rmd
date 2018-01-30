@@ -46,20 +46,34 @@ levels(top101$shot_type)[levels(top101$shot_type) == 'p'] <-
 # https://stackoverflow.com/questions/8186436/order-stacked-bar-graph-in-ggplot
 top101_transp <- read.csv('top101_transp.csv', sep = ';')
 top101_transp$total <- NULL # remove total
+capitalize <- function(x) {
+    first <- toupper(substr(x, start = 1, stop = 1))
+    rest <- tolower(substr(x, start = 2, stop = nchar(x)))
+    paste0(first, rest)
+}
+levels(top101_transp$scientific_name) <-
+    capitalize(levels(top101_transp$scientific_name))
+top101_transp[1] <- sapply(
+        top101_transp[1],
+        gsub,
+        pattern = "_",
+        replacement = " "
+    )
 top101_transp$scientific_name <-
-    reorder(top101_transp$scientific_name, rowSums(top101_transp[-1])) # reorder based on a non-created total
+    reorder(top101_transp$scientific_name, rowSums(top101_transp[2:4])) # reorder based on a non-created total
 melted <-
     melt(top101_transp, id = 'scientific_name') # melt based on scientific_name
+
 ```
 
 ## Shot type plot
 
-```{r Shot type plot, fig.height = 3, echo = FALSE}
+```{r Shot type plot, echo = FALSE}
 g <- ggplot(top101)
 g + geom_bar(aes(shot_type), position = 'dodge', fill = 'deepskyblue3') +
     coord_cartesian(ylim = c(3350, 3450)) +
     xlab("Shot types") + ylab("Number of images") +
-    labs(title = "Boxplot of the height and width distribution",
+    labs(title = "Bargraph of the shot type distribution",
          subtitle = "for FormicID-97") +
     theme(
         plot.title = element_text(size = 15),
@@ -77,12 +91,14 @@ Here we can see how images are distributed per species. Within species there are
 ```{r Image-species distribution, fig.height = 9, echo = FALSE}
 g <-
     ggplot(melted) # Ploting image distribution per species per shot type
-g + geom_bar(aes(x = scientific_name, y = value, fill = variable), stat = 'identity', width = 0.5) +
+g + geom_bar(aes(x = scientific_name, y = value, fill = variable),
+             stat = 'identity',
+             width = 0.5) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) +
     labs(title = "Histogram of species distrubition per shottype",
          subtitle = "for FormicID-97") +
     coord_flip() +
-    labs(x = "Number of images", y = "Species") +
+    labs(x = "Species", y = "Number of images") +
     theme(
         plot.title = element_text(size = 15),
         plot.subtitle = element_text(size = 10),
@@ -90,7 +106,9 @@ g + geom_bar(aes(x = scientific_name, y = value, fill = variable), stat = 'ident
         legend.title = element_text(size = 10),
         legend.text = element_text(size = 10),
         legend.position = 'top'
-    )
+    )  +
+    scale_fill_discrete(name = 'Shot type',
+                        labels = c('dorsal', 'head', 'profile')) 
 ```
 
 # File size distribution 
@@ -155,7 +173,7 @@ g + geom_histogram(
 
 # Image dimensions
 to inspect if all images are the same dimension and if they are RGB or gray-scale.
-```{r Image dimensions - Reading data, error=TRUE, echo = FALSE}
+```{r Image dimensions - Reading data, error = TRUE, echo = FALSE}
 # Reading all images paths in to a 'list'
 images <-
     list.files(path = data_dir,
@@ -219,7 +237,7 @@ g + geom_boxplot(aes(fill = shot_type), alpha = 0.7) +
     scale_y_continuous(name = "Number of Pixels",
                        breaks = seq(0, 225, 25),
                        limits = c(0, 225)) +
-    scale_x_discrete(name = "Channel") +
+    scale_x_discrete(name = "Channel", labels = c('Height', 'Width')) +
     labs(title = "Boxplot of hight and width distribution",
          subtitle = "for FormicID-97") +
     theme(
@@ -229,7 +247,9 @@ g + geom_boxplot(aes(fill = shot_type), alpha = 0.7) +
         legend.title = element_text(size = 10),
         legend.text = element_text(size = 10),
         legend.position = 'top'
-    )
+    ) +
+    scale_fill_discrete(name = 'Shot type',
+                        labels = c('dorsal', 'head', 'profile')) 
 
 # histogram of distribution of the width
 h <- hist(
@@ -251,7 +271,7 @@ lines(xfit, yfit, col = "blue", lwd = 2)
 
 ## Image examples
 
-```{r image examples, echo = FALSE}
+```{r image examples, echo = FALSE, eval = FALSE}
 img_d <- image_read(images[1])
 img_h <- image_read(images[2])
 img_p <- image_read(images[3])
