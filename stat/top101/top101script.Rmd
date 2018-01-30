@@ -56,18 +56,19 @@ melted <-
 
 ```{r Shot type plot, fig.height = 3, echo = FALSE}
 g <- ggplot(top101)
-g + geom_bar(aes(shot_type), position = 'dodge') +
+g + geom_bar(aes(shot_type), position = 'dodge', fill = 'deepskyblue3') +
     coord_cartesian(ylim = c(3350, 3450)) +
     xlab("Shot types") + ylab("Number of images") +
-    ggtitle("Shot type distribution") +
+    labs(title = "Boxplot of the height and width distribution",
+         subtitle = "for FormicID-97") +
     theme(
-        plot.title = element_text(size = 20),
-        plot.subtitle = element_text(size = 15),
-        axis.title = element_text(size = 15),
-        legend.title = element_text(size = 15),
-        legend.text = element_text(size = 15),
+        plot.title = element_text(size = 15),
+        plot.subtitle = element_text(size = 10),
+        axis.title = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 10),
         legend.position = 'top'
-    )
+    ) 
 ```
 
 # Image distribution per species
@@ -79,15 +80,15 @@ g <-
 g + geom_bar(aes(x = scientific_name, y = value, fill = variable), stat = 'identity', width = 0.5) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) +
     labs(title = "Histogram of species distrubition per shottype",
-         subtitle = "from FormicID-97") +
+         subtitle = "for FormicID-97") +
     coord_flip() +
     labs(x = "Number of images", y = "Species") +
     theme(
-        plot.title = element_text(size = 20),
-        plot.subtitle = element_text(size = 15),
-        axis.title = element_text(size = 15),
-        legend.title = element_text(size = 15),
-        legend.text = element_text(size = 15),
+        plot.title = element_text(size = 15),
+        plot.subtitle = element_text(size = 10),
+        axis.title = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 10),
         legend.position = 'top'
     )
 ```
@@ -123,26 +124,33 @@ File size is viewed in Kb's.
 ```{r File size - plotting, echo=FALSE}
 # Link to a small explanation on plotting histograms and density curves.
 # https://www.statmethods.net/graphs/density.html
-par(mfrow=c(1,2))
-# Histogram
-h <- hist(
-    size_kb,
-    breaks = 50,
-    col = "red",
-    xlab = "File size (kb)",
-    main = "File size distribution of the top 97 most imaged species"
-)
-# Plotting a normal curve on the histogram
-xfit <- seq(min(size_kb), max(size_kb), length = 40)
-yfit <- dnorm(xfit, mean = mean(size_kb), sd = sd(size_kb))
-yfit <- yfit * diff(h$mids[1:2]) * length(size_kb)
-lines(xfit, yfit, col = "blue", lwd = 2)
+size_kb_df <- data.frame(size_kb)
 
-# Kernel density plot
-d <- density(files_info$size2)
-plot(d, main = "File size distribution of the top 97 most imaged species")
-polygon(d, col = "red", border = "blue")
-par(mfrow=c(1,1))
+g <- ggplot(size_kb_df, aes(size_kb))
+g + geom_histogram(
+    binwidth = 1,
+    colour = 'black',
+    aes(y = ..density..),
+    fill = 'deepskyblue3'
+) +
+    stat_function(fun = dnorm,
+                  color = 'red',
+                  args = list(
+                      mean = mean(size_kb_df$size_kb),
+                      sd = sd(size_kb_df$size_kb)
+                  )) +
+    labs(title = "Histogram of file size density",
+         subtitle = "for FormicID-97") +
+    labs(x = "File size (Kb)", y = "Density (%)")  +
+    theme(
+        plot.title = element_text(size = 15),
+        plot.subtitle = element_text(size = 10),
+        axis.title = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 10),
+        legend.position = 'top'
+    ) +
+    guides(fill = FALSE)
 ```
 
 # Image dimensions
@@ -211,14 +219,15 @@ g + geom_boxplot(aes(fill = shot_type), alpha = 0.7) +
     scale_y_continuous(name = "Number of Pixels",
                        breaks = seq(0, 225, 25),
                        limits = c(0, 225)) +
-    scale_x_discrete(name = "Dimensions") +
-    ggtitle("Boxplot of hight and width distribution") +
+    scale_x_discrete(name = "Channel") +
+    labs(title = "Boxplot of hight and width distribution",
+         subtitle = "for FormicID-97") +
     theme(
-        plot.title = element_text(size = 20),
-        plot.subtitle = element_text(size = 15),
-        axis.title = element_text(size = 15),
-        legend.title = element_text(size = 15),
-        legend.text = element_text(size = 15),
+        plot.title = element_text(size = 15),
+        plot.subtitle = element_text(size = 10),
+        axis.title = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        legend.text = element_text(size = 10),
         legend.position = 'top'
     )
 
