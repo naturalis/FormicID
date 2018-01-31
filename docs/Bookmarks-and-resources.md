@@ -46,6 +46,7 @@
 * [Keras documentation](https://keras.io)
 * [Keras resources](https://github.com/fchollet/keras-resources)
 * [R Interface to Keras](https://github.com/rstudio/keras)
+* [Valerio Maggio - Ten Steps to Keras](https://www.youtube.com/watch?v=FrkYu2zVUyM)
 * [How to pass callbacks to scikit_learn wrappers (e.g. KerasClassifier)](https://github.com/fchollet/keras/issues/4278)
 * [5 Step Life-Cycle for Neural Network Models in Keras](https://machinelearningmastery.com/5-step-life-cycle-neural-network-models-keras/)
 * [Display Deep Learning Model Training History in Keras](https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/)
