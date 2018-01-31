@@ -108,6 +108,7 @@
 * [850k Images in 24 hours: Automating Deep Learning Dataset Creation](https://gab41.lab41.org/850k-images-in-24-hours-automating-deep-learning-dataset-creation-60bdced04275)
 * [Step by Step, A Tutorial on How to Feed Your Own Image Data to Tensorflow](http://yeephycho.github.io/2016/08/15/image-data-in-tensorflow/)
 * [Datavec - ETL Library for Machine Learning - data pipelines, data munging and wrangling](https://github.com/deeplearning4j/DataVec)
+* [The column-store pioneer | MonetDB](https://www.monetdb.org/Home)
 
 ### Image handeling
 * [imager: an R package for image processing](https://dahtah.github.io/imager/imager.html)
