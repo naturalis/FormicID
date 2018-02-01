@@ -44,4 +44,7 @@ Text on how the neural network architecture looks like
 [Requirements](requirements.txt)
 
 ## Credits
-Txt
+* Naturalis Biodiversity Center 
+* Supervisor: dr. Rutger Vos
+* 2nd Corrector: dr. Jeremy Miller
+* [Bookmarks and Resources](FormicID/docs/Bookmarks-and-resources.md)

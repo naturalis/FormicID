@@ -46,6 +46,7 @@
 * [Keras documentation](https://keras.io)
 * [Keras resources](https://github.com/fchollet/keras-resources)
 * [R Interface to Keras](https://github.com/rstudio/keras)
+* [Valerio Maggio - Ten Steps to Keras](https://www.youtube.com/watch?v=FrkYu2zVUyM)
 * [How to pass callbacks to scikit_learn wrappers (e.g. KerasClassifier)](https://github.com/fchollet/keras/issues/4278)
 * [5 Step Life-Cycle for Neural Network Models in Keras](https://machinelearningmastery.com/5-step-life-cycle-neural-network-models-keras/)
 * [Display Deep Learning Model Training History in Keras](https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/)
@@ -65,6 +66,7 @@
 #### Optimizing Keras
 * [keras/keras/losses.py](https://github.com/fchollet/keras/blob/master/keras/losses.py)
 * [How to Grid Search Hyperparameters for Deep Learning Models in Python With Keras](https://machinelearningmastery.com/grid-search-hyperparameters-deep-learning-models-python-keras/)
+* [Keras + Hyperopt: A very simple wrapper for convenient hyperparameter optimization](https://github.com/maxpumperla/hyperas)
 
 ### Neural Network guides and tutorials
 * [A Beginner's Guide To Understanding Convolutional Neural Networks](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/)
@@ -108,6 +110,7 @@
 * [850k Images in 24 hours: Automating Deep Learning Dataset Creation](https://gab41.lab41.org/850k-images-in-24-hours-automating-deep-learning-dataset-creation-60bdced04275)
 * [Step by Step, A Tutorial on How to Feed Your Own Image Data to Tensorflow](http://yeephycho.github.io/2016/08/15/image-data-in-tensorflow/)
 * [Datavec - ETL Library for Machine Learning - data pipelines, data munging and wrangling](https://github.com/deeplearning4j/DataVec)
+* [The column-store pioneer | MonetDB](https://www.monetdb.org/Home)
 
 ### Image handeling
 * [imager: an R package for image processing](https://dahtah.github.io/imager/imager.html)
