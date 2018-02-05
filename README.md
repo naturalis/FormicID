@@ -1,4 +1,4 @@
-# FormicID &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/naturalis/FormicID/blob/master/LICENSE)
+# :ant: FormicID &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/naturalis/FormicID/blob/master/LICENSE)
 _Classification of images of ants using deep learning_
 <br>
 <img src="https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true">
