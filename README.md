@@ -5,13 +5,29 @@ _Classification of images of ants using deep learning_
 <br>
 _Images are taken from AntWeb.org_
 
-## Status
+* [Status](status)
+* [Description](description)
+* [Quickstart](quickstart)
+* [AntWeb](antweb)
+  * [AntWeb API](antweb-api)
+  * [Dataset](dataset)
+* [Neural Network](neural-network)
+  * [Architecture](architecture)
+* [Requirements](requirements)
+* [Credits](credits)
 
+---
+
+## Status
 <!-- travis-ci -->
+_in progress..._
 
 ## Description
 Code repository for CNN-based image classification of AntWeb images <br>
 _FormicID is Formicidae / IDentification_
+
+## Quickstart
+How to use
 
 ### AntWeb
 AntWeb is the world's largest online database of images, specimen records, and natural history information on ants. It is community driven and open to contribution from anyone with specimen records, natural history comments, or images.<br>
@@ -32,9 +48,6 @@ How does the dataset looks like
 <br> <br>
 <img src="https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true" width="500">
 <br> 
-
-## Quickstart
-How to use
 
 ## Neural Network
 ### Architecture
