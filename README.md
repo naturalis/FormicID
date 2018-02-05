@@ -5,7 +5,7 @@ _Classification of images of ants using deep learning_
 * [Quickstart](quickstart)
 * [AntWeb](antweb)
   * [AntWeb API](antweb-api)
-  * [Dataset](images-dataset)
+  * [Dataset](images--dataset)
 * [Neural Network](neural-network)
   * [Architecture](architecture)
 * [Requirements](requirements)
