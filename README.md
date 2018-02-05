@@ -1,10 +1,5 @@
 # :ant: FormicID &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/naturalis/FormicID/blob/master/LICENSE)
 _Classification of images of ants using deep learning_
-<br>
-<img src="https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true">
-<br>
-_Images are taken from AntWeb.org_
-
 * [Status](status)
 * [Description](description)
 * [Quickstart](quickstart)
@@ -25,6 +20,10 @@ _in progress..._
 ## Description
 Code repository for CNN-based image classification of AntWeb images <br>
 _FormicID is Formicidae / IDentification_
+<br>
+<img src="https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true">
+<br>
+_Images are taken from AntWeb.org_
 
 ## Quickstart
 How to use
