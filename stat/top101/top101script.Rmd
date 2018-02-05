@@ -95,9 +95,9 @@ g + geom_bar(aes(x = scientific_name, y = value, fill = variable),
              stat = 'identity',
              width = 0.5) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) +
-    labs(title = "Histogram of species distrubition per shottype",
+    labs(title = "Histogram of species distribition per shot type",
          subtitle = "for FormicID-97") +
-    coord_flip() +
+    # coord_flip() +
     labs(x = "Species", y = "Number of images") +
     theme(
         plot.title = element_text(size = 15),
@@ -107,6 +107,7 @@ g + geom_bar(aes(x = scientific_name, y = value, fill = variable),
         legend.text = element_text(size = 10),
         legend.position = 'top'
     )  +
+    scale_x_discrete(limits = rev(levels(melted$scientific_name))) + 
     scale_fill_discrete(name = 'Shot type',
                         labels = c('dorsal', 'head', 'profile')) 
 ```
