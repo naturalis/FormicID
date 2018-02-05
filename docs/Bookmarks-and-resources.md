@@ -62,6 +62,7 @@
 
 #### Visuazizing Keras
 * [Plot hidden layers in Keras](https://gist.github.com/hadim/9fedb72b54eb3bc453362274cd347a6a)
+* [Quiver | Interactive deep convolutional networks features visualization.](https://keplr-io.github.io/quiver/)
 
 #### Optimizing Keras
 * [keras/keras/losses.py](https://github.com/fchollet/keras/blob/master/keras/losses.py)
