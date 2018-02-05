@@ -67,6 +67,7 @@
 * [keras/keras/losses.py](https://github.com/fchollet/keras/blob/master/keras/losses.py)
 * [How to Grid Search Hyperparameters for Deep Learning Models in Python With Keras](https://machinelearningmastery.com/grid-search-hyperparameters-deep-learning-models-python-keras/)
 * [Keras + Hyperopt: A very simple wrapper for convenient hyperparameter optimization](https://github.com/maxpumperla/hyperas)
+  * [Hyperopt | Distributed Asynchronous Hyperparameter Optimization in Python](http://hyperopt.github.io/hyperopt/)
 
 ### Neural Network guides and tutorials
 * [A Beginner's Guide To Understanding Convolutional Neural Networks](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/)
