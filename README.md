@@ -59,4 +59,4 @@ Text on how the neural network architecture looks like
 * Naturalis Biodiversity Center 
 * Supervisor: dr. Rutger Vos
 * 2nd Corrector: dr. Jeremy Miller
-* [Bookmarks and Resources](Bookmarks-and-resources.md)
+* [Bookmarks and Resources](docs/Bookmarks-and-resources.md)
