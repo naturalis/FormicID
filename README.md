@@ -28,9 +28,9 @@ _Images are taken from AntWeb.org_
 
 ## :arrow_forward: Quickstart
 
-1. Create a 2 column csv file with the genus+species you want to download from AntWeb
-2. Run [`AW_to_json.py`](AW_to_json.py) to download all the JSON objects for your species
-  * If you want all species, skip step 1 and run [`AW_to_json.py`](AW_to_json.py) without specifying a `genus` and `species`
+1. Create a 2 column csv file with the genus+species you want to download from AntWeb.
+2. Run [`AW_to_json.py`](AW_to_json.py) to download all the JSON objects for your species.
+(If you want all species, skip step 1 and run [`AW_to_json.py`](AW_to_json.py) without specifying a `genus` and `species`)
 3. run [`json_to_csv.py`](json_to_csv.py) so a csv file is created with the information you need to download and name images correctly to your output folder.
 4. _To be continuted_
 
