@@ -1,6 +1,6 @@
 # FormicID
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/naturalis/FormicID/blob/master/LICENSE) · [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) · [![GitHub followers](https://img.shields.io/github/followers/MarijnJABoer.svg)](https://github.com/MarijnJABoer?tab=followers) · [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)]() · [![Open Source Love png2](https://badges.frapsoft.com/os/v2/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/naturalis/FormicID/blob/master/LICENSE) · [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) · [![GitHub followers](https://img.shields.io/github/followers/MarijnJABoer.svg)](https://github.com/MarijnJABoer?tab=followers) · [Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg) · [![Open Source Love png2](https://badges.frapsoft.com/os/v2/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
 
 _Classification of images of ants using deep learning_
 
