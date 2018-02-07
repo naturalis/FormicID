@@ -1,9 +1,15 @@
 ################################################################################
 #                                                                              #
 #                                  ANTWEB API                                  #
-#                                AntWeb to csv                                 #
+#                                AntWeb to json                                #
 ################################################################################
-
+'''
+Description:
+This script requires the use of an csv file with 2 columns, filled with a genus
+and a species name. The script will go over the csv file and download a json
+file for this genus+species and will then create an csv file containing a
+"catalog_number", "scientific_name", "shot_type", and "image_url"
+'''
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
 
@@ -27,9 +33,7 @@ todaystr = datetime.date.today().isoformat()
 
 # AntWeb basic information
 # //////////////////////////////////////////////////////////////////////////////
-
-
-def create_url(limit, offset, genus, species):
+def create_url(limit, offset, **kwargs):
     """
     # Description:
         Creation of the url to access AntWebs API, using a base_url and
@@ -38,29 +42,31 @@ def create_url(limit, offset, genus, species):
     # Input:
         limit = sets the limit for accessing specimens
         offset = sets the offset for accessing specimens
+    # Optional input:
         genus = specifies the genus
         species = specifies the species
+        country = specifies the country
+        caste  = specifies the caste (e.g. worker) # does not work in API v2
 
     # Returns:
         Returns an URL as response object that can be opened by the function
         request.get()
-
-    # TODO:
-        make genus and species optional
-        - https://stackoverflow.com/questions/35265234/
-        passing-an-optional-argument-in-a-function-python
-        - https://stackoverflow.com/questions/9539921/
-        how-do-i-create-a-python-function-with-optional-arguments
     """
+    # Make genus and species optional arguments for this function
+    genus = kwargs.get('genus', None)
+    species = kwargs.get('species', None)
+    country = kwargs.get('country', None)
+    caste = kwargs.get('caste', None)
+
     base_url = 'http://www.antweb.org/api/v2/?'
 
     arguments = {    # API arguments for in the url
-        'caste':        'worker',
         'limit':        limit,
         'offset':       offset,
-        # 'country':      'Netherlands',
         'genus':        genus,
-        'species':      species
+        'species':      species,
+        'country':      country
+        'caste':        caste # not working
     }
     # Creating the AntWeb url from the base url and the API arguments
     url = requests.get(url=base_url, params=arguments)
@@ -80,15 +86,12 @@ def get_url_info(input_url):
         returns information on the URL
     """
     # Get basic url information
-    print('URL:', input_url.url)  # does not work yet???
+    print('URL:', input_url.url)
+    print('Connection status:', input_url.status_code)
+    print('Time elapsed to connect to URL:', input_url.elapsed)
     print('URL headers:', input_url.headers)
     print('URL type:', type(input_url.content))
-    print('Connection status:', input_url.status_code)
-    if input_url.status_code == 200:
-        print('Request status: the request was fulfilled.')
-    else:
-        print('Request status: the request was not fulfilled.')
-    print('Time elapsed to connect to URL:', input_url.elapsed)
+
 
 # get JSON > database
 # //////////////////////////////////////////////////////////////////////////////
@@ -97,10 +100,10 @@ def get_url_info(input_url):
 def get_json(input_url):
     """
     # Description:
-        Scrapes JSON files using an URL from AntWebs API
+        Scrapes JSON files from AntWeb URLs
 
     # Input:
-        input_url = the url as response object, created by create_url()
+        input_url = an URL containing a JSON object
 
     # Returns:
         A JSON object
@@ -116,7 +119,7 @@ def get_json(input_url):
 def max_specimens(json):
     """
     # Description:
-        View the maximum number of specimens for a JSON object.
+        View the maximum number of specimens specified in an AntWeb JSON object.
 
     # Input:
         json = A JSON object
@@ -208,7 +211,6 @@ def open_csv(path_to_csv):
 # //////////////////////////////////////////////////////////////////////////////
 
 
-# @profile
 def urls_to_json(csv_species, offset_set, limit_set):
     """
     # Description:
@@ -262,47 +264,6 @@ def urls_to_json(csv_species, offset_set, limit_set):
         nb_batch += 1
         time.sleep(0.5)
 
-
-def batch_filter_to_csv(directory):
-    """
-    # Description:
-        Download all images found from a batch of JSON files in a directory
-
-    # Input:
-        directory = path and name of the output directory
-
-    # Returns:
-        creates a .csv file in the output directory
-
-    # TODO:
-        create input for:
-        - the input directory
-        - output directory
-        - filename
-    """
-    df2 = pd.DataFrame()
-    for filename in tqdm(os.listdir(directory),
-                         desc='Reading JSON files'):
-        if filename.endswith('.json'):
-            with open(os.path.join(directory, filename)) as data_file:
-                # print('Filtering {}'.format(filename))
-                lst = filter_json(data_file)
-                df = create(lst)
-                df2 = df2.append(df)
-
-    # replace spaces between genus and species names with underscores
-    df2.replace('\s+', '_', regex=True, inplace=True)
-    df2.columns = [
-        'catalog_number',
-        'scientific_name',
-        'shot_type',
-        'image_url'
-    ]
-    # file_path = os.path.join(path, file_name)
-    path = './data/top101-JSON/'
-    file_name = 'top101.csv'
-    df2.to_csv(os.path.join(path, file_name), index=False, header=True)
-    print('All JSON files are read, filtered and added to the csv file.')
 
 
 if __name__ == '__main__':

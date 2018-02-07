@@ -154,7 +154,7 @@ def main():
     )
 
 
-# Update csv file and scrape images
+# main()
 # //////////////////////////////////////////////////////////////////////////////
 if __name__ == '__main__':
     main()
