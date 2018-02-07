@@ -13,16 +13,10 @@ file for this genus+species and will then create an csv file containing a
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
 
-import requests
 import json
 import jmespath
 import pandas as pd
-import time
-import datetime
 import os
-import csv
-from functools import wraps
-from urllib.request import urlretrieve
 from tqdm import tqdm
 
 
@@ -32,19 +26,19 @@ wd = os.getcwd()
 
 # Filter
 # //////////////////////////////////////////////////////////////////////////////
+
+
 def filter_json(json_file):
     """
     # Description:
         Load a JSON object and filter for only relevant values.
 
     # Input:
-        json_file = path to a JSON file
+        json_file = a JSON object
 
     # Returns:
-        A list of lists with 4 values
+        A list of [catalog_number, scientific_name, shot_type, image_url]
 
-    # TODO:
-        combine with create() ?
     """
     json_txt = json.load(json_file)
     data_filtered = jmespath.search('specimens[].[catalogNumber,'
@@ -58,6 +52,7 @@ def filter_json(json_file):
             catalog_number = row[0]
             scientific_name = row[1]
             image_url = {}
+            # Take out urls for 'head', 'profile' and 'dorsal' shots
             if 'h' in row[2]:
                 image_url['h'] = row[2]['h']['img'][1]
             if 'p' in row[2]:
@@ -72,23 +67,19 @@ def filter_json(json_file):
     return lst
 # Batch batch_filter_to_csv
 # //////////////////////////////////////////////////////////////////////////////
-def batch_filter_to_csv(input_dir, output_dir, csvname):
+
+
+def batch_json_to_csv(input_dir, output_dir, csvname):
     """
     # Description:
-        from a json or batch of json files a csvfile is created with relevant
+        From a json or batch of json files a csvfile is created with relevant
         information for downloading the images and naming the files
 
     # Input:
         output_dir = path and name of the output directory
 
     # Returns:
-        creates a .csv file in the output directory
-
-    # TODO:
-        create input for:
-        - the input directory
-        - output_dir
-        - filename
+        Creates a .csv file in the output directory
     """
     suffix = '.csv'
     input_dir = os.path.join(wd, input_dir)
@@ -110,13 +101,14 @@ def batch_filter_to_csv(input_dir, output_dir, csvname):
     df2.columns = columns
     # file_path = os.path.join(path, file_name)
     output_dir = os.path.join(wd, output_dir)
-    df2.to_csv(os.path.join(output_dir, csvname + suffix), index=False, header=True)
+    df2.to_csv(os.path.join(output_dir, csvname + suffix),
+               index=False, header=True)
     print('All JSON files are read, filtered and added to the csv file. \n'
-    '{}{} was created in {}'.format(csvname, suffix, output_dir))
+          '{}{} was created in {}'.format(csvname, suffix, output_dir))
 
 
 if __name__ == '__main__':
-    batch_filter_to_csv(
+    batch_json_to_csv(
         input_dir='data/top101-JSON',
         output_dir='data/top101-JSON',
         csvname='test'
