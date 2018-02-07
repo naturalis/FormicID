@@ -22,7 +22,7 @@ _Classification of images of ants using deep learning_
 --------------------------------------------------------------------------------
 
 ## Status
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](<https://GitHub.com/naturalis/FormicID/graphs/commit-activity>) · [![GitHub contributors](https://img.shields.io/github/contributors/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/graphs/contributors/) · [![Code Climate](https://img.shields.io/codeclimate/issues/github/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/issues/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](<https://GitHub.com/naturalis/FormicID/graphs/commit-activity>) · [![GitHub contributors](https://img.shields.io/github/contributors/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/graphs/contributors/) · [![Code Climate](https://img.shields.io/codeclimate/issues/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/issues/)
 
 ## :pencil: Description
 
