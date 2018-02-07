@@ -26,7 +26,7 @@ _FormicID is Formicidae / IDentification_<br>
 ![](https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true)<br>
 _Images are taken from AntWeb.org_
 
-## :arrow_forward: Quickstart
+## :arrow_forward: How to use
 
 1. Create a 2 column csv file with the genus+species you want to download from AntWeb.
 2. Run [`AW_to_json.py`](AW_to_json.py) to download all the JSON objects for your species.
