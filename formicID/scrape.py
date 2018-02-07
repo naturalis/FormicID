@@ -139,10 +139,7 @@ def image_scraper(csvfile, start, end, dir_name):
         print('{} images were downloaded.'.format(nb_images))
 
 
-# Update csv file and scrape images
-# //////////////////////////////////////////////////////////////////////////////
-if __name__ == '__main__':
-
+def main():
     csv_update(
         csvfile_input=os.path.join(
             os.path.dirname(__file__),
@@ -155,3 +152,9 @@ if __name__ == '__main__':
         end=1,
         dir_name='top101-images'
     )
+
+
+# Update csv file and scrape images
+# //////////////////////////////////////////////////////////////////////////////
+if __name__ == '__main__':
+    main()
