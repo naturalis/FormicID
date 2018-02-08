@@ -11,10 +11,10 @@ from keras.callbacks import TensorBoard
 from datetime import datetime
 from keras import backend as K
 
-from formicID.formicID_input import train_data_generator
-from formicID.formicID_input import validation_data_generator
-
-# To Do: store all images in different batches and loop over batches while training. This is better for the memory.
+from formicID.models.build import neuralNetwork
+from formicID.models.models import model_resnet50, model_xception
+from formicID.models.models import model_densenet169, model_inceptionv3
+# TODO: store all images in different batches and loop over batches while training. This is better for the memory.
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ def build_tensorboard(model):
 #NUM_SPECIES = len(AW_generated_data.class_indices) # the number of species
 #print('Number of species found:', NUM_SPECIES, 'species.')
 
-def train_nn(model):
+def trainer(model):
     print('Training network...')
 
     # Generate data using the generator from the image directories.
