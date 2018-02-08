@@ -139,8 +139,9 @@ def urls_to_json(csv_file, output_dir, offset_set, limit_set):
     for index, row in tqdm(csv_file.iterrows(), total=nb_specimens,
                            desc='Downloading JSON files'):
         url = create_url(limit=limit_set, offset=offset_set,
-                         genus=row['genus'], pecies=row['species'])
+                         genus=row['genus'], species=row['species'])
         url = url.url
+        print('Downloading from URL:', url)
         file_name = row['genus'] + '_' + row['species'] + '.json'
         species = get_json(url)
         with open(os.path.join(wd, output_dir, file_name), 'w') as jsonfile:
@@ -155,7 +156,7 @@ def main():
     urls_to_json(csv_file='data/2018-01-09-db-Top101imagedspecies.csv',
                  output_dir='data/JSON-test/',
                  offset_set=0,
-                 limit_set=9999)
+                 limit_set=500)
 
 
 if __name__ == '__main__':
