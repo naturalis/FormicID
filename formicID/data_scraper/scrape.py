@@ -10,63 +10,56 @@
 ################################################################################
 '''
 Description:
-<placeholder txt>
+Use this script to updating the csv file for broken URLs, indet species. After that you can download all images. The images will be saved in different folders per shot type and per species.
 '''
 
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
-import requests
-import datetime
-import os
 import csv
+import datetime
 import itertools
+import os
+import time
 from urllib.request import urlretrieve
-from tqdm import tqdm
-import pandas as pd
 
+import pandas as pd
+import requests
+
+from tqdm import tqdm
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
 todaystr = datetime.date.today().isoformat()
+wd = os.getcwd()
+data_dir = os.path.join(wd, 'data')
 
 
 # Make changes to the csv file
 # //////////////////////////////////////////////////////////////////////////////
 
-def csv_update(csvfile_input):
+def csv_update(csvfile):
+    """This function will remove broken links to a different csvfile and remove
+    species that are indet.
+
+    Args:
+        csvfile (type): A .csv file that contains all the specimen and image information with 4 columns, namely: 'catalog_number', 'scientific_name', 'shot_type', 'image_url'
+
+    Returns:
+        type: A cleaned csv file ready for downloading.
+
     """
-    # Description:
-        This function will remove broken links to a different csvfile
-        and remove species that are indet.
-
-    # Input:
-        A .csv file, created by formicID_Antweb(_...).py, that contains all the
-        specimen and image information with 4 columns, namely:
-            - 'catalog_number'
-            - 'scientific_name'
-            - 'shot_type'
-            - 'image_url'
-
-    # Returns:
-        A cleaned csv file ready for downloading.
-
-    # TODO:
-        Make this function work
-        Filter for broken links, usually containing spaces
-        Filter for indet species
-        Place these rows in a 'bad specimen' csv file
-    """
-    columns = [
-        'catalog_number',
-        'scientific_name',
-        'shot_type',
-        'image_url'
-    ]
+    # TODO (MJABoer):
+    #     Make this function work
+    #     Filter for broken links, usually containing spaces
+    #     Filter for indet species
+    #     Place these rows in a 'bad specimen' csv file
+    csvfile = os.path.join(data_dir, csvfile)
+    columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
 
     df_good = pd.DataFrame(columns=columns)
     df_bad = pd.DataFrame(columns=columns)
 
-    with open(csvfile_input, 'rt') as r:
+    with open(csvfile, 'rt') as r:
 
         reader = pd.read_csv(r, sep=';', header=0)
 
@@ -77,89 +70,110 @@ def csv_update(csvfile_input):
             else:
                 df_good.append(row)
 
-    path = './data/'
-
     file_name_good = 'top101_good.csv'
-    df_good.to_csv(os.path.join(path, file_name_good), header=True)
+    df_good.to_csv(os.path.join(data_dir, file_name_good), header=True)
 
     file_name_bad = 'top101_bad.csv'
-    df_bad.to_csv(os.path.join(path, file_name_good), header=True)
+    df_bad.to_csv(os.path.join(data_dir, file_name_good), header=True)
 
 
 # Downloading of images
 # //////////////////////////////////////////////////////////////////////////////
 
-def image_scraper(csvfile, start, end, dir_name):
+def image_scraper(csvfile, input_dir, start, end, dir_out_name):
+    """This function scrapes images of urls found in the csv file that is made
+    with the download_to_csv function.
+
+    Args:
+        csvfile (type): name of the csvfile
+        input_dir (type): directory in FormicID/data/ that contains the csv
+        start (integer): Set the starting row for downloading.
+        end (integer): Set the end row for downloading.
+        dir_out_name (type): a string of text to name the output folder, with
+            the current date as prefix.
+
+    Returns:
+        type: A folder with images.
     """
-    # Description:
-        This function scrapes images of urls found in the csv file that is made
-        with the download_to_csv function.
-
-    # Input:
-        csvfile = set the csv file to use
-        start = set the starting row for downloading
-        end = set the end row for downloading
-        dir_name = a string of text to name the output folder, with the current
-            date as prefix
-
-    # Returns
-        A folder with images.
-
-    # TODO:
-        before downloading split in 3 folders for each shot_type
-        put each species in it own folder in the right shot_type folder
-    """
-
     # Number of images that will be downloaded
     nb_images = end - start
 
-    # The date is added to the dir_name
-    dir_name = todaystr + '_' + dir_name
+    # The date is added to the dir_out_name
+    dir_out_name = todaystr + '_' + dir_out_name
 
-    # If the /data/'dir_name' directory does not exist, create one
-    if not os.path.exists(os.path.join('data/', dir_name)):
-        os.mkdir(os.path.join('data/', dir_name))
+    csvfile = os.path.join(data_dir, input_dir, csvfile)
+
+    # If the /data/'dir_out_name' directory does not exist, create one
+    print('Creating folders...')
+    if not os.path.exists(os.path.join(data_dir, input_dir, dir_out_name)):
+        os.mkdir(os.path.join(data_dir, input_dir, dir_out_name))
+        os.mkdir(os.path.join(data_dir, input_dir, dir_out_name, 'head'))
+        os.mkdir(os.path.join(data_dir, input_dir, dir_out_name, 'dorsal'))
+        os.mkdir(os.path.join(data_dir, input_dir, dir_out_name, 'profile'))
+
+    dir_h = os.path.join(data_dir, input_dir, dir_out_name, 'head')
+    dir_d = os.path.join(data_dir, input_dir, dir_out_name, 'dorsal')
+    dir_p = os.path.join(data_dir, input_dir, dir_out_name, 'profile')
+    time.sleep(0.5)
+    print('Folders are created')
 
     # Opening the csvfile from row 'start' to row 'end'
     with open(csvfile, 'rt') as images:
         imagereader = csv.reader(
             itertools.islice(images, start, end + 1))
 
-        # Max number of lines in the csvfile
-        # nb_lines = sum(1 for row in imagereader)
-
         print("Starting scraping...")
 
-        # Using tqdm will add a download bar in terminal for visualizing
-        # progress
         for image in tqdm(imagereader,
-                          desc='Starting scraping images.',
+                          desc='Scraping images.',
                           total=nb_images):
             # for i in trange(nb_lines, desc='Downloading all images'):
             # for j in trange(50, desc='Downloading a set of 50 images'):
 
-            # Don't scrape the header line
-            if image[3] != 'image_url':
-                filename = os.path.join('data/', dir_name,
-                                        '{}_{}_{}.jpg'.format(
-                                            image[1], image[0], image[2]))
-                urlretrieve(url=image[3], filename=filename)
+            if image[3] != 'image_url': # Don't scrape the header line
+
+                # Create a folder for the species in a shot type folder if it
+                # does not exist already, then download the image.
+                if image[2] == 'h':
+                    if not os.path.exists(os.path.join(dir_h, image[1])):
+                        os.mkdir(os.path.join(dir_h, image[1]))
+                    filename = os.path.join(dir_h, image[1],
+                    '{}_{}_{}.jpg'.format(image[1], image[0], image[2]))
+
+                    urlretrieve(url=image[3], filename=filename)
+
+                if image[2] == 'd':
+                    if not os.path.exists(os.path.join(dir_d, image[1])):
+                        os.mkdir(os.path.join(dir_d, image[1]))
+                    filename = os.path.join(dir_d, image[1],
+                    '{}_{}_{}.jpg'.format(image[1], image[0], image[2]))
+
+                    urlretrieve(url=image[3], filename=filename)
+
+                if image[2] == 'p':
+                    if not os.path.exists(os.path.join(dir_p, image[1])):
+                        os.mkdir(os.path.join(dir_p, image[1]))
+                    filename = os.path.join(dir_p, image[1],
+                    '{}_{}_{}.jpg'.format(image[1], image[0], image[2]))
+
+                    urlretrieve(url=image[3], filename=filename)
 
         print('{} images were downloaded.'.format(nb_images))
 
 
 def main():
-    csv_update(
-        csvfile_input=os.path.join(
-            os.path.dirname(__file__),
-            '../data/test1.csv')
-    )
+    # csv_update(
+    #     csvfile=os.path.join(
+    #         os.path.dirname(__file__),
+    #         '../data/test1.csv')
+    # )
 
     image_scraper(
-        csvfile=os.path.join(os.path.dirname(__file__), '../data/top101.csv'),
+        csvfile='test_5species.csv',
+        input_dir='JSON-test',
         start=0,
-        end=1,
-        dir_name='top101-images'
+        end=455,
+        dir_out_name='test_5species_images'
     )
 
 
