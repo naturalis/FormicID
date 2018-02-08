@@ -112,9 +112,9 @@ def batch_json_to_csv(input_dir, output_dir, csvname):
 
 def main():
     batch_json_to_csv(
-        input_dir='data/top101-JSON',
-        output_dir='data/top101-JSON',
-        csvname='test'
+        input_dir='data/JSON-test',
+        output_dir='data/JSON-test',
+        csvname='test_5species'
     )
 
 
