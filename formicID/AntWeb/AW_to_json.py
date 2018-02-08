@@ -1,4 +1,9 @@
 ################################################################################
+#                     __                      _      ___ ____                  #
+#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                 #
+#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |                #
+#                   |  _| (_) | |  | | | | | | | (__ | || |_| |                #
+#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                 #
 #                                                                              #
 #                                  ANTWEB API                                  #
 #                                AntWeb to json                                #
@@ -38,13 +43,13 @@ def create_url(limit, offset, **kwargs):
         arguments
 
     # Input:
-        limit = sets the limit for accessing specimens
-        offset = sets the offset for accessing specimens
+        - limit = sets the limit for accessing specimens
+        - offset = sets the offset for accessing specimens
     # Optional input:
-        genus = specifies the genus
-        species = specifies the species
-        country = specifies the country
-        caste  = specifies the caste (e.g. worker) # does not work in API v2
+        - genus = specifies the genus
+        - species = specifies the species
+        - country = specifies the country
+        - caste  = specifies the caste (e.g. worker) # does not work in API v2
 
     # Returns:
         Returns an URL as response object that can be opened by the function
@@ -78,7 +83,7 @@ def get_url_info(input_url):
         Provides information on the URL
 
     # Input:
-        input_url = the url as response object, created by create_url()
+        - input_url = the url as response object, created by create_url()
 
     # Returns:
         returns information on the URL
@@ -101,7 +106,7 @@ def get_json(input_url):
         Scrapes JSON files from AntWeb URLs
 
     # Input:
-        input_url = an URL containing a JSON object
+        - input_url = an URL containing a JSON object
 
     # Returns:
         A JSON object
@@ -117,65 +122,57 @@ def get_json(input_url):
 # //////////////////////////////////////////////////////////////////////////////
 
 
-def urls_to_json(csv_species, output_dir, offset_set, limit_set):
+def urls_to_json(csv_file, output_dir, offset_set, limit_set):
     """
     # Description:
         This function downloads JSON files for a list of species and places them in a drecitory.
 
+        limit / offset = number of batches to download
+        630976 / 9859 = 64
+
     # Input:
-        csv_species = a csv file with 2 columns of genus and species names
-        offset_set = set the offset for downloading AntWeb records in batches
-        limit_set = set a limit for downloading a set of records from AntWeb
+        - csv_species = path to the csv file genus and species names
+        - output_dir = the directory for saving the JSON files
+        - offset_set = set the offset for downloading AntWeb records in batches
+        - limit_set = set a limit for downloading a set of records from AntWeb
 
     # Returns:
         A directory of JSON files for different species
-
-    # TODO:
-        Fix pathways
-        Add directory as argument
     """
-    csv_species = os.path.join(wd, csv_species)
-    df_top101 = pd.read_csv(csv_species, sep=';', header=0)
-
-    offset = offset_set
-    limit = limit_set
-    # limit / offset = number of batches to download
-    # 630976 / 9859 = 64
-    check = limit - offset
-
-    # TODO: output_dir
-    path = './data/top101-JSON/'
-    if not os.path.exists(path):
-        os.mkdir(path)
-
-    # Obtain the max number of specimens
-    nb_specimens = df_top101.shape[0]
+    csv_file = os.path.join(wd, csv_file)
+    csvfile = pd.read_csv(csv_species, sep=';', header=0)
+    nb_specimens = csvfile.shape[0]
     nb_batch = 1
-    total_batches = limit
 
-    for index, row in tqdm(df_top101.iterrows(),
-                           desc='Downloading JSON files'):
+    if not os.path.exists(os.join.path(wd, output_dir)):
+        os.mkdir(os.join.path(wd, output_dir))
 
+    for index, row in tqdm(csvfile.iterrows(), desc='Downloading JSON files'):
         url = create_url(
             limit=limit_set,
             offset=offset_set,
             genus=row['genus'],
             species=row['species'])
-
         url = url.url
         file_name = row['genus'] + '_' + row['species'] + '.json'
         species = get_json(url)
-        with open(os.path.join(path, file_name), 'w') as fp:
-            json.dump(species, fp)
-
-        print('Creating URL, fechting JSON and writing to file ({} / {}).'.format(nb_batch, nb_specimens))
+        with open(os.path.join(wd, output_dir, file_name), 'w') as jsonfile:
+            json.dump(species, jsonfile)
+        print('Creating URL, fechting JSON and writing to file ({} / '
+              '{}).'.format(nb_batch, nb_specimens))
         nb_batch += 1
         time.sleep(0.5)
 
 
+# Executing
+# //////////////////////////////////////////////////////////////////////////////
+def main():
+    urls_to_json(csv_species='./data/2018-01-09-db-Top101imagedspecies.csv',
+                 output_dir='data/top101-JSON/'
+                 offset_set=0,
+                 limit_set=10000)
+
+
+# //////////////////////////////////////////////////////////////////////////////
 if __name__ == '__main__':
-    urls_to_json(
-        csv_species='./data/2018-01-09-db-Top101imagedspecies.csv',
-        offset_set=0,
-        limit_set=6000
-    )
+    main()
