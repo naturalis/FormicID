@@ -1,14 +1,18 @@
 ################################################################################
+#                     __                      _      ___ ____                  #
+#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                 #
+#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |                #
+#                   |  _| (_) | |  | | | | | | | (__ | || |_| |                #
+#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                 #
 #                                                                              #
-#                                  xxx                                 #
-#                                AntWeb to csv                                 #
+#                                  ANTWEB API                                  #
+#                                  JSON 2 csv                                  #
 ################################################################################
 '''
 Description:
-This script requires the use of an csv file with 2 columns, filled with a genus
-and a species name. The script will go over the csv file and download a json
-file for this genus+species and will then create an csv file containing a
-"catalog_number", "scientific_name", "shot_type", and "image_url"
+Iterate over a number of JSON files in a folder and save relevant information
+in a csv file (containing a "catalog_number", "scientific_name", "shot_type",
+and "image_url") ready for scrape.py 
 '''
 # Packages
 # //////////////////////////////////////////////////////////////////////////////

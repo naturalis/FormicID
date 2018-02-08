@@ -1,17 +1,33 @@
+################################################################################
+#                     __                      _      ___ ____                  #
+#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                 #
+#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |                #
+#                   |  _| (_) | |  | | | | | | | (__ | || |_| |                #
+#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                 #
+#                                                                              #
+#                                  Utilitiies                                  #
+#                                                                              #
+################################################################################
+'''
+Description:
+This file has code for utility functions that can be used in other scripts.
+
+# TODO: load JSON config
+'''
 def save_model():
-    #save models
+    # TODO return save models
 
 def load_model():
-    #load models
+    # TODO return load models
 
 def read_model():
-    #read models
+    # TODO return read models
 
 def split_validation_set():
-    #split training and validation
+    # TODO return split training and validation
 
 def show_image():
-    #show image
+    # TODO return show image
 
 def model_summary(model):
     return model.summary()

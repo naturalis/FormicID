@@ -12,8 +12,7 @@
 Description:
 This script requires the use of an csv file with 2 columns, filled with a genus
 and a species name. The script will go over the csv file and download a json
-file for this genus+species and will then create an csv file containing a
-"catalog_number", "scientific_name", "shot_type", and "image_url"
+file for this genus+species and places the JSON file in a folder.
 '''
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
