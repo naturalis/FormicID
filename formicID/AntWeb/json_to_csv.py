@@ -12,17 +12,18 @@
 Description:
 Iterate over a number of JSON files in a folder and save relevant information
 in a csv file (containing a "catalog_number", "scientific_name", "shot_type",
-and "image_url") ready for scrape.py 
+and "image_url") ready for scrape.py
 '''
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
 
 import json
+import os
+
 import jmespath
 import pandas as pd
-import os
-from tqdm import tqdm
 
+from tqdm import tqdm
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
@@ -33,15 +34,13 @@ wd = os.getcwd()
 
 
 def filter_json(json_file):
-    """
-    # Description:
-        Load a JSON object and filter for only relevant values.
+    """Load a JSON object and filter for only relevant values.
 
-    # Input:
-        json_file = a JSON object
+    Args:
+        json_file (type): a JSON object.
 
-    # Returns:
-        A list of [catalog_number, scientific_name, shot_type, image_url]
+    Returns:
+        type: A list of [catalog_number, scientific_name, shot_type, image_url].
 
     """
     json_txt = json.load(json_file)
@@ -74,16 +73,17 @@ def filter_json(json_file):
 
 
 def batch_json_to_csv(input_dir, output_dir, csvname):
-    """
-    # Description:
-        From a json or batch of json files a csvfile is created with relevant
-        information for downloading the images and naming the files
+    """From a json or batch of json files a csvfile is created with relevant
+    information for downloading the images and naming the files.
 
-    # Input:
-        output_dir = path and name of the output directory
+    Args:
+        input_dir (type): Description of parameter `input_dir`.
+        output_dir (type): path and name of the output directory.
+        csvname (type): Description of parameter `csvname`.
 
-    # Returns:
-        Creates a .csv file in the output directory
+    Returns:
+        type: Creates a csv file in the output directory.
+
     """
     suffix = '.csv'
     input_dir = os.path.join(wd, input_dir)
@@ -110,10 +110,13 @@ def batch_json_to_csv(input_dir, output_dir, csvname):
     print('All JSON files are read, filtered and added to the csv file. \n'
           '{}{} was created in {}'.format(csvname, suffix, output_dir))
 
-
-if __name__ == '__main__':
+def main():
     batch_json_to_csv(
         input_dir='data/top101-JSON',
         output_dir='data/top101-JSON',
         csvname='test'
     )
+
+
+if __name__ == '__main__':
+    main()
