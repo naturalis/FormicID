@@ -43,8 +43,7 @@ def create_url(limit, offset, **kwargs):
     Args:
         limit (integer): sets the limit for accessing specimens.
         offset (integer): sets the offset for accessing specimens.
-        **kwargs (type): Description of parameter `**kwargs`.
-    Optional args:
+    Optional args (**kwargs):
         genus (type): specifies the genus
         species (type): specifies the species
         country (type): specifies the country
@@ -61,7 +60,6 @@ def create_url(limit, offset, **kwargs):
     caste = kwargs.get('caste', None)
 
     base_url = 'http://www.antweb.org/api/v2/?'
-
     arguments = {    # API arguments for in the url
         'limit':        limit,
         'offset':       offset,
@@ -94,6 +92,8 @@ def get_url_info(input_url):
 
 # Download JSON files from URLs
 # //////////////////////////////////////////////////////////////////////////////
+
+
 def get_json(input_url):
     """Scrapes JSON files from AntWeb URLs.
 
@@ -104,7 +104,6 @@ def get_json(input_url):
         type: A JSON object
 
     """
-
     r = requests.get(url=input_url)
     data = r.json()
     if data == None:
@@ -121,8 +120,9 @@ def urls_to_json(csv_file, output_dir, offset_set, limit_set):
     Args:
         csv_file (type): path to the csv file genus and species names.
         output_dir (type): the directory for saving the JSON files.
-        offset_set (type): set the offset for downloading AntWeb records in batches.
-        limit_set (type): set a limit for downloading a set of records from AntWeb.
+        offset_set (type): the offset for downloading AntWeb records in
+        batches.
+        limit_set (type): the limit for downloading a set of AntWeb records
 
     Returns:
         A directory of JSON files for different species
@@ -134,22 +134,24 @@ def urls_to_json(csv_file, output_dir, offset_set, limit_set):
 
     if not os.path.exists(os.join.path(wd, output_dir)):
         os.mkdir(os.join.path(wd, output_dir))
-
-    for index, row in tqdm(csvfile.iterrows(), desc='Downloading JSON files'):
-        url = create_url(
-            limit=limit_set,
-            offset=offset_set,
-            genus=row['genus'],
-            species=row['species'])
-        url = url.url
-        file_name = row['genus'] + '_' + row['species'] + '.json'
-        species = get_json(url)
-        with open(os.path.join(wd, output_dir, file_name), 'w') as jsonfile:
-            json.dump(species, jsonfile)
-        print('Creating URL, fechting JSON and writing to file ({} / '
-              '{}).'.format(nb_batch, nb_specimens))
-        nb_batch += 1
-        time.sleep(0.5)
+    if offset_set > 10000:
+        print('The offset_set should be lower than 10,000.')
+    else:
+        for index, row in tqdm(csvfile.iterrows(),
+                               desc='Downloading JSON files'):
+            url = create_url(limit=limit_set,
+                             offset=offset_set,
+                             genus=row['genus'],
+                             species=row['species'])
+            url = url.url
+            file_name = row['genus'] + '_' + row['species'] + '.json'
+            species = get_json(url)
+            with open(os.path.join(wd, output_dir, file_name), 'w') as jsonfile:
+                json.dump(species, jsonfile)
+            print('Creating URL, fechting JSON and writing to file ({} / '
+                  '{}).'.format(nb_batch, nb_specimens))
+            nb_batch += 1
+            time.sleep(0.5)
 
 
 def main():
