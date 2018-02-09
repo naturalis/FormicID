@@ -44,7 +44,7 @@ from keras.applications.xception import Xception  # Inception based
 # //////////////////////////////////////////////////////////////////////////////
 
 
-def model_resnet50(classes, weights, input_tensor, input_shape, pooling, classes):
+def model_resnet50(include_top, weights, input_tensor, input_shape, pooling, classes):
     '''
     ResNet50 model, with weights pre-trained on ImageNet.
 
@@ -66,7 +66,7 @@ def model_resnet50(classes, weights, input_tensor, input_shape, pooling, classes
 # //////////////////////////////////////////////////////////////////////////////
 
 
-def model_densenet169(classes, weights, input_tensor, input_shape, pooling, classes):
+def model_densenet169(include_top, weights, input_tensor, input_shape, pooling, classes):
     '''
     Optionally loads weights pre-trained on ImageNet. Note that when using TensorFlow, for best performance you should set image_data_format='channels_last' in your Keras config at ~/.keras/keras.json.
 
@@ -86,7 +86,7 @@ def model_densenet169(classes, weights, input_tensor, input_shape, pooling, clas
 # //////////////////////////////////////////////////////////////////////////////
 
 
-def model_inceptionv3(classes, weights, input_tensor, input_shape, pooling, classes):
+def model_inceptionv3(include_top, weights, input_tensor, input_shape, pooling, classes):
     '''
     Inception V3 model, with weights pre-trained on ImageNet.
 
@@ -108,7 +108,7 @@ def model_inceptionv3(classes, weights, input_tensor, input_shape, pooling, clas
 # //////////////////////////////////////////////////////////////////////////////
 
 
-def model_xception(classes, weights, input_tensor, input_shape, pooling, classes):
+def model_xception(include_top, weights, input_tensor, input_shape, pooling, classes):
     '''
     Xception V1 model, with weights pre-trained on ImageNet.
 
