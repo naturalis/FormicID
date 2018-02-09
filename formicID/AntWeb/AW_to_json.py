@@ -140,14 +140,15 @@ def urls_to_json(csv_file, output_dir, offset_set, limit_set):
                            desc='Downloading JSON files'):
         url = create_url(limit=limit_set, offset=offset_set,
                          genus=row['genus'], species=row['species'])
-        url = url.url
-        print('Downloading from URL:', url)
-        file_name = row['genus'] + '_' + row['species'] + '.json'
-        species = get_json(url)
-        with open(os.path.join(wd, output_dir, file_name), 'w') as jsonfile:
-            json.dump(species, jsonfile)
+        if row['species'] != 'indet':
+            url = url.url
+            print('Downloading from URL:', url)
+            file_name = row['genus'] + '_' + row['species'] + '.json'
+            species = get_json(url)
+            with open(os.path.join(wd, output_dir, file_name), 'w') as jsonfile:
+                json.dump(species, jsonfile)
 
-        time.sleep(0.5)
+            time.sleep(0.5)
     print('Downloading is finished. {} JSON files have been',
           'downloaded'.format(nb_specimens))
 
