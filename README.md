@@ -29,7 +29,7 @@ _Images are harvested from AntWeb.org_
 
 
 ## :arrow_forward: How to use
-
+The working directory should be `/`, so pathways to `/data` work.
 1. Create a 2 column csv file with the genus+species you want to download from AntWeb.
 2. Run [`AW_to_json.py`](formicID/AntWeb/AW_to_json.py) to download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file.
 (If you want all species, skip step 1 and run [`AW_to_json.py`](formicID/Antweb/AW_to_json.py) without specifying a `genus` and `species`)
