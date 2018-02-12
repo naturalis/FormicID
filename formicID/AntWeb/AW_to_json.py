@@ -112,28 +112,33 @@ def get_json(input_url):
         return data
 
 
-def urls_to_json(csv_file, output_dir, offset_set, limit_set):
+def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
     """This function downloads JSON files for a list of species and places them
     in a drecitory. An limit_set higher than 10,000 will usually create
     problems.
 
     Args:
         csv_file (type): path to the csv file genus and species names.
-        output_dir (type): the directory for saving the JSON files.
+        input_dir (type): path to the directory that has the csv file
+        output_dir (type): a new directory name, created in the input_dir for
+            saving the JSON files.
         offset_set (type): the offset for downloading AntWeb records in
-        batches.
+            batches.
         limit_set (type): the limit for downloading a set of AntWeb records
 
     Returns:
         A directory of JSON files for different species
     """
-    csv_file = os.path.join(wd, csv_file)
+    input_dir = os.path.join(wd, input_dir)
+    output_dir = os.path.join(input_dir, todaystr + '-' +  output_dir)
+    csv_file = os.path.join(input_dir, csv_file)
     csv_file = pd.read_csv(csv_file, sep=';', header=0)
     nb_specimens = csv_file.shape[0]
+
     # nb_batch = 1
 
-    if not os.path.exists(os.path.join(wd, output_dir)):
-        os.mkdir(os.path.join(wd, output_dir))
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
     if limit_set > 10000:
         raise ValueError('The limit_set should be lower than 10,000.')
     for index, row in tqdm(csv_file.iterrows(), total=nb_specimens,
@@ -142,20 +147,21 @@ def urls_to_json(csv_file, output_dir, offset_set, limit_set):
                          genus=row['genus'], species=row['species'])
         if row['species'] != 'indet':
             url = url.url
-            print('Downloading from URL:', url)
+            print('\nDownloading from URL:', url)
             file_name = row['genus'] + '_' + row['species'] + '.json'
             species = get_json(url)
             with open(os.path.join(wd, output_dir, file_name), 'w') as jsonfile:
                 json.dump(species, jsonfile)
 
             time.sleep(0.5)
-    print('Downloading is finished. {} JSON files have been',
-          'downloaded'.format(nb_specimens))
+    print('Downloading is finished. {} JSON files have been downloaded'.format(
+    nb_specimens))
 
 
 def main():
-    urls_to_json(csv_file='data/2018-01-09-db-Top101imagedspecies.csv',
-                 output_dir='data/JSON-test/',
+    urls_to_json(csv_file='2018-01-09-db-Top101imagedspecies.csv',
+                 input_dir='data',
+                 output_dir='JSON-test',
                  offset_set=0,
                  limit_set=500)
 
