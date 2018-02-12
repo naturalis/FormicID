@@ -153,7 +153,8 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
 
         for image in tqdm(imagereader,
                           desc='Scraping images.',
-                          total=nb_images):
+                          total=nb_images,
+                          unit='images'):
 
             if image[3] != 'image_url':  # Don't scrape the header line
 

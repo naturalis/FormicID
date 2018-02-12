@@ -143,7 +143,7 @@ def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
     if limit_set > 10000:
         raise ValueError('The limit_set should be lower than 10,000.')
     for index, row in tqdm(csv_file.iterrows(), total=nb_specimens,
-                           desc='Downloading JSON files'):
+                           desc='Downloading JSON files', unit='JSON-files'):
         url = create_url(limit=limit_set, offset=offset_set,
                          genus=row['genus'], species=row['species'])
         if row['species'] != 'indet':
@@ -155,8 +155,8 @@ def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
                 json.dump(species, jsonfile)
 
             time.sleep(0.5)
-    print('Downloading is finished. {} JSON files have been downloaded'.format(
-    nb_specimens))
+    print('Downloading is finished. {} JSON files have been',
+    'downloaded'.format(nb_specimens))
 
 
 def main():
