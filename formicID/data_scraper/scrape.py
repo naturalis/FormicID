@@ -67,30 +67,28 @@ def csv_update(input_dir, csvfile):
         frames = [specimen_blf, specimen_hjr]
         specimen_bad = pd.concat(objs=frames)
 
-        specimen_good = pd.DataFrame(
-            df[df['image_url'].str.contains('blf|hjr') == False],
-            columns=columns)
+        # specimen_good = pd.DataFrame(
+        #     df[df['image_url'].str.contains('blf|hjr') == False],
+        #     columns=columns)
 
-        rows = []
-        for row in tqdm(specimen_bad['image_url'],
-                        desc='Fixing image URLs'):
-            row1 = re.sub('_', '(', row, count=1)
-            row2 = re.sub('_', ')', row1, count=1)
-            row3 = re.sub('_', '(', row2, count=1)
-            row4 = re.sub('_', ')', row3, count=1)
-            rows.append(row4)
-            df2 = pd.DataFrame(rows, columns=['image_url'])
+        df2 = pd.DataFrame(columns=columns)
+        for index, row in tqdm(specimen_bad.iterrows(),
+                        desc='Fixing image URLs', unit='URLs'):
+            row.image_url = re.sub('_', '(', row.image_url, count=1)
+            row.image_url = re.sub('_', ')', row.image_url, count=1)
+            row.image_url = re.sub('_', '(', row.image_url, count=1)
+            row.image_url = re.sub('_', ')', row.image_url, count=1)
+            df2 = df2.append(row)
         specimen_bad.update(df2)
 
-        rows = []
-        for row in tqdm(specimen_bad['catalog_number'],
-                        desc='Fixing catalog numbers'):
-            row1 = re.sub('_', '(', row, count=1)
-            row2 = re.sub('_', ')', row1, count=1)
-            rows.append(row2)
-            df3 = pd.DataFrame(rows, columns=['catalog_number'])
+        df3 = pd.DataFrame(columns=columns)
+        for index, row in tqdm(specimen_bad.iterrows(),
+                        desc='Fixing catalog numbers', unit='URLs'):
+            row.catalog_number = re.sub('_', '(', row.catalog_number, count=1)
+            row.catalog_number = re.sub('_', ')', row.catalog_number, count=1)
+            df3 = df3.append(row)
         specimen_bad.update(df3)
-        # print(specimen_bad)
+
         df.update(specimen_bad)
         df.to_csv(csvfile, sep=',', columns=columns, index=False)
 
@@ -149,12 +147,12 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
             itertools.islice(images, start, end + 1))
         # nb_rows = int(sum(1 for row in imagereader))
 
-        print('Starting scraping {} images...'.format(nb_images))
+        print('Starting to scrape {} images...'.format(nb_images))
 
         for image in tqdm(imagereader,
-                          desc='Scraping images.',
+                          desc='Scraping images',
                           total=nb_images,
-                          unit='images'):
+                          unit=' images'):
 
             if image[3] != 'image_url':  # Don't scrape the header line
 
@@ -207,12 +205,14 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
 
 
 def main():
+    # csv_update(input_dir='2018-02-12-test', csvfile='csv_images.csv')
+
     image_scraper(csvfile='csv_images.csv',
-                  input_dir='2018-02-12-JSON-test',
+                  input_dir='2018-02-12-test',
                   start=0,
-                  end=1500,
+                  end=1000,
                   dir_out_name='images',
-                  update=True
+                  update=False
                   )
 
 # main()
