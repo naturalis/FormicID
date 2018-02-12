@@ -23,18 +23,34 @@ from keras import backend as K
 from formicID.models.build import neuralNetwork
 from formicID.models.models import model_resnet50, model_xception
 from formicID.models.models import model_densenet169, model_inceptionv3
-# TODO: store all images in different batches and loop over batches while training. This is better for the memory.
+# TODO: loop over batches while training. This is better for the memory.
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
 
 
+
+# Initialize an own desinged neural network
+# //////////////////////////////////////////////////////////////////////////////
+model_formicID = neuralNetwork(
+    dropout=0.5,
+    input_shape=[120,120,3],
+    num_species=97,
+    optimizer='Nadam')
+model_formicID.build()
+model_formicID_compile()
+
 # Callbacks
 # //////////////////////////////////////////////////////////////////////////////
 def build_tensorboard(model):
-    """
-    In order to launch TensorBoard from the terminal, copy between ():
-    (tensorboard --logdir="/Users/nijram13/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/graphs/logs")
+    """Short summary.
+
+    Args:
+        model (type): Description of parameter `model`.
+
+    Returns:
+        type: Description of returned object.
+
     """
     AW_tensorboard = TensorBoard(
         log_dir='./graphs/logs/{0}'.format(datetime.now()),
@@ -58,6 +74,15 @@ def build_tensorboard(model):
 #print('Number of species found:', NUM_SPECIES, 'species.')
 
 def trainer(model):
+    """Short summary.
+
+    Args:
+        model (type): Description of parameter `model`.
+
+    Returns:
+        type: Description of returned object.
+
+    """
     print('Training network...')
 
     # Generate data using the generator from the image directories.
