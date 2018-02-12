@@ -130,7 +130,8 @@ def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
         A directory of JSON files for different species
     """
     input_dir = os.path.join(wd, input_dir)
-    output_dir = os.path.join(input_dir, todaystr + '-' +  output_dir)
+    output_dir = os.path.join(input_dir, todaystr + '-' +  output_dir,
+    'json_files')
     csv_file = os.path.join(input_dir, csv_file)
     csv_file = pd.read_csv(csv_file, sep=';', header=0)
     nb_specimens = csv_file.shape[0]
@@ -161,7 +162,7 @@ def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
 def main():
     urls_to_json(csv_file='2018-01-09-db-Top101imagedspecies.csv',
                  input_dir='data',
-                 output_dir='JSON-test',
+                 output_dir='test',
                  offset_set=0,
                  limit_set=500)
 
