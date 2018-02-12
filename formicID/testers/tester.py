@@ -15,8 +15,7 @@ Description:
 
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
-from __future__ import print_function
-
+from keras.model import test_on_batch
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
@@ -24,6 +23,8 @@ from __future__ import print_function
 
 # Validation
 # //////////////////////////////////////////////////////////////////////////////
+
+model.test_on_batch(x,y)
 
 def model_evaluate(model):
     loss, accuracy = model.evaluate(testdataX, testdataY)
