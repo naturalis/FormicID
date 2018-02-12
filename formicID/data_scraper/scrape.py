@@ -115,18 +115,17 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
     Returns:
         type: A folder with images.
     """
+    csvfile = os.path.join(data_dir, input_dir, csvfile)
+    nb_images = end - start
+
     if update == True:
-        print('Update has been set to True. Updating file now...')
+        print('Update argument has been set to: True. Updating file now...')
         csv_update(input_dir=input_dir,
                    csvfile=csvfile
                    )
         print('The csv file has been updated. Downloading is starting...')
-
-    print('Update has been set to False.')
-    # Number of images that will be downloaded
-    nb_images = end - start
-
-    csvfile = os.path.join(data_dir, input_dir, csvfile)
+    else:
+        print('Update argument has been set to: False.')
 
     # If the /data/'dir_out_name' directory does not exist, create one
     print('Checking Folders...')
@@ -142,7 +141,7 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
     dir_p = os.path.join(data_dir, input_dir, dir_out_name, 'profile')
 
     nb_rows = sum(1 for line in open(csvfile))
-    print('The csv file contains {} images'.format(nb_rows))
+    print('The csv file contains {} images.'.format(nb_rows))
     # Opening the csvfile from row 'start' to row 'end'
     with open(csvfile, 'rt') as images:
 
