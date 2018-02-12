@@ -3,6 +3,7 @@
 *.csv
 /notes.txt
 /data/
+/formicID/directoryList.md
 
 # Gitignore template from Github
 # https://github.com/github/gitignore/blob/master/Python.gitignore

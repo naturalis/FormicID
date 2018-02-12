@@ -34,6 +34,41 @@ _Images are taken from AntWeb.org_
 3. run [`json_to_csv.py`](json_to_csv.py) so a csv file is created with the information you need to download and name images correctly to your output folder.
 4. _To be continuted_
 
+## :bookmark: Project Structure
+`
+|-- FormicID
+    |-- __init__.py
+    |-- AntWeb
+    |   |-- AW_to_json.py
+    |   |-- __init__.py
+    |   |-- json_to_csv.py
+    |-- configs
+    |   |-- config.json
+    |-- data_loader
+    |   |-- __init__.py
+    |   |-- data_input.py
+    |-- data_scraper
+    |   |-- __init__.py
+    |   |-- scrape.py
+    |-- mains
+    |   |-- __init__.py
+    |   |-- main.py
+    |-- models
+    |   |-- __init__.py
+    |   |-- build.py
+    |   |-- models.py
+    |-- testers
+    |   |-- __init__.py
+    |   |-- formicID_test.py
+    |-- trainers
+    |   |-- __init__.py
+    |   |-- train.py
+    |-- utils
+        |-- __init__.py
+        |-- utils.py
+
+`
+
 ## :ant: AntWeb
 
 AntWeb is the world's largest online database of images, specimen records, and natural history information on ants. It is community driven and open to contribution from anyone with specimen records, natural history comments, or images.<br><br>
