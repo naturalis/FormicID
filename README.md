@@ -31,6 +31,8 @@ _Images are harvested from AntWeb.org_
 ## :arrow_forward: How to use
 The working directory should be `/`, so pathways to `/data` work.
 1. Create a 2 column csv file with the genus+species you want to download from AntWeb as follows:
+
+
 | genus  | species  |
 |--------|----------|
 | genus1 | species1 |
@@ -54,7 +56,7 @@ The working directory should be `/`, so pathways to `/data` work.
     * start number (line where to start in the csv file)
     * end number (line where to end in the csv file)
     * directory name for the images
-    * update (whether to update the csv file for broken urls or not) 
+    * update (whether to update the csv file for broken urls or not)
 
 _To be continuted_
 
