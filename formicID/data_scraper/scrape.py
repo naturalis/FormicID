@@ -10,9 +10,9 @@
 ################################################################################
 '''
 Description:
-Use this script to updating the csv file for broken URLs, indet species. After
-that you can download all images. The images will be saved in different folders
-per shot type and per species.
+Use this script to updating the csv file for broken URLs. After that you can
+download all images. The images will be saved in different folders per shot
+type and per species.
 '''
 
 # Packages
@@ -41,8 +41,7 @@ data_dir = os.path.join(wd, 'data')
 # //////////////////////////////////////////////////////////////////////////////
 
 def csv_update(input_dir, csvfile):
-    """This function will remove broken links to a different csvfile and remove
-    species that are indet.
+    """This function will remove broken links to a different csvfile.
 
     Args:
         input_dir (type):
