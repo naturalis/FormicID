@@ -14,23 +14,6 @@ This file has code for utility functions that can be used in other scripts.
 
 # TODO: load JSON config
 '''
-def save_model():
-    # TODO return save models
-
-def load_model():
-    # TODO return load models
-
-def read_model():
-    # TODO return read models
-
-def split_validation_set():
-    # TODO return split training and validation
-
-def show_image():
-    # TODO return show image
-
-def model_summary(model):
-    return model.summary()
 
 # Data augmentation
 # //////////////////////////////////////////////////////////////////////////////
