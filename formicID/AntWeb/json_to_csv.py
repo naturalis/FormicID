@@ -86,15 +86,17 @@ def batch_json_to_csv(input_dir, output_dir, csvname):
 
     """
     suffix = '.csv'
-    input_dir = os.path.join(wd, input_dir)
+    input_direc = os.path.join(wd, 'data', input_dir, 'json_files')
+    output_dir = os.path.join(wd, 'data', input_dir)
+
     df2 = pd.DataFrame()
 
     columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
 
-    for filename in tqdm(os.listdir(input_dir),
+    for filename in tqdm(os.listdir(input_direc),
                          desc='Reading JSON files'):
         if filename.endswith('.json'):
-            with open(os.path.join(input_dir, filename)) as data_file:
+            with open(os.path.join(input_direc, filename)) as data_file:
                 # print('Filtering {}'.format(filename))
                 lst = filter_json(data_file)
                 df = pd.DataFrame(lst, columns=columns)
@@ -104,7 +106,6 @@ def batch_json_to_csv(input_dir, output_dir, csvname):
     df2.replace('\s+', '_', regex=True, inplace=True)
     df2.columns = columns
     # file_path = os.path.join(path, file_name)
-    output_dir = os.path.join(wd, output_dir)
     df2.to_csv(os.path.join(output_dir, csvname + suffix),
                index=False, header=True)
     print('All JSON files are read, filtered and added to the csv file. \n'
@@ -112,9 +113,9 @@ def batch_json_to_csv(input_dir, output_dir, csvname):
 
 def main():
     batch_json_to_csv(
-        input_dir='data/JSON-test',
-        output_dir='data/JSON-test',
-        csvname='test_5species'
+        input_dir='2018-02-12-JSON-test',
+        output_dir='2018-02-12-JSON-test',
+        csvname='csv_images'
     )
 
 
