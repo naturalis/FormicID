@@ -130,33 +130,45 @@ def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
         A directory of JSON files for different species
     """
     input_dir = os.path.join(wd, input_dir)
-    output_dir = os.path.join(input_dir, todaystr + '-' +  output_dir,
-    'json_files')
-    csv_file = os.path.join(input_dir, csv_file)
-    csv_file = pd.read_csv(csv_file, sep=';', header=0)
-    nb_specimens = csv_file.shape[0]
-
-    # nb_batch = 1
-
+    output_dir = os.path.join(input_dir, todaystr + '-' +  output_dir, 'json_files')
     if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-    if limit_set > 10000:
-        raise ValueError('The limit_set should be lower than 10,000.')
-    for index, row in tqdm(csv_file.iterrows(), total=nb_specimens,
-                           desc='Downloading JSON files', unit='JSON-files'):
-        url = create_url(limit=limit_set, offset=offset_set,
-                         genus=row['genus'], species=row['species'])
-        if row['species'] != 'indet':
-            url = url.url
-            print('\nDownloading from URL:', url)
-            file_name = row['genus'] + '_' + row['species'] + '.json'
-            species = get_json(url)
-            with open(os.path.join(wd, output_dir, file_name), 'w') as jsonfile:
-                json.dump(species, jsonfile)
+        os.makedirs(output_dir)
 
-            time.sleep(0.5)
-    print('Downloading is finished. {} JSON files have been',
-    'downloaded'.format(nb_specimens))
+    csv_file = os.path.join(input_dir, csv_file)
+    print('Reading {} and creating json_files folder...'.format(csv_file))
+    with open(csv_file, 'rt') as csv_open:
+        csv_df = pd.read_csv(csv_open, sep=';', header=0)
+
+        nb_indet = 0
+        for index, row in csv_df.iterrows():
+            if row['species'] == 'indet':
+                nb_indet += 1
+        print('{} indet species '.format(nb_indet),
+        'found and will be skipped from downloading.')
+
+        nb_specimens = csv_df.shape[0] # - nb_indet
+
+        if limit_set > 10000:
+            raise ValueError('The limit_set should be lower than 10,000.')
+        for index, row in tqdm(csv_df.iterrows(),
+                               total=nb_specimens,
+                               desc='Downloading JSON files',
+                               unit='Species'):
+            url = create_url(limit=limit_set, offset=offset_set,
+                             genus=row['genus'], species=row['species'])
+            if row['species'] == 'indet':
+                print('Skipping "{}".'.format(url.url))
+            else:
+                url = url.url
+                print('\nJSON downladed from URL:', url)
+                file_name = row['genus'] + '_' + row['species'] + '.json'
+                species = get_json(url)
+                with open(os.path.join(wd, output_dir, file_name), 'w') as jsonfile:
+                    json.dump(species, jsonfile)
+
+                time.sleep(0.5) # wait 0.5s so AW does not crash
+        print('Downloading is finished. {} JSON files '.format(nb_specimens),
+        'have been downloaded')
 
 
 def main():
@@ -164,7 +176,7 @@ def main():
                  input_dir='data',
                  output_dir='test',
                  offset_set=0,
-                 limit_set=500)
+                 limit_set=9999)
 
 
 if __name__ == '__main__':
