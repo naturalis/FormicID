@@ -34,7 +34,7 @@ _Images are harvested from AntWeb.org_
 2. Run [`AW_to_json.py`](formicID/AntWeb/AW_to_json.py) to download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file.
 (If you want all species, skip step 1 and run [`AW_to_json.py`](formicID/Antweb/AW_to_json.py) without specifying a `genus` and `species`)
 3. run [`json_to_csv.py`](formicID/AntWeb/json_to_csv.py) so a csv file is created with the information you need to download and name images correctly to your output folder.
-4. Using [`scrape.py`](formicID/data_scraper/scrape.py) the csv file from step 3 will be updated if you flag `image_scraper(update=False/True)` as True. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_`). After updating the csv, the script will start downloading images and will put these in newly created folders for head, dorsal and profile shots. In these folders, every species is put in its own folder.
+4. Using [`scrape.py`](formicID/data_scraper/scrape.py) the csv file from step 3 will be updated if you flag `image_scraper(update=False/True)` as True. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_` ([See issue](https://github.com/naturalis/FormicID/issues/7#issuecomment-364391097)). After updating the csv, the script will start downloading images and will put these in newly created folders for head, dorsal and profile shots. In these folders, every species is put in its own folder.
 
 _To be continuted_
 
