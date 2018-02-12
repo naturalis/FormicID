@@ -110,7 +110,7 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
         dir_out_name (string): text to name the output folder, with the current
                                date as prefix, which is created in the
                                input_dir.
-        update (Boolean): if True; the csv_update() function will be called.
+        update (Boolean): if [default=True]; the csv_update() function will be called.
 
     Returns:
         type: A folder with images.
@@ -124,10 +124,7 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
 
     print('Update has been set to False.')
     # Number of images that will be downloaded
-    # nb_images = end - start
-
-    # The date is added to the dir_out_name
-    dir_out_name = todaystr + '_' + dir_out_name
+    nb_images = end - start
 
     csvfile = os.path.join(data_dir, input_dir, csvfile)
 
@@ -145,6 +142,7 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
     dir_p = os.path.join(data_dir, input_dir, dir_out_name, 'profile')
 
     nb_rows = sum(1 for line in open(csvfile))
+    print('The csv file contains {} images'.format(nb_rows))
     # Opening the csvfile from row 'start' to row 'end'
     with open(csvfile, 'rt') as images:
 
@@ -152,11 +150,11 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
             itertools.islice(images, start, end + 1))
         # nb_rows = int(sum(1 for row in imagereader))
 
-        print("Starting scraping...")
+        print('Starting scraping {} images...'.format(nb_images))
 
         for image in tqdm(imagereader,
                           desc='Scraping images.',
-                          total=nb_rows):
+                          total=nb_images):
 
             if image[3] != 'image_url':  # Don't scrape the header line
 
@@ -209,12 +207,12 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
 
 
 def main():
-    image_scraper(csvfile='test_5species.csv',
-                  input_dir='JSON-test',
+    image_scraper(csvfile='csv_images.csv',
+                  input_dir='2018-02-12-JSON-test',
                   start=0,
-                  end=650,
-                  dir_out_name='test_5species_images',
-                  update=False
+                  end=1500,
+                  dir_out_name='images',
+                  update=True
                   )
 
 # main()
