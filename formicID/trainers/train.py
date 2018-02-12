@@ -15,15 +15,20 @@ Description:
 
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
-from __future__ import print_function
 from keras.callbacks import TensorBoard
 from datetime import datetime
 from keras import backend as K
+from keras.model import train_on_batch
+from keras.callbacks import EarlyStopping
 
 from formicID.models.build import neuralNetwork
+from formicID.utils.logger import build_tensorboard
 from formicID.models.models import model_resnet50, model_xception
 from formicID.models.models import model_densenet169, model_inceptionv3
-# TODO: loop over batches while training. This is better for the memory.
+
+# TODO (MJABOER):
+    # loop over batches while training. This is better for the memory.
+    # Add EarlyStopping
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////
@@ -40,31 +45,9 @@ model_formicID = neuralNetwork(
 model_formicID.build()
 model_formicID_compile()
 
-# Callbacks
-# //////////////////////////////////////////////////////////////////////////////
-def build_tensorboard(model):
-    """Short summary.
-
-    Args:
-        model (type): Description of parameter `model`.
-
-    Returns:
-        type: Description of returned object.
-
-    """
-    AW_tensorboard = TensorBoard(
-        log_dir='./graphs/logs/{0}'.format(datetime.now()),
-        histogram_freq=0, batch_size=32,
-        write_graph=True, write_images=True)
-    AW_tensorboard.set_model(model)
-    Callbacks_Tensorboard = []
-    Callbacks_Tensorboard.append(AW_tensorboard)
-    return Callbacks_Tensorboard
-
-
 # Training
 # //////////////////////////////////////////////////////////////////////////////
-
+model.train_on_batch(x,y)
 # Print information about the generated test data.
 # print('Class mode is:', AW_generated_data.class_mode)  # shows the class mode
 # print(AW_generated_data.class_indices) # shows dict of classes and indices
