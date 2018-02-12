@@ -15,6 +15,7 @@ This file has code utilities for handeling models.
 # Packages
 ################################################################################
 from keras.models import load_model
+import h5py
 
 wd = os.getcwd()
 
