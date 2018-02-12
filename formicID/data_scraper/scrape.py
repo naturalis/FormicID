@@ -202,7 +202,7 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
                             continue
 
 
-        print('{} images were downloaded.'.format(nb_rows))
+        print('{} images were downloaded.'.format(nb_images))
 
 
 def main():
