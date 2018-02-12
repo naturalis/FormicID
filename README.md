@@ -35,7 +35,7 @@ _Images are taken from AntWeb.org_
 4. _To be continuted_
 
 ## :bookmark: Project Structure
-`
+```
 |-- FormicID
     |-- __init__.py
     |-- AntWeb
@@ -66,8 +66,7 @@ _Images are taken from AntWeb.org_
     |-- utils
         |-- __init__.py
         |-- utils.py
-
-`
+```
 
 ## :ant: AntWeb
 
