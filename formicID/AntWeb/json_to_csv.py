@@ -88,7 +88,7 @@ def batch_json_to_csv(input_dir, output_dir, csvname):
     suffix = '.csv'
     input_direc = os.path.join(wd, 'data', input_dir, 'json_files')
     output_dir = os.path.join(wd, 'data', input_dir)
-    nb_files = os.listdir(input_direc)
+    nb_files = len(os.listdir(input_direc))
 
     df2 = pd.DataFrame()
 
@@ -114,8 +114,8 @@ def batch_json_to_csv(input_dir, output_dir, csvname):
 
 def main():
     batch_json_to_csv(
-        input_dir='2018-02-12-JSON-test',
-        output_dir='2018-02-12-JSON-test',
+        input_dir='2018-02-12-test',
+        output_dir='2018-02-12-test',
         csvname='csv_images'
     )
 
