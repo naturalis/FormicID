@@ -12,7 +12,7 @@ Description:
 <placeholder txt>
 
     The directory structure:
-    data/
+    directory_name/
         head/
             speciesX/
                 speciesX0001.jpg
@@ -34,26 +34,30 @@ Description:
 
 '''
 # Packages
-# //////////////////////////////////////////////////////////////////////////////
+################################################################################
 import os
-import cv2
+
 import numpy as np
+from keras.utils import to_categorical # one-hot encoding
+from keras.utils import normalize
 from sklearn.model_selection import StratifiedShuffleSplit
+
+import cv2
+
 # from keras.preprocessing.image import ImageDataGenerator
-# from keras.utils import to_categorical # one-hot encoding
 # from keras.preprocessing.image import array_to_img, img_to_array, load_img
 
 # Parameters and settings
-# //////////////////////////////////////////////////////////////////////////////
+################################################################################
 wd = os.getcwd()
 
-seed = 1
+seed = 1337
 
 # Load images
-# //////////////////////////////////////////////////////////////////////////////
+################################################################################
 
 
-def image_loader(shottype, datadir):
+def img_load_shottype(shottype, datadir):
     """Short summary.
 
     Args:
@@ -62,8 +66,10 @@ def image_loader(shottype, datadir):
 
     Returns:
         type: Description of returned object.
-
     """
+    # TODO (MJABOER):
+    # Normalize image data (see datagenerators)
+    # convert labels to binary class matrix (utils.to_categorical)
     data_dir = os.path.join(wd, 'data', datadir, 'images')
     if shottype == 'h':
         data_dir = os.path.join(data_dir, 'head')
@@ -90,9 +96,14 @@ def image_loader(shottype, datadir):
     return images, labels
 
 
-images, labels = image_loader(shottype='h', datadir='2018-02-12-test')
+images, labels = img_load_shottype(shottype='h', datadir='2018-02-12-test')
 
-def training_test_split(images, labels, test_size, val_size):
+type(images)
+# Training, validation and test split
+################################################################################
+
+
+def train_val_test_split(images, labels, test_size, val_size):
     """Short summary.
 
     Args:
@@ -107,7 +118,8 @@ def training_test_split(images, labels, test_size, val_size):
     """
     nb_classes = len(set(labels))
 
-    sss = StratifiedShuffleSplit(n_splits=1, test_size=test_size, random_state=seed)
+    sss = StratifiedShuffleSplit(
+        n_splits=1, test_size=test_size, random_state=seed)
     sss.get_n_splits(images, labels)
     # print(sss)
     for train_index, test_index in sss.split(images, labels):
@@ -115,83 +127,78 @@ def training_test_split(images, labels, test_size, val_size):
         X_train, X_test = images[train_index], images[test_index]
         Y_train, Y_test = labels[train_index], labels[test_index]
 
-
         nb_classes = len(set(labels))
-        sss = StratifiedShuffleSplit(n_splits=1, test_size=val_size, random_state=seed)
+        sss = StratifiedShuffleSplit(
+            n_splits=1, test_size=val_size, random_state=seed)
         sss.get_n_splits(X_train, Y_train)
         # print(sss)
         for train_index, val_index in sss.split(X_train, Y_train):
-            print('\nTRAIN (76.5%%): {} \nVAL (13.5%%): {}'.format(train_index, val_index))
+            print('\nTRAIN (~75%%): {} \n\nVAL (~15%%): {}'.format(
+                train_index, val_index))
             X_train, X_val = X_train[train_index], X_train[val_index]
             Y_train, Y_val = Y_train[train_index], Y_train[val_index]
 
         print('Number of X_test: {}'.format(len(X_test)))
         print('Number of X_train: {}'.format(len(X_train)))
         print('Number of X_val: {}'.format(len(X_val)))
-
         print('Number of Y_train: {} with {} classes'.format(len(labels),
-        nb_classes))
+                                                             nb_classes))
+
+        return X_train, Y_train, X_val, Y_val, X_test, Y_test
 
 
+X_train, Y_train, X_val, Y_val, X_test, Y_test = train_val_test_split(
+    images=images, labels=labels, test_size=0.1, val_size=0.135)
 
 
-    # return X_train, Y_train, X_test, Y_test
+# Train en test data augumentation
+################################################################################
 
 
-training_test_split(images=images, labels=labels, test_size=0.1, val_size=0.15)
+# Don't augment the testdata. Only rescale to normalize the data
+validation_gen = ImageDataGenerator(
+    rescale=1. / 255
+)
 
 
+# Train en validation datagenerators
+################################################################################
+def train_data_generator(X_train, Y_train, batch_size, epochs):
+    """Short summary.
 
-# # Train en test data augumentation
-# # //////////////////////////////////////////////////////////////////////////////
-# """
-# rescale: Rescaling factor; normalizing the data to [0:1]
-# rotation_range: degree range for random rotations (integer)
-# width_shift_range: range for random horizontal shifts (float)
-# height_shift_range: range for random vertical shifts (float)
-# shear_range: shear intensity (float)
-# zoom_range: range for random zoom (float)
-# horizontal_flip: randomly flip inputs horizontally (boolean)
-# """
-# train_datagen = ImageDataGenerator(
-#     rescale=1. / 255,
-#     rotation_range=40,
-#     width_shift_range=0.2,
-#     height_shift_range=0.2,
-#     shear_range=0.2,
-#     zoom_range=0.2,
-#     horizontal_flip=True
-# )
-#
-# # Don't augment the testdata. Only rescale to normalize the data
-# validation_gen = ImageDataGenerator(
-#     rescale=1. / 255
-# )
-#
-#
-# # Train en validation datagenerators
-# # //////////////////////////////////////////////////////////////////////////////
-# def train_data_generator(directory):
-#     """
-#     input = link to a folder containing a set of validation images
-#
-#     target_size resizes images to new dimensions
-#     class_mode must be 'categorical' because of 2D data
-#
-#     # Don't set classes. It will take the classes from subdirectories.
-#     # save_dir= 'dir' # can use to save the augmentated images
-#     # also use (save_prefix, save_format) then
-#
-#     """
-#     train_generator = train_datagen.flow_from_directory(
-#         directory,
-#         target_size=(img_height, img_width),
-#         batch_size=batch_size,
-#         class_mode='categorical'
-#     )
-#     return train_generator
-#
-#
+    Args:
+        X_train (type): Description of parameter `X_train`.
+        Y_train (type): Description of parameter `Y_train`.
+
+    Returns:
+        type: Description of returned object.
+
+    rescale: Rescaling factor; normalizing the data to [0:1]
+    rotation_range: degree range for random rotations (integer)
+    width_shift_range: range for random horizontal shifts (float)
+    height_shift_range: range for random vertical shifts (float)
+    shear_range: shear intensity (float)
+    zoom_range: range for random zoom (float)
+    horizontal_flip: randomly flip inputs horizontally (boolean)
+    """
+    train_datagen = ImageDataGenerator(
+        rescale=1. / 255,
+        rotation_range=40,
+        width_shift_range=0.2,
+        height_shift_range=0.2,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True
+    )
+
+    train_datagen.fit(X_train)
+
+    train_generator = train_datagen.flow(
+        X_train, Y_train, augment=False, rounds=1, seed=seed, batch_size=batch_size, steps_per_epoch-len(X_train) / batch_size, epochs = epochs)
+
+    return train_generator
+
+
 # def validation_data_generator(directory):
 #     """
 #     input = link to a folder containing a set of validation images
