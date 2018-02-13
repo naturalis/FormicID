@@ -24,12 +24,11 @@ will get built according to the TensorFlow data format convention,
 "Height-Width-Depth". The Xception model is only available for TensorFlow, due
 to its reliance on SeparableConvolution layers.
 '''
-
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
-from keras.applications.resnet50 import ResNet50  # ResNet based
 from keras.applications.densenet import DenseNet169  # ResNet based
 from keras.applications.inception_v3 import InceptionV3  # Inception based
+from keras.applications.resnet50 import ResNet50  # ResNet based
 from keras.applications.xception import Xception  # Inception based
 
 # Parameters and settings

@@ -14,10 +14,11 @@ Description:
 '''
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
+from keras.layers import (Activation, Conv2D, Dense, Dropout, Flatten,
+                          MaxPooling2D)
+
 from keras.models import Sequential  # for creating the model
-from keras.layers import Dense, Dropout, Activation, Flatten
-from keras.layers import Conv2D, MaxPooling2D
-from keras.optimizers import SGD, RMSprop, Adam, Nadam
+from keras.optimizers import SGD, Adam, Nadam, RMSprop
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////

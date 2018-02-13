@@ -17,8 +17,10 @@ Source: https://github.com/MrGemy95/Tensorflow-Project-Template/
 # Packages
 ################################################################################
 import json
-from bunch import Bunch
 import os
+
+from bunch import Bunch
+
 
 # Load and process config
 ################################################################################

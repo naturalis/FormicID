@@ -16,9 +16,9 @@ from keras import __version__ as keras_version
 from keras import backend as K
 
 from formicID.formicID_build import neuralNetwork
+from formicID.formicID_input import (train_data_generator,
+                                     validation_data_generator)
 from formicID.formicID_train import build_tensorboard, train_nn
-from formicID.formicID_input import train_data_generator
-from formicID.formicID_input import validation_data_generator
 
 # Parameters and settings
 # //////////////////////////////////////////////////////////////////////////////

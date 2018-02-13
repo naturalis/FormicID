@@ -22,8 +22,8 @@ import datetime
 import itertools
 import os
 import re
-from urllib.request import urlretrieve
 from urllib.error import HTTPError
+from urllib.request import urlretrieve
 
 import pandas as pd
 import requests
