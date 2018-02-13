@@ -10,17 +10,8 @@
 '''
 Description:
 <placeholder txt>
-'''
 
-"""
-    Beforehand images should be divided in 5:1:1 subsets (train:val:test) and put in the right directories
-    load images from a directory
-    target_size reshapes the images to a certain dimension
-
-    ToDo:
-    Create test set code
     The directory structure:
-
     data/
         head/
             speciesX/
@@ -41,12 +32,13 @@ Description:
                 speciesY0002.jpg
                 ...
 
-"""
+'''
 # Packages
 # //////////////////////////////////////////////////////////////////////////////
 import os
 import cv2
 import numpy as np
+from sklearn.model_selection import StratifiedShuffleSplit
 # from keras.preprocessing.image import ImageDataGenerator
 # from keras.utils import to_categorical # one-hot encoding
 # from keras.preprocessing.image import array_to_img, img_to_array, load_img
@@ -62,8 +54,16 @@ seed = 1
 
 
 def image_loader(shottype, datadir):
-    # TODO: SPLIT into training / validation / test
+    """Short summary.
 
+    Args:
+        shottype (type): Description of parameter `shottype`.
+        datadir (type): Description of parameter `datadir`.
+
+    Returns:
+        type: Description of returned object.
+
+    """
     data_dir = os.path.join(wd, 'data', datadir, 'images')
     if shottype == 'h':
         data_dir = os.path.join(data_dir, 'head')
@@ -72,8 +72,8 @@ def image_loader(shottype, datadir):
     if shottype == 'p':
         data_dir = os.path.join(data_dir, 'profile')
 
-    X_train = []
-    Y_train = []
+    images = []
+    labels = []
     print('Reading images from "{}"'.format(data_dir))
     for species in os.listdir(data_dir):
         for image in os.listdir(os.path.join(data_dir, species)):
@@ -82,21 +82,64 @@ def image_loader(shottype, datadir):
                 # returns BGR instead of RGB
                 if img is not None:
                     # img = img[:, :, ::-1]  # Convert to RGB
-                    X_train.append(img)
+                    images.append(img)
             label = species
-            Y_train.append(label)
-    return X_train, Y_train
+            labels.append(label)
+    images = np.asarray(images)
+    labels = np.asarray(labels)
+    return images, labels
 
 
-X_train, Y_train = image_loader(shottype='h', datadir='2018-02-12-test')
+images, labels = image_loader(shottype='h', datadir='2018-02-12-test')
 
-print('Number of X_train: {}'.format(len(X_train)))
-print('Number of Y_train: {}'.format(len(Y_train)))
-# print(Y_train)
-#
-# cv2.imshow('image', X_train[200])
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+def training_test_split(images, labels, test_size, val_size):
+    """Short summary.
+
+    Args:
+        images (type): Description of parameter `images`.
+        labels (type): Description of parameter `labels`.
+        test_size (type): Description of parameter `test_size`.
+        random_state (type): Description of parameter `random_state`.
+
+    Returns:
+        type: Description of returned object.
+
+    """
+    nb_classes = len(set(labels))
+
+    sss = StratifiedShuffleSplit(n_splits=1, test_size=test_size, random_state=seed)
+    sss.get_n_splits(images, labels)
+    # print(sss)
+    for train_index, test_index in sss.split(images, labels):
+        print('TEST (10%%): {}'.format(test_index))
+        X_train, X_test = images[train_index], images[test_index]
+        Y_train, Y_test = labels[train_index], labels[test_index]
+
+
+        nb_classes = len(set(labels))
+        sss = StratifiedShuffleSplit(n_splits=1, test_size=val_size, random_state=seed)
+        sss.get_n_splits(X_train, Y_train)
+        # print(sss)
+        for train_index, val_index in sss.split(X_train, Y_train):
+            print('\nTRAIN (76.5%%): {} \nVAL (13.5%%): {}'.format(train_index, val_index))
+            X_train, X_val = X_train[train_index], X_train[val_index]
+            Y_train, Y_val = Y_train[train_index], Y_train[val_index]
+
+        print('Number of X_test: {}'.format(len(X_test)))
+        print('Number of X_train: {}'.format(len(X_train)))
+        print('Number of X_val: {}'.format(len(X_val)))
+
+        print('Number of Y_train: {} with {} classes'.format(len(labels),
+        nb_classes))
+
+
+
+
+    # return X_train, Y_train, X_test, Y_test
+
+
+training_test_split(images=images, labels=labels, test_size=0.1, val_size=0.15)
+
 
 
 # # Train en test data augumentation
