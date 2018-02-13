@@ -38,7 +38,7 @@ Description:
 import os
 
 import numpy as np
-from keras.utils import to_categorical # one-hot encoding
+from keras.utils import to_categorical  # one-hot encoding
 from keras.utils import normalize
 from sklearn.model_selection import StratifiedShuffleSplit
 
@@ -92,13 +92,11 @@ def img_load_shottype(shottype, datadir):
             label = species
             labels.append(label)
     images = np.asarray(images)
+    images = np.array(images)
     labels = np.asarray(labels)
     return images, labels
 
 
-images, labels = img_load_shottype(shottype='h', datadir='2018-02-12-test')
-
-type(images)
 # Training, validation and test split
 ################################################################################
 
@@ -147,18 +145,9 @@ def train_val_test_split(images, labels, test_size, val_size):
         return X_train, Y_train, X_val, Y_val, X_test, Y_test
 
 
-X_train, Y_train, X_val, Y_val, X_test, Y_test = train_val_test_split(
-    images=images, labels=labels, test_size=0.1, val_size=0.135)
-
-
 # Train en test data augumentation
 ################################################################################
-
-
 # Don't augment the testdata. Only rescale to normalize the data
-validation_gen = ImageDataGenerator(
-    rescale=1. / 255
-)
 
 
 # Train en validation datagenerators
@@ -193,35 +182,20 @@ def train_data_generator(X_train, Y_train, batch_size, epochs):
 
     train_datagen.fit(X_train)
 
-    train_generator = train_datagen.flow(
-        X_train, Y_train, augment=False, rounds=1, seed=seed, batch_size=batch_size, steps_per_epoch-len(X_train) / batch_size, epochs = epochs)
+    train_generator = train_datagen.flow(X_train, Y_train, augment=False, rounds=1, seed=seed, batch_size=batch_size, steps_per_epoch - len(X_train) / batch_size, epochs=epochs)
 
     return train_generator
 
 
-# def validation_data_generator(directory):
-#     """
-#     input = link to a folder containing a set of validation images
-#
-#     target_size resizes images to new dimensions
-#     class_mode must be 'categorical' because of 2D data
-#
-#     # Don't set classes. It will take the classes from subdirectories.
-#     # save_dir= 'dir' # can use to save the augmentated images
-#     # also use (save_prefix, save_format) then
-#
-#     """
-#     validation_generator = validation_gen.flow_from_directory(
-#         directory,
-#         target_size=(img_height, img_width),
-#         batch_size=batch_size,
-#         class_mode='categorical'
-#     )
-#     return validation_generator
-#
-#
-# """
-#
+def val_data_generator(X_val, Y_val, batch_size, epochs):
+    val_datagen = ImageDataGenerator(rescale=1. / 255)
+
+    validation_generator = val_datagen.flow(X_val, Y_val, augment=False, rounds=1, seed=seed, batch_size=batch_size, steps_per_epoch - len(X_train) / batch_size, epochs=epochs
+
+    return validation_generator
+
+
+
 # Visualizing data agumentation
 #
 # # Data augmentation

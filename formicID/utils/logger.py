@@ -13,6 +13,7 @@ Description:
 A logger for tensorboard is created in this file.
 
 '''
+from formicID.utils.logger import build_tensorboard
 
 # Callbacks
 # //////////////////////////////////////////////////////////////////////////////
