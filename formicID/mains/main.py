@@ -15,44 +15,40 @@ Description:
 from keras import __version__ as keras_version
 from keras import backend as K
 
-from formicID.formicID_build import neuralNetwork
-from formicID.formicID_input import (train_data_generator,
-                                     validation_data_generator)
-from formicID.formicID_train import build_tensorboard, train_nn
+from formicID.data_loader.data_input import img_load_shottype
+from formicID.utils.logger import build_tensorboard
+from formicID.models.build import neuralNetwork
+from formicID.trainers.train import train_data_gen, val_data_gen
 
 # Parameters and settings
-# //////////////////////////////////////////////////////////////////////////////
-train_data_dir = './data/train'
-validation_data_dir = './data/validation'
-EPOCHS = 5
-STEPS_PER_EPOCH = 5
-
-num_species = 3  # Todo: implement NUM_SPECIES from _train.py file
-
-img_height, img_width = 120, 148  # input for height and width
-
-if K.image_data_format() == 'channels_first':
-    input_shape = (3, img_height, img_width)
-else:
-    input_shape = (img_height, img_width, 3)
-
+################################################################################
 dropout = 0.5
 
-# Running script
-# //////////////////////////////////////////////////////////////////////////////
 
-def run():
-    """
-    Run everything
-    """
-    AW_nn = neuralNetwork(dropout=dropout,
-                          input_shape=input_shape,
-                          num_species=num_species,
-                          optimizer="Nadam")
-    AW_nn = AW_nn.build_neural_network()
-    AW_nn_trained = train_nn(AW_nn)
-    return AW_nn_trained
+def main():
+    # Initializing the model
+    ############################################################################
+    model_formicID = neuralNetwork(
+        dropout=dropout,
+        input_shape=[120, 120, 3],
+        num_species=11,
+        optimizer='Nadam')
+    model_formicID.build()
+    model_formicID.compile()
+
+
+    # Initializing the data
+    ############################################################################
+    images, labels = img_load_shottype(shottype='h', datadir='2018-02-12-test')
+
+    X_train, Y_train, X_val, Y_val, X_test, Y_test = train_val_test_split(
+        images=images, labels=labels, test_size=0.1, val_size=0.135)
+
+    # Training
+    ##########################################################################
+    model_formicID.fit_generator(train_data_gen, validation_data=val_data_gen,
+                                 steps_per_epoch=5, epochs=epochs, callback=build_tensorboard(model_formicID))
 
 if __name__ == '__main__':
-    print('Keras version: {}'.format(keras_version))
-    run()
+    print('Keras version: {}'.format(keras.__version__))
+    main()
