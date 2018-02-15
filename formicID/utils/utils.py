@@ -15,6 +15,25 @@ This file has code for utility functions that can be used in other scripts.
 # TODO: load JSON config
 '''
 
+
+def get_url_info(input_url):
+    """Provides status and information on the URL.
+
+    Args:
+        input_url (type): the url as response object, created by create_url().
+
+    Returns:
+        type: information on the URL
+
+    """
+    print('URL:', input_url.url)
+    print('Connection status:', input_url.status_code)
+    print('Time elapsed to connect to URL:', input_url.elapsed)
+    print('URL headers:', input_url.headers)
+    print('URL type:', type(input_url.content))
+
+
+
 # Data augmentation
 # //////////////////////////////////////////////////////////////////////////////
 datagen = ImageDataGenerator(
