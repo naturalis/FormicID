@@ -5,7 +5,7 @@
 #                   |  _| (_) | |  | | | | | | | (__ | || |_| |                #
 #                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                 #
 #                                                                              #
-#                                  ANTWEB API                                  #
+#                                 ANTWEB API v2                                #
 #                                AntWeb to json                                #
 ################################################################################
 '''
@@ -28,16 +28,16 @@ import requests
 from tqdm import tqdm
 
 # Parameters and settings
-# //////////////////////////////////////////////////////////////////////////////
+################################################################################
 todaystr = datetime.date.today().isoformat()
 wd = os.getcwd()
 
-# Creating an URL and get information
-# //////////////////////////////////////////////////////////////////////////////
+# Creating an URL
+################################################################################
 
 
 def create_url(limit, offset, **kwargs):
-    """Creation of the url to access AntWebs API, using a base_url and
+    """Creation of the url to access AntWebs API V2, using a base_url and
     arguments.
 
     Args:
@@ -68,30 +68,13 @@ def create_url(limit, offset, **kwargs):
         'country':      country,
         'caste':        caste  # not working
     }
-    # Creating the AntWeb url from the base url and the API arguments
+
     url = requests.get(url=base_url, params=arguments)
 
     return url
 
-
-def get_url_info(input_url):
-    """Provides status and information on the URL.
-
-    Args:
-        input_url (type): the url as response object, created by create_url().
-
-    Returns:
-        type: information on the URL
-
-    """
-    print('URL:', input_url.url)
-    print('Connection status:', input_url.status_code)
-    print('Time elapsed to connect to URL:', input_url.elapsed)
-    print('URL headers:', input_url.headers)
-    print('URL type:', type(input_url.content))
-
 # Download JSON files from URLs
-# //////////////////////////////////////////////////////////////////////////////
+################################################################################
 
 
 def get_json(input_url):
@@ -170,6 +153,8 @@ def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
         print('Downloading is finished. {} JSON files '.format(nb_specimens),
         'have been downloaded')
 
+# Main()
+################################################################################
 
 def main():
     urls_to_json(csv_file='2018-01-09-db-Top101imagedspecies.csv',
