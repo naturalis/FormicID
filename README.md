@@ -122,8 +122,8 @@ How does the dataset looks like<br><br>
 Text on how the neural network architecture looks like
 
 ## :clipboard: Requirements
-
-[Requirements](requirements.txt)
+* [Keras | Why use Keras?](https://keras.io/why-use-keras/)
+* [Requirements](requirements.txt)
 
 ## :scroll: Credits
 
