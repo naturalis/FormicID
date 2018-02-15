@@ -1,152 +1,101 @@
 ################################################################################
+#                     __                      _      ___ ____                  #
+#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                 #
+#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |                #
+#                   |  _| (_) | |  | | | | | | | (__ | || |_| |                #
+#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                 #
 #                                                                              #
-#                                  ANTWEB API                                  #
-#                                 AntWeb 2 csv                                 #
+#                                 ANTWEB API v3                                #
+#                                AntWeb to json                                #
 ################################################################################
-
+'''
+Description:
+This script requires the use of an csv file with 2 columns, filled with a genus
+and a species name. The script will go over the csv file and download a json
+file for this genus+species and places the JSON file in a folder.
+'''
 # Packages
-# //////////////////////////////////////////////////////////////////////////////
-from __future__ import print_function
-
-import requests
-import json
-import jmespath
-import pandas as pd
-import time
+################################################################################
 import datetime
+import json
 import os
-import csv
-from functools import wraps
-from urllib.request import urlretrieve
+import time
+
+import pandas as pd
+import requests
+
+from tqdm import tqdm
 
 
 # Parameters and settings
-# //////////////////////////////////////////////////////////////////////////////
+################################################################################
 todaystr = datetime.date.today().isoformat()
+wd = os.getcwd()
+
+# Creating an URL
+################################################################################
+wd = os.getcwd()
 
 
-# Time-it function
-# //////////////////////////////////////////////////////////////////////////////
-# https://stackoverflow.com/questions/3620943/
-# measuring-elapsed-time-with-the-time-module
+def create_url(limit, offset, **kwargs):
+    """Creation of the url to access AntWebs API V3, using a base_url and
+    arguments.
 
-#
-# PROF_DATA = {}
-#
-#
-# def profile(fn):
-#     @wraps(fn)
-#     def with_profiling(*args, **kwargs):
-#         start_time = time.time()
-#
-#         ret = fn(*args, **kwargs)
-#
-#         elapsed_time = time.time() - start_time
-#
-#         if fn.__name__ not in PROF_DATA:
-#             PROF_DATA[fn.__name__] = [0, []]
-#         PROF_DATA[fn.__name__][0] += 1
-#         PROF_DATA[fn.__name__][1].append(elapsed_time)
-#
-#         return ret
-#
-#     return with_profiling
-#
-#
-# def print_prof_data():
-#     for fname, data in PROF_DATA.items():
-#         max_time = max(data[1])
-#         avg_time = sum(data[1]) / len(data[1])
-#         print("Function %s called %d times. " % (fname, data[0])),
-#         print('Execution time max: %.3f, average: %.3f' % (max_time, avg_time))
-#
-#
-# def clear_prof_data():
-#     global PROF_DATA
-#     PROF_DATA = {}
+    Args:
+        limit (integer): sets the limit for accessing specimens.
+        offset (integer): sets the offset for accessing specimens.
+    Optional args (**kwargs):
+        genus (type): specifies the genus
+        species (type): specifies the species
+        country (type): specifies the country
+        caste (type): specifies the caste (does not work in API v2)
 
-
-# AntWeb basic information
-# //////////////////////////////////////////////////////////////////////////////
-
-
-def create_url(limit, offset, country_set, genus):
+    Returns:
+        type: Returns an URL as response object that can be opened by the
+        function request.get()
     """
-    # Returns
-        text
-    """
-    if country_set == 'None':
-        arguments = {    # API arguments for in the url
-            # 'caste':        worker,
-            'limit':        limit,
-            'offset':       offset,
-            # 'shot_type':    shot_type,
-            'genus':        genus
-            }s
-    else:
-        arguments = {    # API arguments for in the url
-            # 'caste':        worker,
-            'limit':        limit,
-            'offset':       offset,
-            'country':      country_set,
-            # 'shot_type':    shot_type,
-            'genus':        genus
-            }
-    # AntWeb API v3 base url
+    # Genus and species are optional arguments
+    genus = kwargs.get('genus', None)
+    species = kwargs.get('species', None)
+    country = kwargs.get('country', None)
+    caste = kwargs.get('caste', None)
+
     base_url = 'http://api.antweb.org/v3/taxaImages?'
 
-    # Creating the AntWeb url from the base url and the API arguments
+    arguments = {    # API arguments for in the url
+        'limit':        limit,
+        'offset':       offset,
+        'genus':        genus,
+        'species':      species,
+        'country':      country,
+        'caste':        caste  # not working
+            }
+
     url = requests.get(url=base_url, params=arguments, timeout=(5))
 
     return url
 
 
-def get_url_info(input_url):
-    """
-    # Returns
-        text
-    """
-    # Get basic url information
-    print('URL:', input_url.url)  # does not work yet???
-    print('URL headers:', input_url.headers)
-    print('URL type:', type(input_url.content))
-    print('Connection status:', input_url.status_code)
-    if input_url.status_code == 200:
-        print('Request status: the request was fulfilled.')
-    else:
-        print('Request status: the request was not fulfilled.')
-    print('Time elapsed to connect to URL:', input_url.elapsed)
-    return input_url.raise_for_status()
-
-# get JSON > database
-# //////////////////////////////////////////////////////////////////////////////
+# Download JSON files from URLs
+################################################################################
 
 
-def get_json(urllink):
-    """
-    # loads the json formatted text from the url
+def get_json(input_url):
+    """Scrapes JSON files from AntWeb URLs.
 
-    # Returns
-        text
+    Args:
+        input_url (type): an URL containing a JSON object.
+
+    Returns:
+        type: A JSON object
+
     """
-    data = urllink.json()
+    r = requests.get(url=input_url)
+    data = r.json()
     if data == None:
-        print('JSON is empty!')
+        print("JSON is empty!")
     else:
-        print('The JSON file is loaded from the URL.')
         return data
-
-# This function does not work for now...
-# TODO: fix this function!
-def max_specimens(json):
-    """
-    # Returns
-        text
-    """
-    nb_specimens = json['metaData']['parameters']['specimenCount']
-    print('The maximum number of specimens found are',
-    '{}'.formatint(nb_specimens))
-    return int(nb_specimens)
 
 
 def filter_json(json):
@@ -201,42 +150,18 @@ def filter_json(json):
     #
     # return lst
 
-
-def create(lst):
-    """
-    # Returns
-        text
-    """
-    columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
-    df = pd.DataFrame(columns=columns)
-    df = pd.DataFrame(lst)
-
-    return df
-    # print(df.head())
-    # df_def = pd.DataFrame(columns=columns)
-    # df_def.append(df)
-    # df_def.to_csv('formicID_db_h.csv')
-    # return df
-
-    # with open('formicID_db.csv', 'a') a÷s f:
-    #     for row in lst:
-    #         f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
-
 # Executing
-# //////////////////////////////////////////////////////////////////////////////
+################################################################################
 
 
 # @profile
 def download_to_csv(offset_set, limit_set):
-    """
-    Input:
-        offset_set = set the offset for downloading AntWeb records in batches
-        limit_set = set a limit for downloading a set of records from AntWeb
+    suffix = '.csv'
+    input_direc = os.path.join(wd, 'data', input_dir, 'json_files')
+    output_dir = os.path.join(wd, 'data', input_dir)
+    nb_files = len(os.listdir(input_direc))
+    columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
 
-    Description:
-        this function downloads imaged only specimens with catalog number and
-        scientific names into an csv file
-    """
     offset = offset_set
     limit = limit_set
     # limit / offset = number of batches to download
@@ -275,17 +200,13 @@ def download_to_csv(offset_set, limit_set):
 
     # replace spaces between genus and species names with underscores
     df2.replace('\s+', '_', regex=True, inplace=True)
-    df2.columns = [
-        'catalog_number',
-        'scientific_name',
-        'shot_type',
-        'image_url'
-    ]
+    df2.columns = columns
     # file_path = os.path.join(path, file_name)
 
     df2.to_csv(os.path.join(path, file_name), index=False, header=True)
 
-if __name__ == '__main__':
+
+def main():
     url = create_url(
         offset = 0,
         limit = 50,
@@ -303,4 +224,5 @@ if __name__ == '__main__':
     else:
         print('There was a server error.')
     # download_to_csv(offset_set = 0, limit_set = 500, country='Netherlands')
-    # @profile
+
+if __name__ == '__main__':
