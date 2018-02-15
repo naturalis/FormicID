@@ -38,14 +38,18 @@ Description:
 import os
 
 import numpy as np
+from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import to_categorical  # one-hot encoding
 from keras.utils import normalize
 from sklearn.model_selection import StratifiedShuffleSplit
 
 import cv2
 
-# from keras.preprocessing.image import ImageDataGenerator
-# from keras.preprocessing.image import array_to_img, img_to_array, load_img
+#  TODO (MJABOER):
+    # Keras function image_to_array()
+    # Keras function array_to_image()
+    # Keras function load_image()
+    # from keras.preprocessing.image import array_to_img, img_to_array, load_img
 
 # Parameters and settings
 ################################################################################
@@ -183,7 +187,8 @@ def train_data_generator(X_train, Y_train, batch_size, epochs):
     train_datagen.fit(X_train)
 
     train_generator = train_datagen.flow(X_train, Y_train, augment=False, rounds=1, seed=seed, batch_size=batch_size, steps_per_epoch - len(X_train) / batch_size, epochs=epochs)
-
+    # TODO (MJABOER):
+        # ImageDataGenerator.standardize
     return train_generator
 
 
@@ -191,15 +196,12 @@ def val_data_generator(X_val, Y_val, batch_size, epochs):
     val_datagen = ImageDataGenerator(rescale=1. / 255)
 
     validation_generator = val_datagen.flow(X_val, Y_val, augment=False, rounds=1, seed=seed, batch_size=batch_size, steps_per_epoch - len(X_train) / batch_size, epochs=epochs
-
+    # TODO (MJABOER):
+        # ImageDataGenerator.standardize
     return validation_generator
 
-
-
 # Visualizing data agumentation
-#
-# # Data augmentation
-# # //////////////////////////////////////////////////////////////////////////////
+################################################################################
 # datagen = ImageDataGenerator(
 #     rotation_range=40,
 #     width_shift_range=0.2,
@@ -228,4 +230,3 @@ def val_data_generator(X_val, Y_val, batch_size, epochs):
 #     i += 1
 #     if i > 20:
 #         break  # otherwise the generator would loop indefinitely
-# """

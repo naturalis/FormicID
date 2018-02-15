@@ -54,17 +54,5 @@ def weights_load(model, filename, input_dir):
     return model
 
 
-def read_model():
-    # TODO return read models
-
-
-def split_validation_set():
-    # TODO return split training and validation
-
-
-def show_image():
-    # TODO return show image
-
-
 def model_summary(model):
     return model.summary()
