@@ -92,6 +92,7 @@
 * [Conv Nets: A Modular Perspective](http://colah.github.io/posts/2014-07-Conv-Nets-Modular/)
 * [Understanding Convolutions](http://colah.github.io/posts/2014-07-Understanding-Convolutions/)
 * [Neural Network Architecture Design](https://stackoverflow.com/questions/20009078/neural-network-architecture-design)
+* [Deep Learning for Computer Vision (Andrej Karpathy, OpenAI)](https://www.youtube.com/watch?v=u6aEYuemt0M)
 
 ### Optimization
 * [Hinton's Dropout in 3 Lines of Python](http://iamtrask.github.io/2015/07/28/dropout/)
