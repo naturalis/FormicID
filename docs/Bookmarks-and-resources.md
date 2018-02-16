@@ -34,7 +34,7 @@
 * [How to get list of values in ImageDataGenerator.flow_from_directory Keras?](https://stackoverflow.com/questions/44842097/how-to-get-list-of-values-in-imagedatagenerator-flow-from-directory-keras)
 * [tqdm - progress bar](https://pypi.python.org/pypi/tqdm)
 * [Travis CI](https://travis-ci.org/)
-* [Packaging and Distributing Projects¶](https://packaging.python.org/tutorials/distributing-packages/)
+* [Packaging and Distributing Projects](https://packaging.python.org/tutorials/distributing-packages/)
 
 ### Courses
 * [Learn Python | CodeAcademy](https://www.codecademy.com/learn/learn-python)
