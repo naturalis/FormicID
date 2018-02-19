@@ -26,6 +26,7 @@ Code repository for CNN-based image classification of AntWeb images<br>
 ![](https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true)<br>
 _Images are harvested from AntWeb.org_
 
+[Proposal](https://github.com/naturalis/FormicID-proposal)
 
 
 ## :arrow_forward: How to use
