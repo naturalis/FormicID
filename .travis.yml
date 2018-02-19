@@ -5,7 +5,7 @@ python:
 install:
   - pip install -r requirements.txt
 # command to run tests
-notification:
+notifications:
   email: false
 script:
-  - /formicID/main.py
+  - formicID/main.py
