@@ -1,10 +1,7 @@
 # FormicID
-
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/naturalis/FormicID/blob/master/LICENSE) · [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) · [![GitHub followers](https://img.shields.io/github/followers/MarijnJABoer.svg)](https://github.com/MarijnJABoer?tab=followers) · [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](<www.marijnboer.nl>) [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](<https://GitHub.com/naturalis/FormicID/graphs/commit-activity>) · [![GitHub contributors](https://img.shields.io/github/contributors/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/graphs/contributors/) · [![GitHub issues](https://img.shields.io/github/issues/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/issues/) · [![](https://img.shields.io/github/issues-closed-raw/naturalis/FormicID.svg)](https://github.com/naturalis/FormicID/issues?q=is%3Aissue+is%3Aclosed)
-
 _Classification of images of ants using deep learning_
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/naturalis/FormicID/blob/master/LICENSE) · [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) · [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](<https://GitHub.com/naturalis/FormicID/graphs/commit-activity>) · [![GitHub contributors](https://img.shields.io/github/contributors/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/graphs/contributors/) · [![GitHub issues](https://img.shields.io/github/issues/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/issues/) · [![](https://img.shields.io/github/issues-closed-raw/naturalis/FormicID.svg)](https://github.com/naturalis/FormicID/issues?q=is%3Aissue+is%3Aclosed)
 
---------------------------------------------------------------------------------
 ## :pencil: Description
 
 Code repository for CNN-based image classification of AntWeb images<br>
@@ -12,8 +9,8 @@ Code repository for CNN-based image classification of AntWeb images<br>
 ![](https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true)<br>
 _Images are harvested from AntWeb.org_
 
+### Proposal
 [Proposal](https://github.com/naturalis/FormicID-proposal)
-
 
 ## :arrow_forward: How to use
 The working directory should be `/`, so pathways to `/data` work.
