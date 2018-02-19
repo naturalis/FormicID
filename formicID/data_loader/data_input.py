@@ -195,7 +195,7 @@ def train_data_generator(X_train, Y_train, batch_size, epochs):
 def val_data_generator(X_val, Y_val, batch_size, epochs):
     val_datagen = ImageDataGenerator(rescale=1. / 255)
 
-    validation_generator = val_datagen.flow(X_val, Y_val, augment=False, rounds=1, seed=seed, batch_size=batch_size, steps_per_epoch - len(X_train) / batch_size, epochs=epochs
+    validation_generator = val_datagen.flow(X_val, Y_val, augment=False, rounds=1, seed=seed, batch_size=batch_size, steps_per_epoch - len(X_train) / batch_size, epochs=epochs)
     # TODO (MJABOER):
         # ImageDataGenerator.standardize
     return validation_generator

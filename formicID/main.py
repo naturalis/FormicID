@@ -5,7 +5,7 @@
 #                   |  _| (_) | |  | | | | | | | (__ | || |_| |                #
 #                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                 #
 #                                                                              #
-#                                  main                                #
+#                                  main                                        #
 #                                                                              #
 ################################################################################
 '''
@@ -19,10 +19,11 @@ from keras import __version__ as keras_version
 from keras import backend as K
 from keras.utils import multi_gpu_model
 
-from formicID.data_loader.data_input import img_load_shottype
-from formicID.models.build import neuralNetwork
-from formicID.trainers.train import train_data_gen, val_data_gen
-from formicID.utils.logger import build_tensorboardtapp
+from data_loader.data_input import img_load_shottype
+from data_loader.data_input import train_val_test_split
+from models.build import neuralNetwork
+from trainers.train import train_data_gen, val_data_gen
+from utils.logger import build_tensorboardtapp
 
 # Parameters and settings
 ################################################################################
