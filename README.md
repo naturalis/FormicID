@@ -3,6 +3,24 @@ _Classification of images of ants using deep learning_
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/naturalis/FormicID/blob/master/LICENSE) · [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) · [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](<https://GitHub.com/naturalis/FormicID/graphs/commit-activity>) · [![GitHub contributors](https://img.shields.io/github/contributors/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/graphs/contributors/) · [![GitHub issues](https://img.shields.io/github/issues/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/issues/) · [![](https://img.shields.io/github/issues-closed-raw/naturalis/FormicID.svg)](https://github.com/naturalis/FormicID/issues?q=is%3Aissue+is%3Aclosed)
 
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [FormicID](#formicid)
+	- [:pencil: Description](#pencil-description)
+		- [Proposal](#proposal)
+	- [:arrow_forward: How to use](#arrowforward-how-to-use)
+	- [:bookmark: Project Structure](#bookmark-project-structure)
+		- [Why this name, FormicID?](#why-this-name-formicid)
+	- [:ant: AntWeb](#ant-antweb)
+		- [:satellite: AntWeb API](#satellite-antweb-api)
+		- [:open_file_folder: Images / Dataset](#openfilefolder-images-dataset)
+	- [:computer: Neural Network](#computer-neural-network)
+		- [:triangular_ruler: Architecture](#triangularruler-architecture)
+	- [:clipboard: Requirements](#clipboard-requirements)
+	- [:scroll: Credits](#scroll-credits)
+
+<!-- /TOC -->
+
 ## :pencil: Description
 
 Code repository for CNN-based image classification of AntWeb images<br>
