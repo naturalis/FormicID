@@ -8,4 +8,4 @@ install:
 notification:
   email: false
 script:
-  - formicID/main.py
+  - /formicID/main.py
