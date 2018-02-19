@@ -4,20 +4,6 @@
 
 _Classification of images of ants using deep learning_
 
-<details>
-  <summary>Table of content (click to open) </summary>
-  <p>
-</p>
-  <ul>
-  <li><a href="#description">Description</a></li>
-  <li><a href="#quickstart">Quickstart</a></li>
-  <li><a href="#antweb">AntWeb</a><ul><li><a href="#antweb-api">AntWeb API</a></li><li><a href="#images--dataset">Dataset</a></li></ul></li>
-  <li><a href="#neural-network">Neural Network</a><ul><li><a href="#architecture">Architecture</a></li></ul></li>
-  <li><a href="#requirements">Requirements</a></li>
-  <li><a href="#credits">Credits</a></li>
-</ul>
-</details>
-
 --------------------------------------------------------------------------------
 ## :pencil: Description
 
