@@ -6,19 +6,19 @@ _Classification of images of ants using deep learning_
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [FormicID](#formicid)
-	- [:pencil: Description](#pencil-description)
-		- [:black_nib: Proposal](#blacknib-proposal)
-	- [:arrow_forward: How to use](#arrowforward-how-to-use)
-	- [:bookmark: Project Structure](#bookmark-project-structure)
-	- [:ant: AntWeb](#ant-antweb)
-		- [:satellite: AntWeb API](#satellite-antweb-api)
-		- [:open_file_folder: Images / Dataset](#openfilefolder-images-dataset)
-	- [:computer: Neural Network](#computer-neural-network)
-		- [:mag: Ready to use models](#mag-ready-to-use-models)
-		- [:triangular_ruler: Self-made model](#triangularruler-self-made-model)
-	- [:clipboard: Requirements](#clipboard-requirements)
-	- [:scroll: Credits](#scroll-credits)
-	- [:exclamation: Why this name, FormicID?](#exclamation-why-this-name-formicid)
+	- [Description](#pencil-description)
+		- [Proposal](#blacknib-proposal)
+	- [How to use](#arrowforward-how-to-use)
+	- [Project Structure](#bookmark-project-structure)
+	- [AntWeb](#ant-antweb)
+		- [AntWeb API](#satellite-antweb-api)
+		- [Images / Dataset](#openfilefolder-images-dataset)
+	- [Neural Network](#computer-neural-network)
+		- [Ready to use models](#mag-ready-to-use-models)
+		- [Self-made model](#triangularruler-self-made-model)
+	- [Requirements](#clipboard-requirements)
+	- [Credits](#scroll-credits)
+	- [Why this name, FormicID?](#exclamation-why-this-name-formicid)
 
 <!-- /TOC -->
 
