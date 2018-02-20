@@ -52,26 +52,27 @@ class neuralNetwork(object):
             type: Description of returned object.
 
         """
-        model = Sequential()
-        model.add(Conv2D(32, (3, 3), padding='same',
-                         input_shape=self.input_shape))
-        model.add(Activation('relu'))
-        model.add(Conv2D(32, (3, 3)))
-        model.add(Activation('relu'))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
-        model.add(Dropout(self.dropout))
-        model.add(Conv2D(64, (3, 3), padding='same'))
-        model.add(Activation('relu'))
-        model.add(Conv2D(64, (3, 3)))
-        model.add(Activation('relu'))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
-        model.add(Dropout(self.dropout))
-        model.add(Flatten())
-        model.add(Dense(512))
-        model.add(Activation('relu'))
-        model.add(Dropout(self.dropout))
-        model.add(Dense(self.num_species))
-        model.add(Activation('softmax'))
+        self = Sequential()
+        self.add(Conv2D(32, (3, 3),
+                        padding='same',
+                        input_shape=self.input_shape))
+        self.add(Activation('relu'))
+        self.add(Conv2D(32, (3, 3)))
+        self.add(Activation('relu'))
+        self.add(MaxPooling2D(pool_size=(2, 2)))
+        self.add(Dropout(self.dropout))
+        self.add(Conv2D(64, (3, 3), padding='same'))
+        self.add(Activation('relu'))
+        self.add(Conv2D(64, (3, 3)))
+        self.add(Activation('relu'))
+        self.add(MaxPooling2D(pool_size=(2, 2)))
+        self.add(Dropout(self.dropout))
+        self.add(Flatten())
+        self.add(Dense(512))
+        self.add(Activation('relu'))
+        self.add(Dropout(self.dropout))
+        self.add(Dense(self.num_species))
+        self.add(Activation('softmax'))
         print("Model is build succesfully.")
 
         if self.optimizer == "SGD":

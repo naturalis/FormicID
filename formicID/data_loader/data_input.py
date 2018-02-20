@@ -35,33 +35,25 @@ Description:
 '''
 # Packages
 ################################################################################
-
 import os
 
 import numpy as np
 from keras import backend as K
 from keras.preprocessing.image import ImageDataGenerator
-from keras.utils import to_categorical  # one-hot encoding
-from keras.utils import normalize, np_utils
+from keras.utils import to_categorical
+from keras.utils import normalize
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.preprocessing import LabelEncoder
 
 import cv2
 from tqdm import tqdm
 
-#  TODO (MJABOER):
-    # Keras function image_to_array()
-    # Keras function array_to_image()
-    # Keras function load_image()
-    # from keras.preprocessing.image import array_to_img, img_to_array, load_img
-
 # Parameters and settings
 ################################################################################
 wd = os.getcwd()
-
 seed = 1337
-
 img_width, img_height = 85, 85
+
 # Load images
 ################################################################################
 
@@ -78,7 +70,7 @@ def img_load_shottype(shottype, datadir):
     """
     # TODO (MJABOER):
     # Normalize image data (see datagenerators)
-    # convert labels to binary class matrix (utils.to_categorical)
+
     data_dir = os.path.join(wd, 'data', datadir, 'images')
     if shottype == 'h':
         data_dir = os.path.join(data_dir, 'head')
@@ -108,6 +100,7 @@ def img_load_shottype(shottype, datadir):
                     images = np.append(images, img)
             label = species
             labels = np.append(labels, label)
+    print('\n') # to correctly print tqdm when finished.
     images = np.reshape(images, (-1, img_width, img_height, 3))
     # Cast np array to keras default float type ('float32')
     images = K.cast_to_floatx(images)
@@ -137,18 +130,17 @@ def train_val_test_split(images, labels, test_size, val_size):
         images (type): Description of parameter `images`.
         labels (type): Description of parameter `labels`.
         test_size (type): Description of parameter `test_size`.
-        random_state (type): Description of parameter `random_state`.
+        val_size (type): Description of parameter `val_size`.
 
     Returns:
         type: Description of returned object.
-
     """
     sss = StratifiedShuffleSplit(
         n_splits=1, test_size=test_size, random_state=seed)
     sss.get_n_splits(images, labels)
     # print(sss)
     for train_index, test_index in sss.split(images, labels):
-        # print('TEST (10%%): {}'.format(test_index))
+        print('TEST (10%%): {}'.format(test_index))
         X_train, X_test = images[train_index], images[test_index]
         Y_train, Y_test = labels[train_index], labels[test_index]
 
@@ -170,13 +162,7 @@ def train_val_test_split(images, labels, test_size, val_size):
 
         return X_train, Y_train, X_val, Y_val, X_test, Y_test
 
-
-# Train en test data augumentation
-################################################################################
-# Don't augment the testdata. Only rescale to normalize the data
-
-
-# Train en validation datagenerators
+# Train data generator
 ################################################################################
 def train_data_generator(X_train, Y_train, batch_size, epochs):
     """Short summary.
@@ -184,17 +170,19 @@ def train_data_generator(X_train, Y_train, batch_size, epochs):
     Args:
         X_train (type): Description of parameter `X_train`.
         Y_train (type): Description of parameter `Y_train`.
+        batch_size (type): Description of parameter `batch_size`.
+        epochs (type): Description of parameter `epochs`.
 
     Returns:
         type: Description of returned object.
 
-    rescale: Rescaling factor; normalizing the data to [0:1]
-    rotation_range: degree range for random rotations (integer)
-    width_shift_range: range for random horizontal shifts (float)
-    height_shift_range: range for random vertical shifts (float)
-    shear_range: shear intensity (float)
-    zoom_range: range for random zoom (float)
-    horizontal_flip: randomly flip inputs horizontally (boolean)
+    - rescale: Rescaling factor; normalizing the data to [0:1]
+    - rotation_range: degree range for random rotations (integer)
+    - width_shift_range: range for random horizontal shifts (float)
+    - height_shift_range: range for random vertical shifts (float)
+    - shear_range: shear intensity (float)
+    - zoom_range: range for random zoom (float)
+    - horizontal_flip: randomly flip inputs horizontally (boolean)
     """
     train_datagen = ImageDataGenerator(
         rescale=1. / 255,
@@ -203,21 +191,28 @@ def train_data_generator(X_train, Y_train, batch_size, epochs):
         height_shift_range=0.2,
         shear_range=0.2,
         zoom_range=0.2,
-        horizontal_flip=True
-    )
-
-    # train_datagen.fit(X_train)
-
-    train_generator = train_datagen.flow(X_train, Y_train, seed=seed)
+        horizontal_flip=True)
     # TODO (MJABOER):
         # ImageDataGenerator.standardize
+    train_generator = train_datagen.flow(X_train, Y_train, seed=seed)
     return train_generator
 
-
+# validation data generator
+################################################################################
 def val_data_generator(X_val, Y_val, batch_size, epochs):
-    val_datagen = ImageDataGenerator(rescale=1. / 255)
+    """Short summary.
 
-    validation_generator = val_datagen.flow(X_val, Y_val, seed=seed)
+    Args:
+        X_val (type): Description of parameter `X_val`.
+        Y_val (type): Description of parameter `Y_val`.
+        batch_size (type): Description of parameter `batch_size`.
+        epochs (type): Description of parameter `epochs`.
+
+    Returns:
+        type: Description of returned object.
+    """
     # TODO (MJABOER):
         # ImageDataGenerator.standardize
+    val_datagen = ImageDataGenerator(rescale=1. / 255)
+    validation_generator = val_datagen.flow(X_val, Y_val, seed=seed)
     return validation_generator

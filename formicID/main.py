@@ -38,7 +38,7 @@ from utils.logger import build_tensorboard
 dropout = 0.5
 wd = os.getcwd()
 batch_size = 32
-epochs = 15
+epochs = 16
 
 
 # Main
@@ -112,11 +112,14 @@ def main():
     ##########################################################################
     model.fit_generator(train_data_gen,
                         validation_data=val_data_gen,
-                        steps_per_epoch=10,
+                        steps_per_epoch=32,
                         epochs=epochs,
                         callbacks=build_tensorboard(model))
+    score = model.evaluate(X_test, Y_test, verbose=0)
+    print(score)
 
-    model.predict(X_test, verbose=1)
+    prediction = model.predict_classes(X_test, verbose=1)
+    print(prediction)
 
 
 if __name__ == '__main__':
