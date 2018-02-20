@@ -31,7 +31,6 @@ from data_loader.data_input import (img_height, img_load_shottype, img_width,
                                     train_data_generator, train_val_test_split,
                                     val_data_generator)
 # from models.models import model_inceptionv3
-# from trainers.train import train_data_gen, val_data_gen
 from utils.logger import build_tensorboard
 
 # Parameters and settings
@@ -49,7 +48,7 @@ def main():
     # Initializing the model
     ############################################################################
     model = Sequential()
-    model.add(Conv2D(32, (3, 3), padding='same', input_shape=(85,85,3)))
+    model.add(Conv2D(32, (3, 3), padding='same', input_shape=(85, 85, 3)))
     model.add(Activation('relu'))
     model.add(Conv2D(32, (3, 3)))
     model.add(Activation('relu'))
@@ -78,32 +77,48 @@ def main():
     #                 schedule_decay=0.004)
 
     model.compile(loss='categorical_crossentropy',
-                 optimizer=Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
-                 # metrics=['accuracy', ',ae']
-                 )
+                  optimizer=Nadam(lr=0.002,
+                                  beta_1=0.9,
+                                  beta_2=0.999,
+                                  epsilon=1e-08, schedule_decay=0.004)
+                  # metrics=['accuracy']
+                  )
     print("Model is compiled succesfully.")
     # multi_gpu_formicID = multi_gpu_model(model_formicID)
     # multi_gpu_formicID = multi_gpu_model(model_formicID, gpus=4)
 
     # Initializing the data
     ############################################################################
-    images, labels = img_load_shottype(shottype='h', datadir='2018-02-12-test')
+    images, labels = img_load_shottype(shottype='h',
+                                       datadir='2018-02-12-test')
 
     X_train, Y_train, X_val, Y_val, X_test, Y_test = train_val_test_split(
-        images=images, labels=labels, test_size=0.1, val_size=0.135)
+        images=images,
+        labels=labels,
+        test_size=0.1,
+        val_size=0.135)
 
-    train_data_gen = train_data_generator(
-        X_train=X_train, Y_train=Y_train, batch_size=batch_size, epochs=epochs)
+    train_data_gen = train_data_generator(X_train=X_train,
+                                          Y_train=Y_train,
+                                          batch_size=batch_size,
+                                          epochs=epochs)
 
-    val_data_gen = val_data_generator(
-        X_val=X_val, Y_val=Y_val, batch_size=batch_size, epochs=epochs)
+    val_data_gen = val_data_generator(X_val=X_val,
+                                      Y_val=Y_val,
+                                      batch_size=batch_size,
+                                      epochs=epochs)
 
     # Training in batches with iterator
     ##########################################################################
-    model.fit_generator(train_data_gen, validation_data=val_data_gen,
-                        steps_per_epoch=10, epochs=epochs, callbacks=build_tensorboard(model))
+    model.fit_generator(train_data_gen,
+                        validation_data=val_data_gen,
+                        steps_per_epoch=10,
+                        epochs=epochs,
+                        callbacks=build_tensorboard(model))
+
+    model.predict(X_test, verbose=1)
 
 
 if __name__ == '__main__':
-    # print('Keras version: {}'.format(keras.__version__))
+    print('Keras version: {}'.format(keras_version))
     main()
