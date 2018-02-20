@@ -35,15 +35,19 @@ Description:
 '''
 # Packages
 ################################################################################
+
 import os
 
 import numpy as np
+from keras import backend as K
 from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import to_categorical  # one-hot encoding
-from keras.utils import normalize
+from keras.utils import normalize, np_utils
 from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.preprocessing import LabelEncoder
 
 import cv2
+from tqdm import tqdm
 
 #  TODO (MJABOER):
     # Keras function image_to_array()
@@ -57,6 +61,7 @@ wd = os.getcwd()
 
 seed = 1337
 
+img_width, img_height = 85, 85
 # Load images
 ################################################################################
 
@@ -85,19 +90,39 @@ def img_load_shottype(shottype, datadir):
     images = []
     labels = []
     print('Reading images from "{}"'.format(data_dir))
-    for species in os.listdir(data_dir):
-        for image in os.listdir(os.path.join(data_dir, species)):
+    for species in tqdm(os.listdir(data_dir),
+                        desc='Reading folders',
+                        unit='species'):
+        for image in tqdm(os.listdir(os.path.join(data_dir, species)),
+                          desc='Loading {}'.format(species),
+                          unit='images'):
             if '.jpg' in image:
                 img = cv2.imread(os.path.join(data_dir, species, image))
+                img = cv2.resize(img,
+                                (img_width, img_height),
+                                interpolation=cv2.INTER_AREA)
+                img = np.asarray(img)
                 # returns BGR instead of RGB
                 if img is not None:
                     # img = img[:, :, ::-1]  # Convert to RGB
-                    images.append(img)
+                    images = np.append(images, img)
             label = species
-            labels.append(label)
-    images = np.asarray(images)
-    images = np.array(images)
-    labels = np.asarray(labels)
+            labels = np.append(labels, label)
+    images = np.reshape(images, (-1, img_width, img_height, 3))
+    # Cast np array to keras default float type ('float32')
+    images = K.cast_to_floatx(images)
+    le = LabelEncoder()
+    labels = le.fit_transform(labels)
+    # divide by 2, because of the recursive call to data_dir
+    labels = to_categorical(labels, num_classes=len(species)//2)
+    labels = K.cast_to_floatx(labels)
+
+    # print('after', labels)
+    # print('\nImages shape: ',images.shape)
+    # print('images dtype: ', images.dtype)
+    # print('labels shape: ', labels.shape)
+    # print('labels dtype: ', labels.dtype)
+
     return images, labels
 
 
@@ -118,33 +143,30 @@ def train_val_test_split(images, labels, test_size, val_size):
         type: Description of returned object.
 
     """
-    nb_classes = len(set(labels))
-
     sss = StratifiedShuffleSplit(
         n_splits=1, test_size=test_size, random_state=seed)
     sss.get_n_splits(images, labels)
     # print(sss)
     for train_index, test_index in sss.split(images, labels):
-        print('TEST (10%%): {}'.format(test_index))
+        # print('TEST (10%%): {}'.format(test_index))
         X_train, X_test = images[train_index], images[test_index]
         Y_train, Y_test = labels[train_index], labels[test_index]
 
-        nb_classes = len(set(labels))
         sss = StratifiedShuffleSplit(
             n_splits=1, test_size=val_size, random_state=seed)
         sss.get_n_splits(X_train, Y_train)
         # print(sss)
         for train_index, val_index in sss.split(X_train, Y_train):
-            print('\nTRAIN (~75%%): {} \n\nVAL (~15%%): {}'.format(
-                train_index, val_index))
+            # print('\nTRAIN (~75%%): {} \n\nVAL (~15%%): {}'.format(
+            #     train_index, val_index))
             X_train, X_val = X_train[train_index], X_train[val_index]
             Y_train, Y_val = Y_train[train_index], Y_train[val_index]
 
+        nb_specimens = len(X_test) + len(X_train) + len(X_val)
         print('Number of X_test: {}'.format(len(X_test)))
         print('Number of X_train: {}'.format(len(X_train)))
         print('Number of X_val: {}'.format(len(X_val)))
-        print('Number of Y_train: {} with {} classes'.format(len(labels),
-                                                             nb_classes))
+        print('Number of labels: {}'.format(nb_specimens))
 
         return X_train, Y_train, X_val, Y_val, X_test, Y_test
 
@@ -184,9 +206,9 @@ def train_data_generator(X_train, Y_train, batch_size, epochs):
         horizontal_flip=True
     )
 
-    train_datagen.fit(X_train)
+    # train_datagen.fit(X_train)
 
-    train_generator = train_datagen.flow(X_train, Y_train, augment=False, rounds=1, seed=seed, batch_size=batch_size, steps_per_epoch - len(X_train) / batch_size, epochs=epochs)
+    train_generator = train_datagen.flow(X_train, Y_train, seed=seed)
     # TODO (MJABOER):
         # ImageDataGenerator.standardize
     return train_generator
@@ -195,7 +217,7 @@ def train_data_generator(X_train, Y_train, batch_size, epochs):
 def val_data_generator(X_val, Y_val, batch_size, epochs):
     val_datagen = ImageDataGenerator(rescale=1. / 255)
 
-    validation_generator = val_datagen.flow(X_val, Y_val, augment=False, rounds=1, seed=seed, batch_size=batch_size, steps_per_epoch - len(X_train) / batch_size, epochs=epochs)
+    validation_generator = val_datagen.flow(X_val, Y_val, seed=seed)
     # TODO (MJABOER):
         # ImageDataGenerator.standardize
     return validation_generator

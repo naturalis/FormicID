@@ -74,13 +74,6 @@ class neuralNetwork(object):
         model.add(Activation('softmax'))
         print("Model is build succesfully.")
 
-    def compile(self):
-        """Short summary.
-
-        Returns:
-            type: Description of returned object.
-
-        """
         if self.optimizer == "SGD":
             opt = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
         if self.optimizer == "RMSprop":
@@ -90,7 +83,12 @@ class neuralNetwork(object):
                         schedule_decay=0.004)
 
         model.compile(loss='categorical_crossentropy',
-                      optimizer=opt,
-                      metrics=['accuracy', 'top_k_categorical_accuracy'])
+                     optimizer=opt
+                     # metrics=['accuracy', ',ae']
+                     )
         print("Model is compiled succesfully.")
         return model
+
+    def train(self):
+        self.fit_generator(train_data_gen, validation_data=val_data_gen,
+                                     steps_per_epoch=5, epochs=epochs, callbacks=build_tensorboard(model_formicID))

@@ -38,9 +38,3 @@ epochs = 1
 
 # Training
 ################################################################################
-
-train_data_gen = train_data_generator(
-    X_train=X_train, Y_train=Y_train, batch_size=batch_size, epochs=epochs)
-
-val_data_gen = train_data_generator(
-    X_val=X_val, Y_val=Y_val, batch_size=batch_size, epochs=epochs)

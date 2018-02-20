@@ -90,7 +90,7 @@ def model_densenet169(include_top, weights, input_tensor, input_shape, pooling, 
 # //////////////////////////////////////////////////////////////////////////////
 
 
-def model_inceptionv3(include_top, weights, input_tensor, input_shape, pooling, classes):
+def model_inceptionv3(include_top, weights, input_tensor=None, input_shape=None, pooling, classes):
     '''Inception V3 model, with weights pre-trained on ImageNet.
 
     This model is available for both the Theano and TensorFlow backend, and can

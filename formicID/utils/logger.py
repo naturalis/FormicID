@@ -13,8 +13,8 @@ Description:
 A logger for tensorboard is created in this file.
 
 '''
-from formicID.utils.logger import build_tensorboard
-
+from keras.callbacks import TensorBoard
+from datetime import datetime
 # Callbacks
 # //////////////////////////////////////////////////////////////////////////////
 
