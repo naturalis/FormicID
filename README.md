@@ -6,29 +6,29 @@ _Classification of images of ants using deep learning_
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [FormicID](#formicid)
-	- [Description](#pencil-description)
-		- [Proposal](#proposal)
-	- [How to use](#arrowforward-how-to-use)
-	- [Project Structure](#bookmark-project-structure)
-		- [Why this name, FormicID?](#why-this-name-formicid)
-	- [AntWeb](#ant-antweb)
-		- [AntWeb API](#satellite-antweb-api)
-		- [Images / Dataset](#openfilefolder-images-dataset)
-	- [Neural Network](#computer-neural-network)
-		- [Architecture](#triangularruler-architecture)
-	- [Requirements](#clipboard-requirements)
-	- [Credits](#scroll-credits)
+	- [:pencil: Description](#pencil-description)
+		- [:black_nib: Proposal](#blacknib-proposal)
+	- [:arrow_forward: How to use](#arrowforward-how-to-use)
+	- [:bookmark: Project Structure](#bookmark-project-structure)
+	- [:ant: AntWeb](#ant-antweb)
+		- [:satellite: AntWeb API](#satellite-antweb-api)
+		- [:open_file_folder: Images / Dataset](#openfilefolder-images-dataset)
+	- [:computer: Neural Network](#computer-neural-network)
+		- [:mag: Ready to use models](#mag-ready-to-use-models)
+		- [:triangular_ruler: Self-made model](#triangularruler-self-made-model)
+	- [:clipboard: Requirements](#clipboard-requirements)
+	- [:scroll: Credits](#scroll-credits)
+	- [:exclamation: Why this name, FormicID?](#exclamation-why-this-name-formicid)
 
 <!-- /TOC -->
 
 ## :pencil: Description
-Code repository for CNN-based image classification of AntWeb images<br>
-
-
-![](https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true)
-
+Code repository for CNN-based image classification of AntWeb images
 
 _Images are harvested from AntWeb.org_
+<br>
+
+![](https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true)
 
 ### :black_nib: Proposal
 You can find the proposal [here](https://github.com/naturalis/FormicID-proposal).
@@ -98,8 +98,6 @@ _To be continued_
         |-- __init__.py
         |-- utils.py
 ```
-### :exclamation: Why this name, FormicID?
-FormicID is a concatenation of Formicidae (the family name of ants) and identification
 
 ## :ant: AntWeb
 > AntWeb is the world's largest online database of images, specimen records, and natural history information on ants. It is community driven and open to contribution from anyone with specimen records, natural history comments, or images.<br><br>
@@ -115,11 +113,17 @@ At this moment version 2 is used because version 3 was not released when the pro
 
 ### :open_file_folder: Images / Dataset
 How does the dataset looks like<br><br>
-![](https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true)<br>
+![](https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true)
 
 ## :computer: Neural Network
-### :triangular_ruler: Architecture
-Text on how the neural network architecture looks like
+### :mag: Ready to use models
+- Inception v3
+- Xception
+- ResNet
+- DenseNet
+
+### :triangular_ruler: Self-made model
+<text placeholder>
 
 ## :clipboard: Requirements
 * [Keras | Why use Keras?](https://keras.io/why-use-keras/)
@@ -130,3 +134,6 @@ Text on how the neural network architecture looks like
 - Supervisor: dr. Rutger Vos
 - 2nd Corrector: dr. Jeremy Miller
 - [Bookmarks and Resources](docs/Bookmarks-and-resources.md)
+
+## :exclamation: Why this name, FormicID?
+FormicID is a concatenation of Formicidae (the family name of ants) and identification
