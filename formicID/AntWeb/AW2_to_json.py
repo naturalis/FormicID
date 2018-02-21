@@ -15,7 +15,7 @@ and a species name. The script will go over the csv file and download a json
 file for this genus+species and places the JSON file in a folder.
 '''
 # Packages
-# //////////////////////////////////////////////////////////////////////////////
+################################################################################
 
 import datetime
 import json
@@ -26,11 +26,10 @@ import pandas as pd
 import requests
 
 from tqdm import tqdm
+from utils.utils import todaystr, wd
 
 # Parameters and settings
 ################################################################################
-todaystr = datetime.date.today().isoformat()
-wd = os.getcwd()
 
 # Creating an URL
 ################################################################################

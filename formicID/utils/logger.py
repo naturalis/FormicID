@@ -13,12 +13,18 @@ Description:
 A logger for tensorboard is created in this file.
 
 '''
+# Packages
+################################################################################
 from keras.callbacks import TensorBoard
 from datetime import datetime
+from . import today_timestr
+
+# Parameters and settings
+################################################################################
+
+
 # Callbacks
-# //////////////////////////////////////////////////////////////////////////////
-
-
+################################################################################
 def build_tensorboard(model):
     """Short summary.
 
@@ -30,7 +36,7 @@ def build_tensorboard(model):
 
     """
     AW_tensorboard = TensorBoard(
-        log_dir='./graphs/logs/{0}'.format(datetime.now()),
+        log_dir='./graphs/logs/{0}'.format(today_timestr),
         histogram_freq=0, batch_size=32,
         write_graph=True, write_images=True)
     AW_tensorboard.set_model(model)

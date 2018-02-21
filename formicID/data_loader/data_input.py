@@ -48,9 +48,10 @@ from sklearn.preprocessing import LabelEncoder
 import cv2
 from tqdm import tqdm
 
+from utils.utils import wd
+
 # Parameters and settings
 ################################################################################
-wd = os.getcwd()
 seed = 1337
 img_width, img_height = 85, 85
 
@@ -91,8 +92,8 @@ def img_load_shottype(shottype, datadir):
             if '.jpg' in image:
                 img = cv2.imread(os.path.join(data_dir, species, image))
                 img = cv2.resize(img,
-                                (img_width, img_height),
-                                interpolation=cv2.INTER_AREA)
+                                 (img_width, img_height),
+                                 interpolation=cv2.INTER_AREA)
                 img = np.asarray(img)
                 # returns BGR instead of RGB
                 if img is not None:
@@ -100,14 +101,14 @@ def img_load_shottype(shottype, datadir):
                     images = np.append(images, img)
             label = species
             labels = np.append(labels, label)
-    print('\n') # to correctly print tqdm when finished.
+    print('\n')  # to correctly print tqdm when finished.
     images = np.reshape(images, (-1, img_width, img_height, 3))
     # Cast np array to keras default float type ('float32')
     images = K.cast_to_floatx(images)
     le = LabelEncoder()
     labels = le.fit_transform(labels)
     # divide by 2, because of the recursive call to data_dir
-    labels = to_categorical(labels, num_classes=len(species)//2)
+    labels = to_categorical(labels, num_classes=len(species) // 2)
     labels = K.cast_to_floatx(labels)
 
     # print('after', labels)
@@ -164,6 +165,8 @@ def train_val_test_split(images, labels, test_size, val_size):
 
 # Train data generator
 ################################################################################
+
+
 def train_data_generator(X_train, Y_train, batch_size, epochs):
     """Short summary.
 
@@ -193,12 +196,14 @@ def train_data_generator(X_train, Y_train, batch_size, epochs):
         zoom_range=0.2,
         horizontal_flip=True)
     # TODO (MJABOER):
-        # ImageDataGenerator.standardize
+    # ImageDataGenerator.standardize
     train_generator = train_datagen.flow(X_train, Y_train, seed=seed)
     return train_generator
 
 # validation data generator
 ################################################################################
+
+
 def val_data_generator(X_val, Y_val, batch_size, epochs):
     """Short summary.
 
@@ -212,7 +217,7 @@ def val_data_generator(X_val, Y_val, batch_size, epochs):
         type: Description of returned object.
     """
     # TODO (MJABOER):
-        # ImageDataGenerator.standardize
+    # ImageDataGenerator.standardize
     val_datagen = ImageDataGenerator(rescale=1. / 255)
     validation_generator = val_datagen.flow(X_val, Y_val, seed=seed)
     return validation_generator

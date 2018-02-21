@@ -25,12 +25,10 @@ import pandas as pd
 import requests
 
 from tqdm import tqdm
-
+from utils.utils import todaystr, wd
 
 # Parameters and settings
 ################################################################################
-todaystr = datetime.date.today().isoformat()
-wd = os.getcwd()
 
 # Creating an URL
 ################################################################################

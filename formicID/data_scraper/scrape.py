@@ -16,7 +16,7 @@ type and per species.
 '''
 
 # Packages
-# //////////////////////////////////////////////////////////////////////////////
+################################################################################
 import csv
 import datetime
 import itertools
@@ -29,17 +29,15 @@ import pandas as pd
 import requests
 
 from tqdm import tqdm
+from utils.utils import todaystr, wd
 
 # Parameters and settings
-# //////////////////////////////////////////////////////////////////////////////
-todaystr = datetime.date.today().isoformat()
-wd = os.getcwd()
+################################################################################
 data_dir = os.path.join(wd, 'data')
 
 
 # Make changes to the csv file
-# //////////////////////////////////////////////////////////////////////////////
-
+################################################################################
 def csv_update(input_dir, csvfile):
     """This function will remove broken links to a different csvfile.
 
@@ -73,7 +71,7 @@ def csv_update(input_dir, csvfile):
 
         df2 = pd.DataFrame(columns=columns)
         for index, row in tqdm(specimen_bad.iterrows(),
-                        desc='Fixing image URLs', unit='URLs'):
+                               desc='Fixing image URLs', unit='URLs'):
             row.image_url = re.sub('_', '(', row.image_url, count=1)
             row.image_url = re.sub('_', ')', row.image_url, count=1)
             row.image_url = re.sub('_', '(', row.image_url, count=1)
@@ -83,7 +81,7 @@ def csv_update(input_dir, csvfile):
 
         df3 = pd.DataFrame(columns=columns)
         for index, row in tqdm(specimen_bad.iterrows(),
-                        desc='Fixing catalog numbers', unit='URLs'):
+                               desc='Fixing catalog numbers', unit='URLs'):
             row.catalog_number = re.sub('_', '(', row.catalog_number, count=1)
             row.catalog_number = re.sub('_', ')', row.catalog_number, count=1)
             df3 = df3.append(row)
@@ -94,8 +92,7 @@ def csv_update(input_dir, csvfile):
 
 
 # Downloading of images
-# //////////////////////////////////////////////////////////////////////////////
-
+################################################################################
 def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
     """This function scrapes images of urls found in the csv file that is made
     with the download_to_csv function.
@@ -163,7 +160,7 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
                         os.mkdir(os.path.join(dir_h, image[1]))
                     filename = os.path.join(dir_h, image[1],
                                             '{}_{}_{}.jpg'.format(image[1],
-                                            image[0], image[2]))
+                                                                  image[0], image[2]))
 
                     try:
                         urlretrieve(url=image[3], filename=filename)
@@ -177,7 +174,7 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
                         os.mkdir(os.path.join(dir_d, image[1]))
                     filename = os.path.join(dir_d, image[1],
                                             '{}_{}_{}.jpg'.format(image[1],
-                                            image[0], image[2]))
+                                                                  image[0], image[2]))
 
                     try:
                         urlretrieve(url=image[3], filename=filename)
@@ -191,7 +188,7 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
                         os.mkdir(os.path.join(dir_p, image[1]))
                     filename = os.path.join(dir_p, image[1],
                                             '{}_{}_{}.jpg'.format(image[1],
-                                            image[0], image[2]))
+                                                                  image[0], image[2]))
 
                     try:
                         urlretrieve(url=image[3], filename=filename)
@@ -200,9 +197,11 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
                             print('Error 404: {}'.format(image[3]))
                             continue
 
-
         print('{} images were downloaded.'.format(nb_images))
 
+
+# main()
+################################################################################
 
 def main():
     # csv_update(input_dir='2018-02-12-test', csvfile='csv_images.csv')
@@ -215,7 +214,6 @@ def main():
                   update=False
                   )
 
-# main()
-# //////////////////////////////////////////////////////////////////////////////
+
 if __name__ == '__main__':
     main()

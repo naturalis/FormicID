@@ -15,6 +15,10 @@ This file has code for utility functions that can be used in other scripts.
 
 # Packages
 ################################################################################
+import datetime
+import os
+
+import requests
 
 # Parameters and settings
 ################################################################################
@@ -36,3 +40,32 @@ def get_url_info(input_url):
     print('Time elapsed to connect to URL:', input_url.elapsed)
     print('URL headers:', input_url.headers)
     print('URL type:', type(input_url.content))
+
+# Dateand time
+################################################################################
+todaystr = datetime.date.today().isoformat() # YYYY-MM-DD
+today_timestr = datetime.datetime.today().isoformat(sep='_', timespec='seconds')
+print(today_timestr)
+
+# Working directory
+################################################################################
+wd = os.getcwd()
+
+
+def create(dirs):
+    """Short summary.
+
+    Args:
+        dirs (type): Description of parameter `dirs`.
+
+    Returns:
+        type: Description of returned object.
+    """
+    try:
+        for dir_ in dirs:
+            if not os.path.exists(dir_):
+                os.makedirs(dir_)
+        return 0
+    except Exception as err:
+        print("Creating directories error: {0}".format(err))
+        exit(-1)
