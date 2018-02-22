@@ -39,97 +39,89 @@ from keras.applications.xception import Xception  # Inception based
 # //////////////////////////////////////////////////////////////////////////////
 
 
-# ResNet50
-# //////////////////////////////////////////////////////////////////////////////
+
+class model():
+    def __init__(self, include_top, weights, input_tensor, input_shape, pooling, classes):
+        self.model_densenet169
+        self.model_inceptionv3
+        self.model_resnet50
+        self.model_xception
+
+    def model_resnet50(self):
+        '''ResNet50 model, with weights pre-trained on ImageNet.
+
+        This model is available for both the Theano and TensorFlow backend, and can
+        be built both with 'channels_first' data format (channels, height, width)
+        or 'channels_last' data format (height, width, channels).
+
+        The default input size for this model is 224x224.
+        '''
+        model = ResNet50(
+            self.include_top=include_top,
+            self.weights=weights,
+            self.input_tensor=input_tensor,
+            self.input_shape=input_shape,
+            self.pooling=pooling,
+            self.classes=classes)
+        return model
+
+    def model_densenet169(self):
+        '''Optionally loads weights pre-trained on ImageNet. Note that when using
+        TensorFlow, for best performance you should set
+        image_data_format='channels_last' in your Keras config at
+        ~/.keras/keras.json.
+
+        The model and the weights are compatible with TensorFlow, Theano, and CNTK.
+        The data format convention used by the model is the one specified in your
+        Keras config file.
+        '''
+        model = DenseNet169(
+            self.include_top=include_top,
+            self.weights=weights,
+            self.input_tensor=input_tensor,
+            self.input_shape=input_shape,
+            self.pooling=pooling,
+            self.classes=classes)
+        return model
 
 
-def model_resnet50(include_top, weights, input_tensor, input_shape, pooling, classes):
-    '''ResNet50 model, with weights pre-trained on ImageNet.
 
-    This model is available for both the Theano and TensorFlow backend, and can
-    be built both with 'channels_first' data format (channels, height, width)
-    or 'channels_last' data format (height, width, channels).
+    def model_inceptionv3(include_top, weights, input_tensor=None, input_shape=None, pooling, classes):
+        '''Inception V3 model, with weights pre-trained on ImageNet.
 
-    The default input size for this model is 224x224.
-    '''
-    model = ResNet50(
-        include_top=include_top,
-        weights=weights,
-        input_tensor=input_tensor,
-        input_shape=input_shape,
-        pooling=pooling,
-        classes=classes)
-    return model
+        This model is available for both the Theano and TensorFlow backend, and can
+        be built both with 'channels_first' data format (channels, height, width)
+        or 'channels_last' data format (height, width, channels).
 
-
-# DenseNet169
-# //////////////////////////////////////////////////////////////////////////////
+        The default input size for this model is 299x299.
+        '''
+        model = InceptionV3(
+            self.include_top=include_top,
+            self.weights=weights,
+            self.input_tensor=input_tensor,
+            self.input_shape=input_shape,
+            self.pooling=pooling,
+            self.classes=classes)
+        return model
 
 
-def model_densenet169(include_top, weights, input_tensor, input_shape, pooling, classes):
-    '''Optionally loads weights pre-trained on ImageNet. Note that when using
-    TensorFlow, for best performance you should set
-    image_data_format='channels_last' in your Keras config at
-    ~/.keras/keras.json.
+    def model_xception(include_top, weights, input_tensor, input_shape, pooling, classes):
+        '''Xception V1 model, with weights pre-trained on ImageNet.
 
-    The model and the weights are compatible with TensorFlow, Theano, and CNTK.
-    The data format convention used by the model is the one specified in your
-    Keras config file.
-    '''
-    model = DenseNet169(
-        include_top=include_top,
-        weights=weights,
-        input_tensor=input_tensor,
-        input_shape=input_shape,
-        pooling=pooling,
-        classes=classes)
-    return model
+        On ImageNet, this model gets to a top-1 validation accuracy of 0.790 and a
+        top-5 validation accuracy of 0.945.
 
+        Note that this model is only available for the TensorFlow backend, due to
+        its reliance on SeparableConvolution layers. Additionally it only supports
+        the data format 'channels_last' (height, width, channels).
 
-# InceptionV3
-# //////////////////////////////////////////////////////////////////////////////
-
-
-def model_inceptionv3(include_top, weights, input_tensor=None, input_shape=None, pooling, classes):
-    '''Inception V3 model, with weights pre-trained on ImageNet.
-
-    This model is available for both the Theano and TensorFlow backend, and can
-    be built both with 'channels_first' data format (channels, height, width)
-    or 'channels_last' data format (height, width, channels).
-
-    The default input size for this model is 299x299.
-    '''
-    model = InceptionV3(
-        include_top=include_top,
-        weights=weights,
-        input_tensor=input_tensor,
-        input_shape=input_shape,
-        pooling=pooling,
-        classes=classes)
-    return model
-
-
-# Xception
-# //////////////////////////////////////////////////////////////////////////////
-
-
-def model_xception(include_top, weights, input_tensor, input_shape, pooling, classes):
-    '''Xception V1 model, with weights pre-trained on ImageNet.
-
-    On ImageNet, this model gets to a top-1 validation accuracy of 0.790 and a
-    top-5 validation accuracy of 0.945.
-
-    Note that this model is only available for the TensorFlow backend, due to
-    its reliance on SeparableConvolution layers. Additionally it only supports
-    the data format 'channels_last' (height, width, channels).
-
-    The default input size for this model is 299x299.
-    '''
-    model = Xception(
-        include_top=include_top,
-        weights=weights,
-        input_tensor=input_tensor,
-        input_shape=input_shape,
-        pooling=pooling,
-        classes=classes)
-    return model
+        The default input size for this model is 299x299.
+        '''
+        model = Xception(
+            self.include_top=include_top,
+            self.weights=weights,
+            self.input_tensor=input_tensor,
+            self.input_shape=input_shape,
+            self.pooling=pooling,
+            self.classes=classes)
+        return model

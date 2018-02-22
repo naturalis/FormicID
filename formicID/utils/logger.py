@@ -17,7 +17,7 @@ A logger for tensorboard is created in this file.
 ################################################################################
 from keras.callbacks import TensorBoard
 from datetime import datetime
-from . import today_timestr
+from . import utils
 
 # Parameters and settings
 ################################################################################
@@ -25,7 +25,11 @@ from . import today_timestr
 
 # Callbacks
 ################################################################################
-def build_tensorboard(model):
+# class LoggerTensorBoard():
+#     def __init__(self, config):
+#         self.config = config
+
+def build_tensorboard(model, config=None):
     """Short summary.
 
     Args:
@@ -35,9 +39,11 @@ def build_tensorboard(model):
         type: Description of returned object.
 
     """
+    # TODO (MJABOER):
+    # Update batch_size to a universal parameter
     AW_tensorboard = TensorBoard(
         log_dir='./graphs/logs/{0}'.format(today_timestr),
-        histogram_freq=0, batch_size=32,
+        histogram_freq=3, batch_size=32,
         write_graph=True, write_images=True)
     AW_tensorboard.set_model(model)
     Callbacks_Tensorboard = []

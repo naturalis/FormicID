@@ -27,7 +27,7 @@ from keras.optimizers import SGD, Adam, Nadam, RMSprop
 # Build the network
 # //////////////////////////////////////////////////////////////////////////////
 class neuralNetwork(object):
-    def __init__(self, dropout, input_shape, num_species, optimizer):
+    def __init__(self, config, input_shape, num_species, optimizer):
         """A neural network model. The input_shape needs to be specified.
 
         Args:
@@ -40,10 +40,12 @@ class neuralNetwork(object):
             type: Description of returned object.
 
         """
-        self.dropout = dropout
+        super(neuralNetwork, self).__init__(config)
         self.input_shape = input_shape
         self.num_species = num_species
         self.optimizer = optimizer
+        self.build()
+        self.compile()
 
     def build(self):
         """Short summary.
@@ -52,44 +54,59 @@ class neuralNetwork(object):
             type: Description of returned object.
 
         """
-        self = Sequential()
-        self.add(Conv2D(32, (3, 3),
+        model = Sequential()
+        model.add(Conv2D(32, (3, 3),
                         padding='same',
                         input_shape=self.input_shape))
-        self.add(Activation('relu'))
-        self.add(Conv2D(32, (3, 3)))
-        self.add(Activation('relu'))
-        self.add(MaxPooling2D(pool_size=(2, 2)))
-        self.add(Dropout(self.dropout))
-        self.add(Conv2D(64, (3, 3), padding='same'))
-        self.add(Activation('relu'))
-        self.add(Conv2D(64, (3, 3)))
-        self.add(Activation('relu'))
-        self.add(MaxPooling2D(pool_size=(2, 2)))
-        self.add(Dropout(self.dropout))
-        self.add(Flatten())
-        self.add(Dense(512))
-        self.add(Activation('relu'))
-        self.add(Dropout(self.dropout))
-        self.add(Dense(self.num_species))
-        self.add(Activation('softmax'))
+        model.add(Activation('relu'))
+        model.add(Conv2D(32, (3, 3)))
+        model.add(Activation('relu'))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(self.configdropout))
+        model.add(Conv2D(64, (3, 3), padding='same'))
+        model.add(Activation('relu'))
+        model.add(Conv2D(64, (3, 3)))
+        model.add(Activation('relu'))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(self.config.dropout))
+        model.add(Flatten())
+        model.add(Dense(512))
+        model.add(Activation('relu'))
+        model.add(Dropout(self.config.dropout))
+        model.add(Dense(self.num_species))
+        model.add(Activation('softmax'))
         print("Model is build succesfully.")
+        return model
 
-        if self.optimizer == "SGD":
-            opt = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
-        if self.optimizer == "RMSprop":
-            opt = RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
-        if self.optimizer == "Nadam":
-            opt = Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08,
+
+    def compile(self):
+        if self.config.optimizer == "SGD":
+            opt = SGD(lr=1e-2,
+                      decay=1e-6,
+                      momentum=0.9,
+                      nesterov=True)
+        if self.config.optimizer == "RMSprop":
+            opt = RMSprop(lr=0.001,
+                          rho=0.9,
+                          epsilon=1e-08,
+                          decay=0.0)
+        if self.config.optimizer == "Nadam":
+            opt = Nadam(lr=0.002,
+                        beta_1=0.9,
+                        beta_2=0.999,
+                        epsilon=1e-08,
                         schedule_decay=0.004)
 
         model.compile(loss='categorical_crossentropy',
-                     optimizer=opt
-                     # metrics=['accuracy', ',ae']
-                     )
-        print("Model is compiled succesfully.")
-        return model
+                      optimizer=opt)
+                      # metrics=['accuracy', ',ae']
 
-    def train(self):
-        self.fit_generator(train_data_gen, validation_data=val_data_gen,
-                                     steps_per_epoch=5, epochs=epochs, callbacks=build_tensorboard(model_formicID))
+        print("Model is compiled succesfully.")
+
+        return self
+
+    # def train(self):
+    #     self.fit_generator(train_data_gen,
+    #                        validation_data=val_data_gen,
+    #                        steps_per_epoch=5,
+    #                        epochs=self.config.num_epochs, callbacks=build_tensorboard(model_formicID))

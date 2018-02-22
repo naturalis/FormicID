@@ -21,6 +21,8 @@ import os
 
 from bunch import Bunch
 
+from . import utils
+
 
 # Load and process config
 ################################################################################
@@ -53,6 +55,7 @@ def process_config(jsonfile):
         type: Description of returned object.
     """
     config, _ = get_config_from_json(jsonfile)
-    config.summary_dir = os.path.join("../experiments", config.exp_name, "summary")
-    config.checkpoint_dir = os.path.join("../experiments", config.exp_name, "checkpoint")
+    config.summary_dir = os.path.join("./experiments", config.exp_name, "summary/")
+    config.checkpoint_dir = os.path.join("./experiments", config.exp_name, "checkpoint/")
+
     return config

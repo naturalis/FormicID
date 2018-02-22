@@ -15,6 +15,8 @@ This file has code for utility functions that can be used in other scripts.
 
 # Packages
 ################################################################################
+
+import argparse
 import datetime
 import os
 
@@ -41,18 +43,19 @@ def get_url_info(input_url):
     print('URL headers:', input_url.headers)
     print('URL type:', type(input_url.content))
 
-# Dateand time
-################################################################################
-todaystr = datetime.date.today().isoformat() # YYYY-MM-DD
-today_timestr = datetime.datetime.today().isoformat(sep='_', timespec='seconds')
-print(today_timestr)
 
-# Working directory
+# Date and time stamps
+################################################################################
+todaystr = datetime.date.today().isoformat()  # YYYY-MM-DD
+today_timestr = datetime.datetime.today().isoformat(sep='_', timespec='seconds')
+
+
+# Directory utilities
 ################################################################################
 wd = os.getcwd()
 
 
-def create(dirs):
+def create_dirs(dirs):
     """Short summary.
 
     Args:
@@ -69,3 +72,17 @@ def create(dirs):
     except Exception as err:
         print("Creating directories error: {0}".format(err))
         exit(-1)
+
+# Directory utilities
+################################################################################
+
+
+def get_args():
+    argparser = argparse.ArgumentParser(description=__doc__)
+    argparser.add_argument(
+        '-c', '--config',
+        metavar='C',
+        default='None',
+        help='The Configuration file')
+    args = argparser.parse_args()
+    return args
