@@ -7,5 +7,6 @@
     "state_size": [784],
     "max_to_keep": 5,
     "dropout": 0.5,
-    "optimizer": "Nadam"
+    "optimizer": "Nadam",
+    "model": "InceptionV3"
 }

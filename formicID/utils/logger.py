@@ -17,7 +17,7 @@ A logger for tensorboard is created in this file.
 ################################################################################
 from keras.callbacks import TensorBoard
 from datetime import datetime
-from . import utils
+from . utils import today_timestr
 
 # Parameters and settings
 ################################################################################

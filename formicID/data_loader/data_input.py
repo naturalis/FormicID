@@ -52,7 +52,7 @@ from utils.utils import wd
 # Parameters and settings
 ################################################################################
 seed = 1337
-img_width, img_height = 85, 85
+img_width, img_height = 140, 140
 
 # Load images
 ################################################################################
@@ -102,6 +102,7 @@ def img_load_shottype(shottype, datadir):
             labels = np.append(labels, label)
     print('\n')  # to correctly print tqdm when finished.
     images = np.reshape(images, (-1, img_width, img_height, 3))
+    images = images / 255. # normalization step
     # Cast np array to keras default float type ('float32')
     images = K.cast_to_floatx(images)
     le = LabelEncoder()
@@ -140,7 +141,7 @@ def train_val_test_split(images, labels, test_size, val_size):
     sss.get_n_splits(images, labels)
     # print(sss)
     for train_index, test_index in sss.split(images, labels):
-        print('TEST (10%%): {}'.format(test_index))
+        # print('TEST (10%%): {}'.format(test_index))
         X_train, X_test = images[train_index], images[test_index]
         Y_train, Y_test = labels[train_index], labels[test_index]
 

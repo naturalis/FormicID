@@ -21,9 +21,6 @@ import os
 
 from bunch import Bunch
 
-from . import utils
-
-
 # Load and process config
 ################################################################################
 def get_config_from_json(json_file):

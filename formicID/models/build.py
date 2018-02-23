@@ -27,7 +27,7 @@ from keras.optimizers import SGD, Adam, Nadam, RMSprop
 # Build the network
 # //////////////////////////////////////////////////////////////////////////////
 class neuralNetwork(object):
-    def __init__(self, config, input_shape, num_species, optimizer):
+    def __init__(self, config, input_shape, num_species):
         """A neural network model. The input_shape needs to be specified.
 
         Args:
@@ -40,7 +40,8 @@ class neuralNetwork(object):
             type: Description of returned object.
 
         """
-        super(neuralNetwork, self).__init__(config)
+        # super(neuralNetwork, self).__init__(config)
+        self.config
         self.input_shape = input_shape
         self.num_species = num_species
         self.optimizer = optimizer

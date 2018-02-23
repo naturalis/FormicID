@@ -16,6 +16,7 @@ Description:
 # Packages
 ################################################################################
 from keras.preprocessing.image import ImageDataGenerator
+from keras.applications.inception_v3 import preprocess_input
 
 # TODO (MJABOER):
 # loop over batches while training. This is better for the memory.
@@ -25,7 +26,7 @@ from keras.preprocessing.image import ImageDataGenerator
 ################################################################################
 batch_size = 32
 epochs = 1
-
+seed = 1
 
 # Training
 ################################################################################
@@ -55,6 +56,7 @@ def train_data_generator(X_train, Y_train, batch_size, epochs):
     - horizontal_flip: randomly flip inputs horizontally (boolean)
     """
     train_datagen = ImageDataGenerator(
+        preprocessing_function=preprocess_input, # needed for inception_v3
         rescale=1. / 255,
         rotation_range=40,
         width_shift_range=0.2,
@@ -85,6 +87,8 @@ def val_data_generator(X_val, Y_val, batch_size, epochs):
     """
     # TODO (MJABOER):
     # ImageDataGenerator.standardize
-    val_datagen = ImageDataGenerator(rescale=1. / 255)
+    val_datagen = ImageDataGenerator(
+        preprocessing_function=preprocess_input, # needed for inception_v3
+        rescale=1. / 255)
     validation_generator = val_datagen.flow(X_val, Y_val, seed=seed)
     return validation_generator
