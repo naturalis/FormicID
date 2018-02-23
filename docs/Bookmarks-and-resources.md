@@ -60,6 +60,7 @@
 * [Collection of Keras models used for classification](https://github.com/titu1994/Keras-Classification-Models)
 * [10 misconceptions about Neural Networks](http://www.turingfinance.com/misconceptions-about-neural-networks/).
 * [Deep learning for complete beginners: neural network fine-tuning techniques](https://cambridgespark.com/content/tutorials/neural-networks-tuning-techniques/index.html)
+* [“Convolutional neural networks (CNN) tutorial”](https://jhui.github.io/2017/03/16/CNN-Convolutional-neural-network/)
 
 #### Visuazizing Keras
 * [Plot hidden layers in Keras](https://gist.github.com/hadim/9fedb72b54eb3bc453362274cd347a6a)
