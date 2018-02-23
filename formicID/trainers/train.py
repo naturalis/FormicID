@@ -10,7 +10,12 @@
 ################################################################################
 '''
 Description:
-<placeholder txt>
+This file contains data generators. These generators generate batches of tensor
+image data while also augmenting the images in real-time. The data will be
+looped over (in batches) indefinitely. There is a train_data_generator, which
+also augments the images with different methods, and a val_data_generator which
+does only preprocess the data. Validation data should not be augmented. The
+`preprocessing_function` is needed for the inception_v3 model.
 '''
 
 # Packages
@@ -24,8 +29,6 @@ from keras.applications.inception_v3 import preprocess_input
 
 # Parameters and settings
 ################################################################################
-batch_size = 32
-epochs = 1
 seed = 1
 
 # Training
@@ -57,7 +60,7 @@ def train_data_generator(X_train, Y_train, batch_size, epochs):
     """
     train_datagen = ImageDataGenerator(
         preprocessing_function=preprocess_input, # needed for inception_v3
-        rescale=1. / 255,
+        # rescale=1. / 255,
         rotation_range=40,
         width_shift_range=0.2,
         height_shift_range=0.2,
@@ -89,6 +92,6 @@ def val_data_generator(X_val, Y_val, batch_size, epochs):
     # ImageDataGenerator.standardize
     val_datagen = ImageDataGenerator(
         preprocessing_function=preprocess_input, # needed for inception_v3
-        rescale=1. / 255)
+        # rescale=1. / 255)
     validation_generator = val_datagen.flow(X_val, Y_val, seed=seed)
     return validation_generator

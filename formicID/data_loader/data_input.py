@@ -7,11 +7,17 @@
 #                                                                              #
 #                                  data_input                                  #
 ################################################################################
-'''
-Description:
-<placeholder txt>
+'''Description:
+`data_input.py` can import data from files in folders. If data is downloaded
+using the scraper script the files should be in a correct folder structure
+(divided per shottype and species). The script also encodes labels and
+preprocesses the images into the right format (RGB and [-1, 1] range). With
+`train_val_test_split` the data can be split in 3 subsets: Training, validation
+and test sets. You can set the splits.
 
-    The directory structure:
+The files should be structured as follows:
+
+```
     directory_name/
         head/
             speciesX/
@@ -31,22 +37,22 @@ Description:
                 speciesY0001.jpg
                 speciesY0002.jpg
                 ...
+```
 
 '''
 # Packages
 ################################################################################
+
 import os
 
 import numpy as np
 from keras import backend as K
-from keras.utils import to_categorical
-from keras.utils import normalize
+from keras.utils import normalize, to_categorical
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.preprocessing import LabelEncoder
 
 import cv2
 from tqdm import tqdm
-
 from utils.utils import wd
 
 # Parameters and settings
@@ -59,14 +65,20 @@ img_width, img_height = 140, 140
 
 
 def img_load_shottype(shottype, datadir):
-    """Short summary.
+    """This function loads images from a directory for which the shottype is
+    given.
 
     Args:
-        shottype (type): Description of parameter `shottype`.
-        datadir (type): Description of parameter `datadir`.
+        shottype (str): Specifies the shottype:
+            - `h` (head),
+            - `d` (dorsal)
+            - `p` (profile)
+        datadir (str): The data directory that contains the `images` folder.
 
     Returns:
-        type: Description of returned object.
+        images (array): images as numpy 4D arrays (batches, width, height,
+        channels).
+        labels (array): labels as numpy 2d arrays (batches, labels).
     """
     # TODO (MJABOER):
     # Normalize image data (see datagenerators)
@@ -85,6 +97,8 @@ def img_load_shottype(shottype, datadir):
     for species in tqdm(os.listdir(data_dir),
                         desc='Reading folders',
                         unit='species'):
+        num_species = len(species)
+        print('Number of species: {}'.format(num_species))
         for image in tqdm(os.listdir(os.path.join(data_dir, species)),
                           desc='Loading {}'.format(species),
                           unit='images'):
@@ -96,19 +110,21 @@ def img_load_shottype(shottype, datadir):
                 img = np.asarray(img)
                 # returns BGR instead of RGB
                 if img is not None:
-                    # img = img[:, :, ::-1]  # Convert to RGB
+                    img = img[:, :, ::-1]  # Convert to RGB (inception_v3)
                     images = np.append(images, img)
             label = species
             labels = np.append(labels, label)
     print('\n')  # to correctly print tqdm when finished.
     images = np.reshape(images, (-1, img_width, img_height, 3))
-    images = images / 255. # normalization step
+    images /= 255. # normalization step
+    images -= 0.5
+    images *= 2
     # Cast np array to keras default float type ('float32')
     images = K.cast_to_floatx(images)
     le = LabelEncoder()
     labels = le.fit_transform(labels)
     # divide by 2, because of the recursive call to data_dir
-    labels = to_categorical(labels, num_classes=len(species) // 2)
+    labels = to_categorical(labels, num_classes=num_species)
     labels = K.cast_to_floatx(labels)
 
     # print('after', labels)
@@ -124,14 +140,15 @@ def img_load_shottype(shottype, datadir):
 ################################################################################
 
 
-def train_val_test_split(images, labels, test_size, val_size):
-    """Short summary.
+def train_val_test_split(images, labels, test_size=0.1, val_size=0.135):
+    """Using this function you can split the data in a training, validation and test set. You can specify the test size and validation size. The set will be split in to test - training+validation first, and then training - validation will be split.
 
     Args:
-        images (type): Description of parameter `images`.
-        labels (type): Description of parameter `labels`.
-        test_size (type): Description of parameter `test_size`.
-        val_size (type): Description of parameter `val_size`.
+        images (type): all images as 4d array.
+        labels (type): all labels in relation to the images.
+        test_size (type): size of the training set. default is 10%.
+        val_size (type): size of the validation set, `0.135` is around 15
+            percent of the total input set..
 
     Returns:
         type: Description of returned object.

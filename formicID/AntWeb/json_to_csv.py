@@ -8,11 +8,10 @@
 #                                  ANTWEB API                                  #
 #                                  JSON 2 csv                                  #
 ################################################################################
-'''
-Description:
+'''Description:
 Iterate over a number of JSON files in a folder and save relevant information
-in a csv file (containing a "catalog_number", "scientific_name", "shot_type",
-and "image_url") ready for scrape.py
+in a csv file (containing a `catalog_number`, `scientific_name`, `shot_type`,
+and `image_url`) ready for `scrape.py`.
 '''
 # Packages
 ################################################################################
@@ -24,10 +23,10 @@ import jmespath
 import pandas as pd
 
 from tqdm import tqdm
-from utils.utils import wd
 
 # Parameters and settings
 ################################################################################
+wd = os.getcwd()
 
 # Filter
 ################################################################################
@@ -37,10 +36,11 @@ def filter_json(json_file):
     """Load a JSON object and filter for only relevant values.
 
     Args:
-        json_file (type): a JSON object.
+        json_file (response object): a JSON object.
 
     Returns:
-        type: A list of [catalog_number, scientific_name, shot_type, image_url].
+        type: A list of [`catalog_number`, `scientific_name`, `shot_type`,
+        `image_url`].
 
     """
     json_txt = json.load(json_file)
@@ -77,9 +77,9 @@ def batch_json_to_csv(input_dir, output_dir, csvname):
     information for downloading the images and naming the files.
 
     Args:
-        input_dir (type): Description of parameter `input_dir`.
-        output_dir (type): path and name of the output directory.
-        csvname (type): Description of parameter `csvname`.
+        input_dir (str): Description of parameter `input_dir`.
+        output_dir (str): path and name of the output directory.
+        csvname (str): Description of parameter `csvname`.
 
     Returns:
         type: Creates a csv file in the output directory.
@@ -95,7 +95,8 @@ def batch_json_to_csv(input_dir, output_dir, csvname):
     columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
 
     for filename in tqdm(os.listdir(input_direc),
-                         desc='Reading JSON files', total=nb_files, unit='JSON-files'):
+                         desc='Reading JSON files', total=nb_files,
+                         unit='JSON-files'):
         if filename.endswith('.json'):
             with open(os.path.join(input_direc, filename)) as data_file:
                 # print('Filtering {}'.format(filename))
@@ -115,10 +116,11 @@ def batch_json_to_csv(input_dir, output_dir, csvname):
 # Main()
 ################################################################################
 
+
 def main():
     batch_json_to_csv(
-        input_dir='2018-02-12-test',
-        output_dir='2018-02-12-test',
+        input_dir='2018-02-23-test',
+        output_dir='2018-02-23-test',
         csvname='csv_images'
     )
 

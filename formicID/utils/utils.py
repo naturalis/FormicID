@@ -8,9 +8,9 @@
 #                                  Utilitiies                                  #
 #                                                                              #
 ################################################################################
-'''
-Description:
-This file has code for utility functions that can be used in other scripts.
+'''Description:
+This file has code for generatl utility functions that can be used in other
+scripts.
 '''
 
 # Packages

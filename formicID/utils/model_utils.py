@@ -8,8 +8,7 @@
 #                                  Utilitiies                                  #
 #                                    Models                                    #
 ################################################################################
-'''
-Description:
+'''Description:
 This file has code utilities for handeling models.
 '''
 import h5py

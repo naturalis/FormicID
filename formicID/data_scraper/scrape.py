@@ -8,8 +8,7 @@
 #                                     Scraper                                  #
 #                                                                              #
 ################################################################################
-'''
-Description:
+'''Description:
 Use this script to updating the csv file for broken URLs. After that you can
 download all images. The images will be saved in different folders per shot
 type and per species.
@@ -29,11 +28,12 @@ import pandas as pd
 import requests
 
 from tqdm import tqdm
-from utils.utils import todaystr, wd
 
 # Parameters and settings
 ################################################################################
+wd = os.getcwd()
 data_dir = os.path.join(wd, 'data')
+todaystr = datetime.date.today().isoformat()  # YYYY-MM-DD
 
 
 # Make changes to the csv file
@@ -42,10 +42,13 @@ def csv_update(input_dir, csvfile):
     """This function will remove broken links to a different csvfile.
 
     Args:
-        input_dir (type):
-        csvfile (type): A .csv file that contains all the specimen and image
-        information with 4 columns, namely: 'catalog_number',
-        'scientific_name', 'shot_type' and 'image_url'.
+        input_dir (str): the input directory containing the csvfile
+        csvfile (str): A .csv file that contains all the specimen and image
+            information with 4 columns, namely:
+                - 'catalog_number',
+                - 'scientific_name',
+                - 'shot_type',
+                - 'image_url'
 
     Returns:
         csv file: A cleaned csv file ready for downloading images.
@@ -98,17 +101,18 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
     with the download_to_csv function.
 
     Args:
-        csvfile (type): name of the csvfile
-        input_dir (type): directory in FormicID/data/ that contains the csv
+        csvfile (str): name of the csvfile
+        input_dir (str): directory in FormicID/data/ that contains the csv
         start (integer): Set the starting row for downloading.
         end (integer): Set the end row for downloading.
-        dir_out_name (string): text to name the output folder, with the current
-                               date as prefix, which is created in the
-                               input_dir.
-        update (Boolean): if [default=True]; the csv_update() function will be called.
+        dir_out_name (str): text to name the output folder, with the current
+            date as prefix, which is created in the input_dir.
+        update (Boolean): if [default=True]; the csv_update() function will be
+            called.
 
     Returns:
         type: A folder with images.
+
     """
     csvfile = os.path.join(data_dir, input_dir, csvfile)
     nb_images = end - start
@@ -160,7 +164,8 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
                         os.mkdir(os.path.join(dir_h, image[1]))
                     filename = os.path.join(dir_h, image[1],
                                             '{}_{}_{}.jpg'.format(image[1],
-                                                                  image[0], image[2]))
+                                                                  image[0],
+                                                                  image[2]))
 
                     try:
                         urlretrieve(url=image[3], filename=filename)
@@ -174,7 +179,8 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
                         os.mkdir(os.path.join(dir_d, image[1]))
                     filename = os.path.join(dir_d, image[1],
                                             '{}_{}_{}.jpg'.format(image[1],
-                                                                  image[0], image[2]))
+                                                                  image[0],
+                                                                  image[2]))
 
                     try:
                         urlretrieve(url=image[3], filename=filename)
@@ -188,7 +194,8 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
                         os.mkdir(os.path.join(dir_p, image[1]))
                     filename = os.path.join(dir_p, image[1],
                                             '{}_{}_{}.jpg'.format(image[1],
-                                                                  image[0], image[2]))
+                                                                  image[0],
+                                                                  image[2]))
 
                     try:
                         urlretrieve(url=image[3], filename=filename)
@@ -207,11 +214,11 @@ def main():
     # csv_update(input_dir='2018-02-12-test', csvfile='csv_images.csv')
 
     image_scraper(csvfile='csv_images.csv',
-                  input_dir='2018-02-12-test',
+                  input_dir='2018-02-23-test',
                   start=0,
-                  end=1000,
+                  end=5000,
                   dir_out_name='images',
-                  update=False
+                  update=True
                   )
 
 

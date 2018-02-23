@@ -8,10 +8,9 @@
 #                                  Utilitiies                                  #
 #                                    Logger                                    #
 ################################################################################
-'''
-Description:
-A logger for tensorboard is created in this file.
-
+'''Description:
+Loggers are created in this file. They can be used in training to get feedback
+on the models performance.
 '''
 # Packages
 ################################################################################

@@ -6,7 +6,7 @@ cd /Users/nijram13/Google\ Drive/4.\ Biologie/Studie\ Biologie/Master\ Year\ 2/I
 python formicID/main.py -c formicID/configs/config.json
 ```
 
-# Pigar requirements.txt update
+## Pigar requirements.txt update
 ```sh
 cd /Users/nijram13/Google\ Drive/4.\ Biologie/Studie\ Biologie/Master\ Year\ 2/Internship\ CNN/8.\ FormicID/FormicID
 pigar

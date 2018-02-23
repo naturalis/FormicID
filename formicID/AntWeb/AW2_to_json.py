@@ -8,8 +8,7 @@
 #                                 ANTWEB API v2                                #
 #                                AntWeb to json                                #
 ################################################################################
-'''
-Description:
+'''Description:
 This script requires the use of an csv file with 2 columns, filled with a genus
 and a species name. The script will go over the csv file and download a json
 file for this genus+species and places the JSON file in a folder.
@@ -26,10 +25,11 @@ import pandas as pd
 import requests
 
 from tqdm import tqdm
-from utils.utils import todaystr, wd
 
 # Parameters and settings
 ################################################################################
+todaystr = datetime.date.today().isoformat()  # YYYY-MM-DD
+wd = os.getcwd()
 
 # Creating an URL
 ################################################################################
@@ -43,14 +43,15 @@ def create_url(limit, offset, **kwargs):
         limit (integer): sets the limit for accessing specimens.
         offset (integer): sets the offset for accessing specimens.
     Optional args (**kwargs):
-        genus (type): specifies the genus
-        species (type): specifies the species
-        country (type): specifies the country
-        caste (type): specifies the caste (does not work in API v2)
+        genus (str): specifies the genus.
+        species (str): specifies the species.
+        country (str): specifies the country.
+        caste (str): specifies the caste (does not work in API v2).
 
     Returns:
         type: Returns an URL as response object that can be opened by the
-        function request.get()
+        function `request.get()`.
+
     """
     # Genus and species are optional arguments
     genus = kwargs.get('genus', None)
@@ -80,10 +81,10 @@ def get_json(input_url):
     """Scrapes JSON files from AntWeb URLs.
 
     Args:
-        input_url (type): an URL containing a JSON object.
+        input_url (response object): an URL containing a JSON object.
 
     Returns:
-        type: A JSON object
+        type: A JSON object.
 
     """
     r = requests.get(url=input_url)
@@ -100,19 +101,21 @@ def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
     problems.
 
     Args:
-        csv_file (type): path to the csv file genus and species names.
-        input_dir (type): path to the directory that has the csv file
-        output_dir (type): a new directory name, created in the input_dir for
+        csv_file (str): path to the csv file genus and species names.
+        input_dir (str): path to the directory that has the `csv_file`.
+        output_dir (str): a new directory name, created in the `input_dir` for
             saving the JSON files.
-        offset_set (type): the offset for downloading AntWeb records in
+        offset_set (int): the offset for downloading AntWeb records in
             batches.
-        limit_set (type): the limit for downloading a set of AntWeb records
+        limit_set (int): the limit for downloading a set of AntWeb records.
 
     Returns:
-        A directory of JSON files for different species
+        A directory of JSON files for different species.
+
     """
     input_dir = os.path.join(wd, input_dir)
-    output_dir = os.path.join(input_dir, todaystr + '-' +  output_dir, 'json_files')
+    output_dir = os.path.join(input_dir, todaystr +
+                              '-' + output_dir, 'json_files')
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -126,12 +129,12 @@ def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
             if row['species'] == 'indet':
                 nb_indet += 1
         print('{} indet species '.format(nb_indet),
-        'found and will be skipped from downloading.')
+              'found and will be skipped from downloading.')
 
-        nb_specimens = csv_df.shape[0] # - nb_indet
+        nb_specimens = csv_df.shape[0]  # - nb_indet
 
-        if limit_set > 10000:
-            raise ValueError('The limit_set should be lower than 10,000.')
+        # if limit_set > 10000:
+        #     raise ValueError('The limit_set should be lower than 10,000.')
         for index, row in tqdm(csv_df.iterrows(),
                                total=nb_specimens,
                                desc='Downloading JSON files',
@@ -148,19 +151,20 @@ def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
                 with open(os.path.join(wd, output_dir, file_name), 'w') as jsonfile:
                     json.dump(species, jsonfile)
 
-                time.sleep(0.5) # wait 0.5s so AW does not crash
+                time.sleep(0.5)  # wait 0.5s so AW does not crash
         print('Downloading is finished. {} JSON files '.format(nb_specimens),
-        'have been downloaded')
+              'have been downloaded')
 
 # Main()
 ################################################################################
+
 
 def main():
     urls_to_json(csv_file='2018-01-09-db-Top101imagedspecies.csv',
                  input_dir='data',
                  output_dir='test',
                  offset_set=0,
-                 limit_set=9999)
+                 limit_set=12000)
 
 
 if __name__ == '__main__':

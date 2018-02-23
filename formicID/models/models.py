@@ -8,13 +8,17 @@
 #                             Load existing models                             #
 #                                                                              #
 ################################################################################
-'''
-Description:
-Import 4 existing neural netwerks from the Keras library
-(https://keras.io/applications/), all in their own function. These could be
-loaded in other scripts.
+'''Description:
+Using this script 4 existing neural netwerks from the Keras library
+(https://keras.io/applications/) can be imported in a class object. This class has four methods to call in order to load the 4 models.
 
-From the Keras documentation:
+The models are:
+    - ResNet50
+    - DenseNet169
+    - InceptionV3
+    - Xception
+
+```From the Keras documentation:
 All of these architectures (except Xception) are compatible with both
 TensorFlow and Theano, and upon instantiation the models will be built
 according to the image data format set in your Keras configuration file at
@@ -22,7 +26,7 @@ according to the image data format set in your Keras configuration file at
 image_data_format=channels_last, then any model loaded from this repository
 will get built according to the TensorFlow data format convention,
 "Height-Width-Depth". The Xception model is only available for TensorFlow, due
-to its reliance on SeparableConvolution layers.
+to its reliance on SeparableConvolution layers.```
 '''
 # Packages
 ################################################################################
