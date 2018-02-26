@@ -91,7 +91,7 @@ def val_data_generator(X_val, Y_val, batch_size, epochs):
     # TODO (MJABOER):
     # ImageDataGenerator.standardize
     val_datagen = ImageDataGenerator(
-        preprocessing_function=preprocess_input, # needed for inception_v3
+        preprocessing_function=preprocess_input) # needed for inception_v3
         # rescale=1. / 255)
     validation_generator = val_datagen.flow(X_val, Y_val, seed=seed)
     return validation_generator

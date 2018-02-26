@@ -25,11 +25,12 @@ import pandas as pd
 import requests
 
 from tqdm import tqdm
+from utils.utils import wd, today_timestr, todaystr
+
 
 # Parameters and settings
 ################################################################################
-todaystr = datetime.date.today().isoformat()  # YYYY-MM-DD
-wd = os.getcwd()
+
 
 # Creating an URL
 ################################################################################
@@ -154,18 +155,3 @@ def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
                 time.sleep(0.5)  # wait 0.5s so AW does not crash
         print('Downloading is finished. {} JSON files '.format(nb_specimens),
               'have been downloaded')
-
-# Main()
-################################################################################
-
-
-def main():
-    urls_to_json(csv_file='2018-01-09-db-Top101imagedspecies.csv',
-                 input_dir='data',
-                 output_dir='test',
-                 offset_set=0,
-                 limit_set=12000)
-
-
-if __name__ == '__main__':
-    main()

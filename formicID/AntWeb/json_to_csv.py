@@ -23,10 +23,11 @@ import jmespath
 import pandas as pd
 
 from tqdm import tqdm
+from utils.utils import today_timestr, todaystr, wd
 
 # Parameters and settings
 ################################################################################
-wd = os.getcwd()
+
 
 # Filter
 ################################################################################
@@ -112,18 +113,3 @@ def batch_json_to_csv(input_dir, output_dir, csvname):
                index=False, header=True)
     print('All JSON files are read, filtered and added to the csv file. \n'
           '{}{} was created in {}'.format(csvname, suffix, output_dir))
-
-# Main()
-################################################################################
-
-
-def main():
-    batch_json_to_csv(
-        input_dir='2018-02-23-test',
-        output_dir='2018-02-23-test',
-        csvname='csv_images'
-    )
-
-
-if __name__ == '__main__':
-    main()

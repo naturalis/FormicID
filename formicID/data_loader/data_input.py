@@ -93,12 +93,12 @@ def img_load_shottype(shottype, datadir):
 
     images = []
     labels = []
+    num_species = len(next(os.walk(data_dir))[1])
+
     print('Reading images from "{}"'.format(data_dir))
     for species in tqdm(os.listdir(data_dir),
                         desc='Reading folders',
                         unit='species'):
-        num_species = len(species)
-        print('Number of species: {}'.format(num_species))
         for image in tqdm(os.listdir(os.path.join(data_dir, species)),
                           desc='Loading {}'.format(species),
                           unit='images'):
@@ -114,7 +114,7 @@ def img_load_shottype(shottype, datadir):
                     images = np.append(images, img)
             label = species
             labels = np.append(labels, label)
-    print('\n')  # to correctly print tqdm when finished.
+    print('\nNumber of species: {}'.format(num_species))
     images = np.reshape(images, (-1, img_width, img_height, 3))
     images /= 255. # normalization step
     images -= 0.5
@@ -176,6 +176,6 @@ def train_val_test_split(images, labels, test_size=0.1, val_size=0.135):
         print('Number of X_test: {}'.format(len(X_test)))
         print('Number of X_train: {}'.format(len(X_train)))
         print('Number of X_val: {}'.format(len(X_val)))
-        print('Number of labels: {}'.format(nb_specimens))
+        print('Total number of images: {}'.format(nb_specimens))
 
         return X_train, Y_train, X_val, Y_val, X_test, Y_test

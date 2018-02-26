@@ -11,11 +11,16 @@
 '''Description:
 This file has code utilities for handeling models.
 '''
-import h5py
+
 # Packages
 ################################################################################
-from keras.models import load_model
+import os
 
+# import h5py
+from keras.models import Model, load_model, model_from_json
+
+# Parameters and settings
+################################################################################
 wd = os.getcwd()
 
 # Model utilities
@@ -23,35 +28,54 @@ wd = os.getcwd()
 
 
 def save_model(model, filename, output_dir):
-    suffix ='.h5'
-    output_model = os.path.join(wd, outputdir, filename, suffix)
+    output_model = os.path.join(wd, outputdir, filename)
     model.save(output_model)
     print('The model has been saved and deleted from use.')
     del model
 
 
 def load_model(filename, input_dir):
-    suffix ='.h5'
-    input_model = os.path.join(wd, input_dir, filename, suffix)
+    input_model = os.path.join(wd, input_dir, filename)
     model = load_model(input_model)
     print('The model has been loaded.')
     return model
 
 
 def weights_save(model, filename, output_dir):
-    suffix ='.h5'
-    output_weights = os.path.join(wd, outputdir, filename, suffix)
+    output_weights = os.path.join(wd, outputdir, filename)
     weights_saved = model.save_weights(model)
     print('The weights have been saved.')
 
 
 def weights_load(model, filename, input_dir):
-    suffix ='.h5'
-    input_weights_input = os.path.join(wd, input_dir, filename, suffix)
+    input_weights_input = os.path.join(wd, input_dir, filename)
     model.load_weights = load_weights_input(input_model)
     print('The weights have been loaded.')
     return model
 
 
 def model_summary(model):
-    return model.summary()
+    summary = model.summary()
+    return summary
+
+
+def model_config(model):
+    config = model.config()
+    # Returns a dictionary containing the configuration of the model.
+    return config
+
+
+def model_from_config(config):
+    config = model.get_config()
+    model = Model.from_config(config)
+    return model
+
+
+def model_architecture(model):
+    json_string = model.to_json()
+    return json_string
+
+
+def model_from_architecture(json_string):
+    model = model_from_json(json_string)
+    return model

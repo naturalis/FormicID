@@ -28,12 +28,11 @@ import pandas as pd
 import requests
 
 from tqdm import tqdm
+from utils.utils import today_timestr, todaystr, wd
 
 # Parameters and settings
 ################################################################################
-wd = os.getcwd()
 data_dir = os.path.join(wd, 'data')
-todaystr = datetime.date.today().isoformat()  # YYYY-MM-DD
 
 
 # Make changes to the csv file
@@ -205,22 +204,3 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
                             continue
 
         print('{} images were downloaded.'.format(nb_images))
-
-
-# main()
-################################################################################
-
-def main():
-    # csv_update(input_dir='2018-02-12-test', csvfile='csv_images.csv')
-
-    image_scraper(csvfile='csv_images.csv',
-                  input_dir='2018-02-23-test',
-                  start=0,
-                  end=5000,
-                  dir_out_name='images',
-                  update=True
-                  )
-
-
-if __name__ == '__main__':
-    main()

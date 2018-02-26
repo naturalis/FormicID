@@ -52,10 +52,10 @@ class modelLoad():
         # self.input_shape = input_shape
         # self.pooling = pooling
         # self.classes = classes
-        self.model_densenet169
         self.model_inceptionv3
-        self.model_resnet50
-        self.model_xception
+        # self.model_densenet169
+        # self.model_resnet50
+        # self.model_xception
 
     def model_inceptionv3(self, include_top=False, weights=None, input_tensor=None, input_shape=None, pooling='max', classes=None):
         '''Inception V3 model, with weights pre-trained on ImageNet.

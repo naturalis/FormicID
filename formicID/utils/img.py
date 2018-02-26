@@ -21,6 +21,9 @@ from keras.preprocessing.image import img_to_array, load_img
 import cv2
 from trainers.train import train_data_generator
 
+from keras.preprocessing.image import ImageDataGenerator
+from keras.applications.inception_v3 import preprocess_input
+
 # Parameters and settings
 ################################################################################
 wd = os.getcwd()
@@ -29,42 +32,67 @@ wd = os.getcwd()
 ################################################################################
 
 
-def load_img(image):
-    img_path = os.path.join(wd, path, img)
-    img = img.read('image', img_path
-    return img
-
-def show_img(image):
-    cv2.imshow('image', image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+# def load_img(path, img):
+#     img_path = os.path.join(wd, path, img)
+#     img = img.read('image', img_path)
+#     return img
+#
+#
+# def show_img(image):
+#     cv2.imshow('image', image)
+#     cv2.waitKey(0)
+#     cv2.destroyAllWindows()
 
 # Visualizing data agumentation
 ################################################################################
-def show_augment(image, input_dir):
+
+
+def save_augmentation(image, test_dir, input_dir):
+    """This function returns 20 random augmented versions of an input image.
+
+    Args:
+        image (str): image name.
+        test_dir (str): directory that contains the `images` folder
+        input_dir (str): path inside test_dir that leads to the image.
+
+    Returns:
+        type: 20 augmented images of the input image
+
+    """
     # TODO (MJABOER):
     # import ImageDataGenerator from test data_input.py
     # import create_dirs()
 
-    img_file=os.path.jon(wd, input_dir, image)
+    if not os.path.exists(os.path.join(wd, test_dir, 'images', 'augment')):
+        os.mkdir(os.path.join(wd, test_dir, 'images', 'augment'))
 
-    # this is a PIL image
+    output_dir=os.path.join(wd, test_dir, 'images', 'augment')
+    input_dir=os.path.join(wd, test_dir, input_dir)
+    filename=image.replace('.jpeg', '')
+
+    img_file=os.path.join(wd, input_dir, image)
     img_loaded=load_img(img_file)
-
-    # this is a Numpy array with shape (3, 150, 150)
     img=img_to_array(img_loaded)
+    img=img.reshape((1,) + img.shape)
 
-    # this is a Numpy array with shape (1, 3, 150, 150)
-    img=x.reshape((1,) + x.shape)
-
-    # the .flow() command below generates batches of randomly transformed images
-    # and saves the results to the `preview/` directory
     i=0
-    for batch in train_data_generator.flow(x,
-                                           batch_size=1,
-                                           save_to_dir='preview',
-                                           save_prefix='lasiusflavus',
-                                           save_format='jpeg'):
+    train_data_gen = ImageDataGenerator(
+        preprocessing_function=preprocess_input, # needed for inception_v3
+        # rescale=1. / 255,
+        rotation_range=40,
+        width_shift_range=0.2,
+        height_shift_range=0.2,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True)
+
+    for batch in train_data_gen.flow(img,
+                                     batch_size=1,
+                                     save_to_dir=output_dir,
+                                     save_prefix=filename,
+                                     save_format='jpeg'):
         i += 1
         if i > 20:
-            break  # otherwise the generator would loop indefinitely
+            break
+
+    print('Augmented files can be found in {}'.format(output_dir))
