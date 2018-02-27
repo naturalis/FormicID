@@ -69,6 +69,7 @@ _To be continued_
 ```
 |-- FormicID
     |-- __init__.py
+    |   |-- main.py
     |-- AntWeb
     |   |-- AW_to_json.py
     |   |-- __init__.py
@@ -83,7 +84,6 @@ _To be continued_
     |   |-- scrape.py
     |-- mains
     |   |-- __init__.py
-    |   |-- main.py
     |-- models
     |   |-- __init__.py
     |   |-- build.py
