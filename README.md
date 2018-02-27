@@ -109,7 +109,7 @@ _To be continued_
 Our mission is to publish for the scientific community high quality images of all the world's ant species. AntWeb provides tools for submitting images, specimen records, annotating species pages, and managing regional species lists.<br><br>
 
 _Text from Antweb.org_<br><br>
-![](https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true)<br>
+<img style="float: right;" src="https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true">
 
 ### :satellite: AntWeb API
 - [AntWeb API version 2](https://www.antweb.org/api/v2/)
