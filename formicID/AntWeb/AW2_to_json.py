@@ -25,8 +25,7 @@ import pandas as pd
 import requests
 
 from tqdm import tqdm
-from utils.utils import wd, today_timestr, todaystr
-
+from utils.utils import today_timestr, todaystr, wd
 
 # Parameters and settings
 ################################################################################
@@ -36,7 +35,9 @@ from utils.utils import wd, today_timestr, todaystr
 ################################################################################
 
 
-def create_url(limit, offset, **kwargs):
+def create_url(limit,
+               offset,
+               **kwargs):
     """Creation of the url to access AntWebs API V2, using a base_url and
     arguments.
 
@@ -70,7 +71,8 @@ def create_url(limit, offset, **kwargs):
         'caste':        caste  # not working
     }
 
-    url = requests.get(url=base_url, params=arguments)
+    url = requests.get(url=base_url,
+                       params=arguments)
 
     return url
 
@@ -96,7 +98,11 @@ def get_json(input_url):
         return data
 
 
-def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
+def urls_to_json(csv_file,
+                 input_dir,
+                 output_dir,
+                 offset_set,
+                 limit_set):
     """This function downloads JSON files for a list of species and places them
     in a drecitory. An limit_set higher than 10,000 will usually create
     problems.
@@ -114,21 +120,32 @@ def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
         A directory of JSON files for different species.
 
     """
-    input_dir = os.path.join(wd, input_dir)
-    output_dir = os.path.join(input_dir, todaystr +
-                              '-' + output_dir, 'json_files')
+    input_dir = os.path.join(wd,
+                             input_dir)
+
+    output_dir = os.path.join(input_dir,
+                              todaystr + '-' + output_dir,
+                              'json_files')
+
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    csv_file = os.path.join(input_dir, csv_file)
+    csv_file = os.path.join(input_dir,
+                            csv_file)
     print('Reading {} and creating json_files folder...'.format(csv_file))
-    with open(csv_file, 'rt') as csv_open:
-        csv_df = pd.read_csv(csv_open, sep=';', header=0)
+
+    with open(csv_file,
+              'rt') as csv_open:
+        csv_df = pd.read_csv(csv_open,
+                             sep=';',
+                             header=0)
 
         nb_indet = 0
+
         for index, row in csv_df.iterrows():
             if row['species'] == 'indet':
                 nb_indet += 1
+
         print('{} indet species '.format(nb_indet),
               'found and will be skipped from downloading.')
 
@@ -140,18 +157,31 @@ def urls_to_json(csv_file, input_dir, output_dir, offset_set, limit_set):
                                total=nb_specimens,
                                desc='Downloading JSON files',
                                unit='Species'):
-            url = create_url(limit=limit_set, offset=offset_set,
-                             genus=row['genus'], species=row['species'])
+
+            url = create_url(limit=limit_set,
+                             offset=offset_set,
+                             genus=row['genus'],
+                             species=row['species'])
+
             if row['species'] == 'indet':
                 print('Skipping "{}".'.format(url.url))
+
             else:
                 url = url.url
                 print('\nJSON downladed from URL:', url)
+
                 file_name = row['genus'] + '_' + row['species'] + '.json'
+
                 species = get_json(url)
-                with open(os.path.join(wd, output_dir, file_name), 'w') as jsonfile:
-                    json.dump(species, jsonfile)
+
+                with open(os.path.join(wd,
+                                       output_dir,
+                                       file_name),
+                          'w') as jsonfile:
+                    json.dump(species,
+                              jsonfile)
 
                 time.sleep(0.5)  # wait 0.5s so AW does not crash
+
         print('Downloading is finished. {} JSON files '.format(nb_specimens),
               'have been downloaded')

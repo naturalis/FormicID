@@ -37,7 +37,8 @@ data_dir = os.path.join(wd, 'data')
 
 # Make changes to the csv file
 ################################################################################
-def csv_update(input_dir, csvfile):
+def csv_update(input_dir,
+               csvfile):
     """This function will remove broken links to a different csvfile.
 
     Args:
@@ -53,49 +54,70 @@ def csv_update(input_dir, csvfile):
         csv file: A cleaned csv file ready for downloading images.
 
     """
-    csvfile = os.path.join(data_dir, input_dir, csvfile)
+    csvfile = os.path.join(data_dir,
+                           input_dir,
+                           csvfile)
 
-    columns = ['catalog_number', 'scientific_name', 'shot_type', 'image_url']
+    columns = ['catalog_number',
+               'scientific_name',
+               'shot_type',
+               'image_url']
 
     with open(csvfile, 'rt') as csv_open:
-        df = pd.read_csv(csv_open, sep=',')
-        specimens = pd.DataFrame(df, columns=columns)
+        df = pd.read_csv(csv_open,
+                         sep=',')
+        specimens = pd.DataFrame(df,
+                                 columns=columns)
         specimen_blf = df[df['image_url'].str.contains('blf') == True]
 
         specimen_hjr = df[df['image_url'].str.contains('hjr') == True]
 
-        frames = [specimen_blf, specimen_hjr]
+        frames = [specimen_blf,
+                  specimen_hjr]
         specimen_bad = pd.concat(objs=frames)
-
-        # specimen_good = pd.DataFrame(
-        #     df[df['image_url'].str.contains('blf|hjr') == False],
-        #     columns=columns)
 
         df2 = pd.DataFrame(columns=columns)
         for index, row in tqdm(specimen_bad.iterrows(),
-                               desc='Fixing image URLs', unit='URLs'):
+                               desc='Fixing image URLs',
+                               unit='URLs'):
+
             row.image_url = re.sub('_', '(', row.image_url, count=1)
             row.image_url = re.sub('_', ')', row.image_url, count=1)
             row.image_url = re.sub('_', '(', row.image_url, count=1)
             row.image_url = re.sub('_', ')', row.image_url, count=1)
+
             df2 = df2.append(row)
+
         specimen_bad.update(df2)
 
         df3 = pd.DataFrame(columns=columns)
+
         for index, row in tqdm(specimen_bad.iterrows(),
-                               desc='Fixing catalog numbers', unit='URLs'):
+                               desc='Fixing catalog numbers',
+                               unit='URLs'):
+
             row.catalog_number = re.sub('_', '(', row.catalog_number, count=1)
             row.catalog_number = re.sub('_', ')', row.catalog_number, count=1)
+
             df3 = df3.append(row)
+
         specimen_bad.update(df3)
 
         df.update(specimen_bad)
-        df.to_csv(csvfile, sep=',', columns=columns, index=False)
+
+        df.to_csv(csvfile, sep=',',
+                  columns=columns,
+                  index=False)
 
 
 # Downloading of images
 ################################################################################
-def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
+def image_scraper(csvfile,
+                  input_dir,
+                  start,
+                  end,
+                  dir_out_name,
+                  update=False):
     """This function scrapes images of urls found in the csv file that is made
     with the download_to_csv function.
 
@@ -113,15 +135,18 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
         type: A folder with images.
 
     """
-    csvfile = os.path.join(data_dir, input_dir, csvfile)
+    csvfile = os.path.join(data_dir,
+                           input_dir,
+                           csvfile)
+
     nb_images = end - start
 
     if update == True:
         print('Update argument has been set to: True. Updating file now...')
         csv_update(input_dir=input_dir,
-                   csvfile=csvfile
-                   )
+                   csvfile=csvfile)
         print('The csv file has been updated. Downloading is starting...')
+
     else:
         print('Update argument has been set to: False.')
 
@@ -144,8 +169,9 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
     with open(csvfile, 'rt') as images:
 
         imagereader = csv.reader(
-            itertools.islice(images, start, end + 1))
-        # nb_rows = int(sum(1 for row in imagereader))
+            itertools.islice(images,
+                             start,
+                             end + 1))
 
         print('Starting to scrape {} images...'.format(nb_images))
 
@@ -161,6 +187,7 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
                 if image[2] == 'h':
                     if not os.path.exists(os.path.join(dir_h, image[1])):
                         os.mkdir(os.path.join(dir_h, image[1]))
+
                     filename = os.path.join(dir_h, image[1],
                                             '{}_{}_{}.jpg'.format(image[1],
                                                                   image[0],
@@ -168,6 +195,7 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
 
                     try:
                         urlretrieve(url=image[3], filename=filename)
+
                     except HTTPError as err:
                         if err.code == 404:
                             print('Error 404: {}'.format(image[3]))
@@ -183,6 +211,7 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
 
                     try:
                         urlretrieve(url=image[3], filename=filename)
+
                     except HTTPError as err:
                         if err.code == 404:
                             print('Error 404: {}'.format(image[3]))
@@ -198,6 +227,7 @@ def image_scraper(csvfile, input_dir, start, end, dir_out_name, update=False):
 
                     try:
                         urlretrieve(url=image[3], filename=filename)
+
                     except HTTPError as err:
                         if err.code == 404:
                             print('Error 404: {}'.format(image[3]))
