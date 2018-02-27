@@ -16,7 +16,7 @@ other files.
 ################################################################################
 import os
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from keras.applications.inception_v3 import preprocess_input
 from keras.preprocessing.image import (ImageDataGenerator, img_to_array,
                                        load_img)
