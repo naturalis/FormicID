@@ -69,7 +69,7 @@ _To be continued_
 ```
 |-- FormicID
     |-- __init__.py
-    |   |-- main.py
+    |-- main.py
     |-- AntWeb
     |   |-- AW_to_json.py
     |   |-- __init__.py
