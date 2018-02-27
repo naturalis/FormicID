@@ -71,8 +71,9 @@ _To be continued_
     |-- __init__.py
     |-- main.py
     |-- AntWeb
-    |   |-- AW_to_json.py
     |   |-- __init__.py
+    |   |-- AW2_to_json.py
+    |   |-- AW3_to_json.py    
     |   |-- json_to_csv.py
     |-- configs
     |   |-- config.json
@@ -90,13 +91,17 @@ _To be continued_
     |   |-- models.py
     |-- testers
     |   |-- __init__.py
-    |   |-- formicID_test.py
+    |   |-- tester.py
     |-- trainers
     |   |-- __init__.py
     |   |-- train.py
     |-- utils
         |-- __init__.py
-        |-- utils.py
+        |-- img.py
+	|-- load_config.py
+	|-- logger.py
+	|-- model_utils.py
+	|-- utils.py
 ```
 
 ## :ant: AntWeb
