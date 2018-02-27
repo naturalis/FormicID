@@ -27,3 +27,10 @@ conda update --all
 ```sh
 pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
 ```
+
+## Delete all .DS_Store in project folders
+
+```sh
+cd /Users/nijram13/Google\ Drive/4.\ Biologie/Studie\ Biologie/Master\ Year\ 2/Internship\ CNN/8.\ FormicID/FormicID
+find . -name '.DS_Store' -type f -delete
+```
