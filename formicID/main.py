@@ -19,34 +19,26 @@ test set.
 from keras import __version__ as keras_version
 from keras import backend as K
 from keras.applications.inception_v3 import InceptionV3  # Inception based
-from keras.layers import Dense, GlobalAveragePooling2D, Input
+
 from keras.optimizers import SGD, Adam, Nadam, RMSprop
 from keras.utils import multi_gpu_model
-from keras.models import Model
 
-# Antweb utils
 from AntWeb.AW2_to_json import urls_to_json
 from AntWeb.json_to_csv import batch_json_to_csv
-# Data loader
-from data_loader.data_input import (img_height, img_load_shottype, img_width,
-                                    train_val_test_split)
-# Data scraper
+from data_loader.data_input import img_load_shottype, train_val_test_split
 from data_scraper.scrape import image_scraper
-# Models
-# from models.build import neuralNetwork
+from models.models import model_inceptionv3
 # from models.models import modelLoad
-# Trainer
 from trainers.train import train_data_generator, val_data_generator
-# Utilities
 from utils.img import save_augmentation
 from utils.load_config import process_config
-from utils.logger import build_tensorboard
+from utils.logger import buildTensorBoard, buildModelCheckpoint
 from utils.utils import create_dirs, get_args, today_timestr, todaystr, wd
 
 # Parameters and settings
 ################################################################################
-batch_size = 16
-epochs = 3
+batch_size = 6
+epochs = 2
 
 # Main
 ################################################################################
@@ -96,29 +88,15 @@ def main():
 
     # Initialize the model
     ############################################################################
-    # model = modelLoad(config=config)
-    input_tensor = Input(shape=(299, 299, 3))
-    base_model = InceptionV3(include_top=False, weights=None,
-                             input_tensor=None, input_shape=None,
-                             pooling=None)
+    
+    model = model_inceptionv3
+    model_inceptionv3.compile(loss='categorical_crossentropy',
+                              optimizer=Nadam(lr=0.002,
+                                              beta_1=0.9,
+                                              beta_2=0.999,
+                                              epsilon=1e-08,
+                                              schedule_decay=0.004))
 
-    # add a global spatial average pooling layer
-    x = base_model.output
-    x = GlobalAveragePooling2D()(x)
-    # let's add a fully-connected layer
-    x = Dense(1024, activation='relu')(x)
-    # and a logistic layer -- let's say we have 200 classes
-    predictions = Dense(6, activation='softmax')(x)
-
-    # this is the model we will train
-    model = Model(inputs=base_model.input, outputs=predictions)
-    #
-    model.compile(loss='categorical_crossentropy',
-                  optimizer=Nadam(lr=0.002,
-                                  beta_1=0.9,
-                                  beta_2=0.999,
-                                  epsilon=1e-08,
-                                  schedule_decay=0.004))
     print('The model is loaded and compiled.')
 
     # model = neuralNetwork()
@@ -132,8 +110,6 @@ def main():
     ############################################################################
     images, labels = img_load_shottype(shottype='h',
                                        datadir='2018-02-12-test')
-
-
 
     X_train, Y_train, X_val, Y_val, X_test, Y_test = train_val_test_split(
         images=images,
@@ -153,7 +129,9 @@ def main():
                                       Y_val=Y_val,
                                       batch_size=batch_size,
                                       epochs=epochs)
-    #
+
+
+
     # save_augmentation(image='anochetus_madagascarensis_casent0101674_h.jpg',
     #                   test_dir='data/2018-02-12-test',
     #                   input_dir='images/head/anochetus_madagascarensis')
@@ -162,11 +140,19 @@ def main():
 
     # Training in batches with iterator
     #########################################################################
-    model.fit_generator(train_data_gen,
-                        validation_data=val_data_gen,
-                        steps_per_epoch=16,
-                        epochs=epochs,
-                        callbacks=build_tensorboard(model))
+
+
+    # logger = [buildModelCheckpoint(config=config),
+    #           buildTensorBoard(model=model_inceptionv3,
+    #                            config=config)]
+    #
+    #
+    #
+    # model.fit_generator(train_data_gen,
+    #                     validation_data=val_data_gen,
+    #                     steps_per_epoch=3,
+    #                     epochs=epochs,
+    #                     callbacks=logger)
     #
     # score = model.evaluate(X_test, Y_test, verbose=0)
     # print(score)

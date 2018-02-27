@@ -132,7 +132,7 @@ def img_load_shottype(shottype,
 
             label = species
             labels = np.append(labels, label)
-    print('\nNumber of species: {}'.format(num_species))
+    print('Number of species: {}'.format(num_species))
     # images = np.array(images)
     images = np.reshape(images, (-1, img_width, img_height, 3))
 

@@ -16,17 +16,18 @@ other files.
 ################################################################################
 import os
 
-from keras.preprocessing.image import img_to_array, load_img
+import matplotlib.pyplot as plt
+from keras.applications.inception_v3 import preprocess_input
+from keras.preprocessing.image import (ImageDataGenerator, img_to_array,
+                                       load_img)
 
-import cv2
 from trainers.train import train_data_generator
 
-from keras.preprocessing.image import ImageDataGenerator
-from keras.applications.inception_v3 import preprocess_input
+from .utils import wd
 
 # Parameters and settings
 ################################################################################
-wd = os.getcwd()
+
 
 # Load and show images
 ################################################################################
@@ -36,12 +37,11 @@ wd = os.getcwd()
 #     img_path = os.path.join(wd, path, img)
 #     img = img.read('image', img_path)
 #     return img
-#
-#
+
+
 # def show_img(image):
-#     cv2.imshow('image', image)
-#     cv2.waitKey(0)
-#     cv2.destroyAllWindows()
+    # implement keras show img
+
 
 # Visualizing data agumentation
 ################################################################################
@@ -96,3 +96,16 @@ def save_augmentation(image, test_dir, input_dir):
             break
 
     print('Augmented files can be found in {}'.format(output_dir))
+
+
+# def plot_figs(num_species, images, labels):
+#
+#     fig = plt.figure(figsize=(8,3))
+#     i = 0
+#     for i in range(num_species):
+#         ax = fig.add_subplot(2,3,1 + i, xticks=[], yticks=[])
+#         features_idx = images[labels[:]==i,:]
+#         ax.set_title(str(i))
+#         plt.imshow(features_idx[1], cmap='gray')
+#         i + 1
+#     plt.show()

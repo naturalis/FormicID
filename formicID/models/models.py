@@ -35,6 +35,9 @@ from keras.applications.inception_v3 import InceptionV3  # Inception based
 from keras.applications.resnet50 import ResNet50  # ResNet based
 from keras.applications.xception import Xception  # Inception based
 
+from keras.layers import Dense, GlobalAveragePooling2D, Input
+from keras.models import Model
+
 # Parameters and settings
 ################################################################################
 
@@ -74,6 +77,7 @@ class modelLoad():
             pooling=pooling,
             classes=classes)
         return model
+
     #
     # def model_resnet50(self):
     #     '''ResNet50 model, with weights pre-trained on ImageNet.
@@ -134,3 +138,23 @@ class modelLoad():
     #         pooling=self.pooling,
     #         classes=self.classes)
     #     return model
+
+
+# InceptionV3
+################################################################################
+
+base_model = InceptionV3(include_top=False, weights=None,
+                         input_tensor=None, input_shape=None,
+                         pooling=None)
+
+# add a global spatial average pooling layer
+x = base_model.output
+x = GlobalAveragePooling2D()(x)
+# let's add a fully-connected layer
+x = Dense(1024, activation='relu')(x)
+# and a logistic layer -- let's say we have 200 classes
+predictions = Dense(6, activation='softmax')(x)
+
+# this is the model we will train
+model_inceptionv3 = Model(inputs=base_model.input, outputs=predictions)
+#
