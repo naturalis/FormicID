@@ -140,7 +140,7 @@ def urls_to_json(csv_file,
                              sep=';',
                              header=0)
 
-        nb_indet = 0
+        nb_indet = csv_df[csv_df['species'].str.contains('indet')]
 
         for index, row in csv_df.iterrows():
             if row['species'] == 'indet':
@@ -149,7 +149,7 @@ def urls_to_json(csv_file,
         print('{} indet species '.format(nb_indet),
               'found and will be skipped from downloading.')
 
-        nb_specimens = csv_df.shape[0]  # - nb_indet
+        nb_specimens = csv_df.shape[0] - nb_indet
 
         # if limit_set > 10000:
         #     raise ValueError('The limit_set should be lower than 10,000.')
