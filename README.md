@@ -117,9 +117,12 @@ _Text from Antweb.org_<br><br>
 At this moment version 2 is used because version 3 was not released when the project started. Version 3 is also still in beta. Later, the scripts will be changed to use version 3.
 
 ### :open_file_folder: Images / Dataset
-How does the dataset looks like<br><br>
-<img style="float: right;" src="https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true">
-<img style="float: left;" src="https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true">
+Below you can see two images representing the dataset. One is an image of _Lasius flavus_ and the other one is a mosaic of _Tetramorium gollum_ I made using the image set.
+
+
+_Lasius flavus_                      | Mosaic of _Tetramorium gollum_
+|----------------------------------|----------------------------------|
+|![](https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true)                                 | ![](https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true)|
 
 ## :computer: Neural Network
 ### :mag: Ready to use models
