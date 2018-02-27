@@ -19,8 +19,10 @@ test set.
 from keras import __version__ as keras_version
 from keras import backend as K
 from keras.applications.inception_v3 import InceptionV3  # Inception based
+from keras.layers import Dense, GlobalAveragePooling2D, Input
 from keras.optimizers import SGD, Adam, Nadam, RMSprop
 from keras.utils import multi_gpu_model
+from keras.models import Model
 
 # Antweb utils
 from AntWeb.AW2_to_json import urls_to_json
@@ -44,13 +46,16 @@ from utils.utils import create_dirs, get_args, today_timestr, todaystr, wd
 # Parameters and settings
 ################################################################################
 batch_size = 16
-epochs = 32
+epochs = 3
 
 # Main
 ################################################################################
 
 
 def main():
+
+    print('Keras version: {}'.format(keras_version))
+
     # Get args
     ############################################################################
     try:
@@ -92,9 +97,22 @@ def main():
     # Initialize the model
     ############################################################################
     # model = modelLoad(config=config)
-    model = InceptionV3(include_top=True, weights=None,
-                        input_tensor=None, input_shape=(140, 140, 3), pooling='avg')
+    input_tensor = Input(shape=(299, 299, 3))
+    base_model = InceptionV3(include_top=False, weights=None,
+                             input_tensor=None, input_shape=None,
+                             pooling=None)
 
+    # add a global spatial average pooling layer
+    x = base_model.output
+    x = GlobalAveragePooling2D()(x)
+    # let's add a fully-connected layer
+    x = Dense(1024, activation='relu')(x)
+    # and a logistic layer -- let's say we have 200 classes
+    predictions = Dense(6, activation='softmax')(x)
+
+    # this is the model we will train
+    model = Model(inputs=base_model.input, outputs=predictions)
+    #
     model.compile(loss='categorical_crossentropy',
                   optimizer=Nadam(lr=0.002,
                                   beta_1=0.9,
@@ -115,11 +133,16 @@ def main():
     images, labels = img_load_shottype(shottype='h',
                                        datadir='2018-02-12-test')
 
+
+
     X_train, Y_train, X_val, Y_val, X_test, Y_test = train_val_test_split(
         images=images,
         labels=labels,
         test_size=0.1,
         val_size=0.135)
+
+    # print('X_train shape: ', X_train.shape)
+    # print('Y_train shape: ', Y_train.shape)
 
     train_data_gen = train_data_generator(X_train=X_train,
                                           Y_train=Y_train,
@@ -130,20 +153,20 @@ def main():
                                       Y_val=Y_val,
                                       batch_size=batch_size,
                                       epochs=epochs)
-
-    # save_augmentation(image='camponotus_auropubens_casent0101126_d.jpg',
+    #
+    # save_augmentation(image='anochetus_madagascarensis_casent0101674_h.jpg',
     #                   test_dir='data/2018-02-12-test',
-    #                   input_dir='images/dorsal/camponotus_auropubens/')
-
-    print('Data is loaded and generated.')
+    #                   input_dir='images/head/anochetus_madagascarensis')
+    #
+    print('Data is loaded, split and put in generators.')
 
     # Training in batches with iterator
     #########################################################################
-    # model.fit_generator(train_data_gen,
-    #                     validation_data=val_data_gen,
-    #                     steps_per_epoch=32,
-    #                     epochs=epochs,
-    #                     callbacks=build_tensorboard(model))
+    model.fit_generator(train_data_gen,
+                        validation_data=val_data_gen,
+                        steps_per_epoch=16,
+                        epochs=epochs,
+                        callbacks=build_tensorboard(model))
     #
     # score = model.evaluate(X_test, Y_test, verbose=0)
     # print(score)
@@ -153,5 +176,4 @@ def main():
 
 
 if __name__ == '__main__':
-    print('Keras version: {}'.format(keras_version))
     main()
