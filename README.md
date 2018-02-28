@@ -23,19 +23,19 @@ _Classification of images of ants using deep learning_
 <!-- /TOC -->
 
 ## :pencil: Description
-Code repository for CNN-based image classification of AntWeb images
-
-_Images are harvested from AntWeb.org_
-<br>
-
-![](https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true)
+| Code repository for CNN-based image classification of AntWeb images | ![](https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true)|
 
 ### :black_nib: Proposal
 You can find the proposal [here](https://github.com/naturalis/FormicID-proposal).
 
 ## :arrow_forward: How to use
-The working directory should be `/`, so pathways to `/data` work.
-1. Create a 2 column csv file with the genus+species you want to download from AntWeb as follows:
+
+1. Clone the repository
+```sh
+$ git clone https://github.com/naturalis/FormicID
+$ cd ./FormicID
+```
+2. Create a 2 column csv file with the genus+species you want to download from AntWeb as follows:
 
 
 | genus  | species  |
@@ -44,18 +44,18 @@ The working directory should be `/`, so pathways to `/data` work.
 | genus2 | species2 |
 | genus3 | species3 |
 
-2. Run [`AW_to_json.py`](formicID/AntWeb/AW2_to_json.py) to download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/AntWeb/AW2_to_json.py#L159):
+3. Run [`AW_to_json.py`](formicID/AntWeb/AW2_to_json.py) to download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/AntWeb/AW2_to_json.py#L159):
     * `csv_file`: csvfile name
     * `input_dir`: input directory
     * `output_dir`: output directory
     * `offset_set`: offset
     * `limit_set`: limit
 <!-- _(If you want all species, skip step 1 and run [`AW_to_json.py`](formicID/AntWeb/AW_to_json.py) without specifying a `genus` and `species`)_  -->
-3. Run [`json_to_csv.py`](formicID/AntWeb/json_to_csv.py) so a csv file is created with the information you need to download and name images correctly to your output folder. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/AntWeb/json_to_csv.py#L115):
+4. Run [`json_to_csv.py`](formicID/AntWeb/json_to_csv.py) so a csv file is created with the information you need to download and name images correctly to your output folder. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/AntWeb/json_to_csv.py#L115):
     * `input_dir`: input directory
     * `output_dir`: output directory
     * `csvname`: csv name for the new csv
-4. Using [`scrape.py`](formicID/data_scraper/scrape.py) the csv file from step 3 will be updated if you flag `image_scraper(update=False/True)` as True. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_`). After updating the csv, the script will start downloading images and will put these in newly created folders for head, dorsal and profile shots. In these folders, every species is put in its own folder. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/data_scraper/scrape.py#L207):
+5. Using [`scrape.py`](formicID/data_scraper/scrape.py) the csv file from step 3 will be updated if you flag `image_scraper(update=False/True)` as True. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_`). After updating the csv, the script will start downloading images and will put these in newly created folders for head, dorsal and profile shots. In these folders, every species is put in its own folder. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/data_scraper/scrape.py#L207):
     * `csvfile`: csv file from step 3
     * `input_dir`: input_dir directory of the csv file
     * `start`: start number (line where to start in the csv file)
@@ -105,16 +105,18 @@ _To be continued_
 ```
 
 ## :ant: AntWeb
-> AntWeb is the world's largest online database of images, specimen records, and natural history information on ants. It is community driven and open to contribution from anyone with specimen records, natural history comments, or images.<br><br>
-Our mission is to publish for the scientific community high quality images of all the world's ant species. AntWeb provides tools for submitting images, specimen records, annotating species pages, and managing regional species lists.<br><br>
+> AntWeb is the world's largest online database of images, specimen records, and natural history information on ants. It is community driven and open to contribution from anyone with specimen records, natural history comments, or images.
 
-_Text from Antweb.org_<br><br>
+
+> Our mission is to publish for the scientific community high quality images of all the world's ant species. AntWeb provides tools for submitting images, specimen records, annotating species pages, and managing regional species lists.
+
+_Text from Antweb.org_
 
 ### :satellite: AntWeb API
+Images are harvested from [`www.AntWeb.org`](www.antweb.org). At this moment version 2 is used because version 3 was not released when the project started. Version 3 is also still in beta. Later, the scripts will be changed to use version 3.
+
 - [AntWeb API version 2](https://www.antweb.org/api/v2/)
 - [AntWeb API version 3 beta](https://www.antweb.org/documentation/api/apiV3.jsp)
-
-At this moment version 2 is used because version 3 was not released when the project started. Version 3 is also still in beta. Later, the scripts will be changed to use version 3.
 
 ### :open_file_folder: Images / Dataset
 Below you can see two images representing the dataset. One is an image of _Lasius flavus_ and the other one is a mosaic of _Tetramorium gollum_ I made using the image set.
@@ -126,13 +128,13 @@ _Lasius flavus_                      | Mosaic of _Tetramorium gollum_
 
 ## :computer: Neural Network
 ### :mag: Ready to use models
-- Inception v3
+- Inception v3 (recommended)
 - Xception
 - ResNet
 - DenseNet
 
 ### :triangular_ruler: Self-made model
-<text placeholder>
+It will also be possible to use a model made by the author.
 
 ## :clipboard: Requirements
 * [Keras | Why use Keras?](https://keras.io/why-use-keras/)
