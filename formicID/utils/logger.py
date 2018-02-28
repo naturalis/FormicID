@@ -34,9 +34,10 @@ class buildTensorBoard():
     def build_tensorboard(self):
 
         model = self.model
+        batch_size = self.config.batch_size
         tb = TensorBoard(log_dir='./graphs/logs/{0}'.format(today_timestr),
                          histogram_freq=0,
-                         batch_size=self.config.batch_size,
+                         batch_size=batch_size,
                          write_graph=True,
                          write_images=True)
 

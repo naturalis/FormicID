@@ -147,12 +147,12 @@ def img_load_shottype(shottype,
     labels = K.cast_to_floatx(labels)
 
     # print('after', labels)
-    print('\nImages shape: ', images.shape)
-    print('images dtype: ', images.dtype)
-    print('labels shape: ', labels.shape)
-    print('labels dtype: ', labels.dtype)
+    print('Images shape: ', images.shape)
+    print('Images dtype: ', images.dtype)
+    print('Labels shape: ', labels.shape)
+    print('Labels dtype: ', labels.dtype)
 
-    return images, labels
+    return images, labels, num_species
 
 
 # Training, validation and test split
@@ -180,7 +180,7 @@ def train_val_test_split(images,
                                  random_state=seed)
     sss.get_n_splits(images,
                      labels)
-    # print(sss)
+
     for train_index, test_index in sss.split(images,
                                              labels):
         # print('TEST (10%%): {}'.format(test_index))
@@ -192,7 +192,7 @@ def train_val_test_split(images,
                                      random_state=seed)
         sss.get_n_splits(X_train,
                          Y_train)
-        # print(sss)
+
         for train_index, val_index in sss.split(X_train,
                                                 Y_train):
             # print('\nTRAIN (~75%%): {} \n\nVAL (~15%%): {}'.format(
@@ -207,3 +207,16 @@ def train_val_test_split(images,
         print('Total number of images: {}'.format(nb_specimens))
 
         return X_train, Y_train, X_val, Y_val, X_test, Y_test
+
+
+def load_data():
+    images, labels, num_species = img_load_shottype(shottype='h',
+                                                    datadir='2018-02-12-test')
+
+    X_train, Y_train, X_val, Y_val, X_test, Y_test = train_val_test_split(
+        images=images,
+        labels=labels,
+        test_size=0.1,
+        val_size=0.135)
+
+    return X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species

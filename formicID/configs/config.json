@@ -1,12 +1,13 @@
 {
     "exp_name": "test1",
-    "num_epochs": 10,
+    "num_epochs": 2,
     "num_iter_per_epoch": 10,
     "learning_rate": 0.001,
-    "batch_size": 16,
+    "batch_size": 6,
     "state_size": [784],
     "max_to_keep": 5,
     "dropout": 0.5,
     "optimizer": "Nadam",
-    "model": "InceptionV3"
+    "model": "InceptionV3",
+    "seed": 1
 }

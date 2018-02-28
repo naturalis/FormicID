@@ -30,11 +30,11 @@ to its reliance on SeparableConvolution layers.```
 '''
 # Packages
 ################################################################################
-from keras.applications.densenet import DenseNet169  # ResNet based
-from keras.applications.inception_v3 import InceptionV3  # Inception based
-from keras.applications.resnet50 import ResNet50  # ResNet based
-from keras.applications.xception import Xception  # Inception based
 
+from keras.applications.densenet import DenseNet169
+from keras.applications.inception_v3 import InceptionV3
+from keras.applications.resnet50 import ResNet50
+from keras.applications.xception import Xception
 from keras.layers import Dense, GlobalAveragePooling2D, Input
 from keras.models import Model
 
@@ -49,112 +49,111 @@ from keras.models import Model
 class modelLoad():
     def __init__(self, config):
         self.config = config
-        # self.include_top = include_top
-        # self.weights = weights
-        # self.input_tensor = input_tensor
-        # self.input_shape = input_shape
-        # self.pooling = pooling
-        # self.classes = classes
-        self.model_inceptionv3
-        # self.model_densenet169
-        # self.model_resnet50
-        # self.model_xception
 
-    def model_inceptionv3(self, include_top=False, weights=None, input_tensor=None, input_shape=None, pooling='max', classes=None):
+    def model_inceptionv3(self, num_classes):
         '''Inception V3 model, with weights pre-trained on ImageNet.
 
-        This model is available for both the Theano and TensorFlow backend, and can
-        be built both with 'channels_first' data format (channels, height, width)
-        or 'channels_last' data format (height, width, channels).
+        This model is available for both the Theano and TensorFlow backend, and
+        can be built both with 'channels_first' data format (channels, height,
+        width) or 'channels_last' data format (height, width, channels).
 
         The default input size for this model is 299x299.
         '''
-        model = InceptionV3(
-            include_top=include_top,
-            weights=weights,
-            input_tensor=input_tensor,
-            input_shape=input_shape,
-            pooling=pooling,
-            classes=classes)
-        return model
+        base_model = InceptionV3(include_top=False,
+                                 weights=None,
+                                 input_tensor=None,
+                                 input_shape=None,
+                                 pooling=None,
+                                 classes=None)
 
-    #
-    # def model_resnet50(self):
+        # add a global spatial average pooling layer
+        x = base_model.output
+        x = GlobalAveragePooling2D()(x)
+        # let's add a fully-connected layer
+        x = Dense(1024, activation='relu')(x)
+        # and a logistic layer with num_species
+        predictions = Dense(num_classes, activation='softmax')(x)
+
+        # this is the model we will train
+        end_model = Model(inputs=base_model.input, outputs=predictions)
+
+        return end_model
+
+    def model_compile(self, model):
+        optimizer = self.config.optimizer
+        learning_rate = self.config.learning_rate
+
+        if optimizer == "Nadam":
+            opt = Nadam(lr=learning_rate,
+                        beta_1=0.9,
+                        beta_2=0.999,
+                        epsilon=1e-08,
+                        schedule_decay=0.004)
+
+        model_comp = self.compile(loss='sparse_categorical_crossentropy',
+                                  optimizer=opt)
+        return model_comp
+
+    # def model_resnet50():
     #     '''ResNet50 model, with weights pre-trained on ImageNet.
     #
-    #     This model is available for both the Theano and TensorFlow backend, and can
-    #     be built both with 'channels_first' data format (channels, height, width)
-    #     or 'channels_last' data format (height, width, channels).
+    #     This model is available for both the Theano and TensorFlow backend, and
+    #     can be built both with 'channels_first' data format (channels, height,
+    #     width) or 'channels_last' data format (height, width, channels).
     #
     #     The default input size for this model is 224x224.
     #     '''
-    #     model = ResNet50(
-    #         include_top=include_top,
-    #         weights=weights,
-    #         input_tensor=input_tensor,
-    #         input_shape=input_shape,
-    #         pooling=pooling,
-    #         classes=classes)
-    #     return model
+    #     base_model = ResNet50(include_top=False,
+    #                           weights=None,
+    #                           input_tensor=None,
+    #                           input_shape=None,
+    #                           pooling=None,
+    #                           classes=None)
     #
-    # def model_densenet169(self):
-    #     '''Optionally loads weights pre-trained on ImageNet. Note that when using
-    #     TensorFlow, for best performance you should set
+    #     # this is the model we will train
+    #     end_model = Model(inputs=base_model.input, outputs=predictions)
+    #
+    #     return end_model
+    #
+    # def model_densenet169():
+    #     '''Optionally loads weights pre-trained on ImageNet. Note that when
+    #     using TensorFlow, for best performance you should set
     #     image_data_format='channels_last' in your Keras config at
     #     ~/.keras/keras.json.
     #
-    #     The model and the weights are compatible with TensorFlow, Theano, and CNTK.
-    #     The data format convention used by the model is the one specified in your
-    #     Keras config file.
+    #     The model and the weights are compatible with TensorFlow, Theano, and
+    #     CNTK. The data format convention used by the model is the one specified
+    #     in your Keras config file.
     #     '''
-    #     model = DenseNet169(
-    #         include_top=include_top,
-    #         weights=weights,
-    #         input_tensor=input_tensor,
-    #         input_shape=input_shape,
-    #         pooling=pooling,
-    #         classes=classes)
-    #     return model
+    #     base_model = DenseNet169(include_top=False,
+    #                              weights=None,
+    #                              input_tensor=None,
+    #                              input_shape=None,
+    #                              pooling=None,
+    #                              classes=None)
+    #     end_model = Model(inputs=base_model.input, outputs=predictions)
     #
+    #     return end_model
     #
-    #
-    # def model_xception(self):
+    # def model_xception():
     #     '''Xception V1 model, with weights pre-trained on ImageNet.
     #
-    #     On ImageNet, this model gets to a top-1 validation accuracy of 0.790 and a
-    #     top-5 validation accuracy of 0.945.
+    #     On ImageNet, this model gets to a top-1 validation accuracy of 0.790
+    #     and a top-5 validation accuracy of 0.945.
     #
-    #     Note that this model is only available for the TensorFlow backend, due to
-    #     its reliance on SeparableConvolution layers. Additionally it only supports
-    #     the data format 'channels_last' (height, width, channels).
+    #     Note that this model is only available for the TensorFlow backend, due
+    #     to its reliance on SeparableConvolution layers. Additionally it only
+    #     supports the data format 'channels_last' (height, width, channels).
     #
     #     The default input size for this model is 299x299.
     #     '''
-    #     model = Xception(
-    #         include_top=self.include_top,
-    #         weights=self.weights,
-    #         input_tensor=self.input_tensor,
-    #         input_shape=self.input_shape,
-    #         pooling=self.pooling,
-    #         classes=self.classes)
-    #     return model
-
-
-# InceptionV3
-################################################################################
-
-base_model = InceptionV3(include_top=False, weights=None,
-                         input_tensor=None, input_shape=None,
-                         pooling=None)
-
-# add a global spatial average pooling layer
-x = base_model.output
-x = GlobalAveragePooling2D()(x)
-# let's add a fully-connected layer
-x = Dense(1024, activation='relu')(x)
-# and a logistic layer -- let's say we have 200 classes
-predictions = Dense(6, activation='softmax')(x)
-
-# this is the model we will train
-model_inceptionv3 = Model(inputs=base_model.input, outputs=predictions)
-#
+    #     base_model = Xception(include_top=False,
+    #                           weights=None,
+    #                           input_tensor=None,
+    #                           input_shape=None,
+    #                           pooling=None,
+    #                           classes=None)
+    #
+    #     end_model = Model(inputs=base_model.input, outputs=predictions)
+    #
+    #     return end_model

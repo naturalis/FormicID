@@ -24,10 +24,17 @@ from keras.model import test_on_batch
 # Validation
 # //////////////////////////////////////////////////////////////////////////////
 
-model.test_on_batch(x,y)
 
 def model_evaluate(model):
+    # Evaluate is for getting score and accuracy on test set.
+    # model.test is for testing a image for label.
     loss, accuracy = model.evaluate(testdataX, testdataY)
-    print("\nLoss: {:2f}, Accuracy: {:2f}".format(loss, accuracy*100))
 
-model_evaluate(AW_model_trained)
+    print("\nLoss: {:2f}, Accuracy: {:2f}".format(loss, accuracy*100))
+    return loss, accuracy
+
+
+def model_test(image, model):
+    # model.test_on_batch(x,y)
+
+    raise NotImplementedError

@@ -18,10 +18,9 @@ import os
 
 # import matplotlib.pyplot as plt
 from keras.applications.inception_v3 import preprocess_input
-from keras.preprocessing.image import (ImageDataGenerator, img_to_array,
-                                       load_img)
+from keras.preprocessing.image import img_to_array, load_img
 
-from trainers.train import train_data_generator
+from trainers.train import idg_train
 
 from .utils import wd
 
@@ -76,15 +75,7 @@ def save_augmentation(image, test_dir, input_dir):
     img=img.reshape((1,) + img.shape)
 
     i=0
-    train_data_gen = ImageDataGenerator(
-        preprocessing_function=preprocess_input, # needed for inception_v3
-        # rescale=1. / 255,
-        rotation_range=40,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        shear_range=0.2,
-        zoom_range=0.2,
-        horizontal_flip=True)
+    train_data_gen = idg_train
 
     for batch in train_data_gen.flow(img,
                                      batch_size=1,
