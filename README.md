@@ -23,8 +23,9 @@ _Classification of images of ants using deep learning_
 <!-- /TOC -->
 
 ## :pencil: Description
-| Code repository for CNN-based image classification of AntWeb images | ![](https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true)|
-|--------------|---------|
+Code repository for CNN-based image classification of AntWeb images 
+
+![](https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true)
 
 ### :black_nib: Proposal
 You can find the proposal [here](https://github.com/naturalis/FormicID-proposal).
@@ -123,9 +124,9 @@ Images are harvested from [`www.AntWeb.org`](www.antweb.org). At this moment ver
 Below you can see two images representing the dataset. One is an image of _Lasius flavus_ and the other one is a mosaic of _Tetramorium gollum_ I made using the image set.
 
 
-_Lasius flavus_                      | Mosaic of _Tetramorium gollum_
-|----------------------------------|----------------------------------|
-|![](https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true)                                 | ![](https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true)|
+| _Lasius flavus_                      | Mosaic of _Tetramorium gollum_   |
+|--------------------------------------|----------------------------------|
+|![](https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true) | ![](https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true)|
 
 ## :computer: Neural Network
 ### :mag: Ready to use models
