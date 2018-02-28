@@ -24,6 +24,7 @@ _Classification of images of ants using deep learning_
 
 ## :pencil: Description
 | Code repository for CNN-based image classification of AntWeb images | ![](https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true)|
+|--------------|---------|
 
 ### :black_nib: Proposal
 You can find the proposal [here](https://github.com/naturalis/FormicID-proposal).
