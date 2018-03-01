@@ -18,7 +18,6 @@ test set.
 
 from keras import __version__ as keras_version
 from keras import backend as K
-from keras.optimizers import SGD, Adam, Nadam, RMSprop
 from keras.utils import multi_gpu_model
 
 from AntWeb.AW2_to_json import urls_to_json
@@ -31,7 +30,7 @@ from trainers.train import trainer
 from utils.img import save_augmentation
 from utils.load_config import process_config
 from utils.logger import buildModelCheckpoint, buildTensorBoard
-from utils.utils import create_dirs, get_args, today_timestr, todaystr, wd
+from utils.utils import create_dirs, get_args
 
 # Parameters and settings
 ################################################################################
@@ -88,26 +87,17 @@ def main():
     ############################################################################
     X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data()
 
-    # print('X_train shape: ', X_train.shape)
-    # print('Y_train shape: ', Y_train.shape)
-
     # save_augmentation(image='anochetus_madagascarensis_casent0101674_h.jpg',
     #                   test_dir='data/2018-02-12-test',
     #                   input_dir='images/head/anochetus_madagascarensis')
-    #
+
     print('Data is loaded, split and put in generators.')
 
     # Initialize the model
     ############################################################################
 
-    model = modelLoad(config=config).model_inceptionv3(num_classes=num_species)
-    model = model.model_compile(model=model)
-    # model.compile(loss='sparse_categorical_crossentropy',
-    #               optimizer=Nadam(lr=0.002,
-    #                               beta_1=0.9,
-    #                               beta_2=0.999,
-    #                               epsilon=1e-08,
-    #                               schedule_decay=0.004))
+    mdl = modelLoad(config=config).model_inceptionv3(num_classes=num_species)
+    mdl = modelLoad(config=config).model_compile(mdl)
 
     print('The model is loaded and compiled.')
 
@@ -115,18 +105,28 @@ def main():
     # multi_gpu_formicID = multi_gpu_model(model_formicID, gpus=4)
 
     # Initialize logger
-    #########################################################################
-    # logger = [buildModelCheckpoint(config=config),
-    #           buildTensorBoard(model=model_inceptionv3,
-    #                            config=config)]
+    ############################################################################
+    logger = [buildModelCheckpoint(config=config),
+              buildTensorBoard(model=model_inceptionv3,
+                               config=config)]
 
     # Training in batches with iterator
-    #########################################################################
-    trainer(model=model, X_train=X_train, Y_train=Y_train, X_val=X_val, Y_val=Y_val, callbacks=logger, config=config)
-    #
+    ############################################################################
+    trainer(model=model,
+            X_train=X_train,
+            Y_train=Y_train,
+            X_val=X_val,
+            Y_val=Y_val,
+            callbacks=logger,
+            config=config)
+
+    # Evaluation
+    ############################################################################
     # score = model.evaluate(X_test, Y_test, verbose=0)
     # print(score)
-    #
+
+    # Testing
+    ############################################################################
     # prediction = model.predict_classes(X_test, verbose=1)
     # print(prediction)
 

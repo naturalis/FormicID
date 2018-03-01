@@ -37,6 +37,7 @@ from keras.applications.resnet50 import ResNet50
 from keras.applications.xception import Xception
 from keras.layers import Dense, GlobalAveragePooling2D, Input
 from keras.models import Model
+from keras.optimizers import SGD, Adam, Nadam, RMSprop
 
 # Parameters and settings
 ################################################################################
@@ -49,6 +50,21 @@ from keras.models import Model
 class modelLoad():
     def __init__(self, config):
         self.config = config
+
+    def model_compile(self, model):
+        optimizer = self.config.optimizer
+        learning_rate = self.config.learning_rate
+
+        if optimizer == "Nadam":
+            opt = Nadam(lr=learning_rate,
+                        beta_1=0.9,
+                        beta_2=0.999,
+                        epsilon=1e-08,
+                        schedule_decay=0.004)
+
+        model_comp = model.compile(loss='sparse_categorical_crossentropy',
+                                   optimizer=opt)
+        return model_comp
 
     def model_inceptionv3(self, num_classes):
         '''Inception V3 model, with weights pre-trained on ImageNet.
@@ -79,21 +95,7 @@ class modelLoad():
 
         return end_model
 
-    def model_compile(self, model):
-        optimizer = self.config.optimizer
-        learning_rate = self.config.learning_rate
-
-        if optimizer == "Nadam":
-            opt = Nadam(lr=learning_rate,
-                        beta_1=0.9,
-                        beta_2=0.999,
-                        epsilon=1e-08,
-                        schedule_decay=0.004)
-
-        model_comp = self.compile(loss='sparse_categorical_crossentropy',
-                                  optimizer=opt)
-        return model_comp
-
+    # TODO: Finetune the other models.
     # def model_resnet50():
     #     '''ResNet50 model, with weights pre-trained on ImageNet.
     #
