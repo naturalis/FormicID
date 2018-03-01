@@ -24,7 +24,7 @@ from AntWeb.AW2_to_json import urls_to_json
 from AntWeb.json_to_csv import batch_json_to_csv
 from data_loader.data_input import load_data
 from data_scraper.scrape import image_scraper
-from models.models import modelLoad
+from models.models import load_model
 # from models.build import neuralNetwork
 from trainers.train import trainer
 from utils.model_utils import model_summary
@@ -96,10 +96,7 @@ def main():
 
     # Initialize the model
     ###########################################################################
-    model_formicID = modelLoad(
-        config=config).model_inceptionv3(
-            num_classes=num_species)
-    model_formicID = modelLoad(config=config).model_compile(model_formicID)
+    model_formicID = load_model(config=config, num_classes=num_species, base_model='InceptionV3', optimizer='Nadam')
 
     print('The model is loaded and compiled.')
     print('type ', model_formicID)
@@ -116,13 +113,13 @@ def main():
 
     # Training in batches with iterator
     ###########################################################################
-    # trainer(model=model_formicID,
-    #         X_train=X_train,
-    #         Y_train=Y_train,
-    #         X_val=X_val,
-    #         Y_val=Y_val,
-    #         callbacks=logger,
-    #         config=config)
+    trainer(model=model_formicID,
+            X_train=X_train,
+            Y_train=Y_train,
+            X_val=X_val,
+            Y_val=Y_val,
+            # callbacks=logger,
+            config=config)
 
     # Evaluation
     ###########################################################################

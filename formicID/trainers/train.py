@@ -26,9 +26,8 @@ pixels between -1 and 1, samplewise and performs the following calculation:
 ###############################################################################
 
 from keras.applications.inception_v3 import preprocess_input
-from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Model
-
+from keras.preprocessing.image import ImageDataGenerator
 
 # Parameters and settings
 ###############################################################################
@@ -147,8 +146,8 @@ def trainer(model,
             Y_train,
             X_val,
             Y_val,
-            callbacks,
-            config):
+            config,
+            callbacks=None):
     """Short summary.
 
     Args:
@@ -165,6 +164,9 @@ def trainer(model,
 
     """
     epochs = config.num_epochs
+    batch_size = config.batch_size
+    nb_X_train = len(X_train)
+
     train_data_gen = train_data_generator(X_train=X_train,
                                           Y_train=Y_train,
                                           config=config)
@@ -175,7 +177,6 @@ def trainer(model,
 
     model.fit_generator(train_data_gen,
                         validation_data=val_data_gen,
-                        # ? validation_split=1/7.,
-                        steps_per_epoch=3,
+                        steps_per_epoch=(nb_X_train // batch_size),
                         epochs=epochs,
                         callbacks=callbacks)

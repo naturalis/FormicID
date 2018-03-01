@@ -69,7 +69,7 @@ class buildModelCheckpoint():
                               mode='auto',
                               save_best_only=True,
                               period=1)
-        mcp.set_model(model)
+        # mcp.set_model(model)
 
         Callbacks_mcp = []
         Callbacks_mcp.append(mcp)

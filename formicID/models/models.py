@@ -48,116 +48,92 @@ from keras.optimizers import SGD, Adam, Nadam, RMSprop
 ###############################################################################
 
 
-class modelLoad():
-    def __init__(self, config):
-        self.config = config
+def load_model(config, num_classes, base_model='InceptionV3', optimizer='Nadam'):
+    """Short summary.
 
-    def model_compile(self, model):
-        optimizer = self.config.optimizer
-        learning_rate = self.config.learning_rate
+    Args:
+        model (type): Description of parameter `model`.
+        config (type): Description of parameter `config`.
+        optimizer (type): Description of parameter `optimizer`.
+        num_classes (type): Description of parameter `num_classes`.
 
-        if optimizer == "Nadam":
-            opt = Nadam(lr=learning_rate,
-                        beta_1=0.9,
-                        beta_2=0.999,
-                        epsilon=1e-08,
-                        schedule_decay=0.004)
+    Returns:
+        type: Description of returned object.
 
-        model.compile(loss='sparse_categorical_crossentropy',
-                                   optimizer=opt)
-        # return model_comp
+    Model information:
+        Inception V3 model:
+            The default input size for this model is 299x299.
 
-    def model_inceptionv3(self, num_classes):
-        '''Inception V3 model, with weights pre-trained on ImageNet.
+        ResNet50 model:
+            The default input size for this model is 224x224.
 
-        This model is available for both the Theano and TensorFlow backend, and
-        can be built both with 'channels_first' data format (channels, height,
-        width) or 'channels_last' data format (height, width, channels).
+        DenseNet169:
+            The data format convention used by the model is the one specified
+            in your Keras config file.
 
-        The default input size for this model is 299x299.
-        '''
+        Xception V1 model,
+            Note that this model is only available for the TensorFlow backend,
+            due to its reliance on SeparableConvolution layers. Additionally
+            it only supports the data format 'channels_last' (height, width,
+            channels). The default input size for this model is 299x299.
+    """
+    # TODO: Finetune the ResNet50, DenseNet169, Xception models.
+    model = config.model
+    optimizer = config.optimizer
+    learning_rate = config.learning_rate
+
+    if model == 'InceptionV3':
         base_model = InceptionV3(include_top=False,
                                  weights=None,
-                                 input_tensor=None,
-                                 input_shape=None,
-                                 pooling=None,
+                                 classes=None)
+    if model == 'ResNet50':
+        base_model = ResNet50(include_top=False,
+                                 weights=None,
+                                 classes=None)
+    if model == 'DenseNet169':
+        base_model = DenseNet169(include_top=False,
+                                 weights=None)
+    if model == 'Xception':
+        base_model = Xception(include_top=False,
+                                 weights=None,
                                  classes=None)
 
-        # add a global spatial average pooling layer
-        x = base_model.output
-        x = GlobalAveragePooling2D()(x)
-        # let's add a fully-connected layer
-        x = Dense(1024, activation='relu')(x)
-        # and a logistic layer with num_species
-        predictions = Dense(num_classes, activation='softmax')(x)
+    # add a global spatial average pooling layer
+    x = base_model.output
+    x = GlobalAveragePooling2D()(x)
+    # let's add a fully-connected layer
+    x = Dense(1024, activation='relu')(x)
+    # and a logistic layer with num_species
+    predictions = Dense(num_classes, activation='softmax')(x)
 
-        # this is the model we will train
-        end_model = Model(inputs=base_model.input, outputs=predictions)
+    # this is the model we will train
+    end_model = Model(inputs=base_model.input, outputs=predictions)
 
-        return end_model
+    if optimizer == 'Nadam':
+        opt = Nadam(lr=learning_rate,
+                    beta_1=0.9,
+                    beta_2=0.999,
+                    epsilon=1e-08,
+                    schedule_decay=0.004)
+    if optimizer == 'Adam':
+        opt = Adam(lr=learning_rate,
+                   beta_1=0.9,
+                   beta_2=0.999,
+                   epsilon=None,
+                   decay=0.0,
+                   amsgrad=False)
+    if optimizer == 'SGD':
+        opt = SGD(lr=learning_rate,
+                  decay=1e-6,
+                  momentum=0.9,
+                  nesterov=True)
+    if optimizer == 'RMSprop':
+        opt = RMSprop(lr=learning_rate,
+                      rho=0.9,
+                      epsilon=1e-08,
+                      decay=0.0)
 
-    # TODO: Finetune the other models.
-    # def model_resnet50():
-    #     '''ResNet50 model, with weights pre-trained on ImageNet.
-    #
-    #     This model is available for both the Theano and TensorFlow backend,
-    #     and can be built both with 'channels_first' data format (channels,
-    #     height, width) or 'channels_last' data format (height, width,
-    #     channels).
-    #
-    #     The default input size for this model is 224x224.
-    #     '''
-    #     base_model = ResNet50(include_top=False,
-    #                           weights=None,
-    #                           input_tensor=None,
-    #                           input_shape=None,
-    #                           pooling=None,
-    #                           classes=None)
-    #
-    #     # this is the model we will train
-    #     end_model = Model(inputs=base_model.input, outputs=predictions)
-    #
-    #     return end_model
-    #
-    # def model_densenet169():
-    #     '''Optionally loads weights pre-trained on ImageNet. Note that when
-    #     using TensorFlow, for best performance you should set
-    #     image_data_format='channels_last' in your Keras config at
-    #     ~/.keras/keras.json.
-    #
-    #     The model and the weights are compatible with TensorFlow, Theano, and
-    #     CNTK. The data format convention used by the model is the one specified
-    #     in your Keras config file.
-    #     '''
-    #     base_model = DenseNet169(include_top=False,
-    #                              weights=None,
-    #                              input_tensor=None,
-    #                              input_shape=None,
-    #                              pooling=None,
-    #                              classes=None)
-    #     end_model = Model(inputs=base_model.input, outputs=predictions)
-    #
-    #     return end_model
-    #
-    # def model_xception():
-    #     '''Xception V1 model, with weights pre-trained on ImageNet.
-    #
-    #     On ImageNet, this model gets to a top-1 validation accuracy of 0.790
-    #     and a top-5 validation accuracy of 0.945.
-    #
-    #     Note that this model is only available for the TensorFlow backend, due
-    #     to its reliance on SeparableConvolution layers. Additionally it only
-    #     supports the data format 'channels_last' (height, width, channels).
-    #
-    #     The default input size for this model is 299x299.
-    #     '''
-    #     base_model = Xception(include_top=False,
-    #                           weights=None,
-    #                           input_tensor=None,
-    #                           input_shape=None,
-    #                           pooling=None,
-    #                           classes=None)
-    #
-    #     end_model = Model(inputs=base_model.input, outputs=predictions)
-    #
-    #     return end_model
+    end_model.compile(loss='categorical_crossentropy',
+                               optimizer=opt,
+                               metrics=['accuracy'])
+    return end_model
