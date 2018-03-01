@@ -1,31 +1,31 @@
-################################################################################
-#                     __                      _      ___ ____                  #
-#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                 #
-#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |                #
-#                   |  _| (_) | |  | | | | | | | (__ | || |_| |                #
-#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                 #
-#                                                                              #
-#                             Build a neural network                           #
-#                                                                              #
-################################################################################
+###############################################################################
+#                     __                      _      ___ ____                 #
+#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                #
+#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |               #
+#                   |  _| (_) | |  | | | | | | | (__ | || |_| |               #
+#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                #
+#                                                                             #
+#                             Build a neural network                          #
+#                                                                             #
+###############################################################################
 '''Description:
 This script contains code for building a neural network using Keras' Sequential
 model. The class has a `.build` and `.compile` attribute which needs to be
 called when instantiaitng the model.
 '''
 # Packages
-# //////////////////////////////////////////////////////////////////////////////
+###############################################################################
 from keras.layers import (Activation, Conv2D, Dense, Dropout, Flatten,
                           MaxPooling2D)
 from keras.models import Sequential  # for creating the model
 from keras.optimizers import SGD, Adam, Nadam, RMSprop
 
 # Parameters and settings
-################################################################################
+###############################################################################
 
 
 # Build the network
-################################################################################
+###############################################################################
 class neuralNetwork(object):
     def __init__(self, config, input_shape, num_species):
         """A neural network model. The input_shape needs to be specified.

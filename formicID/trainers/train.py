@@ -1,13 +1,13 @@
-################################################################################
-#                     __                      _      ___ ____                  #
-#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                 #
-#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |                #
-#                   |  _| (_) | |  | | | | | | | (__ | || |_| |                #
-#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                 #
-#                                                                              #
-#                                  Trainer                                     #
-#                                                                              #
-################################################################################
+###############################################################################
+#                     __                      _      ___ ____                 #
+#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                #
+#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |               #
+#                   |  _| (_) | |  | | | | | | | (__ | || |_| |               #
+#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                #
+#                                                                             #
+#                                  Trainer                                    #
+#                                                                             #
+###############################################################################
 '''
 Description:
 This file contains data generators. These generators generate batches of tensor
@@ -23,7 +23,7 @@ pixels between -1 and 1, samplewise and performs the following calculation:
 '''
 
 # Packages
-################################################################################
+###############################################################################
 
 from keras.applications.inception_v3 import preprocess_input
 from keras.preprocessing.image import ImageDataGenerator
@@ -31,11 +31,11 @@ from keras.models import Model
 
 
 # Parameters and settings
-################################################################################
+###############################################################################
 
 
-# Train data generator
-################################################################################
+# Training data
+###############################################################################
 
 
 def idg_train():
@@ -95,8 +95,8 @@ def train_data_generator(X_train,
 
     return idgen_train
 
-# validation data generator
-################################################################################
+# Validation data
+###############################################################################
 
 
 def idg_val():
@@ -138,14 +138,36 @@ def val_data_generator(X_val,
 
     return idgen_val
 
-# validation data generator
-################################################################################
-def trainer(model, X_train, Y_train, X_val, Y_val, callbacks, config):
+# Trainer
+###############################################################################
+
+
+def trainer(model,
+            X_train,
+            Y_train,
+            X_val,
+            Y_val,
+            callbacks,
+            config):
+    """Short summary.
+
+    Args:
+        model (type): Description of parameter `model`.
+        X_train (type): Description of parameter `X_train`.
+        Y_train (type): Description of parameter `Y_train`.
+        X_val (type): Description of parameter `X_val`.
+        Y_val (type): Description of parameter `Y_val`.
+        callbacks (type): Description of parameter `callbacks`.
+        config (type): Description of parameter `config`.
+
+    Returns:
+        type: Description of returned object.
+
+    """
     epochs = config.num_epochs
     train_data_gen = train_data_generator(X_train=X_train,
                                           Y_train=Y_train,
                                           config=config)
-
 
     val_data_gen = val_data_generator(X_val=X_val,
                                       Y_val=Y_val,

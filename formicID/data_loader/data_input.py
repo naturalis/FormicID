@@ -1,12 +1,12 @@
-################################################################################
-#                     __                      _      ___ ____                  #
-#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                 #
-#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |                #
-#                   |  _| (_) | |  | | | | | | | (__ | || |_| |                #
-#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                 #
-#                                                                              #
-#                                  data_input                                  #
-################################################################################
+###############################################################################
+#                     __                      _      ___ ____                 #
+#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                #
+#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |               #
+#                   |  _| (_) | |  | | | | | | | (__ | || |_| |               #
+#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                #
+#                                                                             #
+#                                  data_input                                 #
+###############################################################################
 '''Description:
 `These scripts can import data from files in folders and split them in
 different subsets. If data is downloaded using the scraper script the files
@@ -41,7 +41,7 @@ The files should be structured as follows:
 
 '''
 # Packages
-################################################################################
+###############################################################################
 
 import os
 
@@ -51,17 +51,17 @@ from keras.preprocessing.image import img_to_array, load_img
 from keras.utils import normalize, to_categorical
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.preprocessing import LabelEncoder
-
 from tqdm import tqdm
+
 from utils.utils import wd
 
 # Parameters and settings
-################################################################################
+###############################################################################
 seed = 1337
 img_width, img_height = 299, 299
 
 # Load images
-################################################################################
+###############################################################################
 
 
 def img_load_shottype(shottype,
@@ -127,7 +127,8 @@ def img_load_shottype(shottype,
                 # img = cv2.resize(img,
                 #                  (img_width, img_height),
                 #                  interpolation=cv2.INTER_AREA)
-                # img = K.resize_images(img, img_width, img_height, "channels_last")
+                # img = K.resize_images(img, img_width, img_height,
+                # "channels_last")
                 # img = np.asarray(img)
 
             label = species
@@ -141,12 +142,10 @@ def img_load_shottype(shottype,
 
     le = LabelEncoder()
     labels = le.fit_transform(labels)
-    # divide by 2, because of the recursive call to data_dir
     labels = to_categorical(labels,
                             num_classes=num_species)
     labels = K.cast_to_floatx(labels)
 
-    # print('after', labels)
     print('Images shape: ', images.shape)
     print('Images dtype: ', images.dtype)
     print('Labels shape: ', labels.shape)
@@ -156,7 +155,7 @@ def img_load_shottype(shottype,
 
 
 # Training, validation and test split
-################################################################################
+###############################################################################
 
 
 def train_val_test_split(images,

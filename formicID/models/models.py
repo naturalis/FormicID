@@ -1,16 +1,17 @@
-################################################################################
-#                     __                      _      ___ ____                  #
-#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                 #
-#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |                #
-#                   |  _| (_) | |  | | | | | | | (__ | || |_| |                #
-#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                 #
-#                                                                              #
-#                             Load existing models                             #
-#                                                                              #
-################################################################################
+###############################################################################
+#                     __                      _      ___ ____                 #
+#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                #
+#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |               #
+#                   |  _| (_) | |  | | | | | | | (__ | || |_| |               #
+#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                #
+#                                                                             #
+#                             Load existing models                            #
+#                                                                             #
+###############################################################################
 '''Description:
 Using this script 4 existing neural netwerks from the Keras library
-(https://keras.io/applications/) can be imported in a class object. This class has four methods to call in order to load the 4 models.
+(https://keras.io/applications/) can be imported in a class object. This class
+has four methods to call in order to load the 4 models.
 
 The models are:
     - ResNet50
@@ -29,7 +30,7 @@ will get built according to the TensorFlow data format convention,
 to its reliance on SeparableConvolution layers.```
 '''
 # Packages
-################################################################################
+###############################################################################
 
 from keras.applications.densenet import DenseNet169
 from keras.applications.inception_v3 import InceptionV3
@@ -40,11 +41,11 @@ from keras.models import Model
 from keras.optimizers import SGD, Adam, Nadam, RMSprop
 
 # Parameters and settings
-################################################################################
+###############################################################################
 
 
 # Models
-################################################################################
+###############################################################################
 
 
 class modelLoad():
@@ -62,9 +63,9 @@ class modelLoad():
                         epsilon=1e-08,
                         schedule_decay=0.004)
 
-        model_comp = model.compile(loss='sparse_categorical_crossentropy',
+        model.compile(loss='sparse_categorical_crossentropy',
                                    optimizer=opt)
-        return model_comp
+        # return model_comp
 
     def model_inceptionv3(self, num_classes):
         '''Inception V3 model, with weights pre-trained on ImageNet.
@@ -99,9 +100,10 @@ class modelLoad():
     # def model_resnet50():
     #     '''ResNet50 model, with weights pre-trained on ImageNet.
     #
-    #     This model is available for both the Theano and TensorFlow backend, and
-    #     can be built both with 'channels_first' data format (channels, height,
-    #     width) or 'channels_last' data format (height, width, channels).
+    #     This model is available for both the Theano and TensorFlow backend,
+    #     and can be built both with 'channels_first' data format (channels,
+    #     height, width) or 'channels_last' data format (height, width,
+    #     channels).
     #
     #     The default input size for this model is 224x224.
     #     '''

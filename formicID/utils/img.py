@@ -1,19 +1,19 @@
-################################################################################
-#                     __                      _      ___ ____                  #
-#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                 #
-#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |                #
-#                   |  _| (_) | |  | | | | | | | (__ | || |_| |                #
-#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                 #
-#                                                                              #
-#                                    Utilities                                 #
-#                                 Image handeling                              #
-################################################################################
+###############################################################################
+#                     __                      _      ___ ____                 #
+#                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                #
+#                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |               #
+#                   |  _| (_) | |  | | | | | | | (__ | || |_| |               #
+#                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                #
+#                                                                             #
+#                                    Utilities                                #
+#                                 Image handeling                             #
+###############################################################################
 '''Description:
 This script contains several image related scripts that can be loaded in to
 other files.
 '''
 # Packages
-################################################################################
+###############################################################################
 import os
 
 # import matplotlib.pyplot as plt
@@ -25,11 +25,11 @@ from trainers.train import idg_train
 from .utils import wd
 
 # Parameters and settings
-################################################################################
+###############################################################################
 
 
 # Load and show images
-################################################################################
+###############################################################################
 
 
 # def load_img(path, img):
@@ -39,11 +39,11 @@ from .utils import wd
 
 
 # def show_img(image):
-    # implement keras show img
+# implement keras show img
 
 
 # Visualizing data agumentation
-################################################################################
+###############################################################################
 
 
 def save_augmentation(image, test_dir, input_dir):
@@ -62,19 +62,32 @@ def save_augmentation(image, test_dir, input_dir):
     # import ImageDataGenerator from test data_input.py
     # import create_dirs()
 
-    if not os.path.exists(os.path.join(wd, test_dir, 'images', 'augment')):
-        os.mkdir(os.path.join(wd, test_dir, 'images', 'augment'))
+    if not os.path.exists(os.path.join(wd,
+                                       test_dir,
+                                       'images',
+                                       'augment')):
+        os.mkdir(os.path.join(wd,
+                              test_dir,
+                              'images',
+                              'augment'))
 
-    output_dir=os.path.join(wd, test_dir, 'images', 'augment')
-    input_dir=os.path.join(wd, test_dir, input_dir)
-    filename=image.replace('.jpeg', '')
+    output_dir = os.path.join(wd,
+                              test_dir,
+                              'images',
+                              'augment')
+    input_dir = os.path.join(wd,
+                             test_dir,
+                             input_dir)
+    filename = image.replace('.jpeg', '')
 
-    img_file=os.path.join(wd, input_dir, image)
-    img_loaded=load_img(img_file)
-    img=img_to_array(img_loaded)
-    img=img.reshape((1,) + img.shape)
+    img_file = os.path.join(wd,
+                            input_dir,
+                            image)
+    img_loaded = load_img(img_file)
+    img = img_to_array(img_loaded)
+    img = img.reshape((1,) + img.shape)
 
-    i=0
+    i = 0
     train_data_gen = idg_train
 
     for batch in train_data_gen.flow(img,
