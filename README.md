@@ -49,27 +49,27 @@ Create a 2 column csv file with the genus+species you want to download from AntW
 | genus3 | species3 |
 
 ### Step 3
-Run [`AW_to_json.py`](formicID/AntWeb/AW2_to_json.py) to download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/AntWeb/AW2_to_json.py#L159):
-    * `csv_file`: csvfile name
-    * `input_dir`: input directory
-    * `output_dir`: output directory
-    * `offset_set`: offset
-    * `limit_set`: limit
+Run [`formicID/main.py`](formicID/main.py) with the `urls_to_json()` function uncommented to download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file. Set the following settings in `urls_to_json`:
+* `csv_file`: csvfile name
+* `input_dir`: input directory
+* `output_dir`: output directory
+* `offset_set`: offset
+* `limit_set`: limit
 <!-- _(If you want all species, skip step 1 and run [`AW_to_json.py`](formicID/AntWeb/AW_to_json.py) without specifying a `genus` and `species`)_  -->
 ### Step 4
-Run [`json_to_csv.py`](formicID/AntWeb/json_to_csv.py) so a csv file is created with the information you need to download and name images correctly to your output folder. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/AntWeb/json_to_csv.py#L115):
-    * `input_dir`: input directory
-    * `output_dir`: output directory
-    * `csvname`: csv name for the new csv
+Run [`formicID/main.py`](formicID/main.py) with the `batch_json_to_csv()` function uncommented, so a csv file is created with the information you need to download and name images correctly to your output folder. Set the following settings in `batch_json_to_csv`):
+* `input_dir`: input directory
+* `output_dir`: output directory
+* `csvname`: csv name for the new csv
 
 ### Step 5
-Using [`scrape.py`](formicID/data_scraper/scrape.py) the csv file from step 3 will be updated if you flag `image_scraper(update=False/True)` as True. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_`). After updating the csv, the script will start downloading images and will put these in newly created folders for head, dorsal and profile shots. In these folders, every species is put in its own folder. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/data_scraper/scrape.py#L207):
-    * `csvfile`: csv file from step 3
-    * `input_dir`: input_dir directory of the csv file
-    * `start`: start number (line where to start in the csv file)
-    * `end`: end number (line where to end in the csv file)
-    * `output_dir_name`: directory name for the images
-    * `update`: update (whether to update the csv file for broken urls or not)
+In [`formicID/main.py`](formicID/main.py) the `image_scraper()` function could be uncommented to download the images. The csv file from step 3 will be updated if you flag `image_scraper(update=False/True)` as True. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_`). After updating the csv, the script will start downloading images and will put these in newly created folders for head, dorsal and profile shots. In these folders, every species is put in its own folder. Set the following settings in `image_scraper()`:
+* `csvfile`: csv file from step 3
+* `input_dir`: input_dir directory of the csv file
+* `start`: start number (line where to start in the csv file)
+* `end`: end number (line where to end in the csv file)
+* `output_dir_name`: directory name for the images
+* `update`: update (whether to update the csv file for broken urls or not)
 
 
 ### Step 6
@@ -97,7 +97,7 @@ _To be continued_
 
 ## :bookmark: Project Structure
 ```
-|-- FormicID
+|-- formicID
     |-- __init__.py
     |-- main.py
     |-- AntWeb
@@ -128,10 +128,10 @@ _To be continued_
     |-- utils
         |-- __init__.py
         |-- img.py
-	|-- load_config.py
-	|-- logger.py
-	|-- model_utils.py
-	|-- utils.py
+		|-- load_config.py
+		|-- logger.py
+		|-- model_utils.py
+		|-- utils.py
 ```
 
 ## :ant: AntWeb
