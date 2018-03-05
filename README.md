@@ -23,7 +23,7 @@ _Classification of images of ants using deep learning_
 <!-- /TOC -->
 
 ## :pencil: Description
-Code repository for CNN-based image classification of AntWeb images 
+Code repository for CNN-based image classification of AntWeb images
 
 ![](https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true)
 
@@ -32,12 +32,14 @@ You can find the proposal [here](https://github.com/naturalis/FormicID-proposal)
 
 ## :arrow_forward: How to use
 
-1. Clone the repository
+### Step 1
+Clone the repository
 ```sh
 $ git clone https://github.com/naturalis/FormicID
 $ cd ./FormicID
 ```
-2. Create a 2 column csv file with the genus+species you want to download from AntWeb as follows:
+### Step 2
+Create a 2 column csv file with the genus+species you want to download from AntWeb as follows:
 
 
 | genus  | species  |
@@ -46,24 +48,50 @@ $ cd ./FormicID
 | genus2 | species2 |
 | genus3 | species3 |
 
-3. Run [`AW_to_json.py`](formicID/AntWeb/AW2_to_json.py) to download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/AntWeb/AW2_to_json.py#L159):
+### Step 3
+Run [`AW_to_json.py`](formicID/AntWeb/AW2_to_json.py) to download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/AntWeb/AW2_to_json.py#L159):
     * `csv_file`: csvfile name
     * `input_dir`: input directory
     * `output_dir`: output directory
     * `offset_set`: offset
     * `limit_set`: limit
 <!-- _(If you want all species, skip step 1 and run [`AW_to_json.py`](formicID/AntWeb/AW_to_json.py) without specifying a `genus` and `species`)_  -->
-4. Run [`json_to_csv.py`](formicID/AntWeb/json_to_csv.py) so a csv file is created with the information you need to download and name images correctly to your output folder. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/AntWeb/json_to_csv.py#L115):
+### Step 4
+Run [`json_to_csv.py`](formicID/AntWeb/json_to_csv.py) so a csv file is created with the information you need to download and name images correctly to your output folder. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/AntWeb/json_to_csv.py#L115):
     * `input_dir`: input directory
     * `output_dir`: output directory
     * `csvname`: csv name for the new csv
-5. Using [`scrape.py`](formicID/data_scraper/scrape.py) the csv file from step 3 will be updated if you flag `image_scraper(update=False/True)` as True. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_`). After updating the csv, the script will start downloading images and will put these in newly created folders for head, dorsal and profile shots. In these folders, every species is put in its own folder. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/data_scraper/scrape.py#L207):
+
+### Step 5
+Using [`scrape.py`](formicID/data_scraper/scrape.py) the csv file from step 3 will be updated if you flag `image_scraper(update=False/True)` as True. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_`). After updating the csv, the script will start downloading images and will put these in newly created folders for head, dorsal and profile shots. In these folders, every species is put in its own folder. Set the following settings in [`main()`](https://github.com/naturalis/FormicID/blob/bfda5a4f03bf5b6b9e663c5f5a57b1554cedd8f1/formicID/data_scraper/scrape.py#L207):
     * `csvfile`: csv file from step 3
     * `input_dir`: input_dir directory of the csv file
     * `start`: start number (line where to start in the csv file)
     * `end`: end number (line where to end in the csv file)
     * `output_dir_name`: directory name for the images
     * `update`: update (whether to update the csv file for broken urls or not)
+
+
+### Step 6
+Configure `formicID/configs/config.json`
+```json
+{
+    "exp_name": "test1",
+    "num_epochs": 5,
+    "num_iter_per_epoch": 10,
+    "learning_rate": 0.001,
+    "batch_size": 10,
+    "state_size": [784],
+    "max_to_keep": 5,
+    "dropout": 0.5,
+    "optimizer": "Nadam",
+    "model": "InceptionV3",
+    "seed": 1
+}
+```
+
+### Step 7
+Run `formicID/main.py` with `config.json` as system argument and the network will train.
 
 _To be continued_
 

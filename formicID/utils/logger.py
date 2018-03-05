@@ -71,9 +71,9 @@ class buildModelCheckpoint():
                               period=1)
         # mcp.set_model(model)
 
-        Callbacks_mcp = []
-        Callbacks_mcp.append(mcp)
-        return Callbacks_mcp
+        # Callbacks_mcp = []
+        # Callbacks_mcp.append(mcp)
+        return mcp
 
 
 # EarlyStopping

@@ -39,6 +39,7 @@ from keras.applications.xception import Xception
 from keras.layers import Dense, GlobalAveragePooling2D, Input
 from keras.models import Model
 from keras.optimizers import SGD, Adam, Nadam, RMSprop
+import keras.backend as K
 
 # Parameters and settings
 ###############################################################################
@@ -47,6 +48,8 @@ from keras.optimizers import SGD, Adam, Nadam, RMSprop
 # Models
 ###############################################################################
 
+def rmse(y_true, y_pred):
+    return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))
 
 def load_model(config, num_classes, base_model='InceptionV3', optimizer='Nadam'):
     """Short summary.
@@ -133,7 +136,9 @@ def load_model(config, num_classes, base_model='InceptionV3', optimizer='Nadam')
                       epsilon=1e-08,
                       decay=0.0)
 
+
+
     end_model.compile(loss='categorical_crossentropy',
                                optimizer=opt,
-                               metrics=['accuracy'])
+                               metrics=['accuracy', rmse])
     return end_model

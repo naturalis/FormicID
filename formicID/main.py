@@ -107,9 +107,9 @@ def main():
 
     # Initialize logger
     ###########################################################################
-    # logger = [buildModelCheckpoint(config=config),
-    #           buildTensorBoard(model=model_formicID,
-    #                            config=config)]
+    logger = [buildModelCheckpoint(config=config).build_model_checkpoint(),
+              buildTensorBoard(model=model_formicID,
+                               config=config).build_tensorboard()]
 
     # Training in batches with iterator
     ###########################################################################
@@ -118,7 +118,7 @@ def main():
             Y_train=Y_train,
             X_val=X_val,
             Y_val=Y_val,
-            # callbacks=logger,
+            callbacks=logger,
             config=config)
 
     # Evaluation
@@ -130,6 +130,8 @@ def main():
     ###########################################################################
     # prediction = model.predict_classes(X_test, verbose=1)
     # print(prediction)
+
+    K.clear_session()
 
 
 if __name__ == '__main__':
