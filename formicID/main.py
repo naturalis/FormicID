@@ -30,7 +30,7 @@ from data_scraper.scrape import image_scraper
 from models.models import load_model
 # from models.build import neuralNetwork
 from trainers.train import trainer
-from utils.img import save_augmentation
+from utils.img import save_augmentation, show_multi_img
 from utils.load_config import process_config
 from utils.logger import build_es, buildMC, buildTB
 from utils.model_utils import model_summary
@@ -96,15 +96,17 @@ def main():
     X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data()
     print('Data is loaded, split and put in generators.')
 
+    show_multi_img(X_train=X_train, Y_train=Y_train)
+
     # save_augmentation(image='data/2018-02-12-test/images/head/anochetus_madagascarensis/anochetus_madagascarensis_casent0101756_h.jpg',
     #                   config=config)
 
     # Initialize the model
     ###########################################################################
-    model_formicID = load_model(
-        config=config, num_classes=num_species, base_model='InceptionV3', optimizer='Nadam')
-
-    print('The model is loaded and compiled.')
+    # model_formicID = load_model(
+    #     config=config, num_classes=num_species, base_model='InceptionV3', optimizer='Nadam')
+    #
+    # print('The model is loaded and compiled.')
     # print('type ', model_formicID)
     # print(model_summary(model_formicID))
 
@@ -113,9 +115,9 @@ def main():
 
     # Initialize logger
     ###########################################################################
-    logger = [buildMC(config=config).build_mc(),
-              buildTB(model=model_formicID, config=config).build_tb(),
-              build_es()]
+    # logger = [buildMC(config=config).build_mc(),
+    #           buildTB(model=model_formicID, config=config).build_tb(),
+    #           build_es()]
 
     # Training in batches with iterator
     ###########################################################################

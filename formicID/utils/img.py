@@ -14,11 +14,13 @@ other files.
 '''
 # Packages
 ###############################################################################
+
 import os
 
-# import matplotlib.pyplot as plt
-from keras.applications.inception_v3 import preprocess_input
-from keras.preprocessing.image import img_to_array, load_img
+import matplotlib.pyplot as plt
+import numpy as np
+from keras.preprocessing.image import array_to_img, img_to_array, load_img
+from keras.utils.np_utils import to_categorical
 
 from trainers.train import idg_train
 
@@ -31,26 +33,31 @@ from .utils import wd
 # Load and show images
 ###############################################################################
 
-
-def load_image(img):
-    img = load_img(img)
-    return img
-
-
 def show_img(image):
     raise NotImplementedError
 
 
-def show_multi_img(num_species, images, labels):
+def show_multi_img(X_train, Y_train, cols=4, rows=4):
+    """Short summary.
 
-    fig = plt.figure(figsize=(8,3))
-    i = 0
-    for i in range(num_species):
-        ax = fig.add_subplot(2,3,1 + i, xticks=[], yticks=[])
-        features_idx = images[labels[:]==i,:]
-        ax.set_title(str(i))
-        plt.imshow(features_idx[1], cmap='gray')
-        i + 1
+    Args:
+        X_train (type): Description of parameter `X_train`.
+        Y_train (type): Description of parameter `Y_train`.
+        cols (type): Description of parameter `cols`. Defaults to 4.
+        rows (type): Description of parameter `rows`. Defaults to 4.
+
+    Returns:
+        type: Description of returned object.
+
+    """
+    images = cols*rows
+    fig = plt.figure(figsize=(8, 8))
+    for i in range(1, images + 1):
+        img = array_to_img(X_train[i])
+        label = np.argmax(Y_train[i], axis=0, out=None)
+        fig.add_subplot(rows, cols, i, xticks=[], yticks=[])
+        plt.title(label)
+        plt.imshow(img)
     plt.show()
 
 # Visualizing data agumentation
@@ -86,10 +93,10 @@ def save_augmentation(image, config):
     i = 0
     idgen_train = idg_train()
     for batch in idgen_train.flow(img,
-                                batch_size=1,
-                                save_to_dir=augment_dir,
-                                save_prefix=filename,
-                                save_format='jpeg'):
+                                  batch_size=1,
+                                  save_to_dir=augment_dir,
+                                  save_prefix=filename,
+                                  save_format='jpeg'):
         i += 1
         if i > 19:
             break

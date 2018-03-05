@@ -123,14 +123,6 @@ def img_load_shottype(shottype,
                 images = np.append(images,
                                    imgs)
 
-                # img = cv2.imread(os.path.join(data_dir, species, image))
-                # img = cv2.resize(img,
-                #                  (img_width, img_height),
-                #                  interpolation=cv2.INTER_AREA)
-                # img = K.resize_images(img, img_width, img_height,
-                # "channels_last")
-                # img = np.asarray(img)
-
             label = species
             labels = np.append(labels, label)
     print('Number of species: {}'.format(num_species))
