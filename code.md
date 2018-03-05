@@ -15,7 +15,7 @@ pigar
 ## Tensorboard launch
 In order to launch TensorBoard from the terminal, copy:
 ```sh
-tensorboard --logdir="/Users/nijram13/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/graphs/logs" --port=6006
+tensorboard --logdir="experiments/test1/summary" --port=6006
 ```
 
 ## Conda update all packages

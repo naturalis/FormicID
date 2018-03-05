@@ -32,84 +32,66 @@ from .utils import wd
 ###############################################################################
 
 
-# def load_img(path, img):
-#     img_path = os.path.join(wd, path, img)
-#     img = img.read('image', img_path)
-#     return img
+def load_image(img):
+    img = load_img(img)
+    return img
 
 
-# def show_img(image):
-# implement keras show img
+def show_img(image):
+    raise NotImplementedError
 
+
+def show_multi_img(num_species, images, labels):
+
+    fig = plt.figure(figsize=(8,3))
+    i = 0
+    for i in range(num_species):
+        ax = fig.add_subplot(2,3,1 + i, xticks=[], yticks=[])
+        features_idx = images[labels[:]==i,:]
+        ax.set_title(str(i))
+        plt.imshow(features_idx[1], cmap='gray')
+        i + 1
+    plt.show()
 
 # Visualizing data agumentation
 ###############################################################################
 
 
-def save_augmentation(image, test_dir, input_dir):
+def save_augmentation(image, config):
     """This function returns 20 random augmented versions of an input image.
 
     Args:
-        image (str): image name.
-        test_dir (str): directory that contains the `images` folder
-        input_dir (str): path inside test_dir that leads to the image.
+        image (str): path to image.
+        config (str): configuration file
 
     Returns:
-        type: 20 augmented images of the input image
+        type: 20 augmented images of the input image inside the experiment
+        folder.
 
     """
-    # TODO (MJABOER):
-    # import ImageDataGenerator from test data_input.py
-    # import create_dirs()
+    if not os.path.exists(os.path.join(config.summary_dir, 'augmented')):
+        os.mkdir(os.path.join(config.summary_dir, 'augmented'))
 
-    if not os.path.exists(os.path.join(wd,
-                                       test_dir,
-                                       'images',
-                                       'augment')):
-        os.mkdir(os.path.join(wd,
-                              test_dir,
-                              'images',
-                              'augment'))
+    augment_dir = os.path.join(config.summary_dir, 'augmented')
 
-    output_dir = os.path.join(wd,
-                              test_dir,
-                              'images',
-                              'augment')
-    input_dir = os.path.join(wd,
-                             test_dir,
-                             input_dir)
-    filename = image.replace('.jpeg', '')
+    filename, _ = os.path.split(image)
+    filename = os.path.basename(filename)
 
-    img_file = os.path.join(wd,
-                            input_dir,
-                            image)
+    img_file = image
+
     img_loaded = load_img(img_file)
     img = img_to_array(img_loaded)
     img = img.reshape((1,) + img.shape)
 
     i = 0
-    train_data_gen = idg_train
-
-    for batch in train_data_gen.flow(img,
-                                     batch_size=1,
-                                     save_to_dir=output_dir,
-                                     save_prefix=filename,
-                                     save_format='jpeg'):
+    idgen_train = idg_train()
+    for batch in idgen_train.flow(img,
+                                batch_size=1,
+                                save_to_dir=augment_dir,
+                                save_prefix=filename,
+                                save_format='jpeg'):
         i += 1
-        if i > 20:
+        if i > 19:
             break
 
-    print('Augmented files can be found in {}'.format(output_dir))
-
-
-# def plot_figs(num_species, images, labels):
-#
-#     fig = plt.figure(figsize=(8,3))
-#     i = 0
-#     for i in range(num_species):
-#         ax = fig.add_subplot(2,3,1 + i, xticks=[], yticks=[])
-#         features_idx = images[labels[:]==i,:]
-#         ax.set_title(str(i))
-#         plt.imshow(features_idx[1], cmap='gray')
-#         i + 1
-#     plt.show()
+    print('Augmented files can be found in {}'.format(augment_dir))

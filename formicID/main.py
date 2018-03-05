@@ -16,6 +16,9 @@ test set.
 # Packages
 ###############################################################################
 
+import os
+
+import tensorflow as tf
 from keras import __version__ as keras_version
 from keras import backend as K
 from keras.utils import multi_gpu_model
@@ -27,14 +30,20 @@ from data_scraper.scrape import image_scraper
 from models.models import load_model
 # from models.build import neuralNetwork
 from trainers.train import trainer
-from utils.model_utils import model_summary
 from utils.img import save_augmentation
 from utils.load_config import process_config
-from utils.logger import buildModelCheckpoint, buildTensorBoard
+from utils.logger import build_es, buildMC, buildTB
+from utils.model_utils import model_summary
 from utils.utils import create_dirs, get_args
+
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
+# 0 = all logs, 1 = info, 2 = warnings, 3 = error
+
+
 
 # Parameters and settings
 ###############################################################################
+
 batch_size = 6
 epochs = 2
 
@@ -87,19 +96,18 @@ def main():
     # Initializing the data
     ###########################################################################
     X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data()
-
-    # save_augmentation(image='anochetus_madagascarensis_casent0101674_h.jpg',
-    #                   test_dir='data/2018-02-12-test',
-    #                   input_dir='images/head/anochetus_madagascarensis')
-
     print('Data is loaded, split and put in generators.')
+
+    # save_augmentation(image='data/2018-02-12-test/images/head/anochetus_madagascarensis/anochetus_madagascarensis_casent0101756_h.jpg',
+    #                   config=config)
 
     # Initialize the model
     ###########################################################################
-    model_formicID = load_model(config=config, num_classes=num_species, base_model='InceptionV3', optimizer='Nadam')
+    model_formicID = load_model(
+        config=config, num_classes=num_species, base_model='InceptionV3', optimizer='Nadam')
 
     print('The model is loaded and compiled.')
-    print('type ', model_formicID)
+    # print('type ', model_formicID)
     # print(model_summary(model_formicID))
 
     # multi_gpu_formicID = multi_gpu_model(model_formicID)
@@ -107,19 +115,19 @@ def main():
 
     # Initialize logger
     ###########################################################################
-    logger = [buildModelCheckpoint(config=config).build_model_checkpoint(),
-              buildTensorBoard(model=model_formicID,
-                               config=config).build_tensorboard()]
+    logger = [buildMC(config=config).build_mc(),
+              buildTB(model=model_formicID, config=config).build_tb(),
+              build_es()]
 
     # Training in batches with iterator
     ###########################################################################
-    trainer(model=model_formicID,
-            X_train=X_train,
-            Y_train=Y_train,
-            X_val=X_val,
-            Y_val=Y_val,
-            callbacks=logger,
-            config=config)
+    # trainer(model=model_formicID,
+    #         X_train=X_train,
+    #         Y_train=Y_train,
+    #         X_val=X_val,
+    #         Y_val=Y_val,
+    #         callbacks=logger,
+    #         config=config)
 
     # Evaluation
     ###########################################################################
