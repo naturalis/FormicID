@@ -8,4 +8,4 @@ install:
 notifications:
   email: false
 script:
-  - python formicID/main.py
+  - python formicID/main.py -c formicID/configs/config.json

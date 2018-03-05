@@ -39,8 +39,6 @@ from utils.utils import create_dirs, get_args
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 # 0 = all logs, 1 = info, 2 = warnings, 3 = error
 
-
-
 # Parameters and settings
 ###############################################################################
 
