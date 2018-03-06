@@ -58,3 +58,5 @@ tensorflow == 1.6.0
 # formicID/data_loader/data_input.py: 54
 # formicID/data_scraper/scrape.py: 29
 tqdm == 4.19.6
+
+h5py == 2.7.1
