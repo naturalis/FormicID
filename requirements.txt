@@ -45,3 +45,5 @@ tensorflow == 1.5.0
 # formicID/data_loader/data_input.py: 54
 # formicID/data_scraper/scrape.py: 29
 tqdm == 4.19.6
+
+matplotlib == 2.2.0
