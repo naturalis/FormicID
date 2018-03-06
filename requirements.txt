@@ -2,32 +2,45 @@
 # https://github.com/Damnever/pigar
 
 # formicID/data_loader/data_input.py: 51
-# formicID/main.py: 22,23,24
+# formicID/main.py: 23,24,25
 # formicID/models/build.py: 21
 # formicID/models/models.py: 41,42
 # formicID/testers/tester.py: 18
 # formicID/trainers/train.py: 28,29,30
-# formicID/utils/img.py: 21
+# formicID/utils/img.py: 22,23
 # formicID/utils/logger.py: 19
-# formicID/utils/model_utils.py: 20
+# formicID/utils/model_utils.py: 21,22
 Keras == 2.1.4
+
+# formicID/utils/img.py: 24
+Pillow == 5.0.0
 
 # formicID/utils/load_config.py: 20
 bunch == 1.0.1
 
+# formicID/utils/model_utils.py: 24
+graphviz == 0.8.2
+
 # formicID/AntWeb/json_to_csv.py: 22
 jmespath == 0.9.3
 
+# formicID/utils/img.py: 20
+matplotlib == 2.2.0
+
 # formicID/data_loader/data_input.py: 48
+# formicID/utils/img.py: 21
 numpy == 1.14.1
 
-# formicID/AntWeb/AW2_to_json.py: 24
+# formicID/AntWeb/AW2_to_json.py: 26
 # formicID/AntWeb/AW3_to_json.py: 24
 # formicID/AntWeb/json_to_csv.py: 23
 # formicID/data_scraper/scrape.py: 27
 pandas == 0.22.0
 
-# formicID/AntWeb/AW2_to_json.py: 25
+# formicID/utils/model_utils.py: 19
+pydot == 1.2.4
+
+# formicID/AntWeb/AW2_to_json.py: 27
 # formicID/AntWeb/AW3_to_json.py: 25
 # formicID/data_scraper/scrape.py: 28
 # formicID/utils/utils.py: 23
@@ -36,14 +49,12 @@ requests == 2.18.4
 # formicID/data_loader/data_input.py: 52,53
 scikit_learn == 0.19.1
 
-# formicID/main.py: 21
-tensorflow == 1.5.0
+# formicID/main.py: 22
+tensorflow == 1.6.0
 
-# formicID/AntWeb/AW2_to_json.py: 26
+# formicID/AntWeb/AW2_to_json.py: 28
 # formicID/AntWeb/AW3_to_json.py: 26
 # formicID/AntWeb/json_to_csv.py: 25
 # formicID/data_loader/data_input.py: 54
 # formicID/data_scraper/scrape.py: 29
 tqdm == 4.19.6
-
-matplotlib == 2.2.0
