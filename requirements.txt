@@ -38,7 +38,7 @@ numpy == 1.14.1
 pandas == 0.22.0
 
 # formicID/utils/model_utils.py: 19
-pydot == 1.2.4
+pydot_ng == 1.0.0
 
 # formicID/AntWeb/AW2_to_json.py: 27
 # formicID/AntWeb/AW3_to_json.py: 25

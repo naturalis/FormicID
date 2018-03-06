@@ -16,8 +16,12 @@ This file has code utilities for handeling models.
 ###############################################################################
 import os
 
+import pydot_ng
 # import h5py
 from keras.models import Model, load_model, model_from_json
+from keras.utils.vis_utils import plot_model
+
+import graphviz
 
 # Parameters and settings
 ###############################################################################
@@ -79,3 +83,12 @@ def model_architecture(model):
 def model_from_architecture(json_string):
     model = model_from_json(json_string)
     return model
+
+
+def model_visualization(model, config):
+    output_dir = os.path.join(config.summary_dir, '.png')
+
+    return plot_model(model=model,
+                      to_file=output_dir,
+                      show_shapes=True,
+                      show_layer_names=True)

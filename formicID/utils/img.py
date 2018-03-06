@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from keras.preprocessing.image import array_to_img, img_to_array, load_img
 from keras.utils.np_utils import to_categorical
+import PIL
 
 from trainers.train import idg_train
 

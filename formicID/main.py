@@ -34,7 +34,7 @@ from trainers.train import trainer
 from utils.img import save_augmentation, show_multi_img
 from utils.load_config import process_config
 from utils.logger import build_es, buildMC, buildTB
-from utils.model_utils import model_summary
+from utils.model_utils import model_summary, model_visualization
 from utils.utils import create_dirs, get_args
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -102,11 +102,11 @@ def main():
 
     print('Data is loaded, split and put in generators.')
 
-    show_multi_img(X_train=X_train, Y_train=Y_train)
-
-    save_augmentation(
-        image='data/2018-03-06-test5sp/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
-        config=config)
+    # show_multi_img(X_train=X_train, Y_train=Y_train)
+    #
+    # save_augmentation(
+    #     image='data/2018-03-06-test5sp/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
+    #     config=config)
 
     # Initialize the model
     ###########################################################################
@@ -118,6 +118,8 @@ def main():
     print('The model is loaded and compiled.')
     # print('type ', model_formicID)
     # print(model_summary(model_formicID))
+    # model_visualization(model=model_formicID,
+    #                     config=config)
 
     # multi_gpu_formicID = multi_gpu_model(model_formicID)
     # multi_gpu_formicID = multi_gpu_model(model_formicID, gpus=4)
