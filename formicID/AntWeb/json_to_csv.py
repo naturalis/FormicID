@@ -101,7 +101,6 @@ def batch_json_to_csv(input_dir,
         type: Creates a csv file in the output directory.
 
     """
-    suffix = '.csv'
     input_direc = os.path.join(wd,
                                'data',
                                input_dir,
@@ -145,10 +144,8 @@ def batch_json_to_csv(input_dir,
     df2.columns = columns
 
     df2.to_csv(os.path.join(output_dir,
-                            csvname + suffix),
+                            csvname),
                index=False,
                header=True)
     print('All JSON files are read, filtered and added to the csv file. \n'
-          '{1}{2} was created in {3}'.format(csvname,
-                                             suffix,
-                                             output_dir))
+          '{0} was created in {1}'.format(csvname, output_dir))

@@ -16,6 +16,7 @@ test set.
 # Packages
 ###############################################################################
 
+import logging
 import os
 
 import tensorflow as tf
@@ -36,7 +37,7 @@ from utils.logger import build_es, buildMC, buildTB
 from utils.model_utils import model_summary
 from utils.utils import create_dirs, get_args
 
-os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # 0 = all logs, 1 = info, 2 = warnings, 3 = error
 
 # Parameters and settings
@@ -53,8 +54,10 @@ def main():
 
     print('Keras version: {}'.format(keras_version))
 
+    logging.basicConfig(filename='loggerfile.log', level=logging.INFO)
+
     # Get args
-    ############################################################################
+    ###########################################################################
     try:
         args = get_args()
         config = process_config(args.config)
@@ -65,27 +68,27 @@ def main():
 
     # Creating urls and export to json files
     ###########################################################################
-    # urls_to_json(csv_file='2018-01-09-db-Top101imagedspecies.csv',
-    #              input_dir='data',
-    #              output_dir='test',
-    #              offset_set=0,
-    #              limit_set=12000)
+    urls_to_json(csv_file='testgenusspecies.csv',
+                 input_dir='data',
+                 output_dir='test5sp',
+                 offset_set=0,
+                 limit_set=12000)
 
     # Downloading from json files to a scrape ready csv file
     ###########################################################################
-    # batch_json_to_csv(
-    #     input_dir='2018-02-23-test',
-    #     output_dir='2018-02-23-test',
-    #     csvname='csv_images')
+    batch_json_to_csv(
+        input_dir='2018-03-06-test5sp',
+        output_dir='2018-03-06-test5sp',
+        csvname='csv_images.csv')
 
     # Scrape the images from the csv file and name accordingly
     ###########################################################################
-    # image_scraper(csvfile='csv_images.csv',
-    #               input_dir='2018-02-23-test',
-    #               start=0,
-    #               end=5000,
-    #               dir_out_name='images',
-    #               update=True)
+    image_scraper(csvfile='csv_images.csv',
+                  input_dir='2018-03-06-test5sp',
+                  start=0,
+                  end=1491,
+                  dir_out_name='images',
+                  update=True)
 
     # create experiment related directories
     ###########################################################################
@@ -93,20 +96,26 @@ def main():
 
     # Initializing the data
     ###########################################################################
-    X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data()
+    X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data(
+        datadir='2018-03-06-test5sp',
+        shottype='h')
+
     print('Data is loaded, split and put in generators.')
 
     show_multi_img(X_train=X_train, Y_train=Y_train)
 
-    # save_augmentation(image='data/2018-02-12-test/images/head/anochetus_madagascarensis/anochetus_madagascarensis_casent0101756_h.jpg',
-    #                   config=config)
+    save_augmentation(
+        image='data/2018-03-06-test5sp/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
+        config=config)
 
     # Initialize the model
     ###########################################################################
-    # model_formicID = load_model(
-    #     config=config, num_classes=num_species, base_model='InceptionV3', optimizer='Nadam')
-    #
-    # print('The model is loaded and compiled.')
+    model_formicID = load_model(config=config,
+                                num_classes=num_species,
+                                base_model='InceptionV3',
+                                optimizer='Nadam')
+
+    print('The model is loaded and compiled.')
     # print('type ', model_formicID)
     # print(model_summary(model_formicID))
 
@@ -115,19 +124,19 @@ def main():
 
     # Initialize logger
     ###########################################################################
-    # logger = [buildMC(config=config).build_mc(),
-    #           buildTB(model=model_formicID, config=config).build_tb(),
-    #           build_es()]
+    logger = [buildMC(config=config).build_mc(),
+              buildTB(model=model_formicID, config=config).build_tb(),
+              build_es()]
 
     # Training in batches with iterator
     ###########################################################################
-    # trainer(model=model_formicID,
-    #         X_train=X_train,
-    #         Y_train=Y_train,
-    #         X_val=X_val,
-    #         Y_val=Y_val,
-    #         callbacks=logger,
-    #         config=config)
+    trainer(model=model_formicID,
+            X_train=X_train,
+            Y_train=Y_train,
+            X_val=X_val,
+            Y_val=Y_val,
+            callbacks=logger,
+            config=config)
 
     # Evaluation
     ###########################################################################

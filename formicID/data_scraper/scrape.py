@@ -114,9 +114,9 @@ def csv_update(input_dir,
 ###############################################################################
 def image_scraper(csvfile,
                   input_dir,
-                  start,
-                  end,
                   dir_out_name,
+                  start=None,
+                  end=None,
                   update=False):
     """This function scrapes images of urls found in the csv file that is made
     with the download_to_csv function.
@@ -165,6 +165,13 @@ def image_scraper(csvfile,
 
     nb_rows = sum(1 for line in open(csvfile))
     print('The csv file contains {} images.'.format(nb_rows))
+
+    if end == None:
+        end = nb_rows
+
+    if start == None:
+        start = 0
+
     # Opening the csvfile from row 'start' to row 'end'
     with open(csvfile, 'rt') as images:
 

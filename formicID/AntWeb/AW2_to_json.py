@@ -18,14 +18,16 @@ file for this genus+species and places the JSON file in a folder.
 
 import datetime
 import json
+import logging
 import os
+import sys
 import time
 
 import pandas as pd
 import requests
 from tqdm import tqdm
 
-from utils.utils import today_timestr, todaystr, wd
+from utils.utils import today_timestr, todaystr, wd, create_dirs
 
 # Parameters and settings
 ###############################################################################
@@ -89,20 +91,24 @@ def get_json(input_url):
     Returns:
         type: A JSON object.
 
+    Raises:
+        AssertionError: If the json object contains nothing.
+
     """
     r = requests.get(url=input_url)
     data = r.json()
-    if data == None:
-        print("JSON is empty!")
-    else:
+
+    if data != None:
         return data
+    else:
+        raise AssertionError('There is no data.')
 
 
 def urls_to_json(csv_file,
                  input_dir,
                  output_dir,
-                 offset_set,
-                 limit_set):
+                 offset_set=0,
+                 limit_set=9999):
     """This function downloads JSON files for a list of species and places them
     in a drecitory. An limit_set higher than 10,000 will usually create
     problems.
@@ -113,15 +119,25 @@ def urls_to_json(csv_file,
         output_dir (str): a new directory name, created in the `input_dir` for
             saving the JSON files.
         offset_set (int): the offset for downloading AntWeb records in
-            batches.
+            batches. Defaults to `0`.
         limit_set (int): the limit for downloading a set of AntWeb records.
+            Defaults to `9999`.
 
     Returns:
         A directory of JSON files for different species.
 
+    Raises:
+        ValueError: If `limit_set` is > 12,000.
+        AssertionError: If `csv_file` is not a .csv file.
+        AssertionError: When the .csv does not have 2 columns.
+        AssertionError: When the columns are not named
+            correctly; `genus` and `species`.
+
     """
-    input_dir = os.path.join(wd,
-                             input_dir)
+    if limit_set > 12000:
+        raise ValueError('The `limit_set` should be lower than 10,000.')
+
+    input_dir = os.path.join(wd, input_dir)
 
     output_dir = os.path.join(input_dir,
                               todaystr + '-' + output_dir,
@@ -130,29 +146,46 @@ def urls_to_json(csv_file,
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    csv_file = os.path.join(input_dir,
-                            csv_file)
-    print('Reading {} and creating json_files folder...'.format(csv_file))
+    if csv_file.endswith('.csv') == True:
+        csv_file = os.path.join(input_dir,
+                                csv_file)
+    else:
+        raise AssertionError('You have not set a `.csv` correctly.')
+        sys.exit(1)
+
+    logging.info('Reading {} and creating json_files folder.'.format(csv_file))
 
     with open(csv_file,
               'rt') as csv_open:
+
         csv_df = pd.read_csv(csv_open,
                              sep=';',
                              header=0)
 
-        nb_indet = csv_df[csv_df['species'].str.contains('indet')]
+        if len(csv_df.columns) != 2:
+            raise AssertionError('The `.csv` should only have 2 column ',
+                                 'instead of {} column(s).'.format(
+                                     len(csv_df.columns)))
+            sys.exit(1)
+
+        if csv_df.columns.tolist() != ['genus', 'species']:
+            raise AssertionError('The columns are not correctoly named: '
+                                 '{} and {}. The column headers should be '
+                                 'column 1: `genus` and column 2: '
+                                 '`species`.'.format(
+                                    csv_df.columns.tolist()))
+            sys.exit(1)
+
+        nb_indet = 0
 
         for index, row in csv_df.iterrows():
             if row['species'] == 'indet':
                 nb_indet += 1
 
-        print('{} indet species '.format(nb_indet),
-              'found and will be skipped from downloading.')
+        logging.info('{} indet species found and will be skipped from downloading.'.format(nb_indet))
 
         nb_specimens = csv_df.shape[0] - nb_indet
 
-        # if limit_set > 10000:
-        #     raise ValueError('The limit_set should be lower than 10,000.')
         for index, row in tqdm(csv_df.iterrows(),
                                total=nb_specimens,
                                desc='Downloading JSON files',
@@ -168,7 +201,7 @@ def urls_to_json(csv_file,
 
             else:
                 url = url.url
-                print('\nJSON downladed from URL:', url)
+                logging.info('JSON downladed from URL: {}'.format(url))
 
                 file_name = row['genus'] + '_' + row['species'] + '.json'
 
@@ -176,12 +209,10 @@ def urls_to_json(csv_file,
 
                 with open(os.path.join(wd,
                                        output_dir,
-                                       file_name),
-                          'w') as jsonfile:
+                                       file_name), 'w') as jsonfile:
                     json.dump(species,
                               jsonfile)
 
                 time.sleep(0.5)  # wait 0.5s so AW does not crash
 
-        print('Downloading is finished. {} JSON files '.format(nb_specimens),
-              'have been downloaded')
+        logging.info('Downloading is finished. {} JSON files have been ' 'downloaded'.format(nb_specimens))

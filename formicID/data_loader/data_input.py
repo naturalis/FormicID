@@ -86,6 +86,8 @@ def img_load_shottype(shottype,
                             'data',
                             datadir,
                             'images')
+    if shottype not in ['h', 'd', 'p']:
+        raise ValueError('Shottype should be either `h`, `d` or `p`.')
 
     if shottype == 'h':
         data_dir = os.path.join(data_dir,
@@ -200,9 +202,20 @@ def train_val_test_split(images,
         return X_train, Y_train, X_val, Y_val, X_test, Y_test
 
 
-def load_data():
-    images, labels, num_species = img_load_shottype(shottype='h',
-                                                    datadir='2018-02-12-test')
+def load_data(datadir, shottype='h'):
+    """Short summary.
+
+    Args:
+        shottype (type): Description of parameter `shottype`. Defaults to 'h'.
+        datadir (type): Description of parameter `datadir`.
+
+    Returns:
+        type: Description of returned object.
+
+    """
+    images, labels, num_species = img_load_shottype(
+        shottype=shottype,
+        datadir=datadir)
 
     X_train, Y_train, X_val, Y_val, X_test, Y_test = train_val_test_split(
         images=images,

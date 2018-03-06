@@ -118,7 +118,7 @@ def build_es():
     """
     es = EarlyStopping(monitor='val_loss',
                        min_delta=0,
-                       patience=0,
+                       patience=2,
                        verbose=1,
                        mode='auto')
     # print('Training stopped due to "EarlyStopping"')

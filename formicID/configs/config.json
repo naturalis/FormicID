@@ -1,5 +1,5 @@
 {
-    "exp_name": "test1",
+    "exp_name": "test5sp",
     "num_epochs": 5,
     "num_iter_per_epoch": 10,
     "learning_rate": 0.001,
