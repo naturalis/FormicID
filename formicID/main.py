@@ -83,12 +83,12 @@ def main():
 
     # Scrape the images from the csv file and name accordingly
     ###########################################################################
-    image_scraper(csvfile='csv_images.csv',
-                  input_dir='2018-03-06-test5sp',
-                  start=0,
-                  end=1491,
-                  dir_out_name='images',
-                  update=True)
+    # image_scraper(csvfile='csv_images.csv',
+    #               input_dir='2018-03-06-test5sp',
+    #               start=0,
+    #               end=1491,
+    #               dir_out_name='images',
+    #               update=True)
 
     # create experiment related directories
     ###########################################################################
@@ -96,11 +96,11 @@ def main():
 
     # Initializing the data
     ###########################################################################
-    X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data(
-        datadir='2018-03-06-test5sp',
-        shottype='h')
-
-    print('Data is loaded, split and put in generators.')
+    # X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data(
+    #     datadir='2018-03-06-test5sp',
+    #     shottype='h')
+    #
+    # print('Data is loaded, split and put in generators.')
 
     # show_multi_img(X_train=X_train, Y_train=Y_train)
     #
@@ -110,12 +110,12 @@ def main():
 
     # Initialize the model
     ###########################################################################
-    model_formicID = load_model(config=config,
-                                num_classes=num_species,
-                                base_model='InceptionV3',
-                                optimizer='Nadam')
-
-    print('The model is loaded and compiled.')
+    # model_formicID = load_model(config=config,
+    #                             num_classes=num_species,
+    #                             base_model='InceptionV3',
+    #                             optimizer='Nadam')
+    #
+    # print('The model is loaded and compiled.')
     # print('type ', model_formicID)
     # print(model_summary(model_formicID))
     # model_visualization(model=model_formicID,
@@ -126,19 +126,19 @@ def main():
 
     # Initialize logger
     ###########################################################################
-    logger = [buildMC(config=config).build_mc(),
-              buildTB(model=model_formicID, config=config).build_tb(),
-              build_es()]
+    # logger = [buildMC(config=config).build_mc(),
+    #           buildTB(model=model_formicID, config=config).build_tb(),
+    #           build_es()]
 
     # Training in batches with iterator
     ###########################################################################
-    trainer(model=model_formicID,
-            X_train=X_train,
-            Y_train=Y_train,
-            X_val=X_val,
-            Y_val=Y_val,
-            callbacks=logger,
-            config=config)
+    # trainer(model=model_formicID,
+    #         X_train=X_train,
+    #         Y_train=Y_train,
+    #         X_val=X_val,
+    #         Y_val=Y_val,
+    #         callbacks=logger,
+    #         config=config)
 
     # Evaluation
     ###########################################################################

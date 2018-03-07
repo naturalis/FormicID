@@ -7,19 +7,22 @@
 # formicID/models/models.py: 41,42
 # formicID/testers/tester.py: 18
 # formicID/trainers/train.py: 28,29,30
-# formicID/utils/img.py: 22,23
+# formicID/utils/img.py: 23,24
 # formicID/utils/logger.py: 19
-# formicID/utils/model_utils.py: 21,22
+# formicID/utils/model_utils.py: 22,23
 Keras == 2.1.4
 
-# formicID/utils/img.py: 24
+# formicID/utils/img.py: 22
 Pillow == 5.0.0
 
 # formicID/utils/load_config.py: 20
 bunch == 1.0.1
 
-# formicID/utils/model_utils.py: 24
+# formicID/utils/model_utils.py: 19
 graphviz == 0.8.2
+
+# formicID/utils/model_utils.py: 20
+h5py == 2.7.1
 
 # formicID/AntWeb/json_to_csv.py: 22
 jmespath == 0.9.3
@@ -37,7 +40,7 @@ numpy == 1.14.1
 # formicID/data_scraper/scrape.py: 27
 pandas == 0.22.0
 
-# formicID/utils/model_utils.py: 19
+# formicID/utils/model_utils.py: 21
 pydot_ng == 1.0.0
 
 # formicID/AntWeb/AW2_to_json.py: 27
