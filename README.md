@@ -75,7 +75,7 @@ With `batch_json_to_csv()` function uncommented will create a csv file with the 
 -   `output_dir`: output directory
 -   `csvname`: csv name for the new csv
 
-### Step 2.4 - Download the images
+#### Step 2.4 - Download the images
 
 Uncommenting the `image_scraper()` function will download the images to the output folder. The csv file from step 3 could contain some unvalid URLs and these will be repaired if you flag `image_scraper(update=True)`. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_`). After updating the csv, the script will start downloading images and will put these in newly created folders for head, dorsal and profile shots. In these folders, every species is put in its own folder. Set the following settings in `image_scraper()`:
 
