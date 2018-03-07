@@ -25,7 +25,7 @@ tensorboard --logdir="experiments/test1/summary" --port=6006
 ## Pip3 update all packages
 
 ```sh
-pip3 freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
+pip3 freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip3 install -U
 ```
 
 ## Delete all .DS_Store in project folders

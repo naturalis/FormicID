@@ -48,10 +48,25 @@ import keras.backend as K
 # Models
 ###############################################################################
 
-def rmse(y_true, y_pred):
+def rmse(y_true,
+         y_pred):
+    """The root-mean-square-error as a metric to be used in model compilation.
+
+    Args:
+        y_true (type): Description of parameter `y_true`.
+        y_pred (type): Description of parameter `y_pred`.
+
+    Returns:
+        type: Description of returned object.
+
+    """
     return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))
 
-def load_model(config, num_classes, base_model='InceptionV3', optimizer='Nadam'):
+
+def load_model(config,
+               num_classes,
+               base_model='InceptionV3',
+               optimizer='Nadam'):
     """Short summary.
 
     Args:
@@ -91,15 +106,15 @@ def load_model(config, num_classes, base_model='InceptionV3', optimizer='Nadam')
                                  classes=None)
     if model == 'ResNet50':
         base_model = ResNet50(include_top=False,
-                                 weights=None,
-                                 classes=None)
+                              weights=None,
+                              classes=None)
     if model == 'DenseNet169':
         base_model = DenseNet169(include_top=False,
                                  weights=None)
     if model == 'Xception':
         base_model = Xception(include_top=False,
-                                 weights=None,
-                                 classes=None)
+                              weights=None,
+                              classes=None)
 
     # add a global spatial average pooling layer
     x = base_model.output
@@ -136,9 +151,7 @@ def load_model(config, num_classes, base_model='InceptionV3', optimizer='Nadam')
                       epsilon=1e-08,
                       decay=0.0)
 
-
-
     end_model.compile(loss='categorical_crossentropy',
-                               optimizer=opt,
-                               metrics=['accuracy', rmse])
+                      optimizer=opt,
+                      metrics=['accuracy', rmse])
     return end_model

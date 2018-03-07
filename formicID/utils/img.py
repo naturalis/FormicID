@@ -35,23 +35,29 @@ from .utils import wd
 ###############################################################################
 
 def show_img(image):
+    # image = load_img(image)
+    # plt.imshow(image)
+    # plt.show()
     raise NotImplementedError
 
 
-def show_multi_img(X_train, Y_train, cols=4, rows=4):
-    """Short summary.
+def show_multi_img(X_train,
+                   Y_train,
+                   cols=4,
+                   rows=4):
+    """Plot n images of X_train.
 
     Args:
-        X_train (type): Description of parameter `X_train`.
-        Y_train (type): Description of parameter `Y_train`.
-        cols (type): Description of parameter `cols`. Defaults to 4.
-        rows (type): Description of parameter `rows`. Defaults to 4.
+        X_train (array): Images, represented as a 4D array.
+        Y_train (array): Labels of the images .
+        cols (int): Number of images per column. Defaults to 4.
+        rows (int): Number of images per row. Defaults to 4.
 
     Returns:
-        type: Description of returned object.
+        image: a plot of cols * rows images.
 
     """
-    images = cols*rows
+    images = cols * rows
     fig = plt.figure(figsize=(8, 8))
     for i in range(1, images + 1):
         img = array_to_img(X_train[i])
@@ -65,16 +71,17 @@ def show_multi_img(X_train, Y_train, cols=4, rows=4):
 ###############################################################################
 
 
-def save_augmentation(image, config):
+def save_augmentation(image,
+                      config):
     """This function returns 20 random augmented versions of an input image.
 
     Args:
-        image (str): path to image.
-        config (str): configuration file
+        image (path): path to image.
+        config (JSON): configuration file
 
     Returns:
-        type: 20 augmented images of the input image inside the experiment
-        folder.
+        files: 20 augmented images (`.jpeg`) of the input image inside the
+        experiment folder.
 
     """
     if not os.path.exists(os.path.join(config.summary_dir, 'augmented')):

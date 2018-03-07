@@ -14,6 +14,7 @@ This file has code utilities for handeling models.
 
 # Packages
 ###############################################################################
+
 import os
 
 import graphviz  # Needed for keras.utils.vis_utils.plot_model()
@@ -21,27 +22,25 @@ import h5py  # Needed for model.save()
 import pydot_ng  # Needed for keras.utils.vis_utils.plot_model()
 from keras.models import Model, load_model, model_from_json
 from keras.utils.vis_utils import plot_model
+from .utils import wd
 
 # Parameters and settings
 ###############################################################################
-wd = os.getcwd()
 
 # Model utilities
 ###############################################################################
 
 
 def save_model(model, filename, config):
-    """Short summary.
+    """Saving a Keras model instance.
 
     Args:
-        model (type): Description of parameter `model`.
-        filename (type): Description of parameter `filename`.
-        config (type): Description of parameter `config`.
+        model (Keras model instance): A Keras model isntance.
+        filename (str): Name of the output filename.
+        config (JSON): A configuration file; needed for the output directory.
 
     Returns:
-        type: Description of returned object.
-
-    Raises:        ExceptionName: Why the exception is raised.
+        file: A `.h5` file of the model.
 
     """
     out = os.path.join(config.checkpoint_dir, filename)
@@ -51,16 +50,14 @@ def save_model(model, filename, config):
 
 
 def load_model(filename, input_dir):
-    """Short summary.
+    """Loads a Keras model instance from a `.h5` file.
 
     Args:
-        filename (type): Description of parameter `filename`.
-        input_dir (type): Description of parameter `input_dir`.
+        filename (Keras model instance): A Keras model instance.
+        input_dir (path): the directory that holds the model.
 
     Returns:
-        type: Description of returned object.
-
-    Raises:        ExceptionName: Why the exception is raised.
+        Keras model instance: A Keras model instance.
 
     """
     input_model = os.path.join(wd, input_dir, filename)
@@ -70,17 +67,15 @@ def load_model(filename, input_dir):
 
 
 def weights_save(model, filename, config):
-    """Short summary.
+    """Saving the weights of a Keras model instance.
 
     Args:
-        model (type): Description of parameter `model`.
-        filename (type): Description of parameter `filename`.
-        config (type): Description of parameter `config`.
+        model (Keras model instance): A Keras model instance.
+        filename (str): Description of parameter `filename`.
+        config (JSON): A configuration file; needed for the output directory.
 
     Returns:
-        type: Description of returned object.
-
-    Raises:        ExceptionName: Why the exception is raised.
+        file: A `.h5` file.
 
     """
     out = os.path.join(config.checkpoint_dir, filename)
@@ -92,14 +87,12 @@ def weights_load(model, filename, input_dir):
     """Short summary.
 
     Args:
-        model (type): Description of parameter `model`.
-        filename (type): Description of parameter `filename`.
-        input_dir (type): Description of parameter `input_dir`.
+        model (Keras model instance): A Keras model instance.
+        filename (str): Name of the output filename.
+        input_dir (path): the directory that holds the weights.
 
     Returns:
-        type: Description of returned object.
-
-    Raises:        ExceptionName: Why the exception is raised.
+        Keras model instance: A model with its weights initialized.
 
     """
     input_weights_input = os.path.join(wd, input_dir, filename)
@@ -109,15 +102,13 @@ def weights_load(model, filename, input_dir):
 
 
 def model_summary(model):
-    """Short summary.
+    """Return a summary of Keras model intance.
 
     Args:
-        model (type): Description of parameter `model`.
+        model (Keras model instance): A Keras model instance.
 
     Returns:
-        type: Description of returned object.
-
-    Raises:        ExceptionName: Why the exception is raised.
+        str: A summary
 
     """
     summary = model.summary()
@@ -125,15 +116,13 @@ def model_summary(model):
 
 
 def model_config(model):
-    """Short summary.
+    """Extract the configuration of a Keras model instance.
 
     Args:
-        model (type): Description of parameter `model`.
+        model (Keras model instance): A Keras model instance.
 
     Returns:
-        type: Description of returned object.
-
-    Raises:        ExceptionName: Why the exception is raised.
+        dict: A dictionary containing the configuration of the model
 
     """
     config = model.config()
@@ -142,15 +131,13 @@ def model_config(model):
 
 
 def model_from_config(config):
-    """Short summary.
+    """Load a Keras model instance from a configuration file.
 
     Args:
-        config (type): Description of parameter `config`.
+        config (JSON): The config file that holds a Keras model isntance.
 
     Returns:
-        type: Description of returned object.
-
-    Raises:        ExceptionName: Why the exception is raised.
+        Keras model instance: A Keras model instance.
 
     """
     config = model.get_config()
@@ -159,48 +146,43 @@ def model_from_config(config):
 
 
 def model_architecture(model):
-    """Short summary.
+    """Save a Keras model instance to a JSON object.
 
     Args:
-        model (type): Description of parameter `model`.
+        model (Keras model instance): A Keras model instance.
 
     Returns:
-        type: Description of returned object.
-
-    Raises:        ExceptionName: Why the exception is raised.
+        JSON: A JSON object.
 
     """
-    json_string = model.to_json()
-    return json_string
+    json_object = model.to_json()
+    return json_object
 
 
-def model_from_architecture(json_string):
-    """Short summary.
+def model_from_architecture(json_object):
+    """Load a Keras model instance from a JSON object.
 
     Args:
-        json_string (type): Description of parameter `json_string`.
+        json_object (JSON): A JSON object that describes a Keras model
+            instance.
 
     Returns:
-        type: Description of returned object.
-
-    Raises:        ExceptionName: Why the exception is raised.
+        Keras model instance: A Keras model instance.
 
     """
-    model = model_from_json(json_string)
+    model = model_from_json(json_object)
     return model
 
 
 def model_visualization(model, config):
-    """Short summary.
+    """Saves an visualization of a Keras model instance as an image.
 
     Args:
-        model (type): Description of parameter `model`.
-        config (type): Description of parameter `config`.
+        model (Keras model instance): A Keras model instance.
+        config (JSON): A configuration file; needed for the output directory.
 
     Returns:
-        type: Description of returned object.
-
-    Raises:        ExceptionName: Why the exception is raised.
+        file: An image `png` file.
 
     """
     output_dir = os.path.join(config.summary_dir, '.png')
