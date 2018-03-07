@@ -42,7 +42,7 @@ def csv_update(input_dir,
     """This function will remove broken links to a different csvfile.
 
     Args:
-        input_dir (str): the input directory containing the csvfile
+        input_dir (path): the input directory containing the csvfile
         csvfile (str): A .csv file that contains all the specimen and image
             information with 4 columns, namely:
                 - 'catalog_number',
@@ -122,17 +122,18 @@ def image_scraper(csvfile,
     with the download_to_csv function.
 
     Args:
-        csvfile (str): name of the csvfile
-        input_dir (str): directory in FormicID/data/ that contains the csv
-        start (integer): Set the starting row for downloading.
-        end (integer): Set the end row for downloading.
-        dir_out_name (str): text to name the output folder, with the current
+        csvfile (str): name of the csvfile in the `data` folder.
+        input_dir (str): Name of the directory in `data` that contains the csv.
+        dir_out_name (str): Name of the output folder, with the current
             date as prefix, which is created in the input_dir.
-        update (Boolean): if [default=True]; the csv_update() function will be
-            called.
+        start (integer): Set the starting row for downloading. Defaults to
+            `None`.
+        end (integer): Set the end row for downloading. Defaults to `None`.
+        update (bool): if [default=True]; the csv_update() function will be
+            called. Defaults to `False`.
 
     Returns:
-        type: A folder with images.
+        files: A folder with images.
 
     """
     csvfile = os.path.join(data_dir,

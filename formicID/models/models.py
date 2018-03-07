@@ -5,7 +5,7 @@
 #                   |  _| (_) | |  | | | | | | | (__ | || |_| |               #
 #                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                #
 #                                                                             #
-#                             Load existing models                            #
+#                         Load Keras models applications                      #
 #                                                                             #
 ###############################################################################
 '''Description:
@@ -19,15 +19,15 @@ The models are:
     - InceptionV3
     - Xception
 
-```From the Keras documentation:
-All of these architectures (except Xception) are compatible with both
-TensorFlow and Theano, and upon instantiation the models will be built
-according to the image data format set in your Keras configuration file at
-~/.keras/keras.json. For instance, if you have set
-image_data_format=channels_last, then any model loaded from this repository
-will get built according to the TensorFlow data format convention,
-"Height-Width-Depth". The Xception model is only available for TensorFlow, due
-to its reliance on SeparableConvolution layers.```
+From the Keras documentation:
+    All of these architectures (except Xception) are compatible with both
+    TensorFlow and Theano, and upon instantiation the models will be built
+    according to the image data format set in your Keras configuration file at
+    ~/.keras/keras.json. For instance, if you have set
+    image_data_format=channels_last, then any model loaded from this repository
+    will get built according to the TensorFlow data format convention,
+    "Height-Width-Depth". The Xception model is only available for TensorFlow,
+    due to its reliance on SeparableConvolution layers.
 '''
 # Packages
 ###############################################################################
@@ -53,11 +53,11 @@ def rmse(y_true,
     """The root-mean-square-error as a metric to be used in model compilation.
 
     Args:
-        y_true (type): Description of parameter `y_true`.
-        y_pred (type): Description of parameter `y_pred`.
+        y_true (label): The true label.
+        y_pred (label): The predicted label.
 
     Returns:
-        type: Description of returned object.
+        int: the root-mean-square-error.
 
     """
     return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))
@@ -67,16 +67,18 @@ def load_model(config,
                num_classes,
                base_model='InceptionV3',
                optimizer='Nadam'):
-    """Short summary.
+    """Load a predesigned neural network application from the Keras library.
 
     Args:
-        model (type): Description of parameter `model`.
-        config (type): Description of parameter `config`.
-        optimizer (type): Description of parameter `optimizer`.
-        num_classes (type): Description of parameter `num_classes`.
+        config (JSON): Configuration JSON file.
+        num_classes (int): The number of species.
+        model (Keras model instance): A keras model application. Defaults to
+            'InceptionV3'.
+        optimizer (Keras optimizer object): Defines the optimizer for
+            compiling the model. Defaults to 'Nadam'.
 
     Returns:
-        type: Description of returned object.
+        Keras model instance: A Keras model instance.
 
     Model information:
         Inception V3 model:
@@ -154,4 +156,5 @@ def load_model(config,
     end_model.compile(loss='categorical_crossentropy',
                       optimizer=opt,
                       metrics=['accuracy', rmse])
+
     return end_model

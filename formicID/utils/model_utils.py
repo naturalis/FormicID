@@ -35,7 +35,7 @@ def save_model(model, filename, config):
     """Saving a Keras model instance.
 
     Args:
-        model (Keras model instance): A Keras model isntance.
+        model (Keras model instance): A Keras model instance.
         filename (str): Name of the output filename.
         config (JSON): A configuration file; needed for the output directory.
 
@@ -134,7 +134,7 @@ def model_from_config(config):
     """Load a Keras model instance from a configuration file.
 
     Args:
-        config (JSON): The config file that holds a Keras model isntance.
+        config (JSON): The config file that holds a Keras model instance.
 
     Returns:
         Keras model instance: A Keras model instance.

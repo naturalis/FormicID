@@ -4,7 +4,7 @@ _Classification of images of ants using deep learning_
 
 [![Build Status](https://travis-ci.com/naturalis/FormicID.svg?token=1cLc3spsoyrFkzth95Ho&branch=master)](https://travis-ci.com/naturalis/FormicID) · [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/naturalis/FormicID/blob/master/LICENSE) · [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) · [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/naturalis/FormicID/graphs/commit-activity) · [![GitHub contributors](https://img.shields.io/github/contributors/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/graphs/contributors/) · [![GitHub issues](https://img.shields.io/github/issues/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/issues/) · [![](https://img.shields.io/github/issues-closed-raw/naturalis/FormicID.svg)](https://github.com/naturalis/FormicID/issues?q=is%3Aissue+is%3Aclosed)
 
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:1 -->
 
 -   [FormicID](#formicid)
 	- [Description](#pencil-description)
@@ -35,7 +35,7 @@ The proposal can be found [here](https://github.com/naturalis/FormicID-proposal)
 
 ## :arrow_forward: How to use
 
-### Step 1
+### Step 1 - Get the code
 
 Clone the repository
 
@@ -44,7 +44,10 @@ $ git clone https://github.com/naturalis/FormicID
 $ cd ./FormicID
 ```
 
-### Step 2
+### Step 2 - Downloading the data
+_Skip step 2 if you don't need to download the data._
+
+#### Step 2.1 - Which species
 
 Create a 2 column csv file with the genus+species you want to download from AntWeb as follows:
 
@@ -52,11 +55,11 @@ Create a 2 column csv file with the genus+species you want to download from AntW
 | ------ | -------- |
 | genus1 | species1 |
 | genus2 | species2 |
-| genus3 | species3 |
+| ...    | ...      |
 
-### Step 3
+#### Step 2.2 - Get the species information
 
-[`formicID/main.py`](formicID/main.py) with the `urls_to_json()` function uncommented will download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file. Set the following settings in `urls_to_json`:
+With the `urls_to_json()` function uncommented will download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file. Set the following settings in `urls_to_json`:
 
 -   `csv_file`: csvfile name
 -   `input_dir`: input directory
@@ -64,17 +67,17 @@ Create a 2 column csv file with the genus+species you want to download from AntW
 -   `offset_set`: offset
 -   `limit_set`: limit
 
-### Step 4
+#### Step 2.3 - Format the species information
 
-[`formicID/main.py`](formicID/main.py) with the `batch_json_to_csv()` function uncommented will create a csv file with the relevant information for downloading and naming images correctly to the output folder. Set the following settings in `batch_json_to_csv`):
+With `batch_json_to_csv()` function uncommented will create a csv file with the relevant information for downloading and naming images correctly to the output folder. Set the following settings in `batch_json_to_csv`):
 
 -   `input_dir`: input directory
 -   `output_dir`: output directory
 -   `csvname`: csv name for the new csv
 
-### Step 5
+### Step 2.4 - Download the images
 
-Uncommenting the `image_scraper()` function  in [`formicID/main.py`](formicID/main.py) will download the images to the output folder. The csv file from step 3 could contain some unvalid URLs and these will be repaired if you flag `image_scraper(update=True)`. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_`). After updating the csv, the script will start downloading images and will put these in newly created folders for head, dorsal and profile shots. In these folders, every species is put in its own folder. Set the following settings in `image_scraper()`:
+Uncommenting the `image_scraper()` function will download the images to the output folder. The csv file from step 3 could contain some unvalid URLs and these will be repaired if you flag `image_scraper(update=True)`. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_`). After updating the csv, the script will start downloading images and will put these in newly created folders for head, dorsal and profile shots. In these folders, every species is put in its own folder. Set the following settings in `image_scraper()`:
 
 -   `csvfile`: csv file from step 3
 -   `input_dir`: input_dir directory of the csv file
@@ -83,9 +86,18 @@ Uncommenting the `image_scraper()` function  in [`formicID/main.py`](formicID/ma
 -   `output_dir_name`: directory name for the images
 -   `update`: update (whether to update the csv file for broken urls or not)
 
-### Step 6
+### Step 3 - Configuration
 
 Configure `formicID/configs/config.json`
+- Give the experiment a name.
+- Set the number of epochs, batch_size, learning rate, iterations per epoch, seed
+- Set the model to one of the Keras model applications that can be loaded from `models/models.py`;
+  - 'InceptionV3'
+  - 'Xception',
+  - 'Resnet50'
+  - 'DenseNet169'
+
+_Later more..._
 
 ```json
 {
@@ -103,9 +115,16 @@ Configure `formicID/configs/config.json`
 }
 ```
 
-### Step 7
+### Step 7 - Running the model
 
-Now you can run `formicID/main.py` with `config.json` as argument and the data will be downloaded, split, and prepared, so the network can train.
+Now you can run `formicID/main.py` with `config.json` as argument and the data will be downloaded, split, and prepared, so the network can train. The trainier is loaded from `trainers/train.py`.
+
+### Additional
+Utilities that can be used are:
+- Saving examples of data augmentation
+- Visualizing a few of images in a plot
+- Handeling models (e.g. saving, loading, visualizing, etc.)
+- _More coming later_
 
 _To be continued_
 

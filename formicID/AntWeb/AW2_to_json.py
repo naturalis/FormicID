@@ -44,20 +44,23 @@ def create_url(limit,
     arguments.
 
     Args:
-        limit (integer): sets the limit for accessing specimens.
-        offset (integer): sets the offset for accessing specimens.
-    Optional args (**kwargs):
+        limit (int): sets the limit for accessing specimens.
+        offset (int): sets the offset for accessing specimens.
+
+    Args optional:
         genus (str): specifies the genus.
         species (str): specifies the species.
         country (str): specifies the country.
         caste (str): specifies the caste (does not work in API v2).
 
     Returns:
-        type: Returns an URL as response object that can be opened by the
+        URL object: Returns an URL as response object that can be opened by the
         function `request.get()`.
 
     """
-    # Genus and species are optional arguments
+    # Genus and species are optional arguments, not providing them will
+    # download all species.
+
     genus = kwargs.get('genus', None)
     species = kwargs.get('species', None)
     country = kwargs.get('country', None)
@@ -86,10 +89,10 @@ def get_json(input_url):
     """Scrapes JSON files from AntWeb URLs.
 
     Args:
-        input_url (response object): an URL containing a JSON object.
+        input_url (URL object): an URL containing a JSON object.
 
     Returns:
-        type: A JSON object.
+        JSON: A JSON object.
 
     Raises:
         AssertionError: If the json object contains nothing.
@@ -114,9 +117,9 @@ def urls_to_json(csv_file,
     problems.
 
     Args:
-        csv_file (str): path to the csv file genus and species names.
-        input_dir (str): path to the directory that has the `csv_file`.
-        output_dir (str): a new directory name, created in the `input_dir` for
+        csv_file (path): the csv file genus and species names.
+        input_dir (path): path to the directory that has the `csv_file`.
+        output_dir (path): a new directory name, created in the `input_dir` for
             saving the JSON files.
         offset_set (int): the offset for downloading AntWeb records in
             batches. Defaults to `0`.

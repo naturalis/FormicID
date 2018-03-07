@@ -37,10 +37,10 @@ def filter_json(json_file):
     """Load a JSON object and filter for only relevant values.
 
     Args:
-        json_file (response object): a JSON object.
+        json_file (JSON): a JSON object.
 
     Returns:
-        type: A list of
+        list: A list of
             [`catalog_number`,
             `scientific_name`,
             `shot_type`,
@@ -86,19 +86,23 @@ def filter_json(json_file):
 ###############################################################################
 
 
-def batch_json_to_csv(input_dir,
-                      output_dir,
-                      csvname):
+def batch_json_to_csv(csvname,
+                      input_dir,
+                      output_dir=None):
     """From a json or batch of json files a csvfile is created with relevant
     information for downloading the images and naming the files.
 
     Args:
-        input_dir (str): Description of parameter `input_dir`.
-        output_dir (str): path and name of the output directory.
-        csvname (str): Description of parameter `csvname`.
+        csvname (str): Name of the output csv file.
+        input_dir (str): the name of the data directory holding the json files
+            inside the `data` folder.
+        output_dir (str): name of the output directory. Defaults to None. If
+            None, the images will be placed in the the input_dir in an folder
+            named `images`.
 
     Returns:
-        type: Creates a csv file in the output directory.
+        file: A csv file containing the necesarry information for the scrape
+            function.
 
     """
     input_direc = os.path.join(wd,
@@ -106,9 +110,12 @@ def batch_json_to_csv(input_dir,
                                input_dir,
                                'json_files')
 
-    output_dir = os.path.join(wd,
+    if output_dir = None:
+        output_dir = os.path.join(wd,
                               'data',
                               input_dir)
+    else:
+        outputdir = os.mkdir(os.path.join(wd, 'data', output_dir))
 
     nb_files = len(os.listdir(input_direc))
 

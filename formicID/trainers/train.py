@@ -17,9 +17,9 @@ also augments the images with different methods, and a val_data_generator which
 does only preprocess the data. Validation data should not be augmented. The
 `preprocessing_function` is needed for the inception_v3 model. It scales the
 pixels between -1 and 1, samplewise and performs the following calculation:
-`x /= 127.5
- x -= 1.
- return x`
+    `x /= 127.5
+     x -= 1.
+     return x`
 '''
 
 # Packages
@@ -38,9 +38,9 @@ from keras.preprocessing.image import ImageDataGenerator
 
 
 def idg_train():
-    """Short summary.
+    """Initialize an augmentation generator for training.
 
-    Augmentation arguments:
+    Augmentation options:
         rescale: Rescaling factor; normalizing the data to [0:1]
         rotation_range: degree range for random rotations (integer)
         width_shift_range: range for random horizontal shifts (float)
@@ -50,7 +50,7 @@ def idg_train():
         horizontal_flip: randomly flip inputs horizontally (boolean)
 
     Returns:
-        type: Description of returned object.
+        generator: A Keras image data generator object.
 
     """
     idg = ImageDataGenerator(preprocessing_function=preprocess_input,
@@ -67,17 +67,15 @@ def idg_train():
 def train_data_generator(X_train,
                          Y_train,
                          config):
-    """Short summary.
+    """Configueres the training generator for taking image and label data.
 
     Args:
-        X_train (type): Description of parameter `X_train`.
-        Y_train (type): Description of parameter `Y_train`.
-        batch_size (type): Description of parameter `batch_size`.
-        epochs (type): Description of parameter `epochs`.
-        config (type): Description of parameter `config`.
+        X_train (array): Image data as 4D numpy array.
+        Y_train (array): Label data as 2D numpy array.
+        config (JSON): The JSON configuration file.
 
     Returns:
-        type: Description of returned object.
+        generator: A image data generator with its `.flow` method applied.
 
     """
     batch_size = config.batch_size
@@ -99,10 +97,11 @@ def train_data_generator(X_train,
 
 
 def idg_val():
-    """Short summary.
+    """Initialize an augmentation generator for validation. Validation data
+    should not be augmentatd, only correctly preprocessed for the model.
 
     Returns:
-        type: Description of returned object.
+        generator: A Keras image data generator object.
 
     """
     idg = ImageDataGenerator(preprocessing_function=preprocess_input)
@@ -113,17 +112,15 @@ def idg_val():
 def val_data_generator(X_val,
                        Y_val,
                        config):
-    """Short summary.
+    """Configueres the validation generator for taking image and label data.
 
     Args:
-        X_val (type): Description of parameter `X_val`.
-        Y_val (type): Description of parameter `Y_val`.
-        batch_size (type): Description of parameter `batch_size`.
-        epochs (type): Description of parameter `epochs`.
-        config (type): Description of parameter `config`.
+        X_val (array): Image data as 4D numpy array.
+        Y_val (array): Label data as 2D numpy array.
+        config (JSON): The JSON configuration file.
 
     Returns:
-        type: Description of returned object.
+        generator: A image data generator with its `.flow` method applied.
 
     """
     batch_size = config.batch_size
@@ -148,19 +145,22 @@ def trainer(model,
             Y_val,
             config,
             callbacks=None):
-    """Short summary.
+    """Initializes training on a model with training and validation image +
+    label data as input.
 
     Args:
-        model (type): Description of parameter `model`.
-        X_train (type): Description of parameter `X_train`.
-        Y_train (type): Description of parameter `Y_train`.
-        X_val (type): Description of parameter `X_val`.
-        Y_val (type): Description of parameter `Y_val`.
-        callbacks (type): Description of parameter `callbacks`.
-        config (type): Description of parameter `config`.
+        model (Keras model instance): A Keras model instance.
+        X_train (array): 4D numpy array training data for images.
+        Y_train (array): 2D numpy array training data for labels.
+        X_val (array): 4D numpy array validation data for images.
+        Y_val (array): 2D numpy array validation data for labels.
+        config (JSON): The JSON configuration file.
+        callbacks (callback objects): A list of Keras Callback Objects.
+            Defaults to `None`.
 
     Returns:
-        type: Description of returned object.
+        training instance: Applies the `.fit_generator` method to a Keras
+            model instance.
 
     """
     epochs = config.num_epochs

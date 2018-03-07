@@ -156,17 +156,21 @@ def train_val_test_split(images,
                          labels,
                          test_size=0.1,
                          val_size=0.135):
-    """Using this function you can split the data in a training, validation and test set. You can specify the test size and validation size. The set will be split in to test - training+validation first, and then training - validation will be split.
+    """Split the data in a training, validation and test set. You can specify
+    the test size and validation size. The set will be split in to test -
+    training+validation first, and then training - validation will be split.
 
     Args:
-        images (type): all images as 4d array.
-        labels (type): all labels in relation to the images.
-        test_size (type): size of the training set. default is 10%.
-        val_size (type): size of the validation set, `0.135` is around 15
+        images (array): all images as 4d array.
+        labels (array): all labels in relation to the images.
+        test_size (float): size of the training set. default is 10%.
+        val_size (float): size of the validation set, `0.135` is around 15
             percent of the total input set..
 
     Returns:
-        type: Description of returned object.
+        arrays: Returns the split arrays of images and labels for training,
+            validation and testing.
+
     """
     sss = StratifiedShuffleSplit(n_splits=1,
                                  test_size=test_size,
@@ -203,14 +207,20 @@ def train_val_test_split(images,
 
 
 def load_data(datadir, shottype='h'):
-    """Short summary.
+    """Combining the loading of images and labels together with the splitting
+    function.
 
     Args:
-        shottype (type): Description of parameter `shottype`. Defaults to 'h'.
-        datadir (type): Description of parameter `datadir`.
+        datadir (path): The data directory that contains the `images` folder.
+        shottype (str): Specifie the shottype using the following options:
+            - `h` (head),
+            - `d` (dorsal)
+            - `p` (profile).
+            Defaults to `h`.
 
     Returns:
-        type: Description of returned object.
+        arrays: Arrays of images and labels for training, validation and
+            testing.
 
     """
     images, labels, num_species = img_load_shottype(
