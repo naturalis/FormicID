@@ -12,8 +12,9 @@
 different subsets. If data is downloaded using the scraper script the files
 should be in a correct folder structure (divided per shottype and species). The
 script also encodes labels and preprocesses the images into the right format
-(RGB and [-1, 1] range). With `train_val_test_split` the data can be split in 3
-subsets: Training, validation and test sets. You can set the splits.
+for tensorflow ([-1, 1] range) and in RGB. With `train_val_test_split` the
+data can be split in 3 subsets: Training, validation and test sets. You can
+set the splits.
 
 The files should be structured as follows:
 
@@ -58,14 +59,55 @@ from utils.utils import wd
 # Parameters and settings
 ###############################################################################
 seed = 1337
-img_width, img_height = 299, 299
+
 
 # Load images
 ###############################################################################
+def image_size(config):
+    """Function that returns the correct input size for the choosen model.
+
+    Args:
+        config (JSON): The JSON configuration file.
+
+    Returns:
+        int: returns an integer of the image width and height.
+
+    Raises:
+        AssertionError: When an unvalid model is set.
+
+    """
+    model = config.model
+
+    if model not in ['InceptionV3',
+                     'Xception',
+                     'Resnet50',
+                     'DenseNet169',
+                     'Build']:
+        raise AssertionError(
+            'Model should be one of `InceptionV3`, `Xception`, `Resnet50` or',
+            '`DenseNet169` or `Build`. Please set a correct model.')
+
+    if model == 'InceptionV3':
+        img_width, img_height = 299, 299
+
+    if model == 'Xception':
+        img_width, img_height = 299, 299
+
+    if model == 'ResNet50':
+        img_width, img_height = 224, 224
+
+    if model == 'DenseNet169':
+        img_width, img_height = 224, 244
+
+    print('Img height: {0}. Img width: {1}. Set by choosen model: {2}'.format(img_height, img_width, model))
+
+    return img_width, img_height
 
 
 def img_load_shottype(shottype,
-                      datadir):
+                      datadir,
+                      img_height=None,
+                      img_width=None):
     """This function loads images from a directory for which the shottype is
     given. Normalization happens in the `ImageDataGenerator`.
 
@@ -75,6 +117,7 @@ def img_load_shottype(shottype,
             - `d` (dorsal)
             - `p` (profile)
         datadir (str): The data directory that contains the `images` folder.
+        config (JSON): The JSON configuration file.
 
     Returns:
         images (array): images as numpy 4D arrays (batches, height, width,
@@ -206,7 +249,7 @@ def train_val_test_split(images,
         return X_train, Y_train, X_val, Y_val, X_test, Y_test
 
 
-def load_data(datadir, shottype='h'):
+def load_data(datadir, config, shottype='h'):
     """Combining the loading of images and labels together with the splitting
     function.
 
@@ -223,9 +266,13 @@ def load_data(datadir, shottype='h'):
             testing.
 
     """
+    img_width, img_height = image_size(config=config)
+
     images, labels, num_species = img_load_shottype(
         shottype=shottype,
-        datadir=datadir)
+        datadir=datadir,
+        img_height=img_height,
+        img_width=img_width)
 
     X_train, Y_train, X_val, Y_val, X_test, Y_test = train_val_test_split(
         images=images,

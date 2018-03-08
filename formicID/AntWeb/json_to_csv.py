@@ -21,8 +21,8 @@ import os
 
 import jmespath
 import pandas as pd
-
 from tqdm import tqdm
+
 from utils.utils import today_timestr, todaystr, wd
 
 # Parameters and settings
@@ -110,12 +110,14 @@ def batch_json_to_csv(csvname,
                                input_dir,
                                'json_files')
 
-    if output_dir = None:
+    if output_dir == None:
         output_dir = os.path.join(wd,
-                              'data',
-                              input_dir)
+                                  'data',
+                                  input_dir)
     else:
-        outputdir = os.mkdir(os.path.join(wd, 'data', output_dir))
+        outputdir = os.mkdir(os.path.join(wd,
+                                          'data',
+                                          output_dir))
 
     nb_files = len(os.listdir(input_direc))
 

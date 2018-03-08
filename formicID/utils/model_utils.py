@@ -20,8 +20,11 @@ import os
 import graphviz  # Needed for keras.utils.vis_utils.plot_model()
 import h5py  # Needed for model.save()
 import pydot_ng  # Needed for keras.utils.vis_utils.plot_model()
+import tensorflow as tf
 from keras.models import Model, load_model, model_from_json
+from keras.utils import multi_gpu_model
 from keras.utils.vis_utils import plot_model
+
 from .utils import wd
 
 # Parameters and settings
@@ -185,9 +188,24 @@ def model_visualization(model, config):
         file: An image `png` file.
 
     """
-    output_dir = os.path.join(config.summary_dir, '.png')
+    filename = str(config.exp_name)
+    output_dir = os.path.join(config.summary_dir, filename + '_model.png')
+
+    print('The model is saved in: {}'.format(output_dir))
 
     return plot_model(model=model,
                       to_file=output_dir,
                       show_shapes=True,
                       show_layer_names=True)
+
+
+def make_multi_gpu(model, gpus=4):
+    # needs an uncompiled model
+    # after compiling .fit() method can be called.
+    # batch_size should be gpus * original batch_size
+    with tf.device('/cpu:0'):
+        model = model
+
+    gpu_model = multi_gpu_model(model=model, gpus=gpus)
+
+    return multi_gpu_formicID

@@ -14,8 +14,10 @@ on the models performance.
 '''
 # Packages
 ###############################################################################
+
 import os
 
+import keras.backend as K
 from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 
 from .utils import today_timestr
@@ -123,3 +125,21 @@ def build_es():
                        mode='auto')
     # print('Training stopped due to "EarlyStopping"')
     return es
+
+
+# RMSE
+###############################################################################
+
+def rmse(y_true,
+         y_pred):
+    """The root-mean-square-error as a metric to be used in model compilation.
+
+    Args:
+        y_true (label): The true label.
+        y_pred (label): The predicted label.
+
+    Returns:
+        int: the root-mean-square-error.
+
+    """
+    return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))

@@ -39,7 +39,9 @@ from keras.applications.xception import Xception
 from keras.layers import Dense, GlobalAveragePooling2D, Input
 from keras.models import Model
 from keras.optimizers import SGD, Adam, Nadam, RMSprop
-import keras.backend as K
+
+from models.build import build_model
+from utils.logger import rmse
 
 # Parameters and settings
 ###############################################################################
@@ -47,20 +49,6 @@ import keras.backend as K
 
 # Models
 ###############################################################################
-
-def rmse(y_true,
-         y_pred):
-    """The root-mean-square-error as a metric to be used in model compilation.
-
-    Args:
-        y_true (label): The true label.
-        y_pred (label): The predicted label.
-
-    Returns:
-        int: the root-mean-square-error.
-
-    """
-    return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))
 
 
 def load_model(config,
@@ -81,6 +69,10 @@ def load_model(config,
         Keras model instance: A Keras model instance.
 
     Model information:
+        Build model:
+            This is the self-designed model from this research. For more
+            information see `models/build.py`.
+
         Inception V3 model:
             The default input size for this model is 299x299.
 
@@ -97,37 +89,59 @@ def load_model(config,
             it only supports the data format 'channels_last' (height, width,
             channels). The default input size for this model is 299x299.
     """
-    # TODO: Finetune the ResNet50, DenseNet169, Xception models.
+    # TODO: preprocesses for the ResNet50, DenseNet169, Xception models.
     model = config.model
+
+    if model not in ['InceptionV3',
+                    'Xception',
+                    'Resnet50',
+                    'DenseNet169',
+                    'Build']:
+        raise AssertionError(
+            'Model should be one of `InceptionV3`, `Xception`, `Resnet50` or',
+            '`DenseNet169` or `Build`. Please set a correct model.')
+
+    if model == 'Build':
+        end_model = build_model(config=config,
+                                 input_shape=(299, 299, 3),
+                                 num_species=num_species)
+
+    else:
+
+        if model == 'InceptionV3':
+            base_model = InceptionV3(include_top=False,
+                                     weights=None,
+                                     classes=None)
+        if model == 'ResNet50':
+            base_model = ResNet50(include_top=False,
+                                  weights=None,
+                                  classes=None)
+        if model == 'DenseNet169':
+            base_model = DenseNet169(include_top=False,
+                                     weights=None)
+        if model == 'Xception':
+            base_model = Xception(include_top=False,
+                                  weights=None,
+                                  classes=None)
+
+        # add a global spatial average pooling layer
+        x = base_model.output
+        x = GlobalAveragePooling2D()(x)
+        # let's add a fully-connected layer
+        x = Dense(1024, activation='relu')(x)
+        # and a logistic layer with num_species
+        predictions = Dense(num_classes, activation='softmax')(x)
+
+        # this is the model we will train
+        end_model = Model(inputs=base_model.input, outputs=predictions)
+
+    print('The model is build with succes.')
+
+    return end_model
+
+def compile_model(model, config):
     optimizer = config.optimizer
     learning_rate = config.learning_rate
-
-    if model == 'InceptionV3':
-        base_model = InceptionV3(include_top=False,
-                                 weights=None,
-                                 classes=None)
-    if model == 'ResNet50':
-        base_model = ResNet50(include_top=False,
-                              weights=None,
-                              classes=None)
-    if model == 'DenseNet169':
-        base_model = DenseNet169(include_top=False,
-                                 weights=None)
-    if model == 'Xception':
-        base_model = Xception(include_top=False,
-                              weights=None,
-                              classes=None)
-
-    # add a global spatial average pooling layer
-    x = base_model.output
-    x = GlobalAveragePooling2D()(x)
-    # let's add a fully-connected layer
-    x = Dense(1024, activation='relu')(x)
-    # and a logistic layer with num_species
-    predictions = Dense(num_classes, activation='softmax')(x)
-
-    # this is the model we will train
-    end_model = Model(inputs=base_model.input, outputs=predictions)
 
     if optimizer == 'Nadam':
         opt = Nadam(lr=learning_rate,
@@ -153,8 +167,10 @@ def load_model(config,
                       epsilon=1e-08,
                       decay=0.0)
 
-    end_model.compile(loss='categorical_crossentropy',
+    model.compile(loss='categorical_crossentropy',
                       optimizer=opt,
                       metrics=['accuracy', rmse])
 
-    return end_model
+    print('The model is compiled with succes.')
+
+    return model
