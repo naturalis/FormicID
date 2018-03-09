@@ -163,8 +163,6 @@ _To be continued_
         |-- data_scraper
         |   |-- __init__.py
         |   |-- scrape.py
-        |-- mains
-        |   |-- __init__.py
         |-- models
         |   |-- __init__.py
         |   |-- build.py

@@ -199,10 +199,20 @@ def model_visualization(model, config):
                       show_layer_names=True)
 
 
-def make_multi_gpu(model, gpus=4):
-    # needs an uncompiled model
-    # after compiling .fit() method can be called.
-    # batch_size should be gpus * original batch_size
+def make_multi_gpu(model, gpus=2):
+    """Returns a Keras model instance that will train on a set number of GPUs.
+    This function requires an uncompiled version of the Keras model instance.
+    After compiling the output of this model the trainer can be used. The new
+    batch_size should be the `gpus` * original `batch_size`.
+
+    Args:
+        model (Keras model instance): A Keras model instance.
+        gpus (int): Sets the number of gpus to train on. Defaults to 4.
+
+    Returns:
+        Keras model instance: A multi GPU Keras model instance, uncompiled.
+
+    """
     with tf.device('/cpu:0'):
         model = model
 

@@ -104,7 +104,7 @@ def main():
     # show_multi_img(X_train=X_train, Y_train=Y_train)
 
     # save_augmentation(
-    #     image='data/2018-03-06-test5sp/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
+    #     image='data/2018-03-09-test5sp/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
     #     config=config)
 
     # Initialize the model
@@ -120,7 +120,7 @@ def main():
     model_formicID = compile_model(model=model_formicID,
                                    config=config)
 
-    print('type ', model_formicID)
+    # print('type ', model_formicID)
     # print(model_summary(model_formicID))
     # model_visualization(model=model_formicID,
     #                     config=config)

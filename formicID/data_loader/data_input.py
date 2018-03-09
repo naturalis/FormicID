@@ -255,6 +255,7 @@ def load_data(datadir, config, shottype='h'):
 
     Args:
         datadir (path): The data directory that contains the `images` folder.
+        config (JSON): the JSON configuration file.
         shottype (str): Specifie the shottype using the following options:
             - `h` (head),
             - `d` (dorsal)
