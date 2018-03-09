@@ -53,7 +53,14 @@ def csv_update(input_dir,
     Returns:
         csv file: A cleaned csv file ready for downloading images.
 
+    Raises:
+        AssertionError: When the `csvfile` is not a csv file.
+
     """
+    if not csvfile.endswith('.csv'):
+        raise AssertionError('This is not a csv file: {}. Please use a csv ',
+        'file and specify the suffix'.format(csvfile))
+
     csvfile = os.path.join(data_dir,
                            input_dir,
                            csvfile)

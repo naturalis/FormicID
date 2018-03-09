@@ -111,8 +111,7 @@ def main():
     ###########################################################################
     model_formicID = load_model(config=config,
                                 num_classes=num_species,
-                                base_model='InceptionV3',
-                                optimizer='Nadam')
+                                base_model='InceptionV3')
 
     # model_formicID = make_multi_gpu(model=model_formicID,
     #                                 gpus=4)

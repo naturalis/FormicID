@@ -89,20 +89,23 @@ def filter_json(json_file):
 def batch_json_to_csv(csvname,
                       input_dir,
                       output_dir=None):
-    """From a json or batch of json files a csvfile is created with relevant
-    information for downloading the images and naming the files.
+    """From a json file or batch of json files a csvfile is created with
+    relevant information for downloading the images and naming the files.
 
     Args:
         csvname (str): Name of the output csv file.
         input_dir (str): the name of the data directory holding the json files
             inside the `data` folder.
         output_dir (str): name of the output directory. Defaults to `None`. If
-            `None`, the images will be placed in the the input_dir in an folder
-            named `images`.
+            `None`, the images will be placed in the the input_dir in an
+            folder named `images`.
 
     Returns:
         file: A csv file containing the necesarry information for the scrape
             function.
+
+    Raises:
+        AssertionError: When there are no files in the input directory.
 
     """
     input_direc = os.path.join(wd,
@@ -120,6 +123,9 @@ def batch_json_to_csv(csvname,
                                           output_dir))
 
     nb_files = len(os.listdir(input_direc))
+
+    if nb_files == 0:
+        raise AssertionError('There are no files in the input directory.')
 
     df2 = pd.DataFrame()
 

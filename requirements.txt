@@ -34,7 +34,7 @@ matplotlib == 2.2.0
 # formicID/utils/img.py: 21
 numpy == 1.14.1
 
-# formicID/AntWeb/AW2_to_json.py: 26
+# formicID/AntWeb/AW2_to_json.py: 27
 # formicID/AntWeb/AW3_to_json.py: 24
 # formicID/AntWeb/json_to_csv.py: 23
 # formicID/data_scraper/scrape.py: 27
@@ -43,7 +43,7 @@ pandas == 0.22.0
 # formicID/utils/model_utils.py: 22
 pydot_ng == 1.0.0
 
-# formicID/AntWeb/AW2_to_json.py: 27
+# formicID/AntWeb/AW2_to_json.py: 28
 # formicID/AntWeb/AW3_to_json.py: 25
 # formicID/data_scraper/scrape.py: 28
 # formicID/utils/utils.py: 23
@@ -56,7 +56,7 @@ scikit_learn == 0.19.1
 # formicID/utils/model_utils.py: 23
 tensorflow == 1.6.0
 
-# formicID/AntWeb/AW2_to_json.py: 28
+# formicID/AntWeb/AW2_to_json.py: 29
 # formicID/AntWeb/AW3_to_json.py: 26
 # formicID/AntWeb/json_to_csv.py: 24
 # formicID/data_loader/data_input.py: 55

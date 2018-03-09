@@ -53,8 +53,7 @@ from utils.logger import rmse
 
 def load_model(config,
                num_classes,
-               base_model='InceptionV3',
-               optimizer='Nadam'):
+               base_model='InceptionV3'):
     """Load a predesigned neural network application from the Keras library.
 
     Args:
@@ -62,8 +61,6 @@ def load_model(config,
         num_classes (int): The number of species.
         model (Keras model instance): A keras model application. Defaults to
             'InceptionV3'.
-        optimizer (Keras optimizer object): Defines the optimizer for
-            compiling the model. Defaults to 'Nadam'.
 
     Returns:
         Keras model instance: A Keras model instance.

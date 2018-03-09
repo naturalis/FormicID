@@ -8,7 +8,7 @@
 #                                  data_input                                 #
 ###############################################################################
 '''Description:
-`These scripts can import data from files in folders and split them in
+`These scripts can import data from image files in folders and split them in
 different subsets. If data is downloaded using the scraper script the files
 should be in a correct folder structure (divided per shottype and species). The
 script also encodes labels and preprocesses the images into the right format
@@ -85,23 +85,24 @@ def image_size(config):
                      'Build']:
         raise AssertionError(
             'Model should be one of `InceptionV3`, `Xception`, `Resnet50` or',
-            '`DenseNet169` or `Build`. Please set a correct model.')
+            '`DenseNet169` or `Build`. Please set a correct model in the '
+            'config file. The set model: {} is incorrect'.format(model))
 
     if model == 'InceptionV3':
-        img_width, img_height = 299, 299
+        img_height, img_width = 299, 299
 
     if model == 'Xception':
-        img_width, img_height = 299, 299
+        img_height, img_width = 299, 299
 
     if model == 'ResNet50':
-        img_width, img_height = 224, 224
+        img_height, img_width = 224, 224
 
     if model == 'DenseNet169':
-        img_width, img_height = 224, 244
+        img_height, img_width = 224, 244
 
     print('Img height: {0}. Img width: {1}. Set by choosen model: {2}'.format(img_height, img_width, model))
 
-    return img_width, img_height
+    return img_height, img_width
 
 
 def img_load_shottype(shottype,
@@ -123,6 +124,9 @@ def img_load_shottype(shottype,
         images (array): images as numpy 4D arrays (batches, height, width,
         channels) (RGB).
         labels (array): labels as numpy 2d arrays (batches, labels).
+
+    Raises:
+        ValueError: If the shottype is not one of `h`, `d` or `p`.
 
     """
     data_dir = os.path.join(wd,
@@ -170,9 +174,9 @@ def img_load_shottype(shottype,
 
             label = species
             labels = np.append(labels, label)
-    print('Number of species: {}'.format(num_species))
+
     # images = np.array(images)
-    images = np.reshape(images, (-1, img_width, img_height, 3))
+    images = np.reshape(images, (-1, img_height, img_width, 3))
 
     # Cast np array to keras default float type ('float32')
     images = K.cast_to_floatx(images)
@@ -183,10 +187,11 @@ def img_load_shottype(shottype,
                             num_classes=num_species)
     labels = K.cast_to_floatx(labels)
 
-    print('Images shape: ', images.shape)
-    print('Images dtype: ', images.dtype)
-    print('Labels shape: ', labels.shape)
-    print('Labels dtype: ', labels.dtype)
+    # print('Number of species: {}'.format(num_species))
+    # print('Images shape: ', images.shape)
+    # print('Images dtype: ', images.dtype)
+    # print('Labels shape: ', labels.shape)
+    # print('Labels dtype: ', labels.dtype)
 
     return images, labels, num_species
 
@@ -206,27 +211,36 @@ def train_val_test_split(images,
     Args:
         images (array): all images as 4d array.
         labels (array): all labels in relation to the images.
-        test_size (float): size of the training set. default is 10%.
-        val_size (float): size of the validation set, `0.135` is around 15
-            percent of the total input set..
+        test_size (float): size of the training set. Default is `0.1`, which
+            is 10 percent of the total set.
+        val_size (float): size of the validation set. Default is set to
+            `0.135`, which is is around 15 percent of the total input set.
 
     Returns:
         arrays: Returns the split arrays of images and labels for training,
             validation and testing.
 
+    Raise:
+        TypeError: When `test_size` or `val_size` is not an integer.
+
     """
-    sss = StratifiedShuffleSplit(n_splits=1,
-                                 test_size=test_size,
-                                 random_state=seed)
-    sss.get_n_splits(images,
-                     labels)
+    try:
+        sss = StratifiedShuffleSplit(n_splits=1,
+                                     test_size=test_size,
+                                     random_state=seed)
+        sss.get_n_splits(images,
+                         labels)
 
-    for train_index, test_index in sss.split(images,
-                                             labels):
-        # print('TEST (10%%): {}'.format(test_index))
-        X_train, X_test = images[train_index], images[test_index]
-        Y_train, Y_test = labels[train_index], labels[test_index]
+        for train_index, test_index in sss.split(images,
+                                                 labels):
+            # print('TEST (10%%): {}'.format(test_index))
+            X_train, X_test = images[train_index], images[test_index]
+            Y_train, Y_test = labels[train_index], labels[test_index]
 
+    except TypeError:
+        print('`test_size` is not an integer.')
+
+    try:
         sss = StratifiedShuffleSplit(n_splits=1,
                                      test_size=val_size,
                                      random_state=seed)
@@ -235,16 +249,21 @@ def train_val_test_split(images,
 
         for train_index, val_index in sss.split(X_train,
                                                 Y_train):
-            # print('\nTRAIN (~75%%): {} \n\nVAL (~15%%): {}'.format(
-            #     train_index, val_index))
+            # print('TRAIN (~75%%): {}'.format(train_index))
+            # print('VAL (~15%%): {}'.format(val_index)))
             X_train, X_val = X_train[train_index], X_train[val_index]
             Y_train, Y_val = Y_train[train_index], Y_train[val_index]
 
-        nb_specimens = len(X_test) + len(X_train) + len(X_val)
-        print('Number of X_test: {}'.format(len(X_test)))
-        print('Number of X_train: {}'.format(len(X_train)))
-        print('Number of X_val: {}'.format(len(X_val)))
-        print('Total number of images: {}'.format(nb_specimens))
+    except TypeError:
+        print('`val_size` is not an integer.')
+
+        # Check all the numbers
+        # nb_specimens = len(X_test) + len(X_train) + len(X_val)
+        # print('Total number of images: {}'.format(nb_specimens))
+        # print('Number of X_test: {}'.format(len(X_test)))
+        # print('Number of X_train: {}'.format(len(X_train)))
+        # print('Number of X_val: {}'.format(len(X_val)))
+
 
         return X_train, Y_train, X_val, Y_val, X_test, Y_test
 
@@ -267,7 +286,7 @@ def load_data(datadir, config, shottype='h'):
             testing.
 
     """
-    img_width, img_height = image_size(config=config)
+    img_height, img_width = image_size(config=config)
 
     images, labels, num_species = img_load_shottype(
         shottype=shottype,

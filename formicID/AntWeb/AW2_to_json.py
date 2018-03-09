@@ -22,6 +22,7 @@ import logging
 import os
 import sys
 import time
+from csv import Sniffer
 
 import pandas as pd
 import requests
@@ -104,7 +105,8 @@ def get_json(input_url):
     if data != None:
         return data
     else:
-        raise AssertionError('There is no data.')
+        raise AssertionError('There is no JSON data in the url: {}.'.format(
+        input_url.url))
 
 
 def urls_to_json(csv_file,
@@ -132,6 +134,7 @@ def urls_to_json(csv_file,
     Raises:
         ValueError: If `limit_set` is > 12,000.
         AssertionError: If `csv_file` is not a .csv file.
+        AssertionError: If the csv file is semi-colon delimited.
         AssertionError: When the .csv does not have 2 columns.
         AssertionError: When the columns are not named
             correctly; `genus` and `species`.
@@ -154,22 +157,25 @@ def urls_to_json(csv_file,
                                 csv_file)
     else:
         raise AssertionError('You have not set a `.csv` correctly.')
-        sys.exit(1)
 
     logging.info('Reading {} and creating json_files folder.'.format(csv_file))
 
     with open(csv_file,
               'rt') as csv_open:
 
+        sniffer = Sniffer()
+        dialect = sniffer.sniff(csv_open)
+        if dialect.delimiter == ';':
+            raise AssertionError('Please us a comma delimited csv file ', 'instead of {}.'.format(dialect.delimiter))
+
         csv_df = pd.read_csv(csv_open,
-                             sep=';',
+                             sep=',',
                              header=0)
 
         if len(csv_df.columns) != 2:
             raise AssertionError('The `.csv` should only have 2 column ',
                                  'instead of {} column(s).'.format(
                                      len(csv_df.columns)))
-            sys.exit(1)
 
         if csv_df.columns.tolist() != ['genus', 'species']:
             raise AssertionError('The columns are not correctoly named: '
@@ -177,7 +183,6 @@ def urls_to_json(csv_file,
                                  'column 1: `genus` and column 2: '
                                  '`species`.'.format(
                                     csv_df.columns.tolist()))
-            sys.exit(1)
 
         nb_indet = 0
 
