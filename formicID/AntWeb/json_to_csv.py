@@ -96,8 +96,8 @@ def batch_json_to_csv(csvname,
         csvname (str): Name of the output csv file.
         input_dir (str): the name of the data directory holding the json files
             inside the `data` folder.
-        output_dir (str): name of the output directory. Defaults to None. If
-            None, the images will be placed in the the input_dir in an folder
+        output_dir (str): name of the output directory. Defaults to `None`. If
+            `None`, the images will be placed in the the input_dir in an folder
             named `images`.
 
     Returns:
@@ -105,10 +105,15 @@ def batch_json_to_csv(csvname,
             function.
 
     """
-    input_direc = os.path.join(wd,
-                               'data',
-                               input_dir,
-                               'json_files')
+    if not os.path.exists(os.path.join(wd,
+                                       'data',
+                                       input_dir,
+                                       'json_files')):
+
+        input_direc = os.mkdir(os.path.join(wd,
+                                            'data',
+                                            input_dir,
+                                            'json_files'))
 
     if output_dir == None:
         output_dir = os.path.join(wd,
