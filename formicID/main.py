@@ -65,27 +65,27 @@ def main():
 
     # Creating urls and export to json files
     ###########################################################################
-    # urls_to_json(csv_file='testgenusspecies.csv',
-    #              input_dir='data',
-    #              output_dir='test5sp',
-    #              offset_set=0,
-    #              limit_set=12000)
+    urls_to_json(csv_file='testgenusspecies.csv',
+                 input_dir='data',
+                 output_dir='test5sp',
+                 offset_set=0,
+                 limit_set=12000)
 
     # Downloading from json files to a scrape ready csv file
     ###########################################################################
-    # batch_json_to_csv(
-    #     input_dir='2018-03-06-test5sp',
-    #     output_dir='2018-03-06-test5sp',
-    #     csvname='csv_images.csv')
+    batch_json_to_csv(
+        input_dir='2018-03-06-test5sp',
+        output_dir='2018-03-06-test5sp',
+        csvname='csv_images.csv')
 
     # Scrape the images from the csv file and name accordingly
     ###########################################################################
-    # image_scraper(csvfile='csv_images.csv',
-    #               input_dir='2018-03-06-test5sp',
-    #               start=0,
-    #               end=1491,
-    #               dir_out_name='images',
-    #               update=True)
+    image_scraper(csvfile='csv_images.csv',
+                  input_dir='2018-03-06-test5sp',
+                  start=0,
+                  end=1491,
+                  dir_out_name='images',
+                  update=True)
 
     # create experiment related directories
     ###########################################################################
@@ -127,19 +127,19 @@ def main():
 
     # Initialize logger
     ###########################################################################
-    # logger = [buildMC(config=config).build_mc(),
-    #           buildTB(model=model_formicID, config=config).build_tb(),
-    #           build_es()]
+    logger = [buildMC(config=config).build_mc(),
+              buildTB(model=model_formicID, config=config).build_tb(),
+              build_es()]
 
     # Training in batches with iterator
     ###########################################################################
-    # trainer(model=model_formicID,
-    #         X_train=X_train,
-    #         Y_train=Y_train,
-    #         X_val=X_val,
-    #         Y_val=Y_val,
-    #         callbacks=logger,
-    #         config=config)
+    trainer(model=model_formicID,
+            X_train=X_train,
+            Y_train=Y_train,
+            X_val=X_val,
+            Y_val=Y_val,
+            callbacks=logger,
+            config=config)
 
     # Evaluation
     ###########################################################################
