@@ -105,10 +105,10 @@ def batch_json_to_csv(csvname,
             function.
 
     """
-    input_direc = os.mkdir(os.path.join(wd,
-                                        'data',
-                                        input_dir,
-                                        'json_files'))
+    input_direc = os.path.join(wd,
+                               'data',
+                               input_dir,
+                               'json_files')
 
     if output_dir == None or output_dir == input_dir:
         output_dir = os.path.join(wd,
