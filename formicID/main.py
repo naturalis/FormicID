@@ -74,14 +74,14 @@ def main():
     # Downloading from json files to a scrape ready csv file
     ###########################################################################
     batch_json_to_csv(
-        input_dir='2018-03-06-test5sp',
-        output_dir='2018-03-06-test5sp',
+        input_dir='2018-03-09-test5sp',
+        output_dir='2018-03-09-test5sp',
         csvname='csv_images.csv')
 
     # Scrape the images from the csv file and name accordingly
     ###########################################################################
     image_scraper(csvfile='csv_images.csv',
-                  input_dir='2018-03-06-test5sp',
+                  input_dir='2018-03-09-test5sp',
                   start=0,
                   end=1491,
                   dir_out_name='images',
@@ -94,7 +94,7 @@ def main():
     # Initializing the data
     ###########################################################################
     X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data(
-        datadir='2018-03-06-test5sp',
+        datadir='2018-03-09-test5sp',
         config=config,
         shottype='h')
 
