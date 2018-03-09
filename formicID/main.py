@@ -121,9 +121,9 @@ def main():
                                    config=config)
 
     print('type ', model_formicID)
-    print(model_summary(model_formicID))
-    model_visualization(model=model_formicID,
-                        config=config)
+    # print(model_summary(model_formicID))
+    # model_visualization(model=model_formicID,
+    #                     config=config)
 
     # Initialize logger
     ###########################################################################

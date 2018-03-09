@@ -7,19 +7,19 @@ _Classification of images of ants using deep learning_
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:1 -->
 
 -   [FormicID](#formicid)
-	- [Description](#pencil-description)
-		- [Proposal](#blacknib-proposal)
-	- [How to use](#arrowforward-how-to-use)
-	- [Project Structure](#bookmark-project-structure)
-	- [AntWeb](#ant-antweb)
-		- [AntWeb API](#satellite-antweb-api)
-		- [Images / Dataset](#openfilefolder-images-dataset)
-	- [Neural Network](#computer-neural-network)
-		- [Ready to use models](#mag-ready-to-use-models)
-		- [Self-made model](#triangularruler-self-made-model)
-	- [Requirements](#clipboard-requirements)
-	- [Credits](#scroll-credits)
-	- [Why this name, FormicID?](#exclamation-why-this-name-formicid)
+    -   [Description](#pencil-description)
+        		\- [Proposal](#blacknib-proposal)
+    -   [How to use](#arrowforward-how-to-use)
+    -   [Project Structure](#bookmark-project-structure)
+    -   [AntWeb](#ant-antweb)
+        		\- [AntWeb API](#satellite-antweb-api)
+        		\- [Images / Dataset](#openfilefolder-images-dataset)
+    -   [Neural Network](#computer-neural-network)
+        		\- [Ready to use models](#mag-ready-to-use-models)
+        		\- [Self-made model](#triangularruler-self-made-model)
+    -   [Requirements](#clipboard-requirements)
+    -   [Credits](#scroll-credits)
+    -   [Why this name, FormicID?](#exclamation-why-this-name-formicid)
 
 <!-- /TOC -->
 
@@ -45,6 +45,7 @@ $ cd ./FormicID
 ```
 
 ### Step 2 - Downloading the data
+
 _Skip step 2 if you don't need to download the data._
 
 #### Step 2.1 - Which species
@@ -59,7 +60,7 @@ Create a 2 column csv file with the genus+species you want to download from AntW
 
 #### Step 2.2 - Get the species information
 
-With the `urls_to_json()` function uncommented will download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file. Set the following settings in `urls_to_json`:
+Uncomment the `urls_to_json()` function. This will download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file (because this is not a set of real species). Set the following arguments in `urls_to_json`:
 
 -   `csv_file`: csvfile name
 -   `input_dir`: input directory
@@ -69,7 +70,7 @@ With the `urls_to_json()` function uncommented will download all the JSON object
 
 #### Step 2.3 - Format the species information
 
-With `batch_json_to_csv()` function uncommented will create a csv file with the relevant information for downloading and naming images correctly to the output folder. Set the following settings in `batch_json_to_csv`):
+Uncomment the `batch_json_to_csv()` function. This will create a csv file with the relevant information for downloading and naming images correctly to the output folder. Set the following arguments in `batch_json_to_csv`):
 
 -   `input_dir`: input directory
 -   `output_dir`: output directory
@@ -77,9 +78,13 @@ With `batch_json_to_csv()` function uncommented will create a csv file with the 
 
 #### Step 2.4 - Download the images
 
-Uncommenting the `image_scraper()` function will download the images to the output folder. The csv file from step 3 could contain some unvalid URLs and these will be repaired if you flag `image_scraper(update=True)`. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_`). After updating the csv, the script will start downloading images and will put these in newly created folders for head, dorsal and profile shots. In these folders, every species is put in its own folder. Set the following settings in `image_scraper()`:
+Uncomment the `image_scraper()` function. This will download the images to an output folder, split by shottype, and then by species.
 
--   `csvfile`: csv file from step 3
+> The csv file from step 2.3 could contain some unvalid URLs and these will be repaired if you flag `image_scraper(update=True)`. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_`).
+
+Set the following settings in `image_scraper()`:
+
+-   `csvfile`: csv file from step 2.3
 -   `input_dir`: input_dir directory of the csv file
 -   `start`: start number (line where to start in the csv file)
 -   `end`: end number (line where to end in the csv file)
@@ -89,15 +94,20 @@ Uncommenting the `image_scraper()` function will download the images to the outp
 ### Step 3 - Configuration
 
 Configure `formicID/configs/config.json`
-- Give the experiment a name.
-- Set the number of epochs, batch_size, learning rate, iterations per epoch, seed
-- Set the model to one of the Keras model applications that can be loaded from `models/models.py`;
-  - 'InceptionV3'
-  - 'Xception',
-  - 'Resnet50'
-  - 'DenseNet169'
 
-_Later more..._
+-   Give the experiment a name.
+-   Set the number of `epochs`, `iterations per epoch`, `learning rate`, `batch size`, `dropout` and `seed`
+-   Set the `model` to one of the Keras model applications that can be loaded from `models/models.py`;
+    -   `InceptionV3`
+    -   `Xception`
+    -   `Resnet50`
+    -   `DenseNet169`
+    -   `Build` (this is the own designed network)
+-   Set the `optimizer` to one of the following:
+    -   `Nadam`
+    -   `Adam`
+    -   `RMSprop`
+    -   `SGD`
 
 ```json
 {
@@ -115,16 +125,23 @@ _Later more..._
 }
 ```
 
-### Step 7 - Running the model
+### Step 4 - Model initialisation and training
 
-Now you can run `formicID/main.py` with `config.json` as argument and the data will be downloaded, split, and prepared, so the network can train. The trainier is loaded from `trainers/train.py`.
+Now you can run `formicID/main.py` with `config.json` as argument and the data will be downloaded, split, and prepared. Then the model will be loaded that is specified in the configuration file. The trainer is loaded from `trainers/train.py` and training will begin.
+
+### Step 5 Evaluation
+
+After training it will be possible to launch TensorBoard to view loss, accuracy, and RMSE for training and validation. Further callbacks are `EarlyStopping` and `ModelCheckpoint`.
 
 ### Additional
-Utilities that can be used are:
-- Saving examples of data augmentation
-- Visualizing a few of images in a plot
-- Handeling models (e.g. saving, loading, visualizing, etc.)
-- _More coming later_
+
+Utilities that can be loaded are:
+
+-   Saving examples of data augmentation (`utils/img.py`)
+-   Visualizing a few of images in a plot (`utils/img.py`)
+-   Handeling models (e.g. saving, loading, visualizing, etc.) (`utils/model_utils.py`)
+-	Training on multiple GPUs (`utils/model_utils.py`)
+-   _More coming later_
 
 _To be continued_
 
@@ -161,10 +178,10 @@ _To be continued_
         |-- utils
             |-- __init__.py
             |-- img.py
-    		|-- load_config.py
-    		|-- logger.py
-    		|-- model_utils.py
-    		|-- utils.py
+            |-- load_config.py
+            |-- logger.py
+            |-- model_utils.py
+            |-- utils.py
 
 ## :ant: AntWeb
 
