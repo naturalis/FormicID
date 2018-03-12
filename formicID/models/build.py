@@ -25,14 +25,14 @@ from keras.models import Sequential
 
 # Build the network
 ###############################################################################
-def build_model(config, input_shape=(None, None, 3), num_species):
+def build_model(config, num_species, input_shape=(None, None, 3)):
     """Create a model with the architecture below. Afterwards the model needs
     to be compiled.
 
     Args:
         config (Bunch object): The JSON configuration Bunch object.
-        input_shape (int): list of image height and width, with channels=last.
         num_species (int): The number of species, needed for the last layer.
+        input_shape (int): list of image height and width, with channels=last.
 
     Returns:
         Keras model instance: Returns an uncompiled Keras model instance.

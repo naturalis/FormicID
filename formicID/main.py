@@ -36,7 +36,7 @@ from utils.model_utils import (make_multi_gpu, model_summary,
                                model_visualization)
 from utils.utils import create_dirs, get_args
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 # 0 = all logs, 1 = info, 2 = warnings, 3 = error
 
 # Parameters and settings
@@ -73,10 +73,9 @@ def main():
 
     # Downloading from json files to a scrape ready csv file
     ###########################################################################
-    batch_json_to_csv(
-        input_dir='2018-03-12-test5sp',
-        output_dir='2018-03-12-test5sp',
-        csvname='csv_images.csv')
+    batch_json_to_csv(input_dir='2018-03-12-test5sp',
+                      output_dir='2018-03-12-test5sp',
+                      csvname='csv_images.csv')
 
     # Scrape the images from the csv file and name accordingly
     ###########################################################################
