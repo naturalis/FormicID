@@ -4,22 +4,32 @@ _Classification of images of ants using deep learning_
 
 [![Build Status](https://travis-ci.com/naturalis/FormicID.svg?token=1cLc3spsoyrFkzth95Ho&branch=master)](https://travis-ci.com/naturalis/FormicID) · [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/naturalis/FormicID/blob/master/LICENSE) · [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) · [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/naturalis/FormicID/graphs/commit-activity) · [![GitHub contributors](https://img.shields.io/github/contributors/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/graphs/contributors/) · [![GitHub issues](https://img.shields.io/github/issues/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/issues/) · [![](https://img.shields.io/github/issues-closed-raw/naturalis/FormicID.svg)](https://github.com/naturalis/FormicID/issues?q=is%3Aissue+is%3Aclosed)
 
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:1 -->
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
--   [FormicID](#formicid)
-    -   [Description](#pencil-description)
-        		\- [Proposal](#blacknib-proposal)
-    -   [How to use](#arrowforward-how-to-use)
-    -   [Project Structure](#bookmark-project-structure)
-    -   [AntWeb](#ant-antweb)
-        		\- [AntWeb API](#satellite-antweb-api)
-        		\- [Images / Dataset](#openfilefolder-images-dataset)
-    -   [Neural Network](#computer-neural-network)
-        		\- [Ready to use models](#mag-ready-to-use-models)
-        		\- [Self-made model](#triangularruler-self-made-model)
-    -   [Requirements](#clipboard-requirements)
-    -   [Credits](#scroll-credits)
-    -   [Why this name, FormicID?](#exclamation-why-this-name-formicid)
+- [FormicID](#formicid)
+	- [:pencil: Description](#pencil-description)
+		- [:black_nib: Proposal](#blacknib-proposal)
+	- [:arrow_forward: How to use](#arrowforward-how-to-use)
+		- [Step 1 - Get the code](#step-1-get-the-code)
+		- [Step 2 - Downloading the data](#step-2-downloading-the-data)
+			- [Step 2.1 - Which species](#step-21-which-species)
+			- [Step 2.2 - Get the species information](#step-22-get-the-species-information)
+			- [Step 2.3 - Format the species information](#step-23-format-the-species-information)
+			- [Step 2.4 - Download the images](#step-24-download-the-images)
+		- [Step 3 - Configuration](#step-3-configuration)
+		- [Step 4 - Model initialisation and training](#step-4-model-initialisation-and-training)
+		- [Step 5 Evaluation](#step-5-evaluation)
+		- [Additional](#additional)
+	- [:bookmark: Project Structure](#bookmark-project-structure)
+	- [:ant: AntWeb](#ant-antweb)
+		- [:satellite: AntWeb API](#satellite-antweb-api)
+		- [:open_file_folder: Images / Dataset](#openfilefolder-images-dataset)
+	- [:computer: Neural Network](#computer-neural-network)
+		- [:mag: Ready to use models](#mag-ready-to-use-models)
+		- [:triangular_ruler: Self-made model](#triangularruler-self-made-model)
+	- [:clipboard: Requirements](#clipboard-requirements)
+	- [:scroll: Credits](#scroll-credits)
+	- [:exclamation: Why this name, FormicID?](#exclamation-why-this-name-formicid)
 
 <!-- /TOC -->
 
