@@ -20,13 +20,15 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
-import PIL  # needed for keras.preprocessing.image.load_img()
+import PIL  # Imports PIL-SIMD. PIL is needed for load_img() from
+            # keras.preprocessing.image
 from keras.preprocessing.image import array_to_img, img_to_array, load_img
 from keras.utils.np_utils import to_categorical
 
 from trainers.train import idg_train
 
 from .utils import wd
+
 
 # Parameters and settings
 ###############################################################################

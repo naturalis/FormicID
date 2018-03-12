@@ -257,14 +257,14 @@ def train_val_test_split(images,
         for train_index, val_index in sss.split(X_train,
                                                 Y_train):
             logging.info('TRAIN (~75%%): {}'.format(train_index))
-            logging.info('VAL (~15%%): {}'.format(val_index)))
+            logging.info('VAL (~15%%): {}'.format(val_index))
             X_train, X_val=X_train[train_index], X_train[val_index]
             Y_train, Y_val=Y_train[train_index], Y_train[val_index]
 
     except TypeError:
         logging.error('`val_size` is not an integer.')
 
-        # Check all the numbers
+    # Check all the numbers
     nb_specimens=len(X_test) + len(X_train) + len(X_val)
     logging.info('Total number of images: {}'.format(nb_specimens))
     logging.info('Number of X_test: {}'.format(len(X_test)))
