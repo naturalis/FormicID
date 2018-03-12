@@ -19,6 +19,7 @@ type and per species.
 import csv
 import datetime
 import itertools
+import logging
 import os
 import re
 from urllib.error import HTTPError
@@ -42,7 +43,7 @@ def csv_update(input_dir,
     """This function will remove broken links to a different csvfile.
 
     Args:
-        input_dir (path): the input directory containing the csvfile
+        input_dir (str): the input directory containing the csvfile
         csvfile (str): A .csv file that contains all the specimen and image
             information with 4 columns, namely:
                 - 'catalog_number',
@@ -59,7 +60,7 @@ def csv_update(input_dir,
     """
     if not csvfile.endswith('.csv'):
         raise AssertionError('This is not a csv file: {}. Please use a csv ',
-        'file and specify the suffix'.format(csvfile))
+                             'file and specify the suffix'.format(csvfile))
 
     csvfile = os.path.join(data_dir,
                            input_dir,
@@ -133,9 +134,8 @@ def image_scraper(csvfile,
         input_dir (str): Name of the directory in `data` that contains the csv.
         dir_out_name (str): Name of the output folder, with the current
             date as prefix, which is created in the input_dir.
-        start (integer): Set the starting row for downloading. Defaults to
-            `None`.
-        end (integer): Set the end row for downloading. Defaults to `None`.
+        start (int): Set the starting row for downloading. Defaults to `None`.
+        end (int): Set the end row for downloading. Defaults to `None`.
         update (bool): if [default=True]; the csv_update() function will be
             called. Defaults to `False`.
 
@@ -150,29 +150,29 @@ def image_scraper(csvfile,
     nb_images = end - start
 
     if update == True:
-        print('Update argument has been set to: True. Updating file now...')
+        logging.info('Update argument has been set to: True. Updating file ',
+                     'now...')
         csv_update(input_dir=input_dir,
                    csvfile=csvfile)
-        print('The csv file has been updated. Downloading is starting...')
+        logging.info('The csv file has been updated.')
 
     else:
-        print('Update argument has been set to: False.')
+        logging.info('Update argument has been set to: False.')
 
-    # If the /data/'dir_out_name' directory does not exist, create one
-    print('Checking Folders...')
+    logging.info('Checking Folders...')
     if not os.path.exists(os.path.join(data_dir, input_dir, dir_out_name)):
         os.mkdir(os.path.join(data_dir, input_dir, dir_out_name))
         os.mkdir(os.path.join(data_dir, input_dir, dir_out_name, 'head'))
         os.mkdir(os.path.join(data_dir, input_dir, dir_out_name, 'dorsal'))
         os.mkdir(os.path.join(data_dir, input_dir, dir_out_name, 'profile'))
-        print('Folders are created')
+        logging.info('Folders are created')
 
     dir_h = os.path.join(data_dir, input_dir, dir_out_name, 'head')
     dir_d = os.path.join(data_dir, input_dir, dir_out_name, 'dorsal')
     dir_p = os.path.join(data_dir, input_dir, dir_out_name, 'profile')
 
     nb_rows = sum(1 for line in open(csvfile))
-    print('The csv file contains {} images.'.format(nb_rows))
+    logging.info('The csv file contains {} images.'.format(nb_rows))
 
     if end == None:
         end = nb_rows
@@ -180,7 +180,6 @@ def image_scraper(csvfile,
     if start == None:
         start = 0
 
-    # Opening the csvfile from row 'start' to row 'end'
     with open(csvfile, 'rt') as images:
 
         imagereader = csv.reader(
@@ -188,7 +187,7 @@ def image_scraper(csvfile,
                              start,
                              end + 1))
 
-        print('Starting to scrape {} images...'.format(nb_images))
+        logging.info('Starting to scrape {} images...'.format(nb_images))
 
         for image in tqdm(imagereader,
                           desc='Scraping images',
@@ -213,7 +212,7 @@ def image_scraper(csvfile,
 
                     except HTTPError as err:
                         if err.code == 404:
-                            print('Error 404: {}'.format(image[3]))
+                            logging.error('Error 404: {}'.format(image[3]))
                             continue
 
                 if image[2] == 'd':
@@ -229,7 +228,7 @@ def image_scraper(csvfile,
 
                     except HTTPError as err:
                         if err.code == 404:
-                            print('Error 404: {}'.format(image[3]))
+                            logging.error('Error 404: {}'.format(image[3]))
                             continue
 
                 if image[2] == 'p':
@@ -245,7 +244,7 @@ def image_scraper(csvfile,
 
                     except HTTPError as err:
                         if err.code == 404:
-                            print('Error 404: {}'.format(image[3]))
+                            logging.error('Error 404: {}'.format(image[3]))
                             continue
 
-        print('{} images were downloaded.'.format(nb_images))
+        logging.info('{} images were downloaded.'.format(nb_images))

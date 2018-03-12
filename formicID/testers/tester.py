@@ -5,16 +5,20 @@
 #                   |  _| (_) | |  | | | | | | | (__ | || |_| |               #
 #                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                #
 #                                                                             #
-#                          Tester of a trained network                        #
+#                                 Model testing                               #
 #                                                                             #
 ###############################################################################
 '''
 Description:
-<placeholder txt>
+After the model is trained evaluation can be started using these scripts.
+After evaluation looks good, we can test the model with unseen images.
 '''
 
 # Packages
 ###############################################################################
+
+import logging
+
 from keras.model import test_on_batch
 
 # Parameters and settings
@@ -26,15 +30,38 @@ from keras.model import test_on_batch
 
 
 def model_evaluate(model):
-    # Evaluate is for getting score and accuracy on test set.
-    # model.test is for testing a image for label.
+    """Evaluation will return the score of the model on a test set. This
+    function will return the loss and accuracy.
+
+    Args:
+        model (Keras model instance): A trained Keras model instance.
+
+    Returns:
+        float: Returns the loss and accuracy for the trained model on a test
+            set.
+
+    """
+
     loss, accuracy = model.evaluate(testdataX, testdataY)
 
-    print("\nLoss: {:2f}, Accuracy: {:2f}".format(loss, accuracy*100))
+    logging.info("Loss: {:2f}, Accuracy: {:2f}".format(loss, accuracy * 100))
+
     return loss, accuracy
 
 
 def model_test(image, model):
-    # model.test_on_batch(x,y)
+    """Short summary.
 
+    Args:
+        image (type): Description of parameter `image`.
+        model (type): Description of parameter `model`.
+
+    Returns:
+        type: Description of returned object.
+
+    Raises:        ExceptionName: Why the exception is raised.
+
+    """
+    # model.test_on_batch(x,y)
+    # model.test is for testing a image for label..
     raise NotImplementedError

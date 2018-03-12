@@ -28,7 +28,7 @@ import pandas as pd
 import requests
 from tqdm import tqdm
 
-from utils.utils import today_timestr, todaystr, wd, create_dirs
+from utils.utils import create_dirs, today_timestr, todaystr, wd
 
 # Parameters and settings
 ###############################################################################
@@ -106,7 +106,7 @@ def get_json(input_url):
         return data
     else:
         raise AssertionError('There is no JSON data in the url: {}.'.format(
-        input_url.url))
+            input_url.url))
 
 
 def urls_to_json(csv_file,
@@ -116,12 +116,13 @@ def urls_to_json(csv_file,
                  limit_set=12000):
     """This function downloads JSON files for a list of species and places them
     in a drecitory. An limit_set higher than 12,000 will usually create
-    problems. If you get 404 errors you will probably need to set the limit lower.
+    problems. If you get 404 errors you will probably need to set the limit
+    lower.
 
     Args:
-        csv_file (path): the csv file genus and species names.
-        input_dir (path): path to the directory that has the `csv_file`.
-        output_dir (path): a new directory name, created in the `input_dir` for
+        csv_file (str): the csv file genus and species names.
+        input_dir (str): path to the directory that has the `csv_file`.
+        output_dir (str): a new directory name, created in the `input_dir` for
             saving the JSON files.
         offset_set (int): the offset for downloading AntWeb records in
             batches. Defaults to `0`.
@@ -136,8 +137,8 @@ def urls_to_json(csv_file,
         AssertionError: If `csv_file` is not a .csv file.
         AssertionError: If the csv file is not comma delimited.
         AssertionError: When the .csv does not have 2 columns.
-        AssertionError: When the columns are not named
-            correctly; `genus` and `species`.
+        AssertionError: When the columns are not named correctly; `genus` and
+            `species`.
 
     """
     if limit_set > 12000:
@@ -163,11 +164,11 @@ def urls_to_json(csv_file,
     with open(csv_file,
               'rt') as csv_open:
 
-        dialect = Sniffer().sniff(csv_open.readline(), [',',';'])
+        dialect = Sniffer().sniff(csv_open.readline(), [',', ';'])
         csv_open.seek(0)
         if dialect.delimiter == ';':
             raise AssertionError('Please us a comma (,) delimited csv file ',
-            'instead of {}.'.format(dialect.delimiter))
+                                 'instead of {}.'.format(dialect.delimiter))
 
         csv_df = pd.read_csv(csv_open, sep=',')
 
@@ -181,7 +182,7 @@ def urls_to_json(csv_file,
                                  '{} and {}. The column headers should be '
                                  'column 1: `genus` and column 2: '
                                  '`species`.'.format(
-                                    csv_df.columns.tolist()))
+                                     csv_df.columns.tolist()))
 
         nb_indet = 0
 
@@ -189,7 +190,8 @@ def urls_to_json(csv_file,
             if row['species'] == 'indet':
                 nb_indet += 1
 
-        logging.info('{} indet species found and will be skipped from downloading.'.format(nb_indet))
+        logging.info('{} indet species found and will be skipped from ',
+                     'downloading.'.format(nb_indet))
 
         nb_specimens = csv_df.shape[0] - nb_indet
 
@@ -222,4 +224,5 @@ def urls_to_json(csv_file,
 
                 time.sleep(0.5)  # wait 0.5s so AW does not crash
 
-        logging.info('Downloading is finished. {} JSON files have been ' 'downloaded'.format(nb_specimens))
+        logging.info('Downloading is finished. {} JSON files have been ',
+                     'downloaded'.format(nb_specimens))

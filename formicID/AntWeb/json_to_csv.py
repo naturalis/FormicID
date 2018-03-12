@@ -17,6 +17,7 @@ and `image_url`) ready for `scrape.py`.
 ###############################################################################
 
 import json
+import logging
 import os
 
 import jmespath
@@ -37,7 +38,8 @@ def filter_json(json_file):
     """Load a JSON object and filter for only relevant values.
 
     Args:
-        json_file (JSON): a JSON object.
+        json_file (JSON object): a JSON object with AntWeb data, downloaded
+            using the `urls_to_json()` function from `AW2_to_json.py`.
 
     Returns:
         list: A list of
@@ -57,12 +59,10 @@ def filter_json(json_file):
 
         if row[2] != None:
 
-            # print(row)
             catalog_number = row[0]
             scientific_name = row[1]
             image_url = {}
 
-            # Take out urls for 'head', 'profile' and 'dorsal' shots
             if 'h' in row[2]:
                 image_url['h'] = row[2]['h']['img'][1]
 
@@ -162,5 +162,6 @@ def batch_json_to_csv(csvname,
                             csvname),
                index=False,
                header=True)
-    print('All JSON files are read, filtered and added to the csv file. \n'
-          '{0} was created in {1}'.format(csvname, output_dir))
+    logging.info('All JSON files are read, filtered and added to the csv ',
+                 'file. "\n{0}" was created in {1}'.format(csvname,
+                                                           output_dir))

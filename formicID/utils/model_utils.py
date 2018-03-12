@@ -15,6 +15,7 @@ This file has code utilities for handeling models.
 # Packages
 ###############################################################################
 
+import logging
 import os
 
 import graphviz  # Needed for keras.utils.vis_utils.plot_model()
@@ -40,7 +41,7 @@ def save_model(model, filename, config):
     Args:
         model (Keras model instance): A Keras model instance.
         filename (str): Name of the output filename.
-        config (JSON): A configuration file; needed for the output directory.
+        config (Bunch object): The JSON configuration Bunch object.
 
     Returns:
         file: A `.h5` file of the model.
@@ -48,7 +49,7 @@ def save_model(model, filename, config):
     """
     out = os.path.join(config.checkpoint_dir, filename)
     model.save(filepath=out)
-    print('The model has been saved and deleted from use.')
+    logging.info('The model has been saved and deleted from use.')
     del model
 
 
@@ -65,7 +66,7 @@ def load_model(filename, input_dir):
     """
     input_model = os.path.join(wd, input_dir, filename)
     model = load_model(input_model)
-    print('The model has been loaded.')
+    logging.info('The model has been loaded.')
     return model
 
 
@@ -75,7 +76,7 @@ def weights_save(model, filename, config):
     Args:
         model (Keras model instance): A Keras model instance.
         filename (str): Description of parameter `filename`.
-        config (JSON): A configuration file; needed for the output directory.
+        config (Bunch object): The JSON configuration Bunch object.
 
     Returns:
         file: A `.h5` file.
@@ -83,7 +84,7 @@ def weights_save(model, filename, config):
     """
     out = os.path.join(config.checkpoint_dir, filename)
     weights_saved = model.save_weights(filepath=out)
-    print('The weights have been saved.')
+    logging.info('The weights have been saved.')
 
 
 def weights_load(model, filename, input_dir):
@@ -92,7 +93,7 @@ def weights_load(model, filename, input_dir):
     Args:
         model (Keras model instance): A Keras model instance.
         filename (str): Name of the output filename.
-        input_dir (path): the directory that holds the weights.
+        input_dir (str): the directory that holds the weights.
 
     Returns:
         Keras model instance: A model with its weights initialized.
@@ -100,7 +101,7 @@ def weights_load(model, filename, input_dir):
     """
     input_weights_input = os.path.join(wd, input_dir, filename)
     model.load_weights = load_weights_input(input_model)
-    print('The weights have been loaded.')
+    logging.info('The weights have been loaded.')
     return model
 
 
@@ -137,7 +138,7 @@ def model_from_config(config):
     """Load a Keras model instance from a configuration file.
 
     Args:
-        config (JSON): The config file that holds a Keras model instance.
+        config (JSON object): The config file that holds a Keras model instance.
 
     Returns:
         Keras model instance: A Keras model instance.
@@ -182,7 +183,7 @@ def model_visualization(model, config):
 
     Args:
         model (Keras model instance): A Keras model instance.
-        config (JSON): A configuration file; needed for the output directory.
+        config (Bunch object): The JSON configuration Bunch object.
 
     Returns:
         file: An image `png` file.
@@ -191,7 +192,7 @@ def model_visualization(model, config):
     filename = str(config.exp_name)
     output_dir = os.path.join(config.summary_dir, filename + '_model.png')
 
-    print('The model is saved in: {}'.format(output_dir))
+    logging.info('The model is saved in: {}'.format(output_dir))
 
     return plot_model(model=model,
                       to_file=output_dir,

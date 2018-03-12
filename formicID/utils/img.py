@@ -15,6 +15,7 @@ other files.
 # Packages
 ###############################################################################
 
+import logging
 import os
 
 import matplotlib.pyplot as plt
@@ -45,7 +46,7 @@ def show_multi_img(X_train,
                    Y_train,
                    cols=4,
                    rows=4):
-    """Plot n images of X_train.
+    """Plot n images of X_train using matplotlib.
 
     Args:
         X_train (array): Images, represented as a 4D array.
@@ -76,8 +77,8 @@ def save_augmentation(image,
     """This function returns 20 random augmented versions of an input image.
 
     Args:
-        image (path): path to image.
-        config (JSON): configuration file
+        image (str): path to image.
+        config (Bunch object): The JSON configuration Bunch object.
 
     Returns:
         files: 20 augmented images (`.jpeg`) of the input image inside the
@@ -109,4 +110,4 @@ def save_augmentation(image,
         if i > 19:
             break
 
-    print('Augmented files can be found in {}'.format(augment_dir))
+    logging.info('Augmented files can be found in {}'.format(augment_dir))

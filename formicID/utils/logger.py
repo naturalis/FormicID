@@ -31,14 +31,16 @@ from .utils import today_timestr
 
 class buildTB():
     def __init__(self, model, config):
-        """Short summary.
+        """A TensorBoard class object for viewing metrics of the trained model.
 
         Args:
-            model (type): Description of parameter `model`.
-            config (type): Description of parameter `config`.
+            model (Keras model instance): The Keras model instance that is
+                training.
+            config (Bunch object): The JSON configuration Bunch object.
 
         Returns:
-            type: Description of returned object.
+            files: TensorBoard files that can be viewd in the TensorBoard
+                dashboard
 
         """
         self.config = config
@@ -47,12 +49,6 @@ class buildTB():
                                      'graphs/logs-{0}'.format(today_timestr))
 
     def build_tb(self):
-        """Short summary.
-
-        Returns:
-            type: Description of returned object.
-
-        """
         filepath = self.filepath
         model = self.model
         batch_size = self.config.batch_size
@@ -76,13 +72,13 @@ class buildTB():
 class buildMC():
 
     def __init__(self, config):
-        """Short summary.
+        """Class object for saving Model Checkpoints.
 
         Args:
-            config (type): Description of parameter `config`.
+            config (Bunch object): The JSON configuration Bunch object.
 
         Returns:
-            type: Description of returned object.
+            type: Saves the models at certain checkpoints as `.h5` files.
 
         """
         self.config = config
@@ -90,13 +86,6 @@ class buildMC():
                                      'weights_{epoch:02d}-{val_loss:.2f}.hdf5')
 
     def build_mc(self):
-        """Short summary.
-
-        Returns:
-            type: Description of returned object.
-
-        """
-
         filepath = self.filepath
 
         mcp = ModelCheckpoint(filepath=filepath,
@@ -112,10 +101,10 @@ class buildMC():
 # EarlyStopping
 ###############################################################################
 def build_es():
-    """Short summary.
+    """For initializing EarlyStopping. This monitors validation loss.
 
     Returns:
-        type: Description of returned object.
+        Training will stop when validation loss is not decreasing anymore.
 
     """
     es = EarlyStopping(monitor='val_loss',
@@ -123,7 +112,7 @@ def build_es():
                        patience=2,
                        verbose=1,
                        mode='auto')
-    # print('Training stopped due to "EarlyStopping"')
+
     return es
 
 
@@ -135,8 +124,8 @@ def rmse(y_true,
     """The root-mean-square-error as a metric to be used in model compilation.
 
     Args:
-        y_true (label): The true label.
-        y_pred (label): The predicted label.
+        y_true (str): The true label.
+        y_pred (str): The predicted label.
 
     Returns:
         int: the root-mean-square-error.

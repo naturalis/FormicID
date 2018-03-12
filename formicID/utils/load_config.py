@@ -27,10 +27,12 @@ def get_config_from_json(json_file):
     """Get the config from a json file.
 
     Args:
-        json_file (type): Description of parameter `json_file`.
+        json_file (JSON object): The JSON configuration.
 
     Returns:
-        type: config(namespace) or config(dictionary).
+        Bunch object: the configuration as a Bunch object.
+        dict: the configuration as a dictionary.
+
     """
     # parse the configurations from the config json file provided
     with open(json_file, 'r') as config_file:
@@ -43,13 +45,13 @@ def get_config_from_json(json_file):
 
 
 def process_config(jsonfile):
-    """Short summary.
+    """Processing the configuration JSON for the creating the directory paths.
 
     Args:
-        jsonfile (type): Description of parameter `jsonfile`.
+        jsonfile (JSON object): The JSON configuration file.
 
     Returns:
-        type: Description of returned object.
+        Bunch object: the JSON configuration Bunch object.
     """
     config, _ = get_config_from_json(jsonfile)
     config.summary_dir = os.path.join(

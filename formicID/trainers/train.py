@@ -16,7 +16,7 @@ looped over (in batches) indefinitely. There is a train_data_generator, which
 also augments the images with different methods, and a val_data_generator which
 does only preprocess the data. Validation data should not be augmented. The
 `preprocessing_function` is needed for the inception_v3 model. It scales the
-pixels between -1 and 1, samplewise and performs the following calculation:
+pixels in  `[-1, 1]`, samplewise and using the following calculation:
     `x /= 127.5
      x -= 1.
      return x`
@@ -72,7 +72,7 @@ def train_data_generator(X_train,
     Args:
         X_train (array): Image data as 4D numpy array.
         Y_train (array): Label data as 2D numpy array.
-        config (JSON): The JSON configuration file.
+        config (Bunch object): The JSON configuration Bunch object.
 
     Returns:
         generator: A image data generator with its `.flow` method applied.
@@ -117,7 +117,7 @@ def val_data_generator(X_val,
     Args:
         X_val (array): Image data as 4D numpy array.
         Y_val (array): Label data as 2D numpy array.
-        config (JSON): The JSON configuration file.
+        config (Bunch object): The JSON configuration Bunch object.
 
     Returns:
         generator: A image data generator with its `.flow` method applied.
@@ -154,8 +154,8 @@ def trainer(model,
         Y_train (array): 2D numpy array training data for labels.
         X_val (array): 4D numpy array validation data for images.
         Y_val (array): 2D numpy array validation data for labels.
-        config (JSON): The JSON configuration file.
-        callbacks (callback objects): A list of Keras Callback Objects.
+        config (Bunch object): The JSON configuration Bunch object.
+        callbacks (Callback object): One or a list of Keras Callback Objects.
             Defaults to `None`.
 
     Returns:

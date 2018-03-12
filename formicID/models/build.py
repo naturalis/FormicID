@@ -25,7 +25,19 @@ from keras.models import Sequential
 
 # Build the network
 ###############################################################################
-def build_model(config, input_shape, num_species):
+def build_model(config, input_shape=(None, None, 3), num_species):
+    """Create a model with the architecture below. Afterwards the model needs
+    to be compiled.
+
+    Args:
+        config (Bunch object): The JSON configuration Bunch object.
+        input_shape (int): list of image height and width, with channels=last.
+        num_species (int): The number of species, needed for the last layer.
+
+    Returns:
+        Keras model instance: Returns an uncompiled Keras model instance.
+
+    """
     learning_rate = config.learning_rate
     dropout = config.dropout
     optimizer = config.optimizer
@@ -40,7 +52,6 @@ def build_model(config, input_shape, num_species):
     model.add(Conv2D(32, (3, 3)))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(dropout))
 
     model.add(Conv2D(64, (3, 3), padding='same'))
     model.add(Activation('relu'))
@@ -48,7 +59,6 @@ def build_model(config, input_shape, num_species):
     model.add(Conv2D(64, (3, 3)))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(dropout))
 
     model.add(Flatten())
     model.add(Dense(512))
@@ -57,5 +67,7 @@ def build_model(config, input_shape, num_species):
 
     model.add(Dense(num_species))
     model.add(Activation('softmax'))
+
+    logging.info('The model has been build succesfully.')
 
     return model

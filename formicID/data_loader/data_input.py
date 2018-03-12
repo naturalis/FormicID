@@ -44,6 +44,7 @@ The files should be structured as follows:
 # Packages
 ###############################################################################
 
+import logging
 import os
 
 import numpy as np
@@ -67,7 +68,7 @@ def image_size(config):
     """Function that returns the correct input size for the choosen model.
 
     Args:
-        config (JSON): The JSON configuration file.
+        config (JSON object): The JSON configuration file.
 
     Returns:
         int: returns an integer of the image width and height.
@@ -100,8 +101,9 @@ def image_size(config):
     if model == 'DenseNet169':
         img_height, img_width = 224, 244
 
-    print('Choosen model: {2}. Img height: {0}. Img width: {1}.'.format(
-        img_height, img_width, model))
+    logging.info('Choosen model: {2}. ',
+                 'Img height: {0}. ',
+                 'Img width: {1}.'.format(img_height, img_width, model))
 
     return img_height, img_width
 
@@ -156,7 +158,7 @@ def img_load_shottype(shottype,
 
     num_species = len(next(os.walk(data_dir))[1])
 
-    print('Reading images from "{}"'.format(data_dir))
+    logging.info('Reading images from "{}"'.format(data_dir))
 
     for species in tqdm(os.listdir(data_dir),
                         desc='Reading folders',
@@ -181,7 +183,6 @@ def img_load_shottype(shottype,
             label = species
             labels = np.append(labels, label)
 
-    # images = np.array(images)
     images = np.reshape(images, (-1, img_height, img_width, 3))
 
     # Cast np array to keras default float type ('float32')
@@ -193,11 +194,11 @@ def img_load_shottype(shottype,
                             num_classes=num_species)
     labels = K.cast_to_floatx(labels)
 
-    # print('Number of species: {}'.format(num_species))
-    # print('Images shape: ', images.shape)
-    # print('Images dtype: ', images.dtype)
-    # print('Labels shape: ', labels.shape)
-    # print('Labels dtype: ', labels.dtype)
+    logging.info('Number of species: {}'.format(num_species))
+    logging.info('Images shape: ', images.shape)
+    logging.info('Images dtype: ', images.dtype)
+    logging.info('Labels shape: ', labels.shape)
+    logging.info('Labels dtype: ', labels.dtype)
 
     return images, labels, num_species
 
@@ -239,12 +240,12 @@ def train_val_test_split(images,
 
         for train_index, test_index in sss.split(images,
                                                  labels):
-            # print('TEST (10%%): {}'.format(test_index))
+            logging.info('TEST (10%%): {}'.format(test_index))
             X_train, X_test = images[train_index], images[test_index]
             Y_train, Y_test = labels[train_index], labels[test_index]
 
     except TypeError:
-        print('`test_size` is not an integer.')
+        logging.error('`test_size` is not an integer.')
 
     try:
         sss = StratifiedShuffleSplit(n_splits=1,
@@ -255,32 +256,32 @@ def train_val_test_split(images,
 
         for train_index, val_index in sss.split(X_train,
                                                 Y_train):
-            # print('TRAIN (~75%%): {}'.format(train_index))
-            # print('VAL (~15%%): {}'.format(val_index)))
-            X_train, X_val = X_train[train_index], X_train[val_index]
-            Y_train, Y_val = Y_train[train_index], Y_train[val_index]
+            logging.info('TRAIN (~75%%): {}'.format(train_index))
+            logging.info('VAL (~15%%): {}'.format(val_index)))
+            X_train, X_val=X_train[train_index], X_train[val_index]
+            Y_train, Y_val=Y_train[train_index], Y_train[val_index]
 
     except TypeError:
-        print('`val_size` is not an integer.')
+        logging.error('`val_size` is not an integer.')
 
         # Check all the numbers
-        # nb_specimens = len(X_test) + len(X_train) + len(X_val)
-        # print('Total number of images: {}'.format(nb_specimens))
-        # print('Number of X_test: {}'.format(len(X_test)))
-        # print('Number of X_train: {}'.format(len(X_train)))
-        # print('Number of X_val: {}'.format(len(X_val)))
+    nb_specimens=len(X_test) + len(X_train) + len(X_val)
+    logging.info('Total number of images: {}'.format(nb_specimens))
+    logging.info('Number of X_test: {}'.format(len(X_test)))
+    logging.info('Number of X_train: {}'.format(len(X_train)))
+    logging.info('Number of X_val: {}'.format(len(X_val)))
 
 
-        return X_train, Y_train, X_val, Y_val, X_test, Y_test
+    return X_train, Y_train, X_val, Y_val, X_test, Y_test
 
 
-def load_data(datadir, config, shottype='h'):
+def load_data(datadir, config, shottype = 'h'):
     """Combining the loading of images and labels together with the splitting
     function.
 
     Args:
-        datadir (path): The data directory that contains the `images` folder.
-        config (JSON): the JSON configuration file.
+        datadir (str): The data directory that contains the `images` folder.
+        config (JSON object): the JSON configuration file.
         shottype (str): Specifie the shottype using the following options:
             - `h` (head),
             - `d` (dorsal)
@@ -292,18 +293,20 @@ def load_data(datadir, config, shottype='h'):
             testing.
 
     """
-    img_height, img_width = image_size(config=config)
+    img_height, img_width=image_size(config = config)
 
-    images, labels, num_species = img_load_shottype(
-        shottype=shottype,
-        datadir=datadir,
-        img_height=img_height,
-        img_width=img_width)
+    images, labels, num_species=img_load_shottype(
+        shottype = shottype,
+        datadir = datadir,
+        img_height = img_height,
+        img_width = img_width)
 
-    X_train, Y_train, X_val, Y_val, X_test, Y_test = train_val_test_split(
-        images=images,
-        labels=labels,
-        test_size=0.1,
-        val_size=0.135)
+    X_train, Y_train, X_val, Y_val, X_test, Y_test=train_val_test_split(
+        images = images,
+        labels = labels,
+        test_size = 0.1,
+        val_size = 0.135)
+
+    logging.info('Data is loaded, split and put in generators.')
 
     return X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species

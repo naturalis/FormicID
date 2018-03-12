@@ -32,6 +32,8 @@ From the Keras documentation:
 # Packages
 ###############################################################################
 
+import logging
+
 from keras.applications.densenet import DenseNet169
 from keras.applications.inception_v3 import InceptionV3
 from keras.applications.resnet50 import ResNet50
@@ -57,7 +59,7 @@ def load_model(config,
     """Load a predesigned neural network application from the Keras library.
 
     Args:
-        config (JSON): Configuration JSON file.
+        config (Bunch object): The JSON configuration Bunch object.
         num_classes (int): The number of species.
         model (Keras model instance): A keras model application. Defaults to
             'InceptionV3'.
@@ -86,22 +88,21 @@ def load_model(config,
             it only supports the data format 'channels_last' (height, width,
             channels). The default input size for this model is 299x299.
     """
-    # TODO: preprocesses for the ResNet50, DenseNet169, Xception models.
     model = config.model
 
     if model not in ['InceptionV3',
-                    'Xception',
-                    'Resnet50',
-                    'DenseNet169',
-                    'Build']:
-        raise AssertionError(
-            'Model should be one of `InceptionV3`, `Xception`, `Resnet50` or',
-            '`DenseNet169` or `Build`. Please set a correct model.')
+                     'Xception',
+                     'Resnet50',
+                     'DenseNet169',
+                     'Build']:
+        raise ValueError('Model should be one of `InceptionV3`, `Xception`, ',
+                         '`Resnet50` or `DenseNet169` or `Build`. Please ',
+                         'set a correct model.')
 
     if model == 'Build':
         end_model = build_model(config=config,
-                                 input_shape=(299, 299, 3),
-                                 num_species=num_species)
+                                input_shape=(299, 299, 3),
+                                num_species=num_species)
 
     else:
 
@@ -132,13 +133,28 @@ def load_model(config,
         # this is the model we will train
         end_model = Model(inputs=base_model.input, outputs=predictions)
 
-    print('The model is build with succes.')
+    logging.info('The model is build with succes.')
 
     return end_model
 
+
 def compile_model(model, config):
+    """After building a Keras model, the model needs to be compiled.
+
+    Args:
+        model (keras model instance): A uncompiled Keras model instance.
+        config (Bunch object): The JSON configuration Bunch object.
+
+    Returns:
+        Keras model instance: a compiled Keras model instance.
+
+    """
     optimizer = config.optimizer
     learning_rate = config.learning_rate
+
+    if optimizer not in ['Nadam', 'Adam', 'SGD', 'RMSprop']:
+        raise ValueError('The optimizer should be one of: `Nadam`, `Adam`, ',
+                         '`SGD` or `RMSprop`')
 
     if optimizer == 'Nadam':
         opt = Nadam(lr=learning_rate,
@@ -165,9 +181,9 @@ def compile_model(model, config):
                       decay=0.0)
 
     model.compile(loss='categorical_crossentropy',
-                      optimizer=opt,
-                      metrics=['accuracy', rmse])
+                  optimizer=opt,
+                  metrics=['accuracy', rmse])
 
-    print('The model is compiled with succes.')
+    logging.info('The model is compiled with succes.')
 
     return model
