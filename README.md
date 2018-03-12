@@ -4,32 +4,27 @@ _Classification of images of ants using deep learning_
 
 [![Build Status](https://travis-ci.com/naturalis/FormicID.svg?token=1cLc3spsoyrFkzth95Ho&branch=master)](https://travis-ci.com/naturalis/FormicID) · [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/naturalis/FormicID/blob/master/LICENSE) · [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) · [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/naturalis/FormicID/graphs/commit-activity) · [![GitHub contributors](https://img.shields.io/github/contributors/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/graphs/contributors/) · [![GitHub issues](https://img.shields.io/github/issues/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/issues/) · [![](https://img.shields.io/github/issues-closed-raw/naturalis/FormicID.svg)](https://github.com/naturalis/FormicID/issues?q=is%3Aissue+is%3Aclosed)
 
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+<!-- TOC depthFrom:2 depthTo:3 withLinks:1 updateOnSave:0 orderedList:0 -->
 
-- [FormicID](#formicid)
-	- [:pencil: Description](#pencil-description)
-		- [:black_nib: Proposal](#blacknib-proposal)
-	- [:arrow_forward: How to use](#arrowforward-how-to-use)
-		- [Step 1 - Get the code](#step-1-get-the-code)
-		- [Step 2 - Downloading the data](#step-2-downloading-the-data)
-			- [Step 2.1 - Which species](#step-21-which-species)
-			- [Step 2.2 - Get the species information](#step-22-get-the-species-information)
-			- [Step 2.3 - Format the species information](#step-23-format-the-species-information)
-			- [Step 2.4 - Download the images](#step-24-download-the-images)
-		- [Step 3 - Configuration](#step-3-configuration)
-		- [Step 4 - Model initialisation and training](#step-4-model-initialisation-and-training)
-		- [Step 5 Evaluation](#step-5-evaluation)
-		- [Additional](#additional)
-	- [:bookmark: Project Structure](#bookmark-project-structure)
-	- [:ant: AntWeb](#ant-antweb)
-		- [:satellite: AntWeb API](#satellite-antweb-api)
-		- [:open_file_folder: Images / Dataset](#openfilefolder-images-dataset)
-	- [:computer: Neural Network](#computer-neural-network)
-		- [:mag: Ready to use models](#mag-ready-to-use-models)
-		- [:triangular_ruler: Self-made model](#triangularruler-self-made-model)
-	- [:clipboard: Requirements](#clipboard-requirements)
-	- [:scroll: Credits](#scroll-credits)
-	- [:exclamation: Why this name, FormicID?](#exclamation-why-this-name-formicid)
+- [Description](#pencil-description)
+	- [Proposal](#blacknib-proposal)
+- [How to use](#arrowforward-how-to-use)
+	- [Step 1 - Get the code](#step-1-get-the-code)
+	- [Step 2 - Downloading the data](#step-2-downloading-the-data)
+	- [Step 3 - Configuration](#step-3-configuration)
+	- [Step 4 - Model initialisation and training](#step-4-model-initialisation-and-training)
+	- [Step 5 Evaluation](#step-5-evaluation)
+	- [Additional](#additional)
+- [Project Structure](#bookmark-project-structure)
+- [AntWeb](#ant-antweb)
+	- [AntWeb API](#satellite-antweb-api)
+	- [Images / Dataset](#openfilefolder-images-dataset)
+- [Neural Network](#computer-neural-network)
+	- [Ready to use models](#mag-ready-to-use-models)
+	- [:triangular_ruler: Self-made model](#triangularruler-self-made-model)
+- [Requirements](#clipboard-requirements)
+- [Credits](#scroll-credits)
+- [Why this name, FormicID?](#exclamation-why-this-name-formicid)
 
 <!-- /TOC -->
 
@@ -126,8 +121,6 @@ Configure `formicID/configs/config.json`
     "num_iter_per_epoch": 10,
     "learning_rate": 0.001,
     "batch_size": 10,
-    "state_size": [784],
-    "max_to_keep": 5,
     "dropout": 0.5,
     "optimizer": "Nadam",
     "model": "InceptionV3",
@@ -137,11 +130,11 @@ Configure `formicID/configs/config.json`
 
 ### Step 4 - Model initialisation and training
 
-Now you can run `formicID/main.py` with `config.json` as argument and the data will be downloaded, split, and prepared. Then the model will be loaded that is specified in the configuration file. The trainer is loaded from `trainers/train.py` and training will begin.
+Now you can run `formicID/main.py` with `config.json` as argument and the data will be downloaded, split, and prepared using the `load_data()` function from `data_loader/data_input.py` where the shottype can be specified. Then the model will be loaded that is specified in the configuration file. The trainer is loaded from `trainers/train.py` and training will begin.
 
 ### Step 5 Evaluation
 
-After training it will be possible to launch TensorBoard to view loss, accuracy, and RMSE for training and validation. Further callbacks are `EarlyStopping` and `ModelCheckpoint`.
+After training it will be possible to launch TensorBoard to view loss, accuracy, and RMSE for training and validation. Further callbacks are `EarlyStopping` and `ModelCheckpoint`. Callbacks are loaded from `utils/logger.py`
 
 ### Additional
 
@@ -151,6 +144,8 @@ Utilities that can be loaded are:
 -   Visualizing a few of images in a plot (`utils/img.py`)
 -   Handeling models (e.g. saving, loading, visualizing, etc.) (`utils/model_utils.py`)
 -	Training on multiple GPUs (`utils/model_utils.py`)
+-   The `utils/load_config.py` is for reading the configuration file from step 3.
+-   `utils/utils.py` has general utility functions and variables.
 -   _More coming later_
 
 _To be continued_
