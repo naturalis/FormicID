@@ -113,10 +113,10 @@ def urls_to_json(csv_file,
                  input_dir,
                  output_dir,
                  offset_set=0,
-                 limit_set=9999):
+                 limit_set=12000):
     """This function downloads JSON files for a list of species and places them
-    in a drecitory. An limit_set higher than 10,000 will usually create
-    problems.
+    in a drecitory. An limit_set higher than 12,000 will usually create
+    problems. If you get 404 errors you will probably need to set the limit lower.
 
     Args:
         csv_file (path): the csv file genus and species names.
@@ -134,14 +134,14 @@ def urls_to_json(csv_file,
     Raises:
         ValueError: If `limit_set` is > 12,000.
         AssertionError: If `csv_file` is not a .csv file.
-        AssertionError: If the csv file is semi-colon delimited.
+        AssertionError: If the csv file is not comma delimited.
         AssertionError: When the .csv does not have 2 columns.
         AssertionError: When the columns are not named
             correctly; `genus` and `species`.
 
     """
     if limit_set > 12000:
-        raise ValueError('The `limit_set` should be lower than 10,000.')
+        raise ValueError('The `limit_set` should be lower than 12,000.')
 
     input_dir = os.path.join(wd, input_dir)
 
@@ -163,14 +163,13 @@ def urls_to_json(csv_file,
     with open(csv_file,
               'rt') as csv_open:
 
-        sniffer = Sniffer()
-        dialect = sniffer.sniff(csv_open)
+        dialect = Sniffer().sniff(csv_open.readline(), [',',';'])
+        csv_open.seek(0)
         if dialect.delimiter == ';':
-            raise AssertionError('Please us a comma delimited csv file ', 'instead of {}.'.format(dialect.delimiter))
+            raise AssertionError('Please us a comma (,) delimited csv file ',
+            'instead of {}.'.format(dialect.delimiter))
 
-        csv_df = pd.read_csv(csv_open,
-                             sep=',',
-                             header=0)
+        csv_df = pd.read_csv(csv_open, sep=',')
 
         if len(csv_df.columns) != 2:
             raise AssertionError('The `.csv` should only have 2 column ',

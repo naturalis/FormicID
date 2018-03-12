@@ -100,7 +100,8 @@ def image_size(config):
     if model == 'DenseNet169':
         img_height, img_width = 224, 244
 
-    print('Img height: {0}. Img width: {1}. Set by choosen model: {2}'.format(img_height, img_width, model))
+    print('Choosen model: {2}. Img height: {0}. Img width: {1}.'.format(
+        img_height, img_width, model))
 
     return img_height, img_width
 
@@ -118,7 +119,10 @@ def img_load_shottype(shottype,
             - `d` (dorsal)
             - `p` (profile)
         datadir (str): The data directory that contains the `images` folder.
-        config (JSON): The JSON configuration file.
+        img_height (int): The image height, this will be inferred from the
+            choosen model, set by the configuration file.
+        img_height (int): The image width, this will be inferred from the
+            choosen model, set by the configuration file.
 
     Returns:
         images (array): images as numpy 4D arrays (batches, height, width,
@@ -133,6 +137,7 @@ def img_load_shottype(shottype,
                             'data',
                             datadir,
                             'images')
+
     if shottype not in ['h', 'd', 'p']:
         raise ValueError('Shottype should be either `h`, `d` or `p`.')
 
@@ -148,6 +153,7 @@ def img_load_shottype(shottype,
 
     images = []
     labels = []
+
     num_species = len(next(os.walk(data_dir))[1])
 
     print('Reading images from "{}"'.format(data_dir))
