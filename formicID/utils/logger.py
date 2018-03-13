@@ -29,7 +29,7 @@ from .utils import today_timestr
 # TensorBoard
 ###############################################################################
 
-class buildTB():
+class buildTB:
     def __init__(self, model, config):
         """A TensorBoard class object for viewing metrics of the trained model.
 
@@ -69,8 +69,7 @@ class buildTB():
 ###############################################################################
 
 
-class buildMC():
-
+class buildMC:
     def __init__(self, config):
         """Class object for saving Model Checkpoints.
 
