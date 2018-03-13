@@ -66,6 +66,7 @@
   - [Hyperopt | Distributed Asynchronous Hyperparameter Optimization in Python](http://hyperopt.github.io/hyperopt/)
 
 ### Neural Network guides and tutorials
+<<<<<<< HEAD
 
 - [A Beginner's Guide To Understanding Convolutional Neural Networks](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/)
 - [Convolutional Neural Network CNN with TensorFlow tutorial](https://pythonprogramming.net/cnn-tensorflow-convolutional-nerual-network-machine-learning-tutorial/?completed=/convolutional-neural-network-cnn-machine-learning-tutorial/)
@@ -89,6 +90,31 @@
 - [Neural Network Architecture Design](https://stackoverflow.com/questions/20009078/neural-network-architecture-design)
 - [Deep Learning for Computer Vision (Andrej Karpathy, OpenAI)](https://www.youtube.com/watch?v=u6aEYuemt0M)
 - [37 Reasons why your Neural Network is not working](https://blog.slavv.com/37-reasons-why-your-neural-network-is-not-working-4020854bd607)
+=======
+* [A Beginner's Guide To Understanding Convolutional Neural Networks](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/)
+* [Convolutional Neural Network CNN with TensorFlow tutorial](https://pythonprogramming.net/cnn-tensorflow-convolutional-nerual-network-machine-learning-tutorial/?completed=/convolutional-neural-network-cnn-machine-learning-tutorial/)
+* [Deep learning – Convolutional neural networks and feature extraction with Python](http://blog.christianperone.com/2015/08/convolutional-neural-networks-and-feature-extraction-with-python/)
+* [LeNet tutorial](http://deeplearning.net/tutorial/lenet.html)
+* [An Intuitive Explanation of Convolutional Neural Networks](https://ujjwalkarn.me/2016/08/11/intuitive-explanation-convnets/)
+* [Object Recognition with Convolutional Neural Networks in the Keras Deep Learning Library](https://machinelearningmastery.com/object-recognition-convolutional-neural-networks-keras-deep-learning-library/)
+* [Understanding CNN's](http://timdettmers.com/2015/03/26/convolution-deep-learning/)
+* [Convolutional Neural Networks - The Math of Intelligence (Week 4) - Sirarj Raval](https://www.youtube.com/watch?v=FTr3n7uBIuE)
+* [Code for "Convolutional Neural Networks - The Math of Intelligence (Week 4)" By Siraj Raval on Youtube](https://github.com/llSourcell/Convolutional_neural_network)
+* [Stanford University CS231 - Youtube playlist](https://www.youtube.com/playlist?list=PL3FW7Lu3i5JvHM8ljYj-zLfQRF3EO8sYv)
+* [Stanford University CS231 - Github](http://cs231n.github.io/)
+* [Stanford University CS231 - Google Cloud tutorial](http://cs231n.github.io/gce-tutorial/)
+* [Neural Networks Demystified](https://www.youtube.com/playlist?list=PLiaHhY2iBX9hdHaRr6b7XevZtgZRa1PoU)
+* [Ritchie Ng - Exploring notMNIST with TensorFlow](http://www.ritchieng.com/machine-learning/deep-learning/tensorflow/notmnist/)
+* [Introduction to Deep Neural Networks](https://deeplearning4j.org/neuralnet-overview.html)
+* [Deep learning convolutional neural network by tensorflow python, complete and easy understanding.](https://www.codeproject.com/Articles/1216535/Deep-Learning)
+* [MetaQNN](https://github.com/bowenbaker/metaqnn)
+* [Conv Nets: A Modular Perspective](http://colah.github.io/posts/2014-07-Conv-Nets-Modular/)
+* [Understanding Convolutions](http://colah.github.io/posts/2014-07-Understanding-Convolutions/)
+* [Neural Network Architecture Design](https://stackoverflow.com/questions/20009078/neural-network-architecture-design)
+* [Deep Learning for Computer Vision (Andrej Karpathy, OpenAI)](https://www.youtube.com/watch?v=u6aEYuemt0M)
+* [37 Reasons why your Neural Network is not working](https://blog.slavv.com/37-reasons-why-your-neural-network-is-not-working-4020854bd607)
+* [Image classification with Keras and deep learning](https://www.pyimagesearch.com/2017/12/11/image-classification-with-keras-and-deep-learning/)
+>>>>>>> 77ed4fd27b301a775fbba7637459392319aec47b
 
 ### Optimization
 

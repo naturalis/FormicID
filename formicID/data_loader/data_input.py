@@ -132,8 +132,6 @@ def img_load_shottype(shottype,
         ValueError: If the shottype is not one of `h`, `d` or `p`.
 
     """
-    # TODO: resize_target description
-
     img_height, img_width = img_size
 
     data_dir = os.path.join(wd,
@@ -189,7 +187,7 @@ def img_load_shottype(shottype,
                                    grayscale=False)
                     imgs = img_to_array(img,
                                         data_format='channels_last')
-                    # print(imgs.shape)
+
                     images.append(imgs)
 
             label = species
