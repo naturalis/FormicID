@@ -28,21 +28,20 @@ from AntWeb.json_to_csv import batch_json_to_csv
 from data_loader.data_input import load_data
 from data_scraper.scrape import image_scraper
 from models.models import compile_model, load_model
+from testers.tester import model_evaluate
 from trainers.train import trainer
 from utils.img import save_augmentation, show_multi_img
 from utils.load_config import process_config
-from utils.logger import build_es, buildMC, buildTB
+from utils.logger import build_es, build_rlrop, buildMC, buildTB
 from utils.model_utils import (make_multi_gpu, model_summary,
                                model_visualization)
 from utils.utils import create_dirs, get_args
 
+# Parameters and settings
+###############################################################################
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # To disable the tf warning for compiling in SEE4.2
 # 0 = all logs, 1 = info, 2 = warnings, 3 = error
-
-# Parameters and settings
-###############################################################################
-
 
 # Main
 ###############################################################################
@@ -52,7 +51,7 @@ def main():
     logging.basicConfig(filename='loggerfile.log',
                         format='[%(asctime)s] - [%(levelname)s]: %(message)s',
                         filemode='w',
-                        level=logging.INFO)
+                        level=logging.DEBUG)
     logging.info('Keras version: {}'.format(keras_version))
 
     # Get args
@@ -66,26 +65,26 @@ def main():
 
     # Creating urls and export to json files
     ###########################################################################
-    urls_to_json(csv_file='testgenusspecies.csv',
-                 input_dir='data',
-                 output_dir='test5sp_f',
-                 offset_set=0,
-                 limit_set=200)
+    # urls_to_json(csv_file='testgenusspecies.csv',
+    #              input_dir='data',
+    #              output_dir='test5sp_f',
+    #              offset_set=0,
+    #              limit_set=200)
 
     # Downloading from json files to a scrape ready csv file
     ###########################################################################
-    batch_json_to_csv(input_dir='2018-03-13-test5sp_f',
-                      output_dir='2018-03-13-test5sp_f',
-                      csvname='csv_images.csv')
+    # batch_json_to_csv(input_dir='2018-03-13-test5sp_f',
+    #                   output_dir='2018-03-13-test5sp_f',
+    #                   csvname='csv_images.csv')
 
     # Scrape the images from the csv file and name accordingly
     ###########################################################################
-    image_scraper(csvfile='csv_images.csv',
-                  input_dir='2018-03-13-test5sp_f',
-                  # start=0,
-                  # end=1491,
-                  dir_out_name='images',
-                  update=True)
+    # image_scraper(csvfile='csv_images.csv',
+    #               input_dir='2018-03-13-test5sp_f',
+    #               # start=0,
+    #               # end=1491,
+    #               dir_out_name='images',
+    #               update=True)
 
     # create experiment related directories
     ###########################################################################
@@ -94,7 +93,7 @@ def main():
     # Initializing the data
     ###########################################################################
     X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data(
-        datadir='2018-03-13-test5sp_f',
+        datadir='2018-03-06-test5sp',
         config=config,
         shottype='h')
     # show_multi_img(X_train=X_train, Y_train=Y_train)
@@ -118,9 +117,11 @@ def main():
 
     # Initialize logger
     ###########################################################################
-    logger = [buildMC(config=config).build_mc(),
-              buildTB(model=model_formicID, config=config).build_tb(),
-              build_es()]
+    logger = [
+        # buildMC(config=config).build_mc(),
+        build_rlrop(),
+        # build_es(),
+        buildTB(model=model_formicID, config=config).build_tb()]
 
     # Training in batches with iterator
     ###########################################################################
@@ -135,11 +136,10 @@ def main():
     # Evaluation
     ###########################################################################
     score = model_evaluate(model_formicID, X_test, Y_test)
-    logging.info(score)
 
     # Testing
     ###########################################################################
-    # prediction = model.predict_classes(X_test, verbose=1)
+    # prediction = model_formicID.predict_classes(X_test, verbose=1)
     # logging.info(prediction)
 
     K.clear_session()

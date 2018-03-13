@@ -191,9 +191,7 @@ def model_visualization(model, config):
     """
     filename = str(config.exp_name)
     output_dir = os.path.join(config.summary_dir, filename + '_model.png')
-
     logging.info('The model is saved in: {}'.format(output_dir))
-
     return plot_model(model=model,
                       to_file=output_dir,
                       show_shapes=True,
@@ -216,7 +214,5 @@ def make_multi_gpu(model, gpus=2):
     """
     with tf.device('/cpu:0'):
         model = model
-
     gpu_model = multi_gpu_model(model=model, gpus=gpus)
-
     return multi_gpu_formicID

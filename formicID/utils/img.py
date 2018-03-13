@@ -89,18 +89,13 @@ def save_augmentation(image,
     """
     if not os.path.exists(os.path.join(config.summary_dir, 'augmented')):
         os.mkdir(os.path.join(config.summary_dir, 'augmented'))
-
     augment_dir = os.path.join(config.summary_dir, 'augmented')
-
     filename, _ = os.path.split(image)
     filename = os.path.basename(filename)
-
     img_file = image
-
     img_loaded = load_img(img_file)
     img = img_to_array(img_loaded)
     img = img.reshape((1,) + img.shape)
-
     i = 0
     idgen_train = idg_train()
     for batch in idgen_train.flow(img,
@@ -111,5 +106,4 @@ def save_augmentation(image,
         i += 1
         if i > 19:
             break
-
     logging.info('Augmented files can be found in {}'.format(augment_dir))

@@ -18,7 +18,8 @@ on the models performance.
 import os
 
 import keras.backend as K
-from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
+from keras.callbacks import (EarlyStopping, ModelCheckpoint, ReduceLROnPlateau,
+                             TensorBoard)
 
 from .utils import today_timestr
 
@@ -43,6 +44,8 @@ class buildTB:
                 dashboard
 
         """
+        # TODO: Convert to function
+        # TODO: Fix problem with multiple meta graphs
         self.config = config
         self.model = model
         self.filepath = os.path.join(self.config.summary_dir,
@@ -59,10 +62,8 @@ class buildTB:
                          write_images=True)
 
         tb.set_model(model)
-
         Callbacks_tb = []
         Callbacks_tb.append(tb)
-
         return tb
 
 # Model Checkpoint
@@ -80,20 +81,19 @@ class buildMC:
             type: Saves the models at certain checkpoints as `.h5` files.
 
         """
+        # TODO: Convert to function
         self.config = config
         self.filepath = os.path.join(self.config.checkpoint_dir,
                                      'weights_{epoch:02d}-{val_loss:.2f}.hdf5')
 
     def build_mc(self):
         filepath = self.filepath
-
         mcp = ModelCheckpoint(filepath=filepath,
                               monitor='val_loss',
                               verbose=0,
                               mode='auto',
                               save_best_only=True,
                               period=1)
-
         return mcp
 
 
@@ -107,16 +107,36 @@ def build_es():
 
     """
     es = EarlyStopping(monitor='val_loss',
-                       min_delta=0,
+                       min_delta=0.5,
                        patience=2,
                        verbose=1,
                        mode='auto')
-
     return es
 
 
+# Reduce learning rate on plateau
+###############################################################################
+
+def build_rlrop():
+    """Reduce learning rate when a metric has stopped improving.
+
+    Returns:
+        Learning rate will decrease when a metric is not improving anymore.
+
+    """
+    rlrop = ReduceLROnPlateau(monitor='val_loss',
+                              factor=0.1,
+                              patience=10,
+                              verbose=1,
+                              mode='auto',
+                              epsilon=1e-4,
+                              cooldown=0,
+                              min_lr=0)
+    return rlrop
+
 # RMSE
 ###############################################################################
+
 
 def rmse(y_true,
          y_pred):

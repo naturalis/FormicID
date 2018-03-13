@@ -132,6 +132,7 @@ def img_load_shottype(shottype,
 
     """
     img_width, img_height = img_size
+    logging.info('The dataset is {}'.format(datadir))
     data_dir = os.path.join(wd,
                             'data',
                             datadir,
@@ -192,11 +193,12 @@ def img_load_shottype(shottype,
     labels = to_categorical(labels,
                             num_classes=num_species)
     labels = K.cast_to_floatx(labels)
-    logging.info('Number of species: {}'.format(num_species))
-    logging.info('Images shape (N, W, H, C): {}'.format(images.shape))
-    logging.info('Images dtype: {}'.format(images.dtype))
-    logging.info('Labels shape (N, L): {}'.format(labels.shape))
-    logging.info('Labels dtype: {}'.format(labels.dtype))
+    logging.debug('Number of species: {}'.format(num_species))
+    logging.debug('Images shape (N, W, H, C): {}'.format(images.shape))
+    logging.debug('Images dtype: {}'.format(images.dtype))
+    logging.debug('Labels shape (N, L): {}'.format(labels.shape))
+    logging.debug('Labels dtype: {}'.format(labels.dtype))
+    print('\n') # Because text after tqdm does not escape on a new line.
     return images, labels, num_species
 
 
@@ -258,10 +260,10 @@ def train_val_test_split(images,
     except TypeError:
         logging.error('`val_size` is not an integer.')
     nb_specimens = len(X_test) + len(X_train) + len(X_val)
-    logging.info('Total number of images: {}'.format(nb_specimens))
-    logging.info('Number of X_test: {}'.format(len(X_test)))
-    logging.info('Number of X_train: {}'.format(len(X_train)))
-    logging.info('Number of X_val: {}'.format(len(X_val)))
+    logging.debug('Total number of images: {}'.format(nb_specimens))
+    logging.debug('Number of X_test: {}'.format(len(X_test)))
+    logging.debug('Number of X_train: {}'.format(len(X_train)))
+    logging.debug('Number of X_val: {}'.format(len(X_val)))
     return X_train, Y_train, X_val, Y_val, X_test, Y_test
 
 

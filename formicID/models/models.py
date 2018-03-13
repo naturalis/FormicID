@@ -89,7 +89,6 @@ def load_model(config,
             channels). The default input size for this model is 299x299.
     """
     model = config.model
-
     if model not in ['InceptionV3',
                      'Xception',
                      'Resnet50',
@@ -98,14 +97,11 @@ def load_model(config,
         raise ValueError('Model should be one of `InceptionV3`, `Xception`, ',
                          '`Resnet50` or `DenseNet169` or `Build`. Please ',
                          'set a correct model.')
-
     if model == 'Build':
         end_model = build_model(config=config,
                                 input_shape=(299, 299, 3),
                                 num_species=num_species)
-
     else:
-
         if model == 'InceptionV3':
             base_model = InceptionV3(include_top=False,
                                      weights=None,
@@ -116,12 +112,12 @@ def load_model(config,
                                   classes=None)
         if model == 'DenseNet169':
             base_model = DenseNet169(include_top=False,
-                                     weights=None)
+                                     weights=None,
+                                     classes=None)
         if model == 'Xception':
             base_model = Xception(include_top=False,
                                   weights=None,
                                   classes=None)
-
         # add a global spatial average pooling layer
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
@@ -129,12 +125,9 @@ def load_model(config,
         x = Dense(1024, activation='relu')(x)
         # and a logistic layer with num_species
         predictions = Dense(num_classes, activation='softmax')(x)
-
         # this is the model we will train
         end_model = Model(inputs=base_model.input, outputs=predictions)
-
     logging.info('The model is build with succes.')
-
     return end_model
 
 
@@ -151,11 +144,9 @@ def compile_model(model, config):
     """
     optimizer = config.optimizer
     learning_rate = config.learning_rate
-
     if optimizer not in ['Nadam', 'Adam', 'SGD', 'RMSprop']:
         raise ValueError('The optimizer should be one of: `Nadam`, `Adam`, ',
                          '`SGD` or `RMSprop`')
-
     if optimizer == 'Nadam':
         opt = Nadam(lr=learning_rate,
                     beta_1=0.9,
@@ -179,11 +170,8 @@ def compile_model(model, config):
                       rho=0.9,
                       epsilon=1e-08,
                       decay=0.0)
-
     model.compile(loss='categorical_crossentropy',
                   optimizer=opt,
                   metrics=['accuracy', rmse])
-
     logging.info('The model is compiled with succes.')
-
     return model
