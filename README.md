@@ -6,30 +6,38 @@ _Classification of images of ants using deep learning_
 
 <!-- TOC depthFrom:1 depthTo:2 withLinks:1 updateOnSave:0 orderedList:0 -->
 
--   [FormicID](#formicid)
--   [Description](#pencil-description)
-    - [Proposal](#blacknib-proposal)
--   [How to use](#arrowforward-how-to-use)
-    - [Step 1 - Get the code](#step-1-get-the-code)
-    - [Step 2 - Downloading the data](#step-2-downloading-the-data)
-    - [Step 3 - Configuration](#step-3-configuration)
-    - [Step 4 - Model initialisation and training](#step-4-model-initialisation-and-training)
-    - [Step 5 Evaluation](#step-5-evaluation)
-    - [Additional](#additional)
--   [Project Structure](#bookmark-project-structure)
--   [AntWeb](#ant-antweb)
-    - [AntWeb API](#satellite-antweb-api)
-    - [Images / Dataset](#openfilefolder-images-dataset)
--   [Neural Network](#computer-neural-network)
-    - [Ready to use models](#mag-ready-to-use-models)
-    - [Self-made model](#triangularruler-self-made-model)
--   [Requirements](#clipboard-requirements)
--   [Credits](#scroll-credits)
--   [Why this name, FormicID?](#exclamation-why-this-name-formicid)
+ - [FormicID](#formicid)
+- [Description](#pencil-description)
+
+  - [Proposal](#blacknib-proposal)
+
+- [How to use](#arrowforward-how-to-use)
+
+  - [Step 1 - Get the code](#step-1-get-the-code)
+  - [Step 2 - Downloading the data](#step-2-downloading-the-data)
+  - [Step 3 - Configuration](#step-3-configuration)
+  - [Step 4 - Model initialisation and training](#step-4-model-initialisation-and-training)
+  - [Step 5 Evaluation](#step-5-evaluation)
+  - [Additional](#additional)
+
+- [Project Structure](#bookmark-project-structure)
+- [AntWeb](#ant-antweb)
+
+  - [AntWeb API](#satellite-antweb-api)
+  - [Images / Dataset](#openfilefolder-images-dataset)
+
+- [Neural Network](#computer-neural-network)
+
+  - [Ready to use models](#mag-ready-to-use-models)
+  - [Self-made model](#triangularruler-self-made-model)
+
+- [Requirements](#clipboard-requirements)
+- [Credits](#scroll-credits)
+- [Why this name, FormicID?](#exclamation-why-this-name-formicid)
 
 <!-- /TOC -->
 
-# :pencil: Description
+ # :pencil: Description
 
 Code repository for CNN-based image classification of AntWeb images
 
@@ -58,29 +66,29 @@ _Skip step 2 if you don't need to download the data._
 
 Create a 2 column csv file with the genus+species you want to download from AntWeb as follows:
 
-| genus  | species  |
-| ------ | -------- |
-| genus1 | species1 |
-| genus2 | species2 |
-| ...    | ...      |
+genus  | species
+------ | --------
+genus1 | species1
+genus2 | species2
+...    | ...
 
 ### Step 2.2 - Get the species information
 
 Uncomment the `urls_to_json()` function. This will download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file (because this is not a set of real species). Set the following arguments in `urls_to_json`:
 
--   `csv_file`: csvfile name
--   `input_dir`: input directory
--   `output_dir`: output directory
--   `offset_set`: offset
--   `limit_set`: limit
+- `csv_file`: csvfile name
+- `input_dir`: input directory
+- `output_dir`: output directory
+- `offset_set`: offset
+- `limit_set`: limit
 
 ### Step 2.3 - Format the species information
 
 Uncomment the `batch_json_to_csv()` function. This will create a csv file with the relevant information for downloading and naming images correctly to the output folder. Set the following arguments in `batch_json_to_csv`):
 
--   `input_dir`: input directory
--   `output_dir`: output directory
--   `csvname`: csv name for the new csv
+- `input_dir`: input directory
+- `output_dir`: output directory
+- `csvname`: csv name for the new csv
 
 ### Step 2.4 - Download the images
 
@@ -90,30 +98,33 @@ Uncomment the `image_scraper()` function. This will download the images to an ou
 
 Set the following settings in `image_scraper()`:
 
--   `csvfile`: csv file from step 2.3
--   `input_dir`: input_dir directory of the csv file
--   `start`: start number (line where to start in the csv file)
--   `end`: end number (line where to end in the csv file)
--   `output_dir_name`: directory name for the images
--   `update`: update (whether to update the csv file for broken urls or not)
+- `csvfile`: csv file from step 2.3
+- `input_dir`: input_dir directory of the csv file
+- `start`: start number (line where to start in the csv file)
+- `end`: end number (line where to end in the csv file)
+- `output_dir_name`: directory name for the images
+- `update`: update (whether to update the csv file for broken urls or not)
 
 ## Step 3 - Configuration
 
 Configure `formicID/configs/config.json`
 
--   Give the experiment a name.
--   Set the number of `epochs`, `iterations per epoch`, `learning rate`, `batch size`, `dropout` and `seed`
--   Set the `model` to one of the Keras model applications that can be loaded from `models/models.py`;
-    -   `InceptionV3`
-    -   `Xception`
-    -   `Resnet50`
-    -   `DenseNet169`
-    -   `Build` (this is the own designed network)
--   Set the `optimizer` to one of the following:
-    -   `Nadam`
-    -   `Adam`
-    -   `RMSprop`
-    -   `SGD`
+- Give the experiment a name.
+- Set the number of `epochs`, `iterations per epoch`, `learning rate`, `batch size`, `dropout` and `seed`
+- Set the `model` to one of the Keras model applications that can be loaded from `models/models.py`;
+
+  - `InceptionV3`
+  - `Xception`
+  - `Resnet50`
+  - `DenseNet169`
+  - `Build` (this is the own designed network)
+
+- Set the `optimizer` to one of the following:
+
+  - `Nadam`
+  - `Adam`
+  - `RMSprop`
+  - `SGD`
 
 ```json
 {
@@ -141,56 +152,58 @@ After training it will be possible to launch TensorBoard to view loss, accuracy,
 
 Utilities that can be loaded are:
 
--   Saving examples of data augmentation (`utils/img.py`)
--   Visualizing a few of images in a plot (`utils/img.py`)
--   Handeling models (e.g. saving, loading, visualizing, etc.) (`utils/model_utils.py`)
--   Training on multiple GPUs (`utils/model_utils.py`)
--   The `utils/load_config.py` is for reading the configuration file from step 3.
--   `utils/utils.py` has general utility functions and variables.
--   _More coming later_
+- Saving examples of data augmentation (`utils/img.py`)
+- Visualizing a few of images in a plot (`utils/img.py`)
+- Handeling models (e.g. saving, loading, visualizing, etc.) (`utils/model_utils.py`)
+- Training on multiple GPUs (`utils/model_utils.py`)
+- The `utils/load_config.py` is for reading the configuration file from step 3.
+- `utils/utils.py` has general utility functions and variables.
+- _More coming later_
 
 _To be continued_
 
 # :bookmark: Project Structure
 
-    |-- formicID
+```
+|-- formicID
+    |-- __init__.py
+    |-- main.py
+    |-- AntWeb
+    |   |-- __init__.py
+    |   |-- AW2_to_json.py
+    |   |-- AW3_to_json.py    
+    |   |-- json_to_csv.py
+    |-- configs
+    |   |-- config.json
+    |-- data_loader
+    |   |-- __init__.py
+    |   |-- data_input.py
+    |-- data_scraper
+    |   |-- __init__.py
+    |   |-- scrape.py
+    |-- models
+    |   |-- __init__.py
+    |   |-- build.py
+    |   |-- models.py
+    |-- testers
+    |   |-- __init__.py
+    |   |-- tester.py
+    |-- trainers
+    |   |-- __init__.py
+    |   |-- train.py
+    |-- utils
         |-- __init__.py
-        |-- main.py
-        |-- AntWeb
-        |   |-- __init__.py
-        |   |-- AW2_to_json.py
-        |   |-- AW3_to_json.py    
-        |   |-- json_to_csv.py
-        |-- configs
-        |   |-- config.json
-        |-- data_loader
-        |   |-- __init__.py
-        |   |-- data_input.py
-        |-- data_scraper
-        |   |-- __init__.py
-        |   |-- scrape.py
-        |-- models
-        |   |-- __init__.py
-        |   |-- build.py
-        |   |-- models.py
-        |-- testers
-        |   |-- __init__.py
-        |   |-- tester.py
-        |-- trainers
-        |   |-- __init__.py
-        |   |-- train.py
-        |-- utils
-            |-- __init__.py
-            |-- img.py
-            |-- load_config.py
-            |-- logger.py
-            |-- model_utils.py
-            |-- utils.py
+        |-- img.py
+        |-- load_config.py
+        |-- logger.py
+        |-- model_utils.py
+        |-- utils.py
+```
 
 # :ant: AntWeb
 
 > AntWeb is the world's largest online database of images, specimen records, and natural history information on ants. It is community driven and open to contribution from anyone with specimen records, natural history comments, or images.
->
+
 > Our mission is to publish for the scientific community high quality images of all the world's ant species. AntWeb provides tools for submitting images, specimen records, annotating species pages, and managing regional species lists.
 
 _Text from Antweb.org_
@@ -199,25 +212,25 @@ _Text from Antweb.org_
 
 Images are harvested from [`www.AntWeb.org`](www.antweb.org). At this moment version 2 is used because version 3 was not released when the project started. Version 3 is also still in beta. Later, the scripts will be changed to use version 3.
 
--   [AntWeb API version 2](https://www.antweb.org/api/v2/)
--   [AntWeb API version 3 beta](https://www.antweb.org/documentation/api/apiV3.jsp)
+- [AntWeb API version 2](https://www.antweb.org/api/v2/)
+- [AntWeb API version 3 beta](https://www.antweb.org/documentation/api/apiV3.jsp)
 
 ## :open_file_folder: Images / Dataset
 
 Below you can see two images representing the dataset. One is an image of _Lasius flavus_ and the other one is a mosaic of _Tetramorium gollum_ I made using the image set.
 
-| _Lasius flavus_                                                                      | Mosaic of _Tetramorium gollum_                                                 |
-| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
-| ![](https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true) | ![](https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true) |
+_Lasius flavus_                                                                      | Mosaic of _Tetramorium gollum_
+------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------
+![](https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true) | ![](https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true)
 
 # :computer: Neural Network
 
 ## :mag: Ready to use models
 
--   Inception v3 (recommended)
--   Xception
--   ResNet
--   DenseNet
+- Inception v3 (recommended)
+- Xception
+- ResNet
+- DenseNet
 
 ## :triangular_ruler: Self-made model
 
@@ -225,15 +238,15 @@ It will also be possible to use a model made by the author.
 
 # :clipboard: Requirements
 
--   [Keras | Why use Keras?](https://keras.io/why-use-keras/)
--   [Requirements](requirements.txt)
+- [Keras | Why use Keras?](https://keras.io/why-use-keras/)
+- [Requirements](requirements.txt)
 
 # :scroll: Credits
 
--   Naturalis Biodiversity Center
--   Supervisor: dr. Rutger Vos
--   2nd Corrector: dr. Jeremy Miller
--   [Bookmarks and Resources](docs/Bookmarks-and-resources.md)
+- Naturalis Biodiversity Center
+- Supervisor: dr. Rutger Vos
+- 2nd Corrector: dr. Jeremy Miller
+- [Bookmarks and Resources](docs/Bookmarks-and-resources.md)
 
 # :exclamation: Why this name, FormicID?
 
