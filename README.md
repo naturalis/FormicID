@@ -100,19 +100,15 @@ Set the following settings in `image_scraper()`:
 ## Step 3 - Configuration
 
 Configure `formicID/configs/config.json`
-
 - Give the experiment a name.
 - Set the number of `epochs`, `iterations per epoch`, `learning rate`, `batch size`, `dropout` and `seed`
 - Set the `model` to one of the Keras model applications that can be loaded from `models/models.py`:
-
   - `InceptionV3`
   - `Xception`
   - `Resnet50`
   - `DenseNet169`
   - `Build` (this is the own designed network)
-
 - Set the `optimizer` to one of the following:
-
   - `Nadam`
   - `Adam`
   - `RMSprop`
@@ -211,7 +207,9 @@ Images are harvested from [`www.AntWeb.org`](www.antweb.org). At this moment ver
 
 Below you can see two images representing the dataset. One is an image of _Lasius flavus_ and the other one is a mosaic of _Tetramorium gollum_ I made using the image set.
 
-_Lasius flavus_ | Mosaic of _Tetramorium gollum_ ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ ![](https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true) | ![](https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true)
+| _Lasius flavus_ | Mosaic of _Tetramorium gollum_ |
+|----------------------------------- | ----------------------------------|
+|![](https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true) | ![](https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true)|
 
 # :computer: Neural Network
 

@@ -14,7 +14,8 @@ should be in a correct folder structure (divided per shottype and species). The
 script also encodes labels and preprocesses the images into the right format
 for tensorflow ([-1, 1] range) and in RGB. With `train_val_test_split` the
 data can be split in 3 subsets: Training, validation and test sets. You can
-set the splits.
+set the splits. Imags are always in (width, height, channel) format. Only the
+Keras `load_img()` function reads a target size in (height, width).
 
 The files should be structured as follows:
 
@@ -59,11 +60,12 @@ from utils.utils import wd
 
 # Parameters and settings
 ###############################################################################
-seed = 1337
 
 
-# Load images
+# Return the image dimensions according to a choosen model
 ###############################################################################
+
+
 def image_size(config):
     """Function that returns the correct input size for the choosen model.
 
@@ -78,7 +80,6 @@ def image_size(config):
 
     """
     model = config.model
-
     if model not in ['InceptionV3',
                      'Xception',
                      'Resnet50',
@@ -88,24 +89,22 @@ def image_size(config):
             'Model should be one of `InceptionV3`, `Xception`, `Resnet50` or',
             '`DenseNet169` or `Build`. Please set a correct model in the '
             'config file. The set model: {} is incorrect'.format(model))
-
     if model == 'InceptionV3':
-        img_height, img_width = 299, 299
-
+        img_width, img_height = 299, 299
     if model == 'Xception':
-        img_height, img_width = 299, 299
-
+        img_width, img_height = 299, 299
     if model == 'ResNet50':
-        img_height, img_width = 224, 224
-
+        img_width, img_height = 224, 224
     if model == 'DenseNet169':
-        img_height, img_width = 224, 244
-
+        img_width, img_height = 224, 244
     logging.info('Choosen model: {}. '
-                 'Img height: {}. '
-                 'Img width: {}.'.format(model, img_height, img_width))
+                 'Img width: {}. '
+                 'Img height: {}.'.format(model, img_width, img_height))
+    return img_width, img_height
 
-    return img_height, img_width
+
+# Load the images providing a shottype
+###############################################################################
 
 
 def img_load_shottype(shottype,
@@ -120,11 +119,11 @@ def img_load_shottype(shottype,
             - `d` (dorsal)
             - `p` (profile)
         datadir (str): The data directory that contains the `images` folder.
-        img_size (int): The image height and width, this will be inferred from
+        img_size (int): The image width and height, this will be inferred from
             the choosen model, set by the configuration file.
 
     Returns:
-        images (array): images as numpy 4D arrays (batches, height, width,
+        images (array): images as numpy 4D arrays (batches, width, height,
         channels) (RGB).
         labels (array): labels as numpy 2d arrays (batches, labels).
 
@@ -132,16 +131,13 @@ def img_load_shottype(shottype,
         ValueError: If the shottype is not one of `h`, `d` or `p`.
 
     """
-    img_height, img_width = img_size
-
+    img_width, img_height = img_size
     data_dir = os.path.join(wd,
                             'data',
                             datadir,
                             'images')
-
     if shottype not in ['h', 'd', 'p']:
         raise ValueError('Shottype should be either `h`, `d` or `p`.')
-
     if shottype == 'h':
         data_dir = os.path.join(data_dir,
                                 'head')
@@ -151,16 +147,12 @@ def img_load_shottype(shottype,
     if shottype == 'p':
         data_dir = os.path.join(data_dir,
                                 'profile')
-
     images = []
     labels = []
-
     for _, dirs, _ in os.walk(data_dir):
         num_species = len(dirs)
         break
-
     logging.info('Reading images from "{}"'.format(data_dir))
-
     for species in tqdm(os.listdir(data_dir),
                         desc='Reading folders',
                         unit='species'):
@@ -174,6 +166,8 @@ def img_load_shottype(shottype,
                                                      species,
                                                      image),
                                    grayscale=False,
+                                   # Keras load_img takes H, W
+                                   # PIL image instance uses W, H
                                    target_size=(img_height, img_width),
                                    interpolation='nearest')
                     imgs = img_to_array(img,
@@ -187,30 +181,22 @@ def img_load_shottype(shottype,
                                    grayscale=False)
                     imgs = img_to_array(img,
                                         data_format='channels_last')
-
                     images.append(imgs)
-
             label = species
             labels = np.append(labels, label)
-
-    # images_stacked = np.array(images, ndmin=4)
-    # images = np.reshape(images, (-1, img_height, img_width, 3))
-
+    images = np.reshape(images, (-1, img_width, img_height, 3))
     # Cast np array to keras default float type ('float32')
     images = K.cast_to_floatx(images)
-
     le = LabelEncoder()
     labels = le.fit_transform(labels)
     labels = to_categorical(labels,
                             num_classes=num_species)
     labels = K.cast_to_floatx(labels)
-
     logging.info('Number of species: {}'.format(num_species))
-    logging.info('Images shape: {}'.format(images_stacked.shape))
-    logging.info('Images dtype: {}'.format(images_stacked.dtype))
-    logging.info('Labels shape: {}'.format(labels_stacked.shape))
-    logging.info('Labels dtype: {}'.format(labels_stacked.dtype))
-
+    logging.info('Images shape (N, W, H, C): {}'.format(images.shape))
+    logging.info('Images dtype: {}'.format(images.dtype))
+    logging.info('Labels shape (N, L): {}'.format(labels.shape))
+    logging.info('Labels dtype: {}'.format(labels.dtype))
     return images, labels, num_species
 
 
@@ -220,11 +206,13 @@ def img_load_shottype(shottype,
 
 def train_val_test_split(images,
                          labels,
+                         seed,
                          test_size=0.1,
                          val_size=0.135):
     """Split the data in a training, validation and test set. You can specify
-    the test size and validation size. The set will be split in to test -
-    training+validation first, and then training - validation will be split.
+    the test size and validation size. The set will be split in to (test -
+    (training + validation)) first, and then (training - validation) will be
+    split.
 
     Args:
         images (array): all images as 4d array.
@@ -243,46 +231,42 @@ def train_val_test_split(images,
 
     """
     try:
-        sss=StratifiedShuffleSplit(n_splits=1,
+        sss = StratifiedShuffleSplit(n_splits=1,
                                      test_size=test_size,
                                      random_state=seed)
         sss.get_n_splits(images,
                          labels)
-
         for train_index, test_index in sss.split(images,
                                                  labels):
-            logging.info('Test index (10%%): {}'.format(test_index))
-            X_train, X_test=images[train_index], images[test_index]
-            Y_train, Y_test=labels[train_index], labels[test_index]
-
+            logging.debug('Test index (10%%): {}'.format(test_index))
+            X_train, X_test = images[train_index], images[test_index]
+            Y_train, Y_test = labels[train_index], labels[test_index]
     except TypeError:
         logging.error('`test_size` is not an integer.')
-
     try:
-        sss=StratifiedShuffleSplit(n_splits=1,
+        sss = StratifiedShuffleSplit(n_splits=1,
                                      test_size=val_size,
                                      random_state=seed)
         sss.get_n_splits(X_train,
                          Y_train)
-
         for train_index, val_index in sss.split(X_train,
                                                 Y_train):
-            logging.info('Training index (~75%%): {}'.format(train_index))
-            logging.info('Validation index (~15%%): {}'.format(val_index))
-            X_train, X_val=X_train[train_index], X_train[val_index]
-            Y_train, Y_val=Y_train[train_index], Y_train[val_index]
-
+            logging.debug('Training index (~75%%): {}'.format(train_index))
+            logging.debug('Validation index (~15%%): {}'.format(val_index))
+            X_train, X_val = X_train[train_index], X_train[val_index]
+            Y_train, Y_val = Y_train[train_index], Y_train[val_index]
     except TypeError:
         logging.error('`val_size` is not an integer.')
-
-    # Check all the numbers
-    nb_specimens=len(X_test) + len(X_train) + len(X_val)
+    nb_specimens = len(X_test) + len(X_train) + len(X_val)
     logging.info('Total number of images: {}'.format(nb_specimens))
     logging.info('Number of X_test: {}'.format(len(X_test)))
     logging.info('Number of X_train: {}'.format(len(X_train)))
     logging.info('Number of X_val: {}'.format(len(X_val)))
-
     return X_train, Y_train, X_val, Y_val, X_test, Y_test
+
+
+# Stitching it all together
+###############################################################################
 
 
 def load_data(datadir, config, shottype='h'):
@@ -303,18 +287,17 @@ def load_data(datadir, config, shottype='h'):
             testing.
 
     """
-    img_height, img_width=image_size(config=config)
-
-    images, labels, num_species=img_load_shottype(shottype=shottype,
-                                                    datadir=datadir)
-                                                    # img_size=(img_width, img_width))
-
-    X_train, Y_train, X_val, Y_val, X_test, Y_test=train_val_test_split(
+    seed = config.seed
+    img_width, img_height = image_size(config=config)
+    images, labels, num_species = img_load_shottype(shottype=shottype,
+                                                    datadir=datadir,
+                                                    img_size=(img_width,
+                                                              img_height))
+    X_train, Y_train, X_val, Y_val, X_test, Y_test = train_val_test_split(
         images=images,
         labels=labels,
+        seed=seed,
         test_size=0.1,
         val_size=0.135)
-
     logging.info('Data is loaded, split and put in generators.')
-
     return X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species

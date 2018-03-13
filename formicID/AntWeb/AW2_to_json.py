@@ -61,12 +61,10 @@ def create_url(limit,
     """
     # Genus and species are optional arguments, not providing them will
     # download all species.
-
     genus = kwargs.get('genus', None)
     species = kwargs.get('species', None)
     country = kwargs.get('country', None)
     caste = kwargs.get('caste', None)
-
     base_url = 'http://www.antweb.org/api/v2/?'
     arguments = {    # API arguments for in the url
         'limit':        limit,
@@ -74,13 +72,11 @@ def create_url(limit,
         'genus':        genus,
         'species':      species,
         'country':      country,
-        'caste':        caste  # not working
-    }
-
+        'caste':        caste}  # not working
     url = requests.get(url=base_url,
                        params=arguments)
-
     return url
+
 
 # Download JSON files from URLs
 ###############################################################################
@@ -101,7 +97,6 @@ def get_json(input_url):
     """
     r = requests.get(url=input_url)
     data = r.json()
-
     if data != None:
         return data
     else:
@@ -143,86 +138,63 @@ def urls_to_json(csv_file,
     """
     if limit_set > 12000:
         raise ValueError('The `limit_set` should be lower than 12,000.')
-
     input_dir = os.path.join(wd, input_dir)
-
     output_dir = os.path.join(input_dir,
                               todaystr + '-' + output_dir,
                               'json_files')
-
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-
     if csv_file.endswith('.csv') == True:
         csv_file = os.path.join(input_dir,
                                 csv_file)
     else:
         raise AssertionError('You have not set a `.csv` correctly.')
-
     logging.info('Reading {} and creating json_files folder.'.format(csv_file))
-
     with open(csv_file,
               'rt') as csv_open:
-
         dialect = Sniffer().sniff(csv_open.readline(), [',', ';'])
         csv_open.seek(0)
         if dialect.delimiter == ';':
             raise AssertionError('Please us a comma (,) delimited csv file ',
                                  'instead of {}.'.format(dialect.delimiter))
-
         csv_df = pd.read_csv(csv_open, sep=',')
-
         if len(csv_df.columns) != 2:
             raise AssertionError('The `.csv` should only have 2 column ',
                                  'instead of {} column(s).'.format(
                                      len(csv_df.columns)))
-
         if csv_df.columns.tolist() != ['genus', 'species']:
             raise AssertionError('The columns are not correctoly named: '
                                  '{} and {}. The column headers should be '
                                  'column 1: `genus` and column 2: '
                                  '`species`.'.format(
                                      csv_df.columns.tolist()))
-
         nb_indet = 0
-
         for index, row in csv_df.iterrows():
             if row['species'] == 'indet':
                 nb_indet += 1
-
-        logging.info('{} indet species found and will be skipped from ',
+        logging.info('{} indet species found and will be skipped from '
                      'downloading.'.format(nb_indet))
-
         nb_specimens = csv_df.shape[0] - nb_indet
-
         for index, row in tqdm(csv_df.iterrows(),
                                total=nb_specimens,
                                desc='Downloading JSON files',
                                unit='Species'):
-
             url = create_url(limit=limit_set,
                              offset=offset_set,
                              genus=row['genus'],
                              species=row['species'])
-
             if row['species'] == 'indet':
                 print('Skipping "{}".'.format(url.url))
-
             else:
                 url = url.url
                 logging.info('JSON downladed from URL: {}'.format(url))
-
                 file_name = row['genus'] + '_' + row['species'] + '.json'
-
                 species = get_json(url)
-
                 with open(os.path.join(wd,
                                        output_dir,
                                        file_name), 'w') as jsonfile:
                     json.dump(species,
                               jsonfile)
-
-                time.sleep(0.5)  # wait 0.5s so AW does not crash
-
-        logging.info('Downloading is finished. {} JSON files have been ',
+                time.sleep(0.5)  # Sleep so AntWweb servers will not overload.
+        logging.info('Downloading is finished. {} JSON files have been '
                      'downloaded'.format(nb_specimens))

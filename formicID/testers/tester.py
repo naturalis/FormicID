@@ -29,7 +29,7 @@ from keras.model import test_on_batch
 ###############################################################################
 
 
-def model_evaluate(model):
+def model_evaluate(model, X_test, Y_test):
     """Evaluation will return the score of the model on a test set. This
     function will return the loss and accuracy.
 
@@ -42,7 +42,7 @@ def model_evaluate(model):
 
     """
 
-    loss, accuracy = model.evaluate(testdataX, testdataY)
+    loss, accuracy = model.evaluate(X_test, Y_test, verbose=0)
 
     logging.info("Loss: {:2f}, Accuracy: {:2f}".format(loss, accuracy * 100))
 

@@ -53,32 +53,24 @@ def filter_json(json_file):
     data_filtered = jmespath.search('specimens[].[catalogNumber,'
                                     'scientific_name, images."1".shot_types]',
                                     json_txt)
-
     lst = []
     for row in data_filtered:
-
         if row[2] != None:
-
             catalog_number = row[0]
             scientific_name = row[1]
             image_url = {}
-
             if 'h' in row[2]:
                 image_url['h'] = row[2]['h']['img'][1]
-
             if 'p' in row[2]:
                 image_url['p'] = row[2]['p']['img'][1]
-
             if 'd' in row[2]:
                 image_url['d'] = row[2]['d']['img'][1]
-
             for key in image_url:
                 new_row = [catalog_number,
                            scientific_name,
                            key,
                            image_url[key]]
                 lst.append(new_row)
-
     return lst
 
 
@@ -112,7 +104,6 @@ def batch_json_to_csv(csvname,
                                'data',
                                input_dir,
                                'json_files')
-
     if output_dir == None or output_dir == input_dir:
         output_dir = os.path.join(wd,
                                   'data',
@@ -121,47 +112,34 @@ def batch_json_to_csv(csvname,
         outputdir = os.mkdir(os.path.join(wd,
                                           'data',
                                           output_dir))
-
     nb_files = len(os.listdir(input_direc))
-
     if nb_files == 0:
         raise AssertionError('There are no files in the input directory.')
-
     df2 = pd.DataFrame()
-
     columns = ['catalog_number',
                'scientific_name',
                'shot_type',
                'image_url']
-
     for filename in tqdm(os.listdir(input_direc),
                          desc='Reading JSON files',
                          total=nb_files,
                          unit='JSON-files'):
-
         if filename.endswith('.json'):
-
             with open(os.path.join(input_direc,
                                    filename)) as data_file:
-
                 lst = filter_json(data_file)
-
                 df = pd.DataFrame(lst,
                                   columns=columns)
-
                 df2 = df2.append(df)
-
     # replace spaces between genus and species names with underscores
     df2.replace('\s+', '_',
                 regex=True,
                 inplace=True)
-
     df2.columns = columns
-
     df2.to_csv(os.path.join(output_dir,
                             csvname),
                index=False,
                header=True)
-    logging.info('All JSON files are read, filtered and added to the csv ',
+    logging.info('All JSON files are read, filtered and added to the csv '
                  'file. "\n{0}" was created in {1}'.format(csvname,
                                                            output_dir))
