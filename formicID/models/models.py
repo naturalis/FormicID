@@ -94,8 +94,8 @@ def load_model(config,
                      'Resnet50',
                      'DenseNet169',
                      'Build']:
-        raise ValueError('Model should be one of `InceptionV3`, `Xception`, ',
-                         '`Resnet50` or `DenseNet169` or `Build`. Please ',
+        raise ValueError('Model should be one of `InceptionV3`, `Xception`, '
+                         '`Resnet50` or `DenseNet169` or `Build`. Please '
                          'set a correct model.')
     if model == 'Build':
         end_model = build_model(config=config,
@@ -145,7 +145,7 @@ def compile_model(model, config):
     optimizer = config.optimizer
     learning_rate = config.learning_rate
     if optimizer not in ['Nadam', 'Adam', 'SGD', 'RMSprop']:
-        raise ValueError('The optimizer should be one of: `Nadam`, `Adam`, ',
+        raise ValueError('The optimizer should be one of: `Nadam`, `Adam`, '
                          '`SGD` or `RMSprop`')
     if optimizer == 'Nadam':
         opt = Nadam(lr=learning_rate,
