@@ -1,5 +1,5 @@
 {
-    "exp_name": "test5sp_windows",
+    "exp_name": "test5sp_quality",
     "num_epochs": 32,
     "num_iter_per_epoch": 10,
     "learning_rate": 0.001,

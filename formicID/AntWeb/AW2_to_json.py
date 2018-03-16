@@ -178,7 +178,7 @@ def urls_to_json(csv_file,
                                total=nb_specimens,
                                desc='Downloading JSON files',
                                unit='Species'):
-            url = create_url(limit=limit_set,
+            url = _create_url(limit=limit_set,
                              offset=offset_set,
                              genus=row['genus'],
                              species=row['species'])
@@ -188,7 +188,7 @@ def urls_to_json(csv_file,
                 url = url.url
                 logging.info('JSON downladed from URL: {}'.format(url))
                 file_name = row['genus'] + '_' + row['species'] + '.json'
-                species = get_json(url)
+                species = _get_json(url)
                 with open(os.path.join(wd,
                                        output_dir,
                                        file_name), 'w') as jsonfile:

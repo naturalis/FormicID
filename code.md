@@ -22,11 +22,12 @@ Below are some lines that I run a lot.
 <!-- /TOC -->
 
 ## Running formiCID
+Windows uses backward slashes, and MacOS uses backward slashes.
 
 ### Changing the current directory
 
 #### MacOS
-
+Spaces are escaped by using a backward slash.
 ```shell
 $ cd /Users/nijram13/Google\ Drive/4.\ Biologie/Studie\ Biologie/Master\ Year\ 2/Internship\ CNN/8.\ FormicID/FormicID
 ```
@@ -53,7 +54,7 @@ $ python formicID\main.py -c formicID\configs\config.json
 
 ### Tensorboard launch
 
-In order to launch TensorBoard from the terminal, copy the line below and replace the `test` with the correct experiment name:
+In order to launch TensorBoard from the terminal, copy the line below and replace the `test` with the correct experiment name. Run this after you set the working directory to the project directory.
 
 ```shell
 $ tensorboard --logdir="experiments/test/summary" --port=6006
@@ -76,7 +77,7 @@ $ pigar
 ## Additional
 
 ### Delete all .DS_Store in project folders
-These files happen to break the script as it sometimes needs to know which files there are in a folder, and how many. These files cause no harm, as they store information on MacOS on how the finder window is set. They can be deleted savely. *Run this script only in the project folder directory!*
+These files happen to break the script as it sometimes needs to know which files there are in a folder, and how many. These files cause no harm, as they store information on MacOS on how the finder window is set. They can be deleted savely. __Run this script only in the project folder directory!__
 
 ```shell
 $ find . -name '.DS_Store' -type f -delete
