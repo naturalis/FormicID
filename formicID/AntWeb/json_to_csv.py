@@ -34,12 +34,21 @@ from utils.utils import wd
 ###############################################################################
 
 
-def filter_json(json_file):
-    """Load a JSON object and filter for only relevant values.
+def _filter_json(
+    json_file,
+    quality='low'
+):
+    """Load a JSON object and filter for only relevant values using a set
+    quality for images.
 
     Args:
-        json_file (JSON object): a JSON object with AntWeb data, downloaded
+        json_file (JSON object): A JSON object with AntWeb data, downloaded
             using the `urls_to_json()` function from `AW2_to_json.py`.
+        quality (str): Set the image quality when downloading the images. Each
+            different image quality has its own unique link, that is why it
+            needs to be set when filtering the JSON file. Set the quility to
+            either one of (from highest quality to lowest): `high`,
+            `thumbview`, `medium`, `low`. Defaults to `low`.
 
     Returns:
         list: A list of
@@ -48,7 +57,23 @@ def filter_json(json_file):
             `shot_type`,
             `image_url`].
 
+    Raises:
+        AssertionError: When the quality is not set to a correct argument.
+
     """
+    if quality not in ['high', 'low', 'medium', 'thumbview']:
+        raise AssertionError('Quality should be set to one of `high`, `low`,'
+                             '`medium`, `thumbview`. {} is a wrong argument '
+                             'for quality.'.format(quality))
+    logging.info('Quality is set to {}'.format(quality))
+    if quality == 'high':
+        qlty = 0
+    if quality == 'low':
+        qlty = 1
+    if quality == 'medium':
+        qlty = 2
+    if quality == 'thumbview':
+        qlty = 3
     json_txt = json.load(json_file)
     data_filtered = jmespath.search('specimens[].[catalogNumber,'
                                     'scientific_name, images."1".shot_types]',
@@ -60,11 +85,11 @@ def filter_json(json_file):
             scientific_name = row[1]
             image_url = {}
             if 'h' in row[2]:
-                image_url['h'] = row[2]['h']['img'][1]
+                image_url['h'] = row[2]['h']['img'][qlty]
             if 'p' in row[2]:
-                image_url['p'] = row[2]['p']['img'][1]
+                image_url['p'] = row[2]['p']['img'][qlty]
             if 'd' in row[2]:
-                image_url['d'] = row[2]['d']['img'][1]
+                image_url['d'] = row[2]['d']['img'][qlty]
             for key in image_url:
                 new_row = [catalog_number,
                            scientific_name,
@@ -78,9 +103,12 @@ def filter_json(json_file):
 ###############################################################################
 
 
-def batch_json_to_csv(csvname,
-                      input_dir,
-                      output_dir=None):
+def batch_json_to_csv(
+    csvname,
+    input_dir,
+    quality='low',
+    output_dir=None
+):
     """From a json file or batch of json files a csvfile is created with
     relevant information for downloading the images and naming the files.
 
@@ -127,7 +155,7 @@ def batch_json_to_csv(csvname,
         if filename.endswith('.json'):
             with open(os.path.join(input_direc,
                                    filename)) as data_file:
-                lst = filter_json(data_file)
+                lst = _filter_json(data_file, quality=quality)
                 df = pd.DataFrame(lst,
                                   columns=columns)
                 df2 = df2.append(df)

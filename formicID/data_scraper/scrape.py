@@ -39,7 +39,7 @@ data_dir = os.path.join(wd, 'data')
 ###############################################################################
 
 
-def csv_update(input_dir,
+def _csv_update(input_dir,
                csvfile):
     """This function will remove broken links to a different csvfile.
 
@@ -136,7 +136,7 @@ def image_scraper(csvfile,
     if update == True:
         logging.info('Update argument has been set to: True. Updating file '
                      'now...')
-        csv_update(input_dir=input_dir,
+        _csv_update(input_dir=input_dir,
                    csvfile=csvfile)
         logging.info('The csv file has been updated.')
     else:
