@@ -70,7 +70,7 @@ def main():
     urls_to_json(
         csv_file='testgenusspecies.csv',
         input_dir='data',
-        output_dir='test5sp_quality',
+        output_dir='test5sp_invalid',
         offset_set=0,
         limit_set=200
     )
@@ -78,76 +78,85 @@ def main():
     # Downloading from json files to a scrape ready csv file
     ###########################################################################
     batch_json_to_csv(
-        input_dir='2018-03-16-test5sp_quality',
-        output_dir='2018-03-16-test5sp_quality',
-        quality='medium',
+        input_dir='2018-03-16-test5sp_invalid',
+        output_dir='2018-03-16-test5sp_invalid',
+        quality='low',
         csvname='csv_images.csv'
     )
 
     # Scrape the images from the csv file and name accordingly
     ###########################################################################
-    image_scraper(
-        csvfile='csv_images.csv',
-        input_dir='2018-03-16-test5sp_quality',
-        # start=0,
-        # end=1491,
-        dir_out_name='images',
-        update=True
-    )
+    # image_scraper(
+    #     csvfile='csv_images.csv',
+    #     input_dir='2018-03-16-test5sp_quality',
+    #     # start=0,
+    #     # end=1491,
+    #     dir_out_name='images',
+    #     update=True
+    # )
 
     # create experiment related directories
     ###########################################################################
-    create_dirs(
-        [config.summary_dir,
-         config.checkpoint_dir]
-    )
+    # create_dirs(
+    #     [config.summary_dir,
+    #      config.checkpoint_dir]
+    # )
 
     # Initializing the data
     ###########################################################################
-    X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data(
-        datadir='2018-03-16-testall',
-        config=config,
-        shottype='h')
     # X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data(
     #     datadir='2018-03-15-test5sp_quality',
     #     config=config,
-    #     shottype='h')
-    # show_multi_img(X_train=X_train, Y_train=Y_train)
+    #     shottype='h'
+    # )
+    # show_multi_img(
+    #     X_train=X_train,
+    #     Y_train=Y_train
+    # )
     # save_augmentation(
-    # image='data/2018-03-16-testall/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
-    # config=config)
+    #     image='data/2018-03-16-testall/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
+    #     config=config
+    # )
 
     # Initialize the model
     ###########################################################################
-    # model_formicID = load_model(config=config,
-    #                             num_classes=num_species,
-    #                             base_model='InceptionV3')
-    # # model_formicID = make_multi_gpu(model=model_formicID,
-    # #                                 gpus=1)
-    # model_formicID = compile_model(model=model_formicID,
-    #                                config=config)
-    # logging.debug('type ', model_formicID)
-    # logging.info(model_summary(model_formicID))
-    # model_visualization(model=model_formicID,
-    #                     config=config)
-
+    # model_formicID = load_model(
+    #     config=config,
+    #     num_classes=num_species,
+    #     base_model='InceptionV3'
+    # )
+    # model_formicID = make_multi_gpu(
+    #     model=model_formicID,
+    #     gpus=1
+    # )
+    # model_formicID = compile_model(
+    #     model=model_formicID,
+    #     config=config
+    # )
+    # model_visualization(
+    #     model=model_formicID,
+    #     config=config
+    # )
     # Initialize logger
     ###########################################################################
     # logger = [
-    #     # buildMC(config=config).build_mc(),
+    #     buildMC(config=config).build_mc(),
     #     build_rlrop(),
-    #     # build_es(),
-    #     buildTB(model=model_formicID, config=config).build_tb()]
+    #     build_es(),
+    #     buildTB(model=model_formicID, config=config).build_tb()
+    # ]
 
     # Training in batches with iterator
     ###########################################################################
-    # trainer(model=model_formicID,
-    #         X_train=X_train,
-    #         Y_train=Y_train,
-    #         X_val=X_val,
-    #         Y_val=Y_val,
-    #         callbacks=logger,
-    #         config=config)
+    # trainer(
+    #     model=model_formicID,
+    #     X_train=X_train,
+    #     Y_train=Y_train,
+    #     X_val=X_val,
+    #     Y_val=Y_val,
+    #     callbacks=logger,
+    #     config=config
+    # )
 
     # Evaluation
     ###########################################################################
@@ -155,7 +164,10 @@ def main():
 
     # Testing
     ###########################################################################
-    # prediction = model_formicID.predict_classes(X_test, verbose=1)
+    # prediction = model_formicID.predict_classes(
+    #     X_test,
+    #     verbose=1
+    # )
     # logging.info(prediction)
 
     K.clear_session()

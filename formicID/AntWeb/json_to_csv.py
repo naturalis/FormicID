@@ -36,7 +36,7 @@ from utils.utils import wd
 
 def _filter_json(
     json_file,
-    quality='low'
+    quality
 ):
     """Load a JSON object and filter for only relevant values using a set
     quality for images.
@@ -65,7 +65,6 @@ def _filter_json(
         raise AssertionError('Quality should be set to one of `high`, `low`,'
                              '`medium`, `thumbview`. {} is a wrong argument '
                              'for quality.'.format(quality))
-    logging.info('Quality is set to {}'.format(quality))
     if quality == 'high':
         qlty = 0
     if quality == 'low':
@@ -128,6 +127,8 @@ def batch_json_to_csv(
         AssertionError: When there are no files in the input directory.
 
     """
+    logging.info('Image quality for downloading is set to `{}`'.format(
+        quality))
     input_direc = os.path.join(wd,
                                'data',
                                input_dir,
@@ -149,9 +150,9 @@ def batch_json_to_csv(
                'shot_type',
                'image_url']
     for filename in tqdm(os.listdir(input_direc),
-                         desc='Reading JSON files',
+                         desc='Converting JSON files to csv',
                          total=nb_files,
-                         unit='JSON-files'):
+                         unit='JSON files'):
         if filename.endswith('.json'):
             with open(os.path.join(input_direc,
                                    filename)) as data_file:
@@ -169,5 +170,5 @@ def batch_json_to_csv(
                index=False,
                header=True)
     logging.info('All JSON files are read, filtered and added to the csv '
-                 'file. "\n{0}" was created in {1}'.format(csvname,
+                 'file. "{0}" was created in {1}'.format(csvname,
                                                            output_dir))

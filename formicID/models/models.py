@@ -89,35 +89,47 @@ def load_model(config,
             channels). The default input size for this model is 299x299.
     """
     model = config.model
-    if model not in ['InceptionV3',
-                     'Xception',
-                     'Resnet50',
-                     'DenseNet169',
-                     'Build']:
+    if model not in [
+        'InceptionV3',
+        'Xception',
+        'Resnet50',
+        'DenseNet169',
+        'Build'
+    ]:
         raise ValueError('Model should be one of `InceptionV3`, `Xception`, '
                          '`Resnet50` or `DenseNet169` or `Build`. Please '
-                         'set a correct model.')
+                         'set a correct model instead of {}.'.format(model))
     if model == 'Build':
-        end_model = build_model(config=config,
-                                input_shape=(299, 299, 3),
-                                num_species=num_species)
+        end_model = build_model(
+            config=config,
+            input_shape=(299, 299, 3),
+            num_species=num_species
+        )
     else:
         if model == 'InceptionV3':
-            base_model = InceptionV3(include_top=False,
-                                     weights=None,
-                                     classes=None)
+            base_model = InceptionV3(
+                include_top=False,
+                weights=None,
+                classes=None
+            )
         if model == 'ResNet50':
-            base_model = ResNet50(include_top=False,
-                                  weights=None,
-                                  classes=None)
+            base_model = ResNet50(
+                include_top=False,
+                weights=None,
+                classes=None
+            )
         if model == 'DenseNet169':
-            base_model = DenseNet169(include_top=False,
-                                     weights=None,
-                                     classes=None)
+            base_model = DenseNet169(
+                include_top=False,
+                weights=None,
+                classes=None
+            )
         if model == 'Xception':
-            base_model = Xception(include_top=False,
-                                  weights=None,
-                                  classes=None)
+            base_model = Xception(
+                include_top=False,
+                weights=None,
+                classes=None
+            )
         # add a global spatial average pooling layer
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
@@ -148,30 +160,43 @@ def compile_model(model, config):
         raise ValueError('The optimizer should be one of: `Nadam`, `Adam`, '
                          '`SGD` or `RMSprop`')
     if optimizer == 'Nadam':
-        opt = Nadam(lr=learning_rate,
-                    beta_1=0.9,
-                    beta_2=0.999,
-                    epsilon=1e-08,
-                    schedule_decay=0.004)
+        opt = Nadam(
+            lr=learning_rate,
+            beta_1=0.9,
+            beta_2=0.999,
+            epsilon=1e-08,
+            schedule_decay=0.004
+        )
     if optimizer == 'Adam':
-        opt = Adam(lr=learning_rate,
-                   beta_1=0.9,
-                   beta_2=0.999,
-                   epsilon=None,
-                   decay=0.0,
-                   amsgrad=False)
+        opt = Adam(
+            lr=learning_rate,
+            beta_1=0.9,
+            beta_2=0.999,
+            epsilon=None,
+            decay=0.0,
+            amsgrad=False
+        )
     if optimizer == 'SGD':
-        opt = SGD(lr=learning_rate,
-                  decay=1e-6,
-                  momentum=0.9,
-                  nesterov=True)
+        opt = SGD(
+            lr=learning_rate,
+            decay=1e-6,
+            momentum=0.9,
+            nesterov=True
+        )
     if optimizer == 'RMSprop':
-        opt = RMSprop(lr=learning_rate,
-                      rho=0.9,
-                      epsilon=1e-08,
-                      decay=0.0)
-    model.compile(loss='categorical_crossentropy',
-                  optimizer=opt,
-                  metrics=['accuracy', rmse])
+        opt = RMSprop(
+            lr=learning_rate,
+            rho=0.9,
+            epsilon=1e-08,
+            decay=0.0
+        )
+    model.compile(
+        loss='categorical_crossentropy',
+        optimizer=opt,
+        metrics=['accuracy', rmse]
+    )
     logging.info('The model is compiled with succes.')
+    logging.debug('type ', model_formicID)
+    logging.debug(model_summary(model_formicID))
+
     return model

@@ -38,8 +38,8 @@ from utils.utils import create_dirs, todaystr, wd
 
 
 def _create_url(limit,
-               offset,
-               **kwargs):
+                offset,
+                **kwargs):
     """Creation of the url to access AntWebs API V2, using a base_url and
     arguments.
 
@@ -99,7 +99,7 @@ def _get_json(input_url):
     if data != None:
         return data
     else:
-        raise AssertionError('There is no JSON data in the url: {}.'.format(
+        raise AssertionError('There is no JSON data in the url: {0}.'.format(
             input_url.url))
 
 
@@ -135,6 +135,8 @@ def urls_to_json(csv_file,
             `species`.
 
     """
+    nb_indet = 0
+    nb_invalid = 0
     if limit_set > 12000:
         raise ValueError('The `limit_set` should be lower than 12,000.')
     input_dir = os.path.join(wd, input_dir)
@@ -147,53 +149,63 @@ def urls_to_json(csv_file,
         csv_file = os.path.join(input_dir,
                                 csv_file)
     else:
-        raise AssertionError('You have not set a `.csv` correctly.')
-    logging.info('Reading {} and creating json_files folder.'.format(csv_file))
+        raise AssertionError(
+            '{0} is not in the correct format of `.csv`.'.format(csvfile))
+    logging.info(
+        'Reading {0} and creating json_files folder.'.format(csv_file))
     with open(csv_file,
               'rt') as csv_open:
         dialect = Sniffer().sniff(csv_open.readline(), [',', ';'])
         csv_open.seek(0)
         if dialect.delimiter == ';':
             raise AssertionError('Please us a comma (,) delimited csv file ',
-                                 'instead of {}.'.format(dialect.delimiter))
+                                 'instead of {0}.'.format(dialect.delimiter))
         csv_df = pd.read_csv(csv_open, sep=',')
         if len(csv_df.columns) != 2:
             raise AssertionError('The `.csv` should only have 2 column ',
-                                 'instead of {} column(s).'.format(
+                                 'instead of {0} column(s).'.format(
                                      len(csv_df.columns)))
         if csv_df.columns.tolist() != ['genus', 'species']:
-            raise AssertionError('The columns are not correctoly named: '
+            raise AssertionError('The columns are not correctly named: '
                                  '{} and {}. The column headers should be '
                                  'column 1: `genus` and column 2: '
                                  '`species`.'.format(
                                      csv_df.columns.tolist()))
-        nb_indet = 0
         for index, row in csv_df.iterrows():
             if row['species'] == 'indet':
                 nb_indet += 1
-        logging.info('{} indet species found and will be skipped from '
+        logging.info('{0} indet species found and will be skipped from '
                      'downloading.'.format(nb_indet))
         nb_specimens = csv_df.shape[0] - nb_indet
         for index, row in tqdm(csv_df.iterrows(),
                                total=nb_specimens,
-                               desc='Downloading JSON files',
+                               desc='Downloading species JSON files',
                                unit='Species'):
             url = _create_url(limit=limit_set,
-                             offset=offset_set,
-                             genus=row['genus'],
-                             species=row['species'])
+                              offset=offset_set,
+                              genus=row['genus'],
+                              species=row['species'])
             if row['species'] == 'indet':
                 logging.info('Skipped: "{}".'.format(url.url))
             else:
-                url = url.url
-                logging.info('JSON downladed from URL: {}'.format(url))
+                logging.info('JSON downladed from URL: {0}'.format(url))
                 file_name = row['genus'] + '_' + row['species'] + '.json'
-                species = _get_json(url)
-                with open(os.path.join(wd,
-                                       output_dir,
-                                       file_name), 'w') as jsonfile:
-                    json.dump(species,
-                              jsonfile)
-                time.sleep(0.5)  # Sleep so AntWweb servers will not overload.
+                species = _get_json(url.url)
+                if species['count'] > 0:
+                    with open(os.path.join(wd,
+                                           output_dir,
+                                           file_name), 'w') as jsonfile:
+                        json.dump(species,
+                                  jsonfile)
+                    # Sleep so AntWweb servers will not overload.
+                    time.sleep(0.5)
+                if species['count'] == 0:
+                    nb_invalid += 1
+                    logging.info('"{0} {1}" has {2} records or does not exist '
+                                 'as a valid species'.format(row['genus'],
+                                                             row['species'],
+                                                             species['count']))
+        nb_downloaded = nb_specimens - nb_invalid
         logging.info('Downloading is finished. {} JSON files have been '
-                     'downloaded'.format(nb_specimens))
+                     'downloaded. With {} invalid names.'.format(nb_downloaded,
+                                                                 nb_invalid))
