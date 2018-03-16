@@ -183,7 +183,7 @@ def urls_to_json(csv_file,
                              genus=row['genus'],
                              species=row['species'])
             if row['species'] == 'indet':
-                print('Skipping "{}".'.format(url.url))
+                logging.info('Skipped: "{}".'.format(url.url))
             else:
                 url = url.url
                 logging.info('JSON downladed from URL: {}'.format(url))

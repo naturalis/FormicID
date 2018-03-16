@@ -69,18 +69,18 @@ def main():
                  input_dir='data',
                  output_dir='testall',
                  offset_set=0,
-                 limit_set=12000)
+                 limit_set=13000)
 
     # Downloading from json files to a scrape ready csv file
     ###########################################################################
-    batch_json_to_csv(input_dir='2018-03-15-testall',
-                      output_dir='2018-03-15-testall',
+    batch_json_to_csv(input_dir='2018-03-16-testall',
+                      output_dir='2018-03-16-testall',
                       csvname='csv_images.csv')
 
     # Scrape the images from the csv file and name accordingly
     ###########################################################################
     image_scraper(csvfile='csv_images.csv',
-                  input_dir='2018-03-15-testall',
+                  input_dir='2018-03-16-testall',
                   # start=0,
                   # end=1491,
                   dir_out_name='images',
@@ -93,12 +93,12 @@ def main():
     # Initializing the data
     ###########################################################################
     X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data(
-        datadir='2018-03-15-testall',
+        datadir='2018-03-16-testall',
         config=config,
         shottype='h')
     # show_multi_img(X_train=X_train, Y_train=Y_train)
     # save_augmentation(
-    # image='data/2018-03-15-testall/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
+    # image='data/2018-03-16-testall/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
     # config=config)
 
     # Initialize the model
