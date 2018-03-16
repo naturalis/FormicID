@@ -2,9 +2,18 @@
 
 ## Run main.py
 
+### MacOS
+
 ```shell
 $ cd /Users/nijram13/Google\ Drive/4.\ Biologie/Studie\ Biologie/Master\ Year\ 2/Internship\ CNN/8.\ FormicID/FormicID
 $ python3 formicID/main.py -c formicID/configs/config.json
+```
+
+### Windows 10
+
+```shell
+$ cd C:\Users\admin.marijn.boer\Github\FormicID
+$ python formicID\main.py -c formicID\configs\config.json
 ```
 
 ## Pigar requirements.txt update

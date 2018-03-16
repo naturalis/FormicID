@@ -65,26 +65,26 @@ def main():
 
     # Creating urls and export to json files
     ###########################################################################
-    # urls_to_json(csv_file='testgenusspecies.csv',
-    #              input_dir='data',
-    #              output_dir='test5sp_f',
-    #              offset_set=0,
-    #              limit_set=200)
+    urls_to_json(csv_file='testall.csv',
+                 input_dir='data',
+                 output_dir='testall',
+                 offset_set=0,
+                 limit_set=12000)
 
     # Downloading from json files to a scrape ready csv file
     ###########################################################################
-    # batch_json_to_csv(input_dir='2018-03-13-test5sp_f',
-    #                   output_dir='2018-03-13-test5sp_f',
-    #                   csvname='csv_images.csv')
+    batch_json_to_csv(input_dir='2018-03-15-testall',
+                      output_dir='2018-03-15-testall',
+                      csvname='csv_images.csv')
 
     # Scrape the images from the csv file and name accordingly
     ###########################################################################
-    # image_scraper(csvfile='csv_images.csv',
-    #               input_dir='2018-03-13-test5sp_f',
-    #               # start=0,
-    #               # end=1491,
-    #               dir_out_name='images',
-    #               update=True)
+    image_scraper(csvfile='csv_images.csv',
+                  input_dir='2018-03-15-testall',
+                  # start=0,
+                  # end=1491,
+                  dir_out_name='images',
+                  update=True)
 
     # create experiment related directories
     ###########################################################################
@@ -93,12 +93,12 @@ def main():
     # Initializing the data
     ###########################################################################
     X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data(
-        datadir='2018-03-06-test5sp',
+        datadir='2018-03-15-testall',
         config=config,
         shottype='h')
     # show_multi_img(X_train=X_train, Y_train=Y_train)
     # save_augmentation(
-    # image='data/2018-03-06-test5sp/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
+    # image='data/2018-03-15-testall/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
     # config=config)
 
     # Initialize the model
@@ -107,10 +107,10 @@ def main():
                                 num_classes=num_species,
                                 base_model='InceptionV3')
     # model_formicID = make_multi_gpu(model=model_formicID,
-    #                                 gpus=4)
+    #                                 gpus=1)
     model_formicID = compile_model(model=model_formicID,
                                    config=config)
-    # logging.info('type ', model_formicID)
+    logging.debug('type ', model_formicID)
     # logging.info(model_summary(model_formicID))
     # model_visualization(model=model_formicID,
     #                     config=config)

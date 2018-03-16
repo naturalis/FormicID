@@ -24,7 +24,7 @@ import jmespath
 import pandas as pd
 from tqdm import tqdm
 
-from utils.utils import today_timestr, todaystr, wd
+from utils.utils import wd
 
 # Parameters and settings
 ###############################################################################
