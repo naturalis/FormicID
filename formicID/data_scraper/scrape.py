@@ -17,7 +17,6 @@ type and per species.
 # Packages
 ###############################################################################
 import csv
-import datetime
 import itertools
 import logging
 import os
@@ -29,7 +28,7 @@ import pandas as pd
 import requests
 from tqdm import tqdm
 
-from utils.utils import today_timestr, todaystr, wd
+from utils.utils import wd
 
 # Parameters and settings
 ###############################################################################

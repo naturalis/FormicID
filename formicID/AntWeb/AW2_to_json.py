@@ -16,7 +16,6 @@ file for this genus+species and places the JSON file in a folder.
 # Packages
 ###############################################################################
 
-import datetime
 import json
 import logging
 import os
@@ -28,7 +27,7 @@ import pandas as pd
 import requests
 from tqdm import tqdm
 
-from utils.utils import create_dirs, today_timestr, todaystr, wd
+from utils.utils import create_dirs, todaystr, wd
 
 # Parameters and settings
 ###############################################################################

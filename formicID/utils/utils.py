@@ -49,9 +49,10 @@ def get_url_info(input_url):
 
 # Date and time stamps
 ###############################################################################
-todaystr = datetime.date.today().isoformat()  # YYYY-MM-DD
-today_timestr = datetime.datetime.today().isoformat(sep='_',
-                                                    timespec='seconds')
+# YYYY-MM-DD
+todaystr = datetime.date.today().isoformat()  
+# YYYYMMDD_HHMMSS
+today_timestr = datetime.datetime.today().strftime('%Y%m%d_%H%M%S')
 
 
 # Directory utilities

@@ -40,7 +40,7 @@ class buildTB:
             config (Bunch object): The JSON configuration Bunch object.
 
         Returns:
-            files: TensorBoard files that can be viewd in the TensorBoard
+            files: TensorBoard files that can be by launching the TensorBoard
                 dashboard
 
         """
@@ -48,11 +48,12 @@ class buildTB:
         # TODO: Fix problem with multiple meta graphs
         self.config = config
         self.model = model
-        self.filepath = os.path.join(self.config.summary_dir,
-                                     'graphs/logs-{0}'.format(today_timestr))
 
     def build_tb(self):
-        filepath = self.filepath
+        filepath = os.path.join(self.config.summary_dir,
+                             'graphs',
+                             'logs-{}'.format(today_timestr))
+        # filepath = os.path.normpath(filepath) # Repair slashes for Windows
         model = self.model
         batch_size = self.config.batch_size
         tb = TensorBoard(log_dir=filepath,
