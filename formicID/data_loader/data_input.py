@@ -67,7 +67,8 @@ from utils.utils import wd
 
 
 def image_size(config):
-    """Function that returns the correct input size for the choosen model.
+    """Function that returns the correct input size according to the choosen
+    model.
 
     Args:
         config (JSON object): The JSON configuration file.

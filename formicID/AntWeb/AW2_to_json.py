@@ -38,7 +38,7 @@ from utils.utils import create_dirs, today_timestr, todaystr, wd
 ###############################################################################
 
 
-def create_url(limit,
+def _create_url(limit,
                offset,
                **kwargs):
     """Creation of the url to access AntWebs API V2, using a base_url and
@@ -82,7 +82,7 @@ def create_url(limit,
 ###############################################################################
 
 
-def get_json(input_url):
+def _get_json(input_url):
     """Scrapes JSON files from AntWeb URLs.
 
     Args:

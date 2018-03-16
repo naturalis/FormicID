@@ -34,7 +34,7 @@ from utils.utils import today_timestr, todaystr, wd
 ###############################################################################
 
 
-def filter_json(json_file):
+def _filter_json(json_file, quality='low'):
     """Load a JSON object and filter for only relevant values.
 
     Args:
@@ -49,6 +49,14 @@ def filter_json(json_file):
             `image_url`].
 
     """
+    if quality == 'high':
+        x = 0
+    if quality == 'low':
+        x = 1
+    if quality == 'medium':
+        x = 2
+    if quality == 'thumbview':
+        x = 3
     json_txt = json.load(json_file)
     data_filtered = jmespath.search('specimens[].[catalogNumber,'
                                     'scientific_name, images."1".shot_types]',
@@ -60,11 +68,11 @@ def filter_json(json_file):
             scientific_name = row[1]
             image_url = {}
             if 'h' in row[2]:
-                image_url['h'] = row[2]['h']['img'][1]
+                image_url['h'] = row[2]['h']['img'][x]
             if 'p' in row[2]:
-                image_url['p'] = row[2]['p']['img'][1]
+                image_url['p'] = row[2]['p']['img'][x]
             if 'd' in row[2]:
-                image_url['d'] = row[2]['d']['img'][1]
+                image_url['d'] = row[2]['d']['img'][x]
             for key in image_url:
                 new_row = [catalog_number,
                            scientific_name,
@@ -80,6 +88,7 @@ def filter_json(json_file):
 
 def batch_json_to_csv(csvname,
                       input_dir,
+                      quality='low'
                       output_dir=None):
     """From a json file or batch of json files a csvfile is created with
     relevant information for downloading the images and naming the files.
@@ -127,7 +136,7 @@ def batch_json_to_csv(csvname,
         if filename.endswith('.json'):
             with open(os.path.join(input_direc,
                                    filename)) as data_file:
-                lst = filter_json(data_file)
+                lst = filter_json(data_file, quality=quality)
                 df = pd.DataFrame(lst,
                                   columns=columns)
                 df2 = df2.append(df)

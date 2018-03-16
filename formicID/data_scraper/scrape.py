@@ -40,7 +40,7 @@ data_dir = os.path.join(wd, 'data')
 ###############################################################################
 
 
-def csv_update(input_dir,
+def _csv_update(input_dir,
                csvfile):
     """This function will remove broken links to a different csvfile.
 
