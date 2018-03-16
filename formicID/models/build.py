@@ -38,10 +38,7 @@ def build_model(config, num_species, input_shape=(None, None, 3)):
         Keras model instance: Returns an uncompiled Keras model instance.
 
     """
-    learning_rate = config.learning_rate
     dropout = config.dropout
-    optimizer = config.optimizer
-
     model = Sequential()
 
     model.add(Conv2D(32, (3, 3),

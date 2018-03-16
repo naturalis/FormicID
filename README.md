@@ -226,6 +226,7 @@ It will also be possible to use a model made by the author.
 
 # :clipboard: Requirements
 
+- [Python3 (3.6)](https://www.python.org/downloads/release/python-364/) 
 - [Keras | Why use Keras?](https://keras.io/why-use-keras/)
 - [Requirements](requirements.txt)
 
