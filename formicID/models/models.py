@@ -196,7 +196,7 @@ def compile_model(model, config):
         metrics=['accuracy', rmse]
     )
     logging.info('The model is compiled with succes.')
-    logging.debug('type ', model_formicID)
-    logging.debug(model_summary(model_formicID))
+    logging.debug('type ', model)
+    logging.debug(model_summary(model))
 
     return model
