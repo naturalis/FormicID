@@ -29,7 +29,7 @@ from data_loader.data_input import load_data, split_in_directory
 from data_scraper.scrape import image_scraper
 from models.models import compile_model, load_model
 from testers.tester import model_evaluate
-from trainers.train import trainer
+from trainers.train import trainer_dir
 from utils.img import save_augmentation, show_multi_img
 from utils.load_config import process_config
 from utils.logger import build_es, build_rlrop, buildMC, buildTB
@@ -116,34 +116,35 @@ def main():
     #     image='data/2018-03-16-testall/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
     #     config=config
     # )
-    split_in_directory(test_dir='2018-03-13-test5sp_f', shottype='head', test_split=0.1, val_split=0.2)
+    # split_in_directory(data_dir='2018-03-15-test5sp_windows', shottype='head', test_split=0.1, val_split=0.2)
+    num_species = 5
     # Initialize the model
     ###########################################################################
-    # model_formicID = load_model(
-    #     config=config,
-    #     num_classes=num_species,
-    #     base_model='InceptionV3'
-    # )
+    model_formicID = load_model(
+        config=config,
+        num_classes=num_species,
+        base_model='InceptionV3'
+    )
     # model_formicID = make_multi_gpu(
     #     model=model_formicID,
     #     gpus=1
     # )
-    # model_formicID = compile_model(
-    #     model=model_formicID,
-    #     config=config
-    # )
+    model_formicID = compile_model(
+        model=model_formicID,
+        config=config
+    )
     # model_visualization(
     #     model=model_formicID,
     #     config=config
     # )
     # Initialize logger
     ###########################################################################
-    # logger = [
-    #     buildMC(config=config).build_mc(),
-    #     build_rlrop(),
-    #     build_es(),
-    #     buildTB(model=model_formicID, config=config).build_tb()
-    # ]
+    logger = [
+        buildMC(config=config).build_mc(),
+        build_rlrop(),
+        build_es(),
+        buildTB(model=model_formicID, config=config).build_tb()
+    ]
 
     # Training in batches with iterator
     ###########################################################################
@@ -156,6 +157,13 @@ def main():
     #     callbacks=logger,
     #     config=config
     # )
+
+    trainer_dir(model=model_formicID,
+    data_dir='2018-03-15-test5sp_windows',
+    shottype='head',
+    config=config,
+    # callbacks=logger
+    )
 
     # Evaluation
     ###########################################################################

@@ -25,6 +25,8 @@ pixels in  `[-1, 1]`, samplewise and using the following calculation:
 # Packages
 ###############################################################################
 
+import os
+
 from keras.applications.inception_v3 import preprocess_input
 from keras.models import Model
 from keras.preprocessing.image import ImageDataGenerator
@@ -89,16 +91,8 @@ def train_data_generator(X_train,
                                    Y_train,
                                    batch_size=batch_size,
                                    seed=seed)
-    # idgen_train = idgen_train.flow_from_directory(
-    #     directory='data/2018-03-15-test5sp_windows',
-    #     target_size=(299, 299),
-    #     color_model='rgb',
-    #     class_mode='categorical',
-    #     batch_size=32,
-    #     seed=1
-    # )
-
     return idgen_train
+
 
 # Validation data
 ###############################################################################
@@ -187,4 +181,59 @@ def trainer(model,
                         validation_data=val_data_gen,
                         steps_per_epoch=(nb_X_train // batch_size),
                         epochs=epochs,
+                        callbacks=callbacks)
+
+
+###############################################################################
+###############################################################################
+###############################################################################
+###############################################################################
+###############################################################################
+
+
+def train_data_generator_dir(data_dir, shottype, config):
+
+    batch_size = config.batch_size
+    seed = config.seed
+    idgen_train = idg_train()
+
+    idgen_train = idgen_train.flow_from_directory(
+        directory=os.path.join('data', data_dir, 'images', shottype, '1-training'),
+        target_size=(299, 299),
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=batch_size,
+        seed=1
+    )
+
+    return idgen_train
+
+def val_data_generator_dir(data_dir, shottype, config):
+
+    batch_size = config.batch_size
+    seed = config.seed
+    idgen_val = idg_val()
+
+    idgen_val = idgen_val.flow_from_directory(
+        directory=os.path.join('data', data_dir, 'images', shottype, '2-validation'),
+        target_size=(299, 299),
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=batch_size,
+        seed=1
+    )
+
+    return idgen_val
+
+def trainer_dir(model, data_dir, shottype, config, callbacks=None):
+    epochs = config.num_epochs
+    batch_size = config.batch_size
+    train_data_gen_dir = train_data_generator_dir(data_dir, shottype, config)
+    val_data_gen_dir = val_data_generator_dir(data_dir, shottype, config)
+
+    model.fit_generator(generator=train_data_gen_dir,
+                        steps_per_epoch=32,
+                        epochs=epochs,
+                        validation_data=val_data_gen_dir,
+                        validation_steps=32,
                         callbacks=callbacks)
