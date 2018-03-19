@@ -116,12 +116,12 @@ def main():
     #     image='data/2018-03-16-testall/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
     #     config=config
     # )
-    # split_in_directory(
-    #     data_dir='2018-03-15-test5sp_windows',
-    #     shottype='profile',
-    #     test_split=0.1,
-    #     val_split=0.2
-    #  )
+    split_in_directory(
+        data_dir='2018-03-15-test5sp_windows',
+        shottype='profile',
+        test_split=0.1,
+        val_split=0.2
+    )
     num_species = 5
     # Initialize the model
     ###########################################################################
@@ -163,25 +163,30 @@ def main():
     #     config=config
     # )
 
-    trainer_dir(model=model_formicID,
-    data_dir='2018-03-15-test5sp_windows',
-    shottype='head',
-    config=config,
-    callbacks=logger
+    trainer_dir(
+        model=model_formicID,
+        data_dir='2018-03-15-test5sp_windows',
+        shottype='head',
+        config=config,
+        callbacks=logger
     )
+    K.clear_session()
 
-    trainer_dir(model=model_formicID,
-    data_dir='2018-03-15-test5sp_windows',
-    shottype='dorsal',
-    config=config,
-    callbacks=logger
+    trainer_dir(
+        model=model_formicID,
+        data_dir='2018-03-15-test5sp_windows',
+        shottype='dorsal',
+        config=config,
+        callbacks=logger
     )
+    K.clear_session()
 
-    trainer_dir(model=model_formicID,
-    data_dir='2018-03-15-test5sp_windows',
-    shottype='profile',
-    config=config,
-    callbacks=logger
+    trainer_dir(
+        model=model_formicID,
+        data_dir='2018-03-15-test5sp_windows',
+        shottype='profile',
+        config=config,
+        callbacks=logger
     )
 
     # Evaluation

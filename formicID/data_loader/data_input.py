@@ -318,7 +318,8 @@ def split_in_directory(data_dir,
         random.shuffle(shuffled)
         num1 = round(len(shuffled) * test_split)
         num2 = round(len(shuffled) * val_split)
-        to_test, to_val, to_train = shuffled[:num1], shuffled[num1:num2], shuffled[num2:]
+        to_test, to_val, to_train = shuffled[:num1],
+            shuffled[num1:num2], shuffled[num2:]
         for image in os.listdir(os.path.join(input_dir, species)):
             if image.endswith('.jpg'):
                 for img in to_test:
@@ -367,8 +368,5 @@ def load_data(datadir, config, shottype='h'):
         test_size=0.1,
         val_size=0.135)
     logging.info('Data is loaded, split and put in generators.')
+
     return X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species
-
-
-# def directory_flow():
-#     model.flow_from_directory()

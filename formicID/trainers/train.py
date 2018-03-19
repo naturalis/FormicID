@@ -186,8 +186,22 @@ def trainer(model,
 # flow_from_directory part
 ###############################################################################
 
-def train_data_generator_dir(data_dir, shottype, config):
 
+def _train_data_generator_dir(data_dir,
+                              shottype,
+                              config
+                              ):
+    """Short summary.
+
+    Args:
+        data_dir (type): Description of parameter `data_dir`.
+        shottype (type): Description of parameter `shottype`.
+        config (type): Description of parameter `config`.
+
+    Returns:
+        type: Description of returned object.
+
+    """
     batch_size = config.batch_size
     seed = config.seed
     idgen_train = idg_train()
@@ -207,8 +221,22 @@ def train_data_generator_dir(data_dir, shottype, config):
 
     return idgen_train
 
-def val_data_generator_dir(data_dir, shottype, config):
 
+def _val_data_generator_dir(data_dir,
+                            shottype,
+                            config
+                            ):
+    """Short summary.
+
+    Args:
+        data_dir (type): Description of parameter `data_dir`.
+        shottype (type): Description of parameter `shottype`.
+        config (type): Description of parameter `config`.
+
+    Returns:
+        type: Description of returned object.
+
+    """
     batch_size = config.batch_size
     seed = config.seed
     idgen_val = idg_val()
@@ -228,15 +256,42 @@ def val_data_generator_dir(data_dir, shottype, config):
 
     return idgen_val
 
-def trainer_dir(model, data_dir, shottype, config, callbacks=None):
+
+def trainer_dir(model,
+                data_dir,
+                shottype,
+                config,
+                callbacks=None
+                ):
+    """Short summary.
+
+    Args:
+        model (type): Description of parameter `model`.
+        data_dir (type): Description of parameter `data_dir`.
+        shottype (type): Description of parameter `shottype`.
+        config (type): Description of parameter `config`.
+        callbacks (type): Description of parameter `callbacks`. Defaults to
+            None.
+
+    Returns:
+        type: Description of returned object.
+
+    """
     epochs = config.num_epochs
     batch_size = config.batch_size
-    train_data_gen_dir = train_data_generator_dir(data_dir, shottype, config)
-    val_data_gen_dir = val_data_generator_dir(data_dir, shottype, config)
-
-    model.fit_generator(generator=train_data_gen_dir,
-                        steps_per_epoch=32,
-                        epochs=epochs,
-                        validation_data=val_data_gen_dir,
-                        validation_steps=32,
-                        callbacks=callbacks)
+    train_data_gen_dir = _train_data_generator_dir(data_dir=data_dir,
+                                                   shottype=shottype,
+                                                   config=config
+                                                   )
+    val_data_gen_dir = _val_data_generator_dir(data_dir=data_dir,
+                                               shottype=shottype,
+                                               config=config
+                                               )
+    model.fit_generator(
+        generator=train_data_gen_dir,
+        steps_per_epoch=32,
+        epochs=epochs,
+        validation_data=val_data_gen_dir,
+        validation_steps=32,
+        callbacks=callbacks
+    )
