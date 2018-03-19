@@ -47,8 +47,8 @@ The files should be structured as follows:
 
 import logging
 import os
-import shutil
 import random
+import shutil
 
 import numpy as np
 from keras import backend as K
@@ -277,18 +277,17 @@ def split_in_directory(test_dir,
                        shottype='head',
                        test_split=0.1,
                        val_split=0.2):
-    """Short summary.
+    """Split the image files for all species into subfolders for a training,
+    validation and test set.
 
     Args:
-        test_dir (type): Description of parameter `test_dir`.
-        shottype (type): Description of parameter `shottype`. Defaults to 'head'.
-        test_split (type): Description of parameter `test_split`. Defaults to 0.1.
-        val_split (type): Description of parameter `val_split`. Defaults to 0.2.
-
-    Returns:
-        type: Description of returned object.
-
-    Raises:        ExceptionName: Why the exception is raised.
+        test_dir (str): Directory that holds the shottype folders with species
+            and images.
+        shottype (str): The shottype folder. Defaults to 'head'.
+        test_split (float): Percentage of images for the test set. Defaults to
+            0.1.
+        val_split (float): Percentage of images for the validation set.
+            Defaults to 0.2.
 
     """
     val_split = val_split + test_split

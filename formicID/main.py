@@ -116,7 +116,7 @@ def main():
     #     image='data/2018-03-16-testall/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
     #     config=config
     # )
-    split_in_directory(test_dir='2018-03-13-test5sp_f', shottype='head')
+    split_in_directory(test_dir='2018-03-13-test5sp_f', shottype='head', test_split=0.1, val_split=0.2)
     # Initialize the model
     ###########################################################################
     # model_formicID = load_model(
