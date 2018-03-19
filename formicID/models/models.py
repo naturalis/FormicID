@@ -44,6 +44,7 @@ from keras.optimizers import SGD, Adam, Nadam, RMSprop
 
 from models.build import build_model
 from utils.logger import rmse
+from utils.model_utils import model_summary
 
 # Parameters and settings
 ###############################################################################
