@@ -108,10 +108,10 @@ def build_es():
 
     """
     es = EarlyStopping(monitor='val_loss',
-                       min_delta=0.5,
-                       patience=2,
+                       min_delta=0,
+                       patience=5,
                        verbose=1,
-                       mode='auto')
+                       mode='min')
     return es
 
 

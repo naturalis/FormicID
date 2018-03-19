@@ -183,22 +183,21 @@ def trainer(model,
                         epochs=epochs,
                         callbacks=callbacks)
 
-
+# flow_from_directory part
 ###############################################################################
-###############################################################################
-###############################################################################
-###############################################################################
-###############################################################################
-
 
 def train_data_generator_dir(data_dir, shottype, config):
 
     batch_size = config.batch_size
     seed = config.seed
     idgen_train = idg_train()
-
+    data_dir = os.path.join('data',
+                            data_dir,
+                            'images',
+                            shottype,
+                            '1-training')
     idgen_train = idgen_train.flow_from_directory(
-        directory=os.path.join('data', data_dir, 'images', shottype, '1-training'),
+        directory=data_dir,
         target_size=(299, 299),
         color_mode='rgb',
         class_mode='categorical',
@@ -213,9 +212,13 @@ def val_data_generator_dir(data_dir, shottype, config):
     batch_size = config.batch_size
     seed = config.seed
     idgen_val = idg_val()
-
+    data_dir = os.path.join('data',
+                            data_dir,
+                            'images',
+                            shottype,
+                            '2-validation')
     idgen_val = idgen_val.flow_from_directory(
-        directory=os.path.join('data', data_dir, 'images', shottype, '2-validation'),
+        directory=data_dir,
         target_size=(299, 299),
         color_mode='rgb',
         class_mode='categorical',
