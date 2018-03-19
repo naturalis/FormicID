@@ -25,7 +25,7 @@ from keras import backend as K
 
 from AntWeb.AW2_to_json import urls_to_json
 from AntWeb.json_to_csv import batch_json_to_csv
-from data_loader.data_input import load_data
+from data_loader.data_input import load_data, split_in_directory
 from data_scraper.scrape import image_scraper
 from models.models import compile_model, load_model
 from testers.tester import model_evaluate
@@ -67,32 +67,32 @@ def main():
 
     # Creating urls and export to json files
     ###########################################################################
-    urls_to_json(
-        csv_file='testgenusspecies.csv',
-        input_dir='data',
-        output_dir='test5sp_invalid',
-        offset_set=0,
-        limit_set=200
-    )
+    # urls_to_json(
+    #     csv_file='testgenusspecies.csv',
+    #     input_dir='data',
+    #     output_dir='test5sp_invalid',
+    #     offset_set=0,
+    #     limit_set=200
+    # )
 
     # Downloading from json files to a scrape ready csv file
     ###########################################################################
-    batch_json_to_csv(
-        input_dir='2018-03-16-test5sp_invalid',
-        output_dir='2018-03-16-test5sp_invalid',
-        quality='low',
-        csvname='csv_images.csv'
-    )
+    # batch_json_to_csv(
+    #     input_dir='2018-03-16-test5sp_invalid',
+    #     output_dir='2018-03-16-test5sp_invalid',
+    #     quality='low',
+    #     csvname='csv_images.csv'
+    # )
 
     # Scrape the images from the csv file and name accordingly
     ###########################################################################
     # image_scraper(
     #     csvfile='csv_images.csv',
-    #     input_dir='2018-03-16-test5sp_quality',
+    #     input_dir='2018-03-13-test5sp_f',
     #     # start=0,
     #     # end=1491,
     #     dir_out_name='images',
-    #     update=True
+    #     update=False
     # )
 
     # create experiment related directories
@@ -101,7 +101,6 @@ def main():
     #     [config.summary_dir,
     #      config.checkpoint_dir]
     # )
-
     # Initializing the data
     ###########################################################################
     # X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data(
@@ -117,7 +116,7 @@ def main():
     #     image='data/2018-03-16-testall/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
     #     config=config
     # )
-
+    split_in_directory(test_dir='2018-03-13-test5sp_f', shottype='head')
     # Initialize the model
     ###########################################################################
     # model_formicID = load_model(

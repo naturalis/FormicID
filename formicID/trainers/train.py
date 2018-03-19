@@ -89,6 +89,14 @@ def train_data_generator(X_train,
                                    Y_train,
                                    batch_size=batch_size,
                                    seed=seed)
+    # idgen_train = idgen_train.flow_from_directory(
+    #     directory='data/2018-03-15-test5sp_windows',
+    #     target_size=(299, 299),
+    #     color_model='rgb',
+    #     class_mode='categorical',
+    #     batch_size=32,
+    #     seed=1
+    # )
 
     return idgen_train
 

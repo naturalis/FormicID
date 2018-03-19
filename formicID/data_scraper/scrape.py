@@ -114,7 +114,8 @@ def image_scraper(csvfile,
                   end=None,
                   update=False):
     """This function scrapes images of urls found in the csv file that is made
-    with the download_to_csv function.
+    with the download_to_csv function. It will check if files already exist.
+    If a file already exists, it will not be downloaded again.
 
     Args:
         csvfile (str): name of the csvfile in the `data` folder.
@@ -179,7 +180,10 @@ def image_scraper(csvfile,
                                                                   image[0],
                                                                   image[2]))
                     try:
-                        urlretrieve(url=image[3], filename=filename)
+                        if not os.path.isfile(filename):
+                            urlretrieve(url=image[3], filename=filename)
+                        else:
+                            continue
                     except HTTPError as err:
                         if err.code == 404:
                             logging.error('Error 404: {}'.format(image[3]))
@@ -192,7 +196,10 @@ def image_scraper(csvfile,
                                                                   image[0],
                                                                   image[2]))
                     try:
-                        urlretrieve(url=image[3], filename=filename)
+                        if not os.path.isfile(filename):
+                            noturlretrieve(url=image[3], filename=filename)
+                        else:
+                            continue
                     except HTTPError as err:
                         if err.code == 404:
                             logging.error('Error 404: {}'.format(image[3]))
@@ -205,7 +212,10 @@ def image_scraper(csvfile,
                                                                   image[0],
                                                                   image[2]))
                     try:
-                        urlretrieve(url=image[3], filename=filename)
+                        if not os.path.isfile(filename):
+                            urlretrieve(url=image[3], filename=filename)
+                        else:
+                            continue
                     except HTTPError as err:
                         if err.code == 404:
                             logging.error('Error 404: {}'.format(image[3]))

@@ -22,12 +22,13 @@ import os
 import sys
 import time
 from csv import Sniffer
+from urllib.error import HTTPError
 
 import pandas as pd
 import requests
 from tqdm import tqdm
 
-from utils.utils import create_dirs, todaystr, wd
+from utils.utils import todaystr, wd
 
 # Parameters and settings
 ###############################################################################
@@ -47,7 +48,7 @@ def _create_url(limit,
         limit (int): sets the limit for accessing specimens.
         offset (int): sets the offset for accessing specimens.
 
-    Args optional:
+    **Kwargs:
         genus (str): specifies the genus.
         species (str): specifies the species.
         country (str): specifies the country.
@@ -58,20 +59,19 @@ def _create_url(limit,
         function `request.get()`.
 
     """
-    # Genus and species are optional arguments, not providing them will
-    # download all species.
     genus = kwargs.get('genus', None)
     species = kwargs.get('species', None)
     country = kwargs.get('country', None)
     caste = kwargs.get('caste', None)
     base_url = 'http://www.antweb.org/api/v2/?'
-    arguments = {    # API arguments for in the url
+    arguments = {
         'limit':        limit,
         'offset':       offset,
         'genus':        genus,
         'species':      species,
         'country':      country,
-        'caste':        caste}  # not working
+        'caste':        caste  # not working
+    }
     url = requests.get(url=base_url,
                        params=arguments)
     return url
@@ -107,11 +107,11 @@ def urls_to_json(csv_file,
                  input_dir,
                  output_dir,
                  offset_set=0,
-                 limit_set=12000):
+                 limit_set=9999):
     """This function downloads JSON files for a list of species and places them
-    in a drecitory. An limit_set higher than 12,000 will usually create
-    problems. If you get 404 errors you will probably need to set the limit
-    lower.
+    in a drecitory. An limit_set higher than 10,000 will usually create
+    problems if no species and genus is provided. If you get HTTP ERROR 500
+    you will probably need to set the limit lower.
 
     Args:
         csv_file (str): the csv file genus and species names.
@@ -137,8 +137,9 @@ def urls_to_json(csv_file,
     """
     nb_indet = 0
     nb_invalid = 0
-    if limit_set > 12000:
-        raise ValueError('The `limit_set` should be lower than 12,000.')
+    attempts = 5
+    # if limit_set > 12000:
+    #     raise ValueError('The `limit_set` should be lower than 12,000.')
     input_dir = os.path.join(wd, input_dir)
     output_dir = os.path.join(input_dir,
                               todaystr + '-' + output_dir,
@@ -185,27 +186,40 @@ def urls_to_json(csv_file,
                               offset=offset_set,
                               genus=row['genus'],
                               species=row['species'])
+            # Skip `indet` species:
             if row['species'] == 'indet':
                 logging.info('Skipped: "{}".'.format(url.url))
+            # Download the other species:
             else:
-                logging.info('JSON downladed from URL: {0}'.format(url))
+                logging.info('Downloading JSON from: {0}'.format(url.url))
                 file_name = row['genus'] + '_' + row['species'] + '.json'
-                species = _get_json(url.url)
-                if species['count'] > 0:
-                    with open(os.path.join(wd,
-                                           output_dir,
-                                           file_name), 'w') as jsonfile:
-                        json.dump(species,
-                                  jsonfile)
-                    # Sleep so AntWweb servers will not overload.
-                    time.sleep(0.5)
-                if species['count'] == 0:
-                    nb_invalid += 1
-                    logging.info('"{0} {1}" has {2} records or does not exist '
-                                 'as a valid species'.format(row['genus'],
-                                                             row['species'],
-                                                             species['count']))
+                for attempt in range(attempts):
+                    try:
+                        species = _get_json(url.url)
+                        if species['count'] > 0:
+                            with open(os.path.join(wd,
+                                                   output_dir,
+                                                   file_name), 'w') as jsonfile:
+                                json.dump(species,
+                                          jsonfile)
+                        # If the server returns a species with 0 specimen count:
+                        if species['count'] == 0:
+                            nb_invalid += 1
+                            logging.info('"{0} {1}" has {2} records or does '
+                                         'not exist as a valid species'.format(
+                                             row['genus'],
+                                             row['species'],
+                                             species['count']))
+                    except HTTPError as e:
+                        print(e)
+                    else:
+                        break
+                else:
+                    logging.debug(
+                        'For {0} attempts the server did not respond for URL: '
+                        '{1}'.format(attempts, url.url))
         nb_downloaded = nb_specimens - nb_invalid
         logging.info('Downloading is finished. {} JSON files have been '
-                     'downloaded. With {} invalid names.'.format(nb_downloaded,
-                                                                 nb_invalid))
+                     'downloaded. With {} invalid name(s).'.format(
+                         nb_downloaded,
+                         nb_invalid))

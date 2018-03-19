@@ -29,13 +29,13 @@ Windows uses backward slashes, and MacOS uses backward slashes.
 #### MacOS
 Spaces are escaped by using a backward slash.
 ```shell
-$ cd /Users/nijram13/Google\ Drive/4.\ Biologie/Studie\ Biologie/Master\ Year\ 2/Internship\ CNN/8.\ FormicID/FormicID
+cd /Users/nijram13/Google\ Drive/4.\ Biologie/Studie\ Biologie/Master\ Year\ 2/Internship\ CNN/8.\ FormicID/FormicID
 ```
 
 #### Windows 10
 
 ```shell
-$ cd C:\Users\admin.marijn.boer\Github\FormicID
+cd C:\Users\admin.marijn.boer\Github\FormicID
 ```
 
 ### Running the script
@@ -43,13 +43,13 @@ $ cd C:\Users\admin.marijn.boer\Github\FormicID
 #### MacOS
 
 ```shell
-$ python3 formicID/main.py -c formicID/configs/config.json
+python3 formicID/main.py -c formicID/configs/config.json
 ```
 
 #### Windows
 
 ```shell
-$ python formicID\main.py -c formicID\configs\config.json
+python formicID\main.py -c formicID\configs\config.json
 ```
 
 ### Tensorboard launch
@@ -57,7 +57,7 @@ $ python formicID\main.py -c formicID\configs\config.json
 In order to launch TensorBoard from the terminal, copy the line below and replace the `test` with the correct experiment name. Run this after you set the working directory to the project directory.
 
 ```shell
-$ tensorboard --logdir="experiments/test/summary" --port=6006
+tensorboard --logdir="experiments/test/summary" --port=6006
 ```
 
 ## Dependancies
@@ -65,13 +65,18 @@ $ tensorboard --logdir="experiments/test/summary" --port=6006
 ### Pip3 update all packages
 
 ```shell
-$ pip3 freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip3 install -U
+pip3 freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip3 install -U
+```
+
+### List all outdated pip packages
+```shell
+pip3 list --outdated --format=freeze
 ```
 
 ### Pigar requirements.txt update
 In order to automatically update the requirements.txt file, run `pigar` in the project working directory.
 ```shell
-$ pigar
+pigar
 ```
 
 ## Additional
@@ -80,5 +85,5 @@ $ pigar
 These files happen to break the script as it sometimes needs to know which files there are in a folder, and how many. These files cause no harm, as they store information on MacOS on how the finder window is set. They can be deleted savely. __Run this script only in the project folder directory!__
 
 ```shell
-$ find . -name '.DS_Store' -type f -delete
+find . -name '.DS_Store' -type f -delete
 ```

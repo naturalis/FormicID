@@ -47,6 +47,7 @@ The files should be structured as follows:
 
 import logging
 import os
+import shutil
 
 import numpy as np
 from keras import backend as K
@@ -199,7 +200,7 @@ def img_load_shottype(shottype,
     logging.debug('Images dtype: {}'.format(images.dtype))
     logging.debug('Labels shape (N, L): {}'.format(labels.shape))
     logging.debug('Labels dtype: {}'.format(labels.dtype))
-    print('\n') # Because text after tqdm does not escape on a new line.
+    print('\n')  # Because text after tqdm does not escape on a new line.
     return images, labels, num_species
 
 
@@ -268,6 +269,48 @@ def train_val_test_split(images,
     return X_train, Y_train, X_val, Y_val, X_test, Y_test
 
 
+def split_in_directory(test_dir, shottype='head'):
+    input_dir = os.path.join(wd, 'data', test_dir, 'images', shottype)
+
+    data_dirs = ['1-training', '2-validation', '3-test']
+    for data_dir in data_dirs:
+        if not os.path.exists(os.path.join(input_dir, data_dir)):
+            os.mkdir(os.path.join(input_dir, data_dir))
+
+    train_dir = os.path.join(input_dir, data_dirs[0])
+    val_dir = os.path.join(input_dir, data_dirs[1])
+    test_dir = os.path.join(input_dir, data_dirs[2])
+
+    for data_dir in data_dirs:
+        for species in os.listdir(input_dir):
+            if species in data_dirs:
+                continue
+            if not os.path.exists(os.path.join(input_dir, data_dir, species)):
+                os.mkdir(os.path.join(input_dir, data_dir, species))
+
+    for species in tqdm(os.listdir(input_dir)):
+        if species in data_dirs:
+            continue
+        nb_images = len(os.listdir(os.path.join(input_dir, species)))
+        print(nb_images)
+        for image in random.shuffle(os.listdir(os.path.join(input_dir, species))):
+            if image.endswith('.jpg'):
+                print(image)
+                # try:
+                #     rand = random.sample(1)
+                #     if rand < 0.1:
+                #         shutil.copy(os.path.join(input_dir, species, image),
+                #                     os.path.join(test_dir, species, image))
+                #     if 0.1 <= rand <= 0.25:
+                #         shutil.copy(os.path.join(input_dir, species, image),
+                #                     os.path.join(val_dir, species, image))
+                #     else:
+                #         shutil.copy(os.path.join(input_dir, species, image),
+                #                     os.path.join(train_dir, species, image))
+                # except(Exception, msg):
+                #     print('Failed file {}. {}.'.format(image, msg))
+
+
 # Stitching it all together
 ###############################################################################
 
@@ -304,3 +347,7 @@ def load_data(datadir, config, shottype='h'):
         val_size=0.135)
     logging.info('Data is loaded, split and put in generators.')
     return X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species
+
+
+# def directory_flow():
+#     model.flow_from_directory()
