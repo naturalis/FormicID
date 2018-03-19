@@ -48,6 +48,7 @@ The files should be structured as follows:
 import logging
 import os
 import shutil
+import random
 
 import numpy as np
 from keras import backend as K
@@ -269,7 +270,28 @@ def train_val_test_split(images,
     return X_train, Y_train, X_val, Y_val, X_test, Y_test
 
 
-def split_in_directory(test_dir, shottype='head'):
+# Split training/validation/test in folder
+###############################################################################
+
+def split_in_directory(test_dir,
+                       shottype='head',
+                       test_split=0.1,
+                       val_split=0.2):
+    """Short summary.
+
+    Args:
+        test_dir (type): Description of parameter `test_dir`.
+        shottype (type): Description of parameter `shottype`. Defaults to 'head'.
+        test_split (type): Description of parameter `test_split`. Defaults to 0.1.
+        val_split (type): Description of parameter `val_split`. Defaults to 0.2.
+
+    Returns:
+        type: Description of returned object.
+
+    Raises:        ExceptionName: Why the exception is raised.
+
+    """
+    val_split = val_split + test_split
     input_dir = os.path.join(wd, 'data', test_dir, 'images', shottype)
 
     data_dirs = ['1-training', '2-validation', '3-test']
@@ -287,28 +309,29 @@ def split_in_directory(test_dir, shottype='head'):
                 continue
             if not os.path.exists(os.path.join(input_dir, data_dir, species)):
                 os.mkdir(os.path.join(input_dir, data_dir, species))
-
     for species in tqdm(os.listdir(input_dir)):
         if species in data_dirs:
             continue
         nb_images = len(os.listdir(os.path.join(input_dir, species)))
-        print(nb_images)
-        for image in random.shuffle(os.listdir(os.path.join(input_dir, species))):
+        # print(nb_images)
+        image_files = os.listdir(os.path.join(input_dir, species))
+        shuffled = image_files[:]
+        random.shuffle(shuffled)
+        num1 = round(len(shuffled) * test_split)
+        num2 = round(len(shuffled) * val_split)
+        to_test, to_val, to_train = shuffled[:
+                                             num1], shuffled[num1:num2], shuffled[num2:]
+        for image in os.listdir(os.path.join(input_dir, species)):
             if image.endswith('.jpg'):
-                print(image)
-                # try:
-                #     rand = random.sample(1)
-                #     if rand < 0.1:
-                #         shutil.copy(os.path.join(input_dir, species, image),
-                #                     os.path.join(test_dir, species, image))
-                #     if 0.1 <= rand <= 0.25:
-                #         shutil.copy(os.path.join(input_dir, species, image),
-                #                     os.path.join(val_dir, species, image))
-                #     else:
-                #         shutil.copy(os.path.join(input_dir, species, image),
-                #                     os.path.join(train_dir, species, image))
-                # except(Exception, msg):
-                #     print('Failed file {}. {}.'.format(image, msg))
+                for img in to_test:
+                    shutil.copy2(os.path.join(input_dir, species, img),
+                                 os.path.join(test_dir, species, img))
+                for img in to_val:
+                    shutil.copy(os.path.join(input_dir, species, img),
+                                os.path.join(val_dir, species, img))
+                for img in to_train:
+                    shutil.copy2(os.path.join(input_dir, species, img),
+                                 os.path.join(train_dir, species, img))
 
 
 # Stitching it all together
