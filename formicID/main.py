@@ -158,9 +158,9 @@ def main():
     # Initialize logger
     ###########################################################################
     logger = [
-        buildMC(config=config).build_mc(),
+        # buildMC(config=config).build_mc(),
         build_rlrop(),
-        build_es(),
+        build_es(monitor='val_loss', patience=25),
         buildTB(model=model_formicID, config=config).build_tb()
     ]
 
@@ -178,7 +178,7 @@ def main():
     trainer_dir(
         model=model_formicID,
         data_dir='2018-03-15-test5sp_windows',
-        shottype='profile',
+        shottype='head',
         config=config,
         callbacks=logger
     )

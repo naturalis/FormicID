@@ -100,16 +100,16 @@ class buildMC:
 
 # EarlyStopping
 ###############################################################################
-def build_es():
+def build_es(monitor='val_loss', patience=10):
     """For initializing EarlyStopping. This monitors validation loss.
 
     Returns:
         Training will stop when validation loss is not decreasing anymore.
 
     """
-    es = EarlyStopping(monitor='val_loss',
+    es = EarlyStopping(monitor=monitor,
                        min_delta=0,
-                       patience=10,
+                       patience=patience,
                        verbose=1,
                        mode='min')
     return es

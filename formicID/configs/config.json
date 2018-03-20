@@ -1,6 +1,6 @@
 {
     "exp_name": "test5sp_windows",
-    "num_epochs": 32,
+    "num_epochs": 100,
     "num_iter_per_epoch": 10,
     "learning_rate": 0.001,
     "batch_size": 32,
