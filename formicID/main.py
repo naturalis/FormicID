@@ -25,7 +25,8 @@ from keras import backend as K
 
 from AntWeb.AW2_to_json import urls_to_json
 from AntWeb.json_to_csv import batch_json_to_csv
-from data_loader.data_input import load_data, split_in_directory
+from data_loader.data_input import (image_path_csv_input, load_data,
+                                    split_in_directory)
 from data_scraper.scrape import image_scraper
 from models.models import compile_model, load_model
 from testers.tester import model_evaluate
@@ -75,26 +76,26 @@ def main():
     #     offset_set=0,
     #     limit_set=200
     # )
-
     # Downloading from json files to a scrape ready csv file
     ###########################################################################
     # batch_json_to_csv(
     #     input_dir='2018-03-16-test5sp_invalid',
     #     output_dir='2018-03-16-test5sp_invalid',
     #     quality='low',
-    #     csvname='csv_images.csv'
+    #     csvname='image_urls.csv'
     # )
-
     # Scrape the images from the csv file and name accordingly
     ###########################################################################
     # image_scraper(
-    #     csvfile='csv_images.csv',
+    #     csvfile='image_urls.csv',
     #     input_dir='2018-03-13-test5sp_f',
     #     # start=0,
     #     # end=1491,
     #     dir_out_name='images',
     #     update=False
     # )
+
+    image_path_csv_input(data_dir='2018-03-13-test5sp_f')
 
     # create experiment related directories
     ###########################################################################
@@ -135,35 +136,34 @@ def main():
     #     test_split=0.1,
     #     val_split=0.2
     # )
-    num_species = 5
+    # num_species = 5
     # Initialize the model
     ###########################################################################
-    model_formicID = load_model(
-        config=config,
-        num_classes=num_species,
-        base_model='InceptionV3'
-    )
+    # model_formicID = load_model(
+    #     config=config,
+    #     num_classes=num_species,
+    #     base_model='InceptionV3'
+    # )
     # model_formicID = make_multi_gpu(
     #     model=model_formicID,
     #     gpus=1
     # )
-    model_formicID = compile_model(
-        model=model_formicID,
-        config=config
-    )
+    # model_formicID = compile_model(
+    #     model=model_formicID,
+    #     config=config
+    # )
     # model_visualization(
     #     model=model_formicID,
     #     config=config
     # )
     # Initialize logger
     ###########################################################################
-    logger = [
-        # buildMC(config=config).build_mc(),
-        build_rlrop(),
-        build_es(monitor='val_loss', patience=25),
-        buildTB(model=model_formicID, config=config).build_tb()
-    ]
-
+    # logger = [
+    #     # buildMC(config=config).build_mc(),
+    #     build_rlrop(),
+    #     build_es(monitor='val_loss', patience=25),
+    #     buildTB(model=model_formicID, config=config).build_tb()
+    # ]
     # Training in batches with iterator
     ###########################################################################
     # trainer(
@@ -175,13 +175,13 @@ def main():
     #     callbacks=logger,
     #     config=config
     # )
-    trainer_dir(
-        model=model_formicID,
-        data_dir='2018-03-15-test5sp_windows',
-        shottype='head',
-        config=config,
-        callbacks=logger
-    )
+    # trainer_dir(
+    #     model=model_formicID,
+    #     data_dir='2018-03-15-test5sp_windows',
+    #     shottype='head',
+    #     config=config,
+    #     callbacks=logger
+    # )
     # Evaluation
     ###########################################################################
     # score = model_evaluate(model_formicID, X_test, Y_test)

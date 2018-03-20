@@ -51,6 +51,7 @@ import random
 import shutil
 
 import numpy as np
+import pandas as pd
 from keras import backend as K
 from keras.preprocessing.image import img_to_array, load_img
 from keras.utils import normalize, to_categorical
@@ -64,11 +65,47 @@ from utils.utils import wd
 ###############################################################################
 
 
+# Create image loading csvfile
+###############################################################################
+
+
+def image_path_csv_input(data_dir):
+    data_dir = os.path.join('data', data_dir)
+    image_dir = os.path.join(data_dir, 'images')
+    path_col = []
+    shottype_col = []
+    species_col = []
+    identifier_col = []
+    for shottype in tqdm(os.listdir(image_dir)):
+        for species in tqdm(os.listdir(os.path.join(image_dir, shottype))):
+            for image in tqdm(os.listdir(os.path.join(image_dir,
+                                                      shottype,
+                                                      species))):
+                if image.endswith('.jpg'):
+                    identifier = os.path.split(image)[1].split('_')[2]
+                    image = os.path.join(image_dir, shottype, species, image)
+                    path_col.append(image)
+                    shottype_col.append(shottype)
+                    species_col.append(species)
+                    identifier_col.append(identifier)
+    data = list(zip(identifier_col, species_col, shottype_col, path_col))
+    df = pd.DataFrame(data,
+                      columns=['Identifier',
+                               'Species',
+                               'Shottype',
+                               'path'])
+    output_csv = os.path.join(data_dir, 'image_path.csv')
+    df.to_csv(path_or_buf=output_csv,
+              header=True,
+              index=False,
+              sep=",")
+
+
 # Return the image dimensions according to a choosen model
 ###############################################################################
 
 
-def image_size(config):
+def _image_size(config):
     """Function that returns the correct input size according to the choosen
     model.
 
@@ -353,7 +390,7 @@ def load_data(datadir, config, shottype='h'):
 
     """
     seed = config.seed
-    img_width, img_height = image_size(config=config)
+    img_width, img_height = _image_size(config=config)
     images, labels, num_species = img_load_shottype(shottype=shottype,
                                                     datadir=datadir,
                                                     img_size=(img_width,
