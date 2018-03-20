@@ -292,22 +292,19 @@ def split_in_directory(data_dir,
     """
     val_split = val_split + test_split
     input_dir = os.path.join(wd, 'data', data_dir, 'images', shottype)
-
     dirs_split = ['1-training', '2-validation', '3-test']
     for dir in dirs_split:
         if not os.path.exists(os.path.join(input_dir, dir)):
             os.makedirs(os.path.join(input_dir, dir))
-
-    train_dir = os.path.join(input_dir, dirs_split[0])
-    val_dir = os.path.join(input_dir, dirs_split[1])
-    test_dir = os.path.join(input_dir, dirs_split[2])
-
     for dir in dirs_split:
         for species in os.listdir(input_dir):
             if species in dirs_split:
                 continue
             if not os.path.exists(os.path.join(input_dir, dir, species)):
                 os.makedirs(os.path.join(input_dir, dir, species))
+    train_dir = os.path.join(input_dir, dirs_split[0])
+    val_dir = os.path.join(input_dir, dirs_split[1])
+    test_dir = os.path.join(input_dir, dirs_split[2])
     for species in tqdm(os.listdir(input_dir)):
         if species in dirs_split:
             continue
@@ -318,8 +315,8 @@ def split_in_directory(data_dir,
         random.shuffle(shuffled)
         num1 = round(len(shuffled) * test_split)
         num2 = round(len(shuffled) * val_split)
-        to_test, to_val, to_train = shuffled[:num1],
-            shuffled[num1:num2], shuffled[num2:]
+        to_test, to_val, to_train = shuffled[:num1], shuffled[num1:num2], \
+            shuffled[num2:]
         for image in os.listdir(os.path.join(input_dir, species)):
             if image.endswith('.jpg'):
                 for img in to_test:
