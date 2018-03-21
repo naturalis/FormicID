@@ -109,7 +109,7 @@ def main():
     # )
 
     CsvIterator(
-        input_csv='data/2018-03-21-5sp_200limit/image_path.csv',
+        csv='data/2018-03-21-5sp_200limit/image_path.csv',
         image_data_generator=idg_train
     )
     # create experiment related directories
