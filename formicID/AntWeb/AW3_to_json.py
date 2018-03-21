@@ -16,16 +16,23 @@ file for this genus+species and places the JSON file in a folder.
 '''
 # Packages
 ###############################################################################
+
+# Standard library imports
 import datetime
-import json
 import os
 import time
 
+# Data tools imports
+import json
 import pandas as pd
+
+# Additional project imports
 import requests
 from tqdm import tqdm
 
-from utils.utils import todaystr, wd
+# FormicID imports
+from utils.utils import todaystr
+from utils.utils import wd
 
 # Parameters and settings
 ###############################################################################

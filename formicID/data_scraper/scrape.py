@@ -16,7 +16,8 @@ type and per species.
 
 # Packages
 ###############################################################################
-import csv
+
+# Standard library imports
 import itertools
 import logging
 import os
@@ -24,10 +25,15 @@ import re
 from urllib.error import HTTPError
 from urllib.request import urlretrieve
 
+# Data tools imports
+import csv
 import pandas as pd
+
+# Additional project imports
 import requests
 from tqdm import tqdm
 
+# FormicID imports
 from utils.utils import wd
 
 # Parameters and settings
@@ -197,7 +203,7 @@ def image_scraper(csvfile,
                                                                   image[2]))
                     try:
                         if not os.path.isfile(filename):
-                            noturlretrieve(url=image[3], filename=filename)
+                            urlretrieve(url=image[3], filename=filename)
                         else:
                             continue
                     except HTTPError as err:

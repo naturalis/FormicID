@@ -16,11 +16,13 @@ scripts.
 # Packages
 ###############################################################################
 
+# Standard library imports
 import argparse
 import datetime
 import logging
 import os
 
+# Additional project imports
 import requests
 
 # Parameters and settings
@@ -50,7 +52,7 @@ def get_url_info(input_url):
 # Date and time stamps
 ###############################################################################
 # YYYY-MM-DD
-todaystr = datetime.date.today().isoformat()  
+todaystr = datetime.date.today().isoformat()
 # YYYYMMDD_HHMMSS
 today_timestr = datetime.datetime.today().strftime('%Y%m%d_%H%M%S')
 

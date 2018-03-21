@@ -16,19 +16,25 @@ file for this genus+species and places the JSON file in a folder.
 # Packages
 ###############################################################################
 
-import json
+# Standard library imports
 import logging
 import os
 import sys
 import time
-from csv import Sniffer
 from urllib.error import HTTPError
 
+# Data tools imports
+import json
 import pandas as pd
+from csv import Sniffer
+
+# Additional project imports
 import requests
 from tqdm import tqdm
 
-from utils.utils import todaystr, wd
+# FormicID imports
+from utils.utils import todaystr
+from utils.utils import wd
 
 # Parameters and settings
 ###############################################################################
@@ -189,7 +195,7 @@ def urls_to_json(csv_file,
             # Skip `indet` species:
             if row['species'] == 'indet':
                 logging.info('Skipped: "{}".'.format(url.url))
-            # Download the other species:
+            # Download `non-indet` species:
             else:
                 logging.info('Downloading JSON from: {0}'.format(url.url))
                 file_name = row['genus'] + '_' + row['species'] + '.json'
@@ -199,10 +205,11 @@ def urls_to_json(csv_file,
                         if species['count'] > 0:
                             with open(os.path.join(wd,
                                                    output_dir,
-                                                   file_name), 'w') as jsonfile:
+                                                   file_name),
+                                      'w') as jsonfile:
                                 json.dump(species,
                                           jsonfile)
-                        # If the server returns a species with 0 specimen count:
+                        # If the server returns species with 0 specimen count:
                         if species['count'] == 0:
                             nb_invalid += 1
                             logging.info('"{0} {1}" has {2} records or does '

@@ -15,21 +15,30 @@ This file has code utilities for handeling models.
 # Packages
 ###############################################################################
 
+# Standard library imports
 import logging
 import os
 
-import graphviz  # Needed for keras.utils.vis_utils.plot_model()
-import h5py  # Needed for model.save()
-import pydot_ng  # Needed for keras.utils.vis_utils.plot_model()
+# Deeplearning tools imports
 import tensorflow as tf
-from keras.models import Model, load_model, model_from_json
+from keras.models import Model
+from keras.models import load_model
+from keras.models import model_from_json
 from keras.utils import multi_gpu_model
 from keras.utils.vis_utils import plot_model
+
+# Data tools imports
+import h5py  # Needed for model.save()
+
+# Graphical tools imports
+import graphviz  # Needed for keras.utils.vis_utils.plot_model()
+import pydot_ng  # Needed for keras.utils.vis_utils.plot_model()
 
 from .utils import wd
 
 # Parameters and settings
 ###############################################################################
+
 
 # Model utilities
 ###############################################################################

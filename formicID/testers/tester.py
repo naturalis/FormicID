@@ -17,12 +17,18 @@ After evaluation looks good, we can test the model with unseen images.
 # Packages
 ###############################################################################
 
+# Standard library imports
 import logging
 
-import matplotlib.pylab as plt
-import numpy as np
+# Deeplearning tools imports
 from keras.models import Model
+
+# Data tools imports
+import numpy as np
 from sklearn.metrics import confusion_matrix
+
+# Additional project imports
+import matplotlib.pylab as plt
 
 # Parameters and settings
 ###############################################################################

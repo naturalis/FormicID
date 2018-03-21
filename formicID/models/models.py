@@ -32,16 +32,24 @@ From the Keras documentation:
 # Packages
 ###############################################################################
 
+# Standard library imports
 import logging
 
+# Deeplearning tools imports
 from keras.applications.densenet import DenseNet169
 from keras.applications.inception_v3 import InceptionV3
 from keras.applications.resnet50 import ResNet50
 from keras.applications.xception import Xception
-from keras.layers import Dense, GlobalAveragePooling2D, Input
+from keras.layers import Dense
+from keras.layers import GlobalAveragePooling2D
+from keras.layers import Input
 from keras.models import Model
-from keras.optimizers import SGD, Adam, Nadam, RMSprop
+from keras.optimizers import SGD
+from keras.optimizers import Adam
+from keras.optimizers import Nadam
+from keras.optimizers import RMSprop
 
+# FormicID imports
 from models.build import build_model
 from utils.logger import rmse
 from utils.model_utils import model_summary

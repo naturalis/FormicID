@@ -45,42 +45,52 @@ The files should be structured as follows:
 # Packages
 ###############################################################################
 
+# Standard library imports
 import logging
 import os
 import random
 import shutil
 
+# Deeplearning tools imports
+from keras import backend as K
+from keras.preprocessing.image import img_to_array
+from keras.preprocessing.image import load_img
+from keras.utils import normalize
+from keras.utils import to_categorical
+
+# Data tools imports
 import numpy as np
 import pandas as pd
-from keras import backend as K
-from keras.preprocessing.image import img_to_array, load_img
-from keras.utils import normalize, to_categorical
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.preprocessing import LabelEncoder
+
+# Additional project imports
 from tqdm import tqdm
 
+# FormicID imports
 from utils.utils import wd
 
 # Parameters and settings
 ###############################################################################
 
 
+
 # Create image loading csvfile
 ###############################################################################
 
 
-def image_path_csv_input(data_dir):
+def make_image_path_csv(data_dir):
     data_dir = os.path.join('data', data_dir)
     image_dir = os.path.join(data_dir, 'images')
     path_col = []
     shottype_col = []
     species_col = []
     identifier_col = []
-    for shottype in tqdm(os.listdir(image_dir)):
-        for species in tqdm(os.listdir(os.path.join(image_dir, shottype))):
-            for image in tqdm(os.listdir(os.path.join(image_dir,
+    for shottype in os.listdir(image_dir):
+        for species in os.listdir(os.path.join(image_dir, shottype)):
+            for image in os.listdir(os.path.join(image_dir,
                                                       shottype,
-                                                      species))):
+                                                      species)):
                 if image.endswith('.jpg'):
                     identifier = os.path.split(image)[1].split('_')[2]
                     image = os.path.join(image_dir, shottype, species, image)
@@ -90,9 +100,9 @@ def image_path_csv_input(data_dir):
                     identifier_col.append(identifier)
     data = list(zip(identifier_col, species_col, shottype_col, path_col))
     df = pd.DataFrame(data,
-                      columns=['Identifier',
-                               'Species',
-                               'Shottype',
+                      columns=['identifier',
+                               'species',
+                               'shottype',
                                'path'])
     output_csv = os.path.join(data_dir, 'image_path.csv')
     df.to_csv(path_or_buf=output_csv,

@@ -25,11 +25,18 @@ pixels in  `[-1, 1]`, samplewise and using the following calculation:
 # Packages
 ###############################################################################
 
+# Standard library imports
 import os
 
+# Deeplearning tools imports
+from keras import backend as K
 from keras.applications.inception_v3 import preprocess_input
 from keras.models import Model
-from keras.preprocessing.image import ImageDataGenerator, Iterator
+from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import Iterator
+
+# Data tools imports
+import pandas as pd
 
 # Parameters and settings
 ###############################################################################
@@ -76,7 +83,7 @@ class CsvIterator(Iterator):
 
     """
 
-    def __init__(self, directory, image_data_generator,
+    def __init__(self, input_csv, image_data_generator,
                  target_size=(256, 256), color_mode='rgb',
                  classes=None, class_mode='categorical',
                  batch_size=32, shuffle=True, seed=None,
@@ -86,7 +93,7 @@ class CsvIterator(Iterator):
                  interpolation='nearest'):
         if data_format is None:
             data_format = K.image_data_format()
-        self.directory = directory
+        self.input_csv = input_csv
         self.image_data_generator = image_data_generator
         self.target_size = tuple(target_size)
         if color_mode not in {'rgb', 'grayscale'}:
@@ -113,7 +120,6 @@ class CsvIterator(Iterator):
                              ' or None.')
         self.class_mode = class_mode
         self.interpolation = interpolation
-
         if subset is not None:
             validation_split = self.image_data_generator._validation_split
             if subset == 'validation':
@@ -126,32 +132,25 @@ class CsvIterator(Iterator):
         else:
             split = None
         self.subset = subset
-
-        white_list_formats = {'png', 'jpg',
-                              'jpeg', 'bmp', 'ppm', 'tif', 'tiff'}
+    ####################################################
 
         # first, count the number of samples and classes
         self.samples = 0
 
         if not classes:
-        #     classes = []
-        #     for subdir in sorted(os.listdir(directory)):
-        #         if os.path.isdir(os.path.join(directory, subdir)):
-        #             classes.append(subdir)
-        # self.num_classes = len(classes)
-        # self.class_indices = dict(zip(classes, range(len(classes))))
-        #
-        # pool = multiprocessing.pool.ThreadPool()
-        # function_partial = partial(_count_valid_files_in_directory,
-        #                            white_list_formats=white_list_formats,
-        #                            follow_links=follow_links,
-        #                            split=split)
-        # self.samples = sum(pool.map(function_partial,
-        #                             (os.path.join(directory, subdir)
-        #                              for subdir in classes)))
-        #
-        # print('Found %d images belonging to %d classes.' %
-        #       (self.samples, self.num_classes))
+            with open(input_csv, 'rt') as csv_open:
+                df = pd.read_csv(csv_open, sep=',')
+                classes_counts = df.species.value_counts()
+                classes = df.species.nunique()
+                self.num_classes = classes
+                counts = df.shottype.value_counts()
+                h_count = counts['head']
+                d_count = counts['dorsal']
+                p_count = counts['profile']
+                self.samples = (h_count + d_count + p_count)
+        # TODO: count classes after shottype count
+        print('Found a total {0} images belonging to {1} classes (head: {2}, dorsal: {3}, profile: {4}).'.format(self.samples, self.num_classes, h_count, d_count, p_count))
+
 
 
 
@@ -176,38 +175,38 @@ class CsvIterator(Iterator):
         pool.join()
         super(DirectoryIterator, self).__init__(
             self.samples, batch_size, shuffle, seed)
-
-    def _get_batches_of_transformed_samples(self, index_array):
-        batch_x = np.zeros((len(index_array),) +
-                           self.image_shape, dtype=K.floatx())
-        grayscale = self.color_mode == 'grayscale'
-        # build batch of image data
-        for i, j in enumerate(index_array):
-            fname = self.filenames[j]
-            img = load_img(os.path.join(self.directory, fname),
-                           grayscale=grayscale,
-                           target_size=self.target_size,
-                           interpolation=self.interpolation)
-            x = img_to_array(img, data_format=self.data_format)
-            x = self.image_data_generator.random_transform(x)
-            x = self.image_data_generator.standardize(x)
-            batch_x[i] = x
-
-        # build batch of labels
-        if self.class_mode == 'input':
-            batch_y = batch_x.copy()
-        elif self.class_mode == 'sparse':
-            batch_y = self.classes[index_array]
-        elif self.class_mode == 'binary':
-            batch_y = self.classes[index_array].astype(K.floatx())
-        elif self.class_mode == 'categorical':
-            batch_y = np.zeros(
-                (len(batch_x), self.num_classes), dtype=K.floatx())
-            for i, label in enumerate(self.classes[index_array]):
-                batch_y[i, label] = 1.
-        else:
-            return batch_x
-        return batch_x, batch_y
+    #
+    # def _get_batches_of_transformed_samples(self, index_array):
+    #     batch_x = np.zeros((len(index_array),) +
+    #                        self.image_shape, dtype=K.floatx())
+    #     grayscale = self.color_mode == 'grayscale'
+    #     # build batch of image data
+    #     for i, j in enumerate(index_array):
+    #         fname = self.filenames[j]
+    #         img = load_img(os.path.join(self.directory, fname),
+    #                        grayscale=grayscale,
+    #                        target_size=self.target_size,
+    #                        interpolation=self.interpolation)
+    #         x = img_to_array(img, data_format=self.data_format)
+    #         x = self.image_data_generator.random_transform(x)
+    #         x = self.image_data_generator.standardize(x)
+    #         batch_x[i] = x
+    #
+    #     # build batch of labels
+    #     if self.class_mode == 'input':
+    #         batch_y = batch_x.copy()
+    #     elif self.class_mode == 'sparse':
+    #         batch_y = self.classes[index_array]
+    #     elif self.class_mode == 'binary':
+    #         batch_y = self.classes[index_array].astype(K.floatx())
+    #     elif self.class_mode == 'categorical':
+    #         batch_y = np.zeros(
+    #             (len(batch_x), self.num_classes), dtype=K.floatx())
+    #         for i, label in enumerate(self.classes[index_array]):
+    #             batch_y[i, label] = 1.
+    #     else:
+    #         return batch_x
+    #     return batch_x, batch_y
 
 
 

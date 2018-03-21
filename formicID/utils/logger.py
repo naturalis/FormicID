@@ -15,11 +15,15 @@ on the models performance.
 # Packages
 ###############################################################################
 
+# Standard library imports
 import os
 
+# Deeplearning tools imports
 import keras.backend as K
-from keras.callbacks import (EarlyStopping, ModelCheckpoint, ReduceLROnPlateau,
-                             TensorBoard)
+from keras.callbacks import TensorBoard
+from keras.callbacks import EarlyStopping
+from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ReduceLROnPlateau
 
 from .utils import today_timestr
 

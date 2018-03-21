@@ -14,9 +14,14 @@ file contains settings for running experiments.
 '''
 # Packages
 ###############################################################################
-import json
+
+# Standard library imports
 import os
 
+# Data tools imports
+import json
+
+# Additional project imports
 from bunch import Bunch
 
 # Load and process config

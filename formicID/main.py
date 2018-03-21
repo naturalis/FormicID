@@ -16,33 +16,47 @@ test set.
 # Packages
 ###############################################################################
 
+# Standard library imports
 import logging
 import os
 
+# Deeplearning tools imports
 import tensorflow as tf
 from keras import __version__ as keras_version
 from keras import backend as K
 
+# FormicID imports
 from AntWeb.AW2_to_json import urls_to_json
 from AntWeb.json_to_csv import batch_json_to_csv
-from data_loader.data_input import (image_path_csv_input, load_data,
-                                    split_in_directory)
+from data_loader.data_input import load_data
+from data_loader.data_input import make_image_path_csv
+from data_loader.data_input import split_in_directory
 from data_scraper.scrape import image_scraper
-from models.models import compile_model, load_model
+from models.models import compile_model
+from models.models import load_model
 from testers.tester import model_evaluate
+from trainers.train import CsvIterator
+from trainers.train import idg_train
 from trainers.train import trainer_dir
-from utils.img import save_augmentation, show_multi_img
+from utils.img import save_augmentation
+from utils.img import show_multi_img
 from utils.load_config import process_config
-from utils.logger import build_es, build_rlrop, buildMC, buildTB
-from utils.model_utils import (make_multi_gpu, model_summary,
-                               model_visualization)
-from utils.utils import create_dirs, get_args
+from utils.logger import build_es
+from utils.logger import build_rlrop
+from utils.logger import buildMC
+from utils.logger import buildTB
+from utils.model_utils import make_multi_gpu
+from utils.model_utils import model_summary
+from utils.model_utils import model_visualization
+from utils.utils import create_dirs
+from utils.utils import get_args
 
 # Parameters and settings
 ###############################################################################
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # To disable the tf warning for compiling in SEE4.2
 # 0 = all logs, 1 = info, 2 = warnings, 3 = error
+
 
 # Main
 ###############################################################################
@@ -67,36 +81,37 @@ def main():
         logging.error('Missing or invalid arguments.')
         exit(0)
 
-    # Creating urls and export to json files
+    # Downloading a dataset
     ###########################################################################
     # urls_to_json(
     #     csv_file='testgenusspecies.csv',
     #     input_dir='data',
-    #     output_dir='test5sp_invalid',
+    #     output_dir='5sp_200limit',
     #     offset_set=0,
     #     limit_set=200
     # )
-    # Downloading from json files to a scrape ready csv file
-    ###########################################################################
     # batch_json_to_csv(
-    #     input_dir='2018-03-16-test5sp_invalid',
-    #     output_dir='2018-03-16-test5sp_invalid',
+    #     input_dir='2018-03-21-5sp_200limit',
+    #     output_dir='2018-03-21-5sp_200limit',
     #     quality='low',
     #     csvname='image_urls.csv'
     # )
-    # Scrape the images from the csv file and name accordingly
-    ###########################################################################
     # image_scraper(
     #     csvfile='image_urls.csv',
-    #     input_dir='2018-03-13-test5sp_f',
+    #     input_dir='2018-03-21-5sp_200limit',
     #     # start=0,
     #     # end=1491,
     #     dir_out_name='images',
     #     update=False
     # )
+    # make_image_path_csv(
+    #     data_dir='2018-03-21-5sp_200limit'
+    # )
 
-    image_path_csv_input(data_dir='2018-03-13-test5sp_f')
-
+    CsvIterator(
+        input_csv='data/2018-03-21-5sp_200limit/image_path.csv',
+        image_data_generator=idg_train
+    )
     # create experiment related directories
     ###########################################################################
     # create_dirs(
@@ -115,7 +130,7 @@ def main():
     #     Y_train=Y_train
     # )
     # save_augmentation(
-    #     image='data/2018-03-16-testall/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
+    #     image='data/2018-03-21-testall/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
     #     config=config
     # )
     # split_in_directory(

@@ -16,14 +16,19 @@ and `image_url`) ready for `scrape.py`.
 # Packages
 ###############################################################################
 
-import json
+# Standard library imports
 import logging
 import os
 
+# Data tools imports
 import jmespath
+import json
 import pandas as pd
+
+# Additional project imports
 from tqdm import tqdm
 
+# FormicID imports
 from utils.utils import wd
 
 # Parameters and settings

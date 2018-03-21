@@ -15,8 +15,14 @@ called when instantiaitng the model.
 '''
 # Packages
 ###############################################################################
-from keras.layers import (Activation, Conv2D, Dense, Dropout, Flatten,
-                          MaxPooling2D)
+
+# Deeplearning tools imports
+from keras.layers import Activation
+from keras.layers import Conv2D
+from keras.layers import Dense
+from keras.layers import Dropout
+from keras.layers import Flatten
+from keras.layers import MaxPooling2D
 from keras.models import Sequential
 
 # Parameters and settings
