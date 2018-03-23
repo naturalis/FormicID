@@ -39,8 +39,9 @@ from trainers.train import trainer_dir
 from utils.load_config import process_config
 from utils.logger import build_es
 from utils.logger import build_rlrop
-from utils.logger import buildMC
-from utils.logger import buildTB
+from utils.logger import build_mc
+from utils.logger import build_tb
+from utils.logger import build_csvl
 from utils.model_utils import make_multi_gpu
 from utils.utils import create_dirs
 from utils.utils import get_args
@@ -57,6 +58,10 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
 def main():
+    sess = tf.Session()
+    K.set_session(sess)
+    # Logging
+    ###########################################################################
     logging.basicConfig(
         filename='loggerfile.log',
         format='[%(asctime)s] - [%(levelname)s]: %(message)s',
@@ -64,8 +69,6 @@ def main():
         level=logging.DEBUG
     )
     logging.info('Keras version: {}'.format(keras_version))
-    sess = tf.Session()
-    K.set_session(sess)
     # Get args
     ###########################################################################
     try:
@@ -75,7 +78,7 @@ def main():
         logging.error('Missing or invalid arguments.')
         exit(0)
 
-    # Downloading a dataset
+    # Creating a dataset
     ###########################################################################
     # urls_to_json(
     #     csv_file='testgenusspecies.csv',
@@ -103,19 +106,31 @@ def main():
     # )
     # create experiment related directories
     ###########################################################################
-    # create_dirs(
-    #     [config.summary_dir,
-    #      config.checkpoint_dir]
-    # )
+    create_dirs(
+        [config.summary_dir,
+         config.checkpoint_dir]
+    )
     # Initializing the data
     ###########################################################################
     # split_in_directory(
-    #     data_dir='2018-03-15-test5sp_windows',
+    #     data_dir='2018-03-16-testall',
+    #     shottype='dorsal',
+    #     test_split=0.1,
+    #     val_split=0.2
+    # )
+    # split_in_directory(
+    #     data_dir='2018-03-16-testall',
+    #     shottype='head',
+    #     test_split=0.1,
+    #     val_split=0.2
+    # )
+    # split_in_directory(
+    #     data_dir='2018-03-16-testall',
     #     shottype='profile',
     #     test_split=0.1,
     #     val_split=0.2
     # )
-    num_species = 5
+    num_species = 97
     # Initialize the model
     ###########################################################################
     model_formicID = load_model(
@@ -123,26 +138,51 @@ def main():
         num_classes=num_species,
         base_model='InceptionV3'
     )
-    # model_formicID = make_multi_gpu(
-    #     model=model_formicID,
-    #     gpus=1
-    # )
     model_formicID = compile_model(
         model=model_formicID,
         config=config
     )
-    # model_visualization(
-    #     model=model_formicID,
-    #     config=config
-    # )
     # Initialize logger
     ###########################################################################
-    # logger = [
-    #     # buildMC(config=config).build_mc(),
-    #     build_rlrop(),
-    #     build_es(monitor='val_loss', patience=25),
-    #     buildTB(model=model_formicID, config=config).build_tb()
-    # ]
+    logger = [
+        build_mc(
+            config=config,
+            monitor='val_loss',
+            verbose=0,
+            mode='auto',
+            save_best_only=True,
+            period=1
+        ),
+        build_rlrop(
+            monitor='val_loss',
+            factor=0.1,
+            patience=10,
+            verbose=1,
+            mode='auto',
+            epsilon=1e-4,
+            cooldown=0,
+            min_lr=0
+        ),
+        build_es(
+            monitor='val_loss',
+            min_delta=0,
+            patience=25,
+            verbose=1,
+            mode='min'
+        ),
+        build_tb(
+            model=model_formicID,
+            config=config,
+            histogram_freq=0,
+            write_graph=True,
+            write_images=True
+        ),
+        build_csvl(
+            filename='log.csv',
+            config=config,
+            separator=',',
+            append=False)
+    ]
     # Training in batches with iterator
     ###########################################################################
     # trainer(
@@ -154,18 +194,19 @@ def main():
     #     callbacks=logger,
     #     config=config
     # )
-    trainer_csv(model=model_formicID,
-                    csv='data/2018-03-21-5sp_200limit/image_path.csv',
-                    shottype='head',
-                    config=config,
-                    callbacks=None
-                    )
-    # trainer_dir(
+    trainer_dir(
+        model=model_formicID,
+        data_dir='2018-03-16-testall',
+        shottype='head',
+        config=config,
+        callbacks=logger
+    )
+    # trainer_csv(
     #     model=model_formicID,
-    #     data_dir='2018-03-15-test5sp_windows',
+    #     csv='data/2018-03-21-5sp_200limit/image_path.csv',
     #     shottype='head',
     #     config=config,
-    #     callbacks=logger
+    #     callbacks=None
     # )
     # Evaluation
     ###########################################################################

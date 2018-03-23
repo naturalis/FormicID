@@ -1,9 +1,9 @@
 {
-    "exp_name": "test5sp_windows",
-    "num_epochs": 2,
+    "exp_name": "testall",
+    "num_epochs": 5,
     "num_iter_per_epoch": 10,
     "learning_rate": 0.001,
-    "batch_size": 32,
+    "batch_size": 64,
     "state_size": [784],
     "max_to_keep": 5,
     "dropout": 0.5,

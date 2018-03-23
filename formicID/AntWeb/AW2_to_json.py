@@ -64,7 +64,15 @@ def _create_url(limit,
         URL object: Returns an URL as response object that can be opened by the
         function `request.get()`.
 
+    Raises:
+        TypeError: In case of an invalid kwarg.
+
     """
+    allowed_kwargs = {'genus', 'species', 'country', 'caste'}
+    for k in kwargs:
+        if k not in allowed_kwargs:
+            raise TypeError('Unexpected keyword argument passed to '
+            '_create_url: {}'.format(str(k)))
     genus = kwargs.get('genus', None)
     species = kwargs.get('species', None)
     country = kwargs.get('country', None)

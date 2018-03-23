@@ -134,7 +134,11 @@ def split_in_directory(data_dir,
     input_dir = os.path.join(wd, 'data', data_dir, 'images', shottype)
     dirs_split = ['1-training', '2-validation', '3-test']
     for dir in dirs_split:
-        if not os.path.exists(os.path.join(input_dir, dir)):
+        if os.path.exists(os.path.join(input_dir, dir)):
+            # TODO: Fix a better statement for stopping...
+            print('Folders already exist. Process is stopped.')
+            return
+        else:
             os.makedirs(os.path.join(input_dir, dir))
     for dir in dirs_split:
         for species in os.listdir(input_dir):

@@ -669,9 +669,9 @@ def trainer_dir(
     )
     model.fit_generator(
         generator=train_data_gen_dir,
-        steps_per_epoch=32,
+        steps_per_epoch=64,
         epochs=epochs,
         validation_data=val_data_gen_dir,
-        validation_steps=32,
+        validation_steps=64,
         callbacks=callbacks
     )

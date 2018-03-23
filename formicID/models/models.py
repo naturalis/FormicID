@@ -52,6 +52,7 @@ from keras.optimizers import RMSprop
 # FormicID imports
 from models.build import build_model
 from utils.logger import rmse
+from utils.logger import top_k_categorical_accuracy
 from utils.model_utils import model_summary
 
 # Parameters and settings
@@ -118,7 +119,7 @@ def load_model(config,
         if model == 'InceptionV3':
             base_model = InceptionV3(
                 include_top=False,
-                weights=None,
+                weights='imagenet',
                 classes=None
             )
         if model == 'ResNet50':
@@ -202,7 +203,9 @@ def compile_model(model, config):
     model.compile(
         loss='categorical_crossentropy',
         optimizer=opt,
-        metrics=['accuracy', rmse]
+        metrics=['accuracy',
+        # rmse,
+        top_k_categorical_accuracy]
     )
     logging.info('The model is compiled with succes.')
     # logging.debug('type ', model)
