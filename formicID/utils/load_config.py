@@ -28,7 +28,7 @@ from bunch import Bunch
 ###############################################################################
 
 
-def get_config_from_json(json_file):
+def _get_config_from_json(json_file):
     """Get the config from a json file.
 
     Args:
@@ -56,7 +56,7 @@ def process_config(jsonfile):
     Returns:
         Bunch object: the JSON configuration Bunch object.
     """
-    config, _ = get_config_from_json(jsonfile)
+    config, _ = _get_config_from_json(jsonfile)
     config.summary_dir = os.path.join(
         "./experiments", config.exp_name, "summary/")
     config.checkpoint_dir = os.path.join(

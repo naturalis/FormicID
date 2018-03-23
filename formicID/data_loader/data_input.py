@@ -74,7 +74,6 @@ from utils.utils import wd
 ###############################################################################
 
 
-
 # Create image loading csvfile
 ###############################################################################
 
@@ -89,8 +88,8 @@ def make_image_path_csv(data_dir):
     for shottype in os.listdir(image_dir):
         for species in os.listdir(os.path.join(image_dir, shottype)):
             for image in os.listdir(os.path.join(image_dir,
-                                                      shottype,
-                                                      species)):
+                                                 shottype,
+                                                 species)):
                 if image.endswith('.jpg'):
                     identifier = os.path.split(image)[1].split('_')[2]
                     image = os.path.join(image_dir, shottype, species, image)
@@ -110,6 +109,65 @@ def make_image_path_csv(data_dir):
               index=False,
               sep=",")
 
+# Split training/validation/test in folder
+###############################################################################
+
+
+def split_in_directory(data_dir,
+                       shottype='head',
+                       test_split=0.1,
+                       val_split=0.2):
+    """Split the image files for all species into subfolders for a training,
+    validation and test set.
+
+    Args:
+        data_dir (str): Directory that holds the shottype folders with species
+            and images.
+        shottype (str): The shottype folder. Defaults to 'head'.
+        test_split (float): Percentage of images for the test set. Defaults to
+            0.1.
+        val_split (float): Percentage of images for the validation set.
+            Defaults to 0.2.
+
+    """
+    val_split = val_split + test_split
+    input_dir = os.path.join(wd, 'data', data_dir, 'images', shottype)
+    dirs_split = ['1-training', '2-validation', '3-test']
+    for dir in dirs_split:
+        if not os.path.exists(os.path.join(input_dir, dir)):
+            os.makedirs(os.path.join(input_dir, dir))
+    for dir in dirs_split:
+        for species in os.listdir(input_dir):
+            if species in dirs_split:
+                continue
+            if not os.path.exists(os.path.join(input_dir, dir, species)):
+                os.makedirs(os.path.join(input_dir, dir, species))
+    train_dir = os.path.join(input_dir, dirs_split[0])
+    val_dir = os.path.join(input_dir, dirs_split[1])
+    test_dir = os.path.join(input_dir, dirs_split[2])
+    for species in tqdm(os.listdir(input_dir)):
+        if species in dirs_split:
+            continue
+        nb_images = len(os.listdir(os.path.join(input_dir, species)))
+        # print(nb_images)
+        image_files = os.listdir(os.path.join(input_dir, species))
+        shuffled = image_files[:]
+        random.shuffle(shuffled)
+        num1 = round(len(shuffled) * test_split)
+        num2 = round(len(shuffled) * val_split)
+        to_test, to_val, to_train = shuffled[:num1], shuffled[num1:num2], \
+            shuffled[num2:]
+        for image in os.listdir(os.path.join(input_dir, species)):
+            if image.endswith('.jpg'):
+                for img in to_test:
+                    shutil.copy2(os.path.join(input_dir, species, img),
+                                 os.path.join(test_dir, species, img))
+                for img in to_val:
+                    shutil.copy(os.path.join(input_dir, species, img),
+                                os.path.join(val_dir, species, img))
+                for img in to_train:
+                    shutil.copy2(os.path.join(input_dir, species, img),
+                                 os.path.join(train_dir, species, img))
 
 # Return the image dimensions according to a choosen model
 ###############################################################################
@@ -157,9 +215,9 @@ def _image_size(config):
 ###############################################################################
 
 
-def img_load_shottype(shottype,
-                      datadir,
-                      img_size=(None, None)):
+def _img_load_shottype(shottype,
+                       datadir,
+                       img_size=(None, None)):
     """This function loads images from a directory for which the shottype is
     given. Normalization happens in the `ImageDataGenerator`.
 
@@ -256,11 +314,11 @@ def img_load_shottype(shottype,
 ###############################################################################
 
 
-def train_val_test_split(images,
-                         labels,
-                         seed,
-                         test_size=0.1,
-                         val_size=0.135):
+def _train_val_test_split(images,
+                          labels,
+                          seed,
+                          test_size=0.1,
+                          val_size=0.135):
     """Split the data in a training, validation and test set. You can specify
     the test size and validation size. The set will be split in to (test -
     (training + validation)) first, and then (training - validation) will be
@@ -316,67 +374,6 @@ def train_val_test_split(images,
     logging.debug('Number of X_val: {}'.format(len(X_val)))
     return X_train, Y_train, X_val, Y_val, X_test, Y_test
 
-
-# Split training/validation/test in folder
-###############################################################################
-
-def split_in_directory(data_dir,
-                       shottype='head',
-                       test_split=0.1,
-                       val_split=0.2):
-    """Split the image files for all species into subfolders for a training,
-    validation and test set.
-
-    Args:
-        data_dir (str): Directory that holds the shottype folders with species
-            and images.
-        shottype (str): The shottype folder. Defaults to 'head'.
-        test_split (float): Percentage of images for the test set. Defaults to
-            0.1.
-        val_split (float): Percentage of images for the validation set.
-            Defaults to 0.2.
-
-    """
-    val_split = val_split + test_split
-    input_dir = os.path.join(wd, 'data', data_dir, 'images', shottype)
-    dirs_split = ['1-training', '2-validation', '3-test']
-    for dir in dirs_split:
-        if not os.path.exists(os.path.join(input_dir, dir)):
-            os.makedirs(os.path.join(input_dir, dir))
-    for dir in dirs_split:
-        for species in os.listdir(input_dir):
-            if species in dirs_split:
-                continue
-            if not os.path.exists(os.path.join(input_dir, dir, species)):
-                os.makedirs(os.path.join(input_dir, dir, species))
-    train_dir = os.path.join(input_dir, dirs_split[0])
-    val_dir = os.path.join(input_dir, dirs_split[1])
-    test_dir = os.path.join(input_dir, dirs_split[2])
-    for species in tqdm(os.listdir(input_dir)):
-        if species in dirs_split:
-            continue
-        nb_images = len(os.listdir(os.path.join(input_dir, species)))
-        # print(nb_images)
-        image_files = os.listdir(os.path.join(input_dir, species))
-        shuffled = image_files[:]
-        random.shuffle(shuffled)
-        num1 = round(len(shuffled) * test_split)
-        num2 = round(len(shuffled) * val_split)
-        to_test, to_val, to_train = shuffled[:num1], shuffled[num1:num2], \
-            shuffled[num2:]
-        for image in os.listdir(os.path.join(input_dir, species)):
-            if image.endswith('.jpg'):
-                for img in to_test:
-                    shutil.copy2(os.path.join(input_dir, species, img),
-                                 os.path.join(test_dir, species, img))
-                for img in to_val:
-                    shutil.copy(os.path.join(input_dir, species, img),
-                                os.path.join(val_dir, species, img))
-                for img in to_train:
-                    shutil.copy2(os.path.join(input_dir, species, img),
-                                 os.path.join(train_dir, species, img))
-
-
 # Stitching it all together
 ###############################################################################
 
@@ -401,11 +398,11 @@ def load_data(datadir, config, shottype='h'):
     """
     seed = config.seed
     img_width, img_height = _image_size(config=config)
-    images, labels, num_species = img_load_shottype(shottype=shottype,
-                                                    datadir=datadir,
-                                                    img_size=(img_width,
-                                                              img_height))
-    X_train, Y_train, X_val, Y_val, X_test, Y_test = train_val_test_split(
+    images, labels, num_species = _img_load_shottype(shottype=shottype,
+                                                     datadir=datadir,
+                                                     img_size=(img_width,
+                                                               img_height))
+    X_train, Y_train, X_val, Y_val, X_test, Y_test = _train_val_test_split(
         images=images,
         labels=labels,
         seed=seed,

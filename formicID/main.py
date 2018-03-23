@@ -28,26 +28,20 @@ from keras import backend as K
 # FormicID imports
 from AntWeb.AW2_to_json import urls_to_json
 from AntWeb.json_to_csv import batch_json_to_csv
-from data_loader.data_input import load_data
 from data_loader.data_input import make_image_path_csv
 from data_loader.data_input import split_in_directory
 from data_scraper.scrape import image_scraper
 from models.models import compile_model
 from models.models import load_model
 from testers.tester import model_evaluate
-from trainers.train import CsvIterator
-from trainers.train import idg_train
+from trainers.train import trainer_csv
 from trainers.train import trainer_dir
-from utils.img import save_augmentation
-from utils.img import show_multi_img
 from utils.load_config import process_config
 from utils.logger import build_es
 from utils.logger import build_rlrop
 from utils.logger import buildMC
 from utils.logger import buildTB
 from utils.model_utils import make_multi_gpu
-from utils.model_utils import model_summary
-from utils.model_utils import model_visualization
 from utils.utils import create_dirs
 from utils.utils import get_args
 
@@ -107,11 +101,6 @@ def main():
     # make_image_path_csv(
     #     data_dir='2018-03-21-5sp_200limit'
     # )
-
-    CsvIterator(
-        csv='data/2018-03-21-5sp_200limit/image_path.csv',
-        image_data_generator=idg_train
-    )
     # create experiment related directories
     ###########################################################################
     # create_dirs(
@@ -120,53 +109,28 @@ def main():
     # )
     # Initializing the data
     ###########################################################################
-    # X_train, Y_train, X_val, Y_val, X_test, Y_test, num_species = load_data(
-    #     datadir='2018-03-15-test5sp_quality',
-    #     config=config,
-    #     shottype='h'
-    # )
-    # show_multi_img(
-    #     X_train=X_train,
-    #     Y_train=Y_train
-    # )
-    # save_augmentation(
-    #     image='data/2018-03-21-testall/images/head/pheidole_megacephala/pheidole_megacephala_casent0059654_h.jpg',
-    #     config=config
-    # )
-    # split_in_directory(
-    #     data_dir='2018-03-15-test5sp_windows',
-    #     shottype='head',
-    #     test_split=0.1,
-    #     val_split=0.2
-    # )
-    # split_in_directory(
-    #     data_dir='2018-03-15-test5sp_windows',
-    #     shottype='dorsal',
-    #     test_split=0.1,
-    #     val_split=0.2
-    # )
     # split_in_directory(
     #     data_dir='2018-03-15-test5sp_windows',
     #     shottype='profile',
     #     test_split=0.1,
     #     val_split=0.2
     # )
-    # num_species = 5
+    num_species = 5
     # Initialize the model
     ###########################################################################
-    # model_formicID = load_model(
-    #     config=config,
-    #     num_classes=num_species,
-    #     base_model='InceptionV3'
-    # )
+    model_formicID = load_model(
+        config=config,
+        num_classes=num_species,
+        base_model='InceptionV3'
+    )
     # model_formicID = make_multi_gpu(
     #     model=model_formicID,
     #     gpus=1
     # )
-    # model_formicID = compile_model(
-    #     model=model_formicID,
-    #     config=config
-    # )
+    model_formicID = compile_model(
+        model=model_formicID,
+        config=config
+    )
     # model_visualization(
     #     model=model_formicID,
     #     config=config
@@ -190,6 +154,12 @@ def main():
     #     callbacks=logger,
     #     config=config
     # )
+    trainer_csv(model=model_formicID,
+                    csv='data/2018-03-21-5sp_200limit/image_path.csv',
+                    shottype='head',
+                    config=config,
+                    callbacks=None
+                    )
     # trainer_dir(
     #     model=model_formicID,
     #     data_dir='2018-03-15-test5sp_windows',

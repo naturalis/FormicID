@@ -176,4 +176,4 @@ def batch_json_to_csv(
                header=True)
     logging.info('All JSON files are read, filtered and added to the csv '
                  'file. "{0}" was created in {1}'.format(csvname,
-                                                           output_dir))
+                                                         output_dir))
