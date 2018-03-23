@@ -103,6 +103,7 @@
 - [What is a CapsNet or Capsule Network?](https://hackernoon.com/what-is-a-capsnet-or-capsule-network-2bfbe48769cc)
 - [How to choose the number of hidden layers and nodes in a feedforward neural network?](https://stats.stackexchange.com/questions/181/how-to-choose-the-number-of-hidden-layers-and-nodes-in-a-feedforward-neural-netw)
 - [Batch Normalization -- What the hey?](https://gab41.lab41.org/batch-normalization-what-the-hey-d480039a9e3b)
+- [A Friendly Introduction to Cross-Entropy Loss](https://rdipietro.github.io/friendly-intro-to-cross-entropy-loss/)
 
 ### Visualizing NNs
 
