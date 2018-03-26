@@ -20,11 +20,17 @@ import os
 
 # Deeplearning tools imports
 import keras.backend as K
-from keras.callbacks import TensorBoard
+from keras.callbacks import CSVLogger
 from keras.callbacks import EarlyStopping
 from keras.callbacks import ModelCheckpoint
 from keras.callbacks import ReduceLROnPlateau
-from keras.callbacks import CSVLogger
+from keras.callbacks import TensorBoard
+
+# Data tools imports
+import numpy as np
+
+# Graphical tools imports
+import matplotlib.pyplot as plt
 
 from .utils import today_timestr
 
@@ -170,6 +176,7 @@ def build_rlrop(
 
     return rlrop
 
+
 def build_csvl(
     filename,
     config,
@@ -185,6 +192,86 @@ def build_csvl(
     )
 
     return csvlogger
+
+
+def plot_history(
+    history,
+    export=None
+):
+    """Short summary.
+
+    Args:
+        history (type): Description of parameter `history`.
+        export (type): Description of parameter `export`. Defaults to None.
+
+    Returns:
+        type: Description of returned object.
+
+    Raises:        ExceptionName: Why the exception is raised.
+
+    """
+    loss_list = [s for s in history.history.keys()
+                 if 'loss' in s and 'val' not in s]
+    val_loss_list = [s for s in history.history.keys()
+                     if 'loss' in s and 'val' in s]
+    acc_list = [s for s in history.history.keys()
+                if 'acc' in s and 'val' not in s and 'top' not in s]
+    val_acc_list = [s for s in history.history.keys()
+                    if 'acc' in s and 'val' in s and 'top' not in s]
+    top_acc_list = [s for s in history.history.keys()
+                    if 'acc' in s and 'val' not in s and 'top' in s]
+    val_top_acc_list = [s for s in history.history.keys()
+                        if 'acc' in s and 'val' in s and 'top' in s]
+    if len(loss_list) == 0:
+        print('Loss is missing in history')
+        return
+    epochs = range(1, len(history.history[loss_list[0]]) + 1)
+    plt.style.use('ggplot')
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111)
+    ax2 = ax1.twinx()
+    for l in loss_list:
+        ax1.plot(epochs, history.history[l], color='b', linestyle='-',
+                 label='Training loss '
+                 '({0:.5f})'.format(history.history['loss'][-1]))
+    for l in val_loss_list:
+        ax1.plot(epochs, history.history[l], color='b', linestyle=':',
+                 label='Validation loss '
+                 '({0:.5f})'.format(history.history['val_loss'][-1]))
+    for l in acc_list:
+        ax2.plot(epochs, history.history[l], color='r', linestyle='-')
+    for l in val_acc_list:
+        ax2.plot(epochs, history.history[l], color='r', linestyle=':', )
+    for l in top_acc_list:
+        ax2.plot(epochs, history.history[l], color='g', linestyle='-', )
+    for l in val_top_acc_list:
+        ax2.plot(epochs, history.history[l], color='g', linestyle=':', )
+    ax1.plot(np.nan, color='r', linestyle='-', label='Training accuracy: '
+             '({0:.5f})'.format(history.history['acc'][-1]))
+    ax1.plot(np.nan, color='r', linestyle=':', label='Validation acccuracy: '
+             '({0:.5f})'.format(history.history['val_acc'][-1]))
+    ax1.plot(np.nan, color='g', linestyle='-', label='Training top 3 '
+             'accuracy: ({0:.5f})'.format(
+                 history.history['top_k_categorical_accuracy'][-1]))
+    ax1.plot(np.nan, color='g', linestyle=':', label='Validation top 3 '
+             'acccuracy: ({0:.5f})'.format(
+                 history.history['val_top_k_categorical_accuracy'][-1]))
+    ax1.legend(loc='best', fancybox=True, framealpha=0.5)
+    ax1.grid()
+    ax1.set_title('Model accuracy and loss')
+    ax1.set_xlabel('Epochs')
+    ax1.set_ylabel('Loss', color='blue')
+    ax2.set_ylabel('Accuracy (%)', color='red')
+    fig.tight_layout()
+    plt.show()
+    if export is not None:
+        if export is os.path.isdir():
+            plt.savefig(fname=export)
+        else:
+            raise ValueError(
+                '`export` did not receive a valid directory to save the '
+                'figure.')
+
 # RMSE
 ###############################################################################
 
@@ -207,6 +294,7 @@ def rmse(
 
 # top k categorical accuracy
 ###############################################################################
+
 
 def top_k_categorical_accuracy(
     y_true,

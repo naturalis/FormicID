@@ -42,6 +42,7 @@ from utils.logger import build_es
 from utils.logger import build_mc
 from utils.logger import build_rlrop
 from utils.logger import build_tb
+from utils.logger import plot_history
 from utils.model_utils import make_multi_gpu
 from utils.utils import create_dirs
 from utils.utils import get_args
@@ -80,29 +81,29 @@ def main():
 
     # Creating a dataset
     ###########################################################################
-    urls_to_json(
-        csv_file='testgenusspecies.csv',
-        input_dir='data',
-        output_dir='5sp_200limit',
-        offset_set=0,
-        limit_set=200
-    )
-    batch_json_to_csv(
-        input_dir='2018-03-26-5sp_200limit',
-        output_dir='2018-03-26-5sp_200limit',
-        quality='low',
-        csvname='image_urls.csv'
-    )
-    image_scraper(
-        csvfile='image_urls.csv',
-        input_dir='2018-03-26-5sp_200limit',
-        # start=0,
-        # end=1491,
-        dir_out_name='images',
-        update=False
-    )
+    # urls_to_json(
+    #     csv_file='testgenusspecies.csv',
+    #     input_dir='data',
+    #     output_dir='5sp_200limit',
+    #     offset_set=0,
+    #     limit_set=200
+    # )
+    # batch_json_to_csv(
+    #     input_dir='2018-03-21-5sp_200limit',
+    #     output_dir='2018-03-21-5sp_200limit',
+    #     quality='low',
+    #     csvname='image_urls.csv'
+    # )
+    # image_scraper(
+    #     csvfile='image_urls.csv',
+    #     input_dir='2018-03-21-5sp_200limit',
+    #     # start=0,
+    #     # end=1491,
+    #     dir_out_name='images',
+    #     update=False
+    # )
     make_image_path_csv(
-        data_dir='2018-03-26-5sp_200limit'
+        dataset='2018-03-21-5sp_200limit'
     )
     # create experiment related directories
     ###########################################################################
@@ -112,25 +113,13 @@ def main():
     )
     # Initializing the data
     ###########################################################################
-    # split_in_directory(
-    #     data_dir='2018-03-16-testall',
-    #     shottype='dorsal',
-    #     test_split=0.1,
-    #     val_split=0.2
-    # )
-    # split_in_directory(
-    #     data_dir='2018-03-16-testall',
-    #     shottype='head',
-    #     test_split=0.1,
-    #     val_split=0.2
-    # )
-    # split_in_directory(
-    #     data_dir='2018-03-16-testall',
-    #     shottype='profile',
-    #     test_split=0.1,
-    #     val_split=0.2
-    # )
-    num_species = 97
+    split_in_directory(
+        dataset='2018-03-21-5sp_200limit',
+        shottype='head',
+        test_split=0.1,
+        val_split=0.2
+    )
+    num_species = 5
     # Initialize the model
     ###########################################################################
     model_formicID = load_model(
@@ -145,14 +134,14 @@ def main():
     # Initialize logger
     ###########################################################################
     logger = [
-        build_mc(
-            config=config,
-            monitor='val_loss',
-            verbose=0,
-            mode='auto',
-            save_best_only=True,
-            period=1
-        ),
+        # build_mc(
+        #     config=config,
+        #     monitor='val_loss',
+        #     verbose=0,
+        #     mode='auto',
+        #     save_best_only=True,
+        #     period=1
+        # ),
         build_rlrop(
             monitor='val_loss',
             factor=0.1,
@@ -194,16 +183,16 @@ def main():
     #     callbacks=logger,
     #     config=config
     # )
-    trainer_dir(
+    history = trainer_dir(
         model=model_formicID,
-        data_dir='2018-03-26-5sp_200limit',
+        dataset='2018-03-21-5sp_200limit',
         shottype='head',
         config=config,
         callbacks=logger
     )
     # trainer_csv(
     #     model=model_formicID,
-    #     csv='data/2018-03-26-5sp_200limit/image_path.csv',
+    #     csv='data/2018-03-21-5sp_200limit/image_path.csv',
     #     shottype='head',
     #     config=config,
     #     callbacks=None
@@ -211,7 +200,9 @@ def main():
     # Evaluation
     ###########################################################################
     # score = model_evaluate(model_formicID, X_test, Y_test)
-
+    plot_history(
+    history=history
+    )
     # Testing
     ###########################################################################
     # prediction = model_formicID.predict_classes(

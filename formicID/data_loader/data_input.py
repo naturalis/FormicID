@@ -78,9 +78,9 @@ from utils.utils import wd
 ###############################################################################
 
 
-def make_image_path_csv(data_dir):
-    data_dir = os.path.join('data', data_dir)
-    image_dir = os.path.join(data_dir, 'images')
+def make_image_path_csv(dataset):
+    dataset = os.path.join('data', dataset)
+    image_dir = os.path.join(dataset, 'images')
     path_col = []
     shottype_col = []
     species_col = []
@@ -103,7 +103,7 @@ def make_image_path_csv(data_dir):
                                'species',
                                'shottype',
                                'path'])
-    output_csv = os.path.join(data_dir, 'image_path.csv')
+    output_csv = os.path.join(dataset, 'image_path.csv')
     df.to_csv(path_or_buf=output_csv,
               header=True,
               index=False,
@@ -113,7 +113,7 @@ def make_image_path_csv(data_dir):
 ###############################################################################
 
 
-def split_in_directory(data_dir,
+def split_in_directory(dataset,
                        shottype='head',
                        test_split=0.1,
                        val_split=0.2):
@@ -121,7 +121,7 @@ def split_in_directory(data_dir,
     validation and test set.
 
     Args:
-        data_dir (str): Directory that holds the shottype folders with species
+        dataset (str): Directory that holds the shottype folders with species
             and images.
         shottype (str): The shottype folder. Defaults to 'head'.
         test_split (float): Percentage of images for the test set. Defaults to
@@ -131,12 +131,12 @@ def split_in_directory(data_dir,
 
     """
     val_split = val_split + test_split
-    input_dir = os.path.join(wd, 'data', data_dir, 'images', shottype)
+    input_dir = os.path.join(wd, 'data', dataset, 'images', shottype)
     dirs_split = ['1-training', '2-validation', '3-test']
     for dir in dirs_split:
         if os.path.exists(os.path.join(input_dir, dir)):
             # TODO: Fix a better statement for stopping...
-            print('Folders already exist. Process is stopped.')
+            print('Folders already exist. Files will not be split again.')
             return
         else:
             os.makedirs(os.path.join(input_dir, dir))
@@ -220,7 +220,7 @@ def _image_size(config):
 
 
 def _img_load_shottype(shottype,
-                       datadir,
+                       dataset,
                        img_size=(None, None)):
     """This function loads images from a directory for which the shottype is
     given. Normalization happens in the `ImageDataGenerator`.
@@ -244,10 +244,10 @@ def _img_load_shottype(shottype,
 
     """
     img_width, img_height = img_size
-    logging.info('The dataset is {}'.format(datadir))
+    logging.info('The dataset is {}'.format(dataset))
     data_dir = os.path.join(wd,
                             'data',
-                            datadir,
+                            dataset,
                             'images')
     if shottype not in ['h', 'd', 'p']:
         raise ValueError('Shottype should be either `h`, `d` or `p`.')

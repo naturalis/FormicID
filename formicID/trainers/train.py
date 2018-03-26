@@ -49,7 +49,7 @@ import pandas as pd
 ###############################################################################
 
 
-# csv iterator
+# CSV Iterator and ImageDataGenerator
 ###############################################################################
 
 
@@ -359,7 +359,7 @@ def trainer_csv(model,
                 ):
     epochs = config.num_epochs
     batch_size = config.batch_size
-    idg_train = MyImageDataGenerator(
+    idg_t = MyImageDataGenerator(
         preprocessing_function=preprocess_input,
         rotation_range=40,
         width_shift_range=0.2,
@@ -369,16 +369,16 @@ def trainer_csv(model,
         horizontal_flip=True,
         validation_split=0.20
     )
-    train_data_generator = idg_train.flow_from_csv(
+    train_data_generator = idg_t.flow_from_csv(
         csv=csv,
         shotview='head',
         subset='training'
     )
-    idg_val = MyImageDataGenerator(
+    idg_v = MyImageDataGenerator(
         preprocessing_function=preprocess_input,
         validation_split=0.20
     )
-    val_data_generator = idg_val.flow_from_csv(
+    val_data_generator = idg_v.flow_from_csv(
         csv=csv,
         shotview='head',
         subset='validation'
@@ -393,7 +393,7 @@ def trainer_csv(model,
     )
 
 
-# Training data
+# Training data ImageDataGenerator
 ###############################################################################
 
 
@@ -410,7 +410,7 @@ def idg_train():
         horizontal_flip: randomly flip inputs horizontally (boolean)
 
     Returns:
-        generator: A Keras image data generator object.
+        generator: A Keras ImageDataGenerator object.
 
     """
     idg = ImageDataGenerator(
@@ -425,40 +425,7 @@ def idg_train():
 
     return idg
 
-
-def _train_data_generator(
-    X_train,
-    Y_train,
-    config
-):
-    """Configueres the training generator for taking image and label data.
-
-    Args:
-        X_train (array): Image data as 4D numpy array.
-        Y_train (array): Label data as 2D numpy array.
-        config (Bunch object): The JSON configuration Bunch object.
-
-    Returns:
-        generator: A image data generator with its `.flow` method applied.
-
-    """
-    batch_size = config.batch_size
-    seed = config.seed
-    idgen_train = idg_train()
-    # .flow() takes npdata en label arrays, and generates batches for
-    # augmented/normalized data. Yields batches indefinitely, in an infinite
-    # loop.
-    idgen_train = idgen_train.flow(
-        X_train,
-        Y_train,
-        batch_size,
-        seed
-    )
-
-    return idgen_train
-
-
-# Validation data
+# Validation data ImageDataGenerator
 ###############################################################################
 
 
@@ -475,99 +442,19 @@ def idg_val():
     return idg
 
 
-def _val_data_generator(
-    X_val,
-    Y_val,
-    config
-):
-    """Configueres the validation generator for taking image and label data.
-
-    Args:
-        X_val (array): Image data as 4D numpy array.
-        Y_val (array): Label data as 2D numpy array.
-        config (Bunch object): The JSON configuration Bunch object.
-
-    Returns:
-        generator: A image data generator with its `.flow` method applied.
-
-    """
-    batch_size = config.batch_size
-    seed = config.seed
-    idgen_val = idg_val()
-    idgen_val = idgen_val.flow(
-        X_val,
-        Y_val,
-        batch_size,
-        seed
-    )
-
-    return idgen_val
-
-# Trainer
-###############################################################################
-
-
-def trainer(
-    model,
-    X_train,
-    Y_train,
-    X_val,
-    Y_val,
-    config,
-    callbacks=None
-):
-    """Initializes training on a model with training and validation image +
-    label data as input.
-
-    Args:
-        model (Keras model instance): A Keras model instance.
-        X_train (array): 4D numpy array training data for images.
-        Y_train (array): 2D numpy array training data for labels.
-        X_val (array): 4D numpy array validation data for images.
-        Y_val (array): 2D numpy array validation data for labels.
-        config (Bunch object): The JSON configuration Bunch object.
-        callbacks (Callback object): One or a list of Keras Callback Objects.
-            Defaults to `None`.
-
-    Returns:
-        training instance: Applies the `.fit_generator` method to a Keras
-            model instance.
-
-    """
-    epochs = config.num_epochs
-    batch_size = config.batch_size
-    nb_X_train = len(X_train)
-    train_data_gen = _train_data_generator(
-        X_train=X_train,
-        Y_train=Y_train,
-        config=config
-    )
-    val_data_gen = _val_data_generator(
-        X_val=X_val,
-        Y_val=Y_val,
-        config=config
-    )
-    model.fit_generator(
-        train_data_gen,
-        validation_data=val_data_gen,
-        steps_per_epoch=(nb_X_train // batch_size),
-        epochs=epochs,
-        callbacks=callbacks
-    )
-
 # flow_from_directory part
 ###############################################################################
 
 
 def _train_data_generator_dir(
-    data_dir,
+    dataset,
     shottype,
     config
 ):
     """Short summary.
 
     Args:
-        data_dir (type): Description of parameter `data_dir`.
+        dataset (type): Description of parameter `dataset`.
         shottype (type): Description of parameter `shottype`.
         config (type): Description of parameter `config`.
 
@@ -580,7 +467,7 @@ def _train_data_generator_dir(
     idgen_train = idg_train()
     data_dir = os.path.join(
         'data',
-        data_dir,
+        dataset,
         'images',
         shottype,
         '1-training'
@@ -598,14 +485,14 @@ def _train_data_generator_dir(
 
 
 def _val_data_generator_dir(
-    data_dir,
+    dataset,
     shottype,
     config
 ):
     """Short summary.
 
     Args:
-        data_dir (type): Description of parameter `data_dir`.
+        dataset (type): Description of parameter `dataset`.
         shottype (type): Description of parameter `shottype`.
         config (type): Description of parameter `config`.
 
@@ -616,15 +503,15 @@ def _val_data_generator_dir(
     batch_size = config.batch_size
     seed = config.seed
     idgen_val = idg_val()
-    data_dir = os.path.join(
+    dataset = os.path.join(
         'data',
-        data_dir,
+        dataset,
         'images',
         shottype,
         '2-validation'
     )
     idgen_val = idgen_val.flow_from_directory(
-        directory=data_dir,
+        directory=dataset,
         target_size=(299, 299),
         color_mode='rgb',
         class_mode='categorical',
@@ -637,7 +524,7 @@ def _val_data_generator_dir(
 
 def trainer_dir(
     model,
-    data_dir,
+    dataset,
     shottype,
     config,
     callbacks=None
@@ -646,7 +533,7 @@ def trainer_dir(
 
     Args:
         model (type): Description of parameter `model`.
-        data_dir (type): Description of parameter `data_dir`.
+        dataset (type): Description of parameter `dataset`.
         shottype (type): Description of parameter `shottype`.
         config (type): Description of parameter `config`.
         callbacks (type): Description of parameter `callbacks`. Defaults to
@@ -656,23 +543,26 @@ def trainer_dir(
         type: Description of returned object.
 
     """
+    steps_per_epoch = config.num_iter_per_epoch
     epochs = config.num_epochs
     batch_size = config.batch_size
     train_data_gen_dir = _train_data_generator_dir(
-        data_dir=data_dir,
+        dataset=dataset,
         shottype=shottype,
         config=config
     )
     val_data_gen_dir = _val_data_generator_dir(
-        data_dir=data_dir,
+        dataset=dataset,
         shottype=shottype,
         config=config
     )
-    model.fit_generator(
+    history = model.fit_generator(
         generator=train_data_gen_dir,
-        steps_per_epoch=64,
+        steps_per_epoch=steps_per_epoch, # Fix by using samples // batch size
         epochs=epochs,
         validation_data=val_data_gen_dir,
-        validation_steps=64,
+        validation_steps=steps_per_epoch, # Fix by using samples // batch size
         callbacks=callbacks
     )
+
+    return history
