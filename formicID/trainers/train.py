@@ -32,8 +32,7 @@ import os
 from keras import backend as K
 from keras.applications.inception_v3 import preprocess_input
 from keras.models import Model
-from keras.preprocessing.image import \
-    ImageDataGenerator  # Just a quick temporary  fix for
+from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import Iterator
 from keras.preprocessing.image import *
 
@@ -41,7 +40,9 @@ from keras.preprocessing.image import *
 import numpy as np
 import pandas as pd
 
-                                        # importing image transform functions
+# TODO: fix the * import, as for now it is just a temporary  fix for importing
+# image transform functions
+
 
 
 # Parameters and settings

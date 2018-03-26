@@ -37,11 +37,11 @@ from testers.tester import model_evaluate
 from trainers.train import trainer_csv
 from trainers.train import trainer_dir
 from utils.load_config import process_config
-from utils.logger import build_es
-from utils.logger import build_rlrop
-from utils.logger import build_mc
-from utils.logger import build_tb
 from utils.logger import build_csvl
+from utils.logger import build_es
+from utils.logger import build_mc
+from utils.logger import build_rlrop
+from utils.logger import build_tb
 from utils.model_utils import make_multi_gpu
 from utils.utils import create_dirs
 from utils.utils import get_args
@@ -80,30 +80,30 @@ def main():
 
     # Creating a dataset
     ###########################################################################
-    # urls_to_json(
-    #     csv_file='testgenusspecies.csv',
-    #     input_dir='data',
-    #     output_dir='5sp_200limit',
-    #     offset_set=0,
-    #     limit_set=200
-    # )
-    # batch_json_to_csv(
-    #     input_dir='2018-03-21-5sp_200limit',
-    #     output_dir='2018-03-21-5sp_200limit',
-    #     quality='low',
-    #     csvname='image_urls.csv'
-    # )
-    # image_scraper(
-    #     csvfile='image_urls.csv',
-    #     input_dir='2018-03-21-5sp_200limit',
-    #     # start=0,
-    #     # end=1491,
-    #     dir_out_name='images',
-    #     update=False
-    # )
-    # make_image_path_csv(
-    #     data_dir='2018-03-21-5sp_200limit'
-    # )
+    urls_to_json(
+        csv_file='testgenusspecies.csv',
+        input_dir='data',
+        output_dir='5sp_200limit',
+        offset_set=0,
+        limit_set=200
+    )
+    batch_json_to_csv(
+        input_dir='2018-03-26-5sp_200limit',
+        output_dir='2018-03-26-5sp_200limit',
+        quality='low',
+        csvname='image_urls.csv'
+    )
+    image_scraper(
+        csvfile='image_urls.csv',
+        input_dir='2018-03-26-5sp_200limit',
+        # start=0,
+        # end=1491,
+        dir_out_name='images',
+        update=False
+    )
+    make_image_path_csv(
+        data_dir='2018-03-26-5sp_200limit'
+    )
     # create experiment related directories
     ###########################################################################
     create_dirs(
@@ -196,14 +196,14 @@ def main():
     # )
     trainer_dir(
         model=model_formicID,
-        data_dir='2018-03-16-testall',
+        data_dir='2018-03-26-5sp_200limit',
         shottype='head',
         config=config,
         callbacks=logger
     )
     # trainer_csv(
     #     model=model_formicID,
-    #     csv='data/2018-03-21-5sp_200limit/image_path.csv',
+    #     csv='data/2018-03-26-5sp_200limit/image_path.csv',
     #     shottype='head',
     #     config=config,
     #     callbacks=None
