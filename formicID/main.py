@@ -209,6 +209,7 @@ def main():
         shottype='head',
         config=config
     )
+    print(score)
     # Testing
     ###########################################################################
     # prediction = model_formicID.predict_classes(
