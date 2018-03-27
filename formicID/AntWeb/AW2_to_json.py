@@ -209,7 +209,7 @@ def urls_to_json(csv_file,
                         species = _get_json(url.url)
                         if species['count'] > 0:
                             if os.path.isfile(os.path.join(output_dir,
-                                                               file_name)):
+                                                           file_name)):
                                 logging.info(
                                     'JSON file for {} already exists and '
                                     'will not be downloaded '

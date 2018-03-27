@@ -28,8 +28,10 @@ from keras.utils.np_utils import to_categorical
 # Data tools imports
 import numpy as np
 
-# Additional project imports
+# Graphical tools imports
 import matplotlib.pyplot as plt
+
+# Additional project imports
 import PIL  # Imports PIL-SIMD. PIL is needed for load_img()
 
 # FormicID imports
@@ -104,11 +106,13 @@ def save_augmentation(image,
     img = img.reshape((1,) + img.shape)
     i = 0
     idgen = idg(target_gen='training')
-    for batch in idgen.flow(img,
-                                  batch_size=1,
-                                  save_to_dir=augment_dir,
-                                  save_prefix=filename,
-                                  save_format='jpeg'):
+    for batch in idgen.flow(
+        img,
+        batch_size=1,
+        save_to_dir=augment_dir,
+        save_prefix=filename,
+        save_format='jpeg'
+    ):
         i += 1
         if i > 19:
             break

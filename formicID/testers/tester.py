@@ -18,21 +18,21 @@ After evaluation looks good, we can test the model with unseen images.
 ###############################################################################
 
 # Standard library imports
+import itertools
 import logging
 
 # Deeplearning tools imports
-from keras.models import Model
 from keras.applications.inception_v3 import preprocess_input
+from keras.models import Model
 
 # Data tools imports
 import numpy as np
 from sklearn.metrics import confusion_matrix
 
-# Additional project imports
+# Graphical tools imports
 import matplotlib.pylab as plt
 
-import itertools
-
+# FormicID imports
 from trainers.train import _data_generator_dir
 
 # Parameters and settings
