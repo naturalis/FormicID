@@ -25,6 +25,7 @@ from keras.callbacks import EarlyStopping
 from keras.callbacks import ModelCheckpoint
 from keras.callbacks import ReduceLROnPlateau
 from keras.callbacks import TensorBoard
+from keras.callbacks import History
 
 # Data tools imports
 import numpy as np
@@ -177,6 +178,10 @@ def build_rlrop(
     return rlrop
 
 
+# Export metrics to CSVLogger
+###############################################################################
+
+
 def build_csvl(
     filename,
     config,
@@ -194,22 +199,35 @@ def build_csvl(
     return csvlogger
 
 
+# Plot the history from training - Loss, accuracy, top k accuracy
+###############################################################################
+
+
 def plot_history(
     history,
+    theme='ggplot',
     export=None
 ):
-    """Short summary.
+    """This function will plot the loss, accuracy and top k accuracy after
+    training from a Keras Histroy object, with ggplot theme.
 
     Args:
-        history (type): Description of parameter `history`.
-        export (type): Description of parameter `export`. Defaults to None.
+        history (str): A Keras History object.
+        theme (str): Sets the theme for the plot. Defaults to `ggplot`.
+        export (str): Path of an file for saving the plot. Defaults to None.
 
     Returns:
-        type: Description of returned object.
+        plot: A plot image made with `matplotlib.pyplot`.
 
-    Raises:        ExceptionName: Why the exception is raised.
+    Raises:
+        AssertionError: If the history argument is not a Keras History object.
+        ValueError: If `theme` is not one of the available themes.
 
     """
+    if not isinstance(history, History):
+        raise AssertionError('The `history` argument: {} is not a Keras '
+                             'History object.'.format(history))
+        return
     loss_list = [s for s in history.history.keys()
                  if 'loss' in s and 'val' not in s]
     val_loss_list = [s for s in history.history.keys()
@@ -226,7 +244,12 @@ def plot_history(
         print('Loss is missing in history')
         return
     epochs = range(1, len(history.history[loss_list[0]]) + 1)
-    plt.style.use('ggplot')
+    if theme is not None:
+        if theme not in plt.style.available:
+            raise ValueError('Theme is not one of {}. {} is not a correct '
+                             'theme.'.format(plt.style.available(), theme))
+        else:
+            plt.style.use(theme)
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
     ax2 = ax1.twinx()
@@ -272,6 +295,7 @@ def plot_history(
                 '`export` did not receive a valid directory to save the '
                 'figure.')
 
+
 # RMSE
 ###############################################################################
 
@@ -291,6 +315,7 @@ def rmse(
 
     """
     return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))
+
 
 # top k categorical accuracy
 ###############################################################################

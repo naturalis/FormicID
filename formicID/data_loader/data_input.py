@@ -136,7 +136,8 @@ def split_in_directory(dataset,
     for dir in dirs_split:
         if os.path.exists(os.path.join(input_dir, dir)):
             # TODO: Fix a better statement for stopping...
-            print('Folders already exist. Files will not be split again.')
+            logging.info('Files are already split in training, validation and '
+                         'testing sets. Files will not be split again.')
             return
         else:
             os.makedirs(os.path.join(input_dir, dir))

@@ -143,6 +143,7 @@ def load_model(config,
         # add a global spatial average pooling layer
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
+        # TODO: add dropout
         # let's add a fully-connected layer
         x = Dense(1024, activation='relu')(x)
         # and a logistic layer with num_species

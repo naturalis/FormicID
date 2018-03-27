@@ -44,7 +44,6 @@ import pandas as pd
 # image transform functions
 
 
-
 # Parameters and settings
 ###############################################################################
 
@@ -393,51 +392,47 @@ def trainer_csv(model,
     )
 
 
-# Training data ImageDataGenerator
+# ImageDataGenerator
 ###############################################################################
 
 
-def idg_train():
-    """Initialize an augmentation generator for training.
-
-    Augmentation options:
-        rescale: Rescaling factor; normalizing the data to [0:1]
-        rotation_range: degree range for random rotations (integer)
-        width_shift_range: range for random horizontal shifts (float)
-        height_shift_range: range for random vertical shifts (float)
-        shear_range: shear intensity (float)
-        zoom_range: range for random zoom (float)
-        horizontal_flip: randomly flip inputs horizontally (boolean)
-
-    Returns:
-        generator: A Keras ImageDataGenerator object.
-
-    """
-    idg = ImageDataGenerator(
-        preprocessing_function=preprocess_input,
-        rotation_range=40,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        shear_range=0.2,
-        zoom_range=0.2,
-        horizontal_flip=True
-    )
-
-    return idg
-
-# Validation data ImageDataGenerator
-###############################################################################
-
-
-def idg_val():
+def idg(
+    target_gen='training'
+):
     """Initialize an augmentation generator for validation. Validation data
     should not be augmentatd, only correctly preprocessed for the model.
+
+    Args:
+        target_gen (str): Should be either `training`, `validation`, or
+            `test`. Defaults to `training`.
 
     Returns:
         generator: A Keras image data generator object.
 
+    Raises:
+        ValueError: If target_gen is not set correctly.
+
     """
-    idg = ImageDataGenerator(preprocessing_function=preprocess_input)
+    if target_gen not in [
+        'training',
+        'validation',
+        'test'
+    ]:
+        raise ValueError(
+            'Argument {} is in invalid  for `target_gen`. It should be one of '
+            '`training`, `validation`, or `testing`.'.format(target_gen))
+    if target_gen == 'training':
+        idg = ImageDataGenerator(
+            preprocessing_function=preprocess_input,
+            rotation_range=40,
+            width_shift_range=0.2,
+            height_shift_range=0.2,
+            shear_range=0.2,
+            zoom_range=0.2,
+            horizontal_flip=True
+        )
+    if target_gen in ['validation', 'test']:
+        idg = ImageDataGenerator(preprocessing_function=preprocess_input)
 
     return idg
 
@@ -446,17 +441,20 @@ def idg_val():
 ###############################################################################
 
 
-def _train_data_generator_dir(
+def _data_generator_dir(
     dataset,
-    shottype,
-    config
+    config,
+    shottype='head',
+    target_gen='training'
 ):
     """Short summary.
 
     Args:
         dataset (type): Description of parameter `dataset`.
-        shottype (type): Description of parameter `shottype`.
         config (type): Description of parameter `config`.
+        shottype (type): Description of parameter `shottype`.
+        target_gen (str): Should be either `training`, `validation`, or
+            `test`. Defaults to `training`..
 
     Returns:
         type: Description of returned object.
@@ -464,15 +462,21 @@ def _train_data_generator_dir(
     """
     batch_size = config.batch_size
     seed = config.seed
-    idgen_train = idg_train()
+    if target_gen == 'training':
+        dir = '1-training'
+    if target_gen == 'validation':
+        dir = '2-validation'
+    if target_gen == 'test':
+        dir = '3-test'
     data_dir = os.path.join(
         'data',
         dataset,
         'images',
         shottype,
-        '1-training'
+        dir
     )
-    idgen_train = idgen_train.flow_from_directory(
+    idgen = idg(target_gen=target_gen)
+    idgen = idgen.flow_from_directory(
         directory=data_dir,
         target_size=(299, 299),
         color_mode='rgb',
@@ -480,46 +484,7 @@ def _train_data_generator_dir(
         batch_size=batch_size,
         seed=1
     )
-
-    return idgen_train
-
-
-def _val_data_generator_dir(
-    dataset,
-    shottype,
-    config
-):
-    """Short summary.
-
-    Args:
-        dataset (type): Description of parameter `dataset`.
-        shottype (type): Description of parameter `shottype`.
-        config (type): Description of parameter `config`.
-
-    Returns:
-        type: Description of returned object.
-
-    """
-    batch_size = config.batch_size
-    seed = config.seed
-    idgen_val = idg_val()
-    dataset = os.path.join(
-        'data',
-        dataset,
-        'images',
-        shottype,
-        '2-validation'
-    )
-    idgen_val = idgen_val.flow_from_directory(
-        directory=dataset,
-        target_size=(299, 299),
-        color_mode='rgb',
-        class_mode='categorical',
-        batch_size=batch_size,
-        seed=1
-    )
-
-    return idgen_val
+    return idgen
 
 
 def trainer_dir(
@@ -546,22 +511,24 @@ def trainer_dir(
     steps_per_epoch = config.num_iter_per_epoch
     epochs = config.num_epochs
     batch_size = config.batch_size
-    train_data_gen_dir = _train_data_generator_dir(
+    train_data_gen_dir = _data_generator_dir(
         dataset=dataset,
         shottype=shottype,
-        config=config
+        config=config,
+        target_gen='training'
     )
-    val_data_gen_dir = _val_data_generator_dir(
+    val_data_gen_dir = _data_generator_dir(
         dataset=dataset,
         shottype=shottype,
-        config=config
+        config=config,
+        target_gen='validation'
     )
     history = model.fit_generator(
         generator=train_data_gen_dir,
-        steps_per_epoch=steps_per_epoch, # Fix by using samples // batch size
+        steps_per_epoch=steps_per_epoch,  # Fix by using samples // batch size
         epochs=epochs,
         validation_data=val_data_gen_dir,
-        validation_steps=steps_per_epoch, # Fix by using samples // batch size
+        validation_steps=steps_per_epoch,  # Fix by using samples // batch size
         callbacks=callbacks
     )
 

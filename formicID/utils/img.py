@@ -33,7 +33,7 @@ import matplotlib.pyplot as plt
 import PIL  # Imports PIL-SIMD. PIL is needed for load_img()
 
 # FormicID imports
-from trainers.train import idg_train
+from trainers.train import idg
 from .utils import wd
 
 # Parameters and settings
@@ -103,8 +103,8 @@ def save_augmentation(image,
     img = img_to_array(img_loaded)
     img = img.reshape((1,) + img.shape)
     i = 0
-    idgen_train = idg_train()
-    for batch in idgen_train.flow(img,
+    idgen = idg(target_gen='training')
+    for batch in idgen.flow(img,
                                   batch_size=1,
                                   save_to_dir=augment_dir,
                                   save_prefix=filename,

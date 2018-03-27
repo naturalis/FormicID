@@ -22,6 +22,7 @@ import logging
 
 # Deeplearning tools imports
 from keras.models import Model
+from keras.applications.inception_v3 import preprocess_input
 
 # Data tools imports
 import numpy as np
@@ -30,24 +31,26 @@ from sklearn.metrics import confusion_matrix
 # Additional project imports
 import matplotlib.pylab as plt
 
+from trainers.train import _data_generator_dir
+
 # Parameters and settings
 ###############################################################################
 
 
-# Validation
+# Test generator
 ###############################################################################
 
-
-def model_evaluate(model,
-                   X_test,
-                   Y_test):
+def tester(
+    model,
+    dataset,
+    shottype,
+    config
+):
     """Evaluation will return the score of the model on a test set. This
     function will return the loss and accuracy.
 
     Args:
         model (Keras model instance): A trained Keras model instance.
-        X_test (array): a numpy 4D array of the test set images.
-        Y_test (array): a numpy 2D array of the test set labels.
 
     Returns:
         float: Returns the loss, accuracy and RMSE for the trained model on a
@@ -55,12 +58,19 @@ def model_evaluate(model,
 
     """
     # print(model.metrics_names)
-    score = model.evaluate(X_test, Y_test, verbose=0)
+    score = model.evaluate_generator(
+        _data_generator_dir(
+            dataset=dataset,
+            config=config,
+            shottype=shottype,
+            target_gen='test'
+        )
+    )
     logging.info('Loss: {:.4f}, '
                  'Accuracy: {:.2f}%, '
                  'RMSE: {:.4f}'.format(score[0],
-                                      score[1] * 100,
-                                      score[2]))
+                                       score[1] * 100,
+                                       score[2]))
     return score
 
 

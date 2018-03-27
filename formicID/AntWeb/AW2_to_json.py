@@ -156,7 +156,7 @@ def urls_to_json(csv_file,
     #     raise ValueError('The `limit_set` should be lower than 12,000.')
     input_dir = os.path.join(wd, input_dir)
     output_dir = os.path.join(input_dir,
-                              todaystr + '-' + output_dir,
+                              todaystr + '_' + output_dir,
                               'json_files')
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

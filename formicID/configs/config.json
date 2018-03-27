@@ -1,9 +1,9 @@
 {
     "exp_name": "testall",
-    "num_epochs": 3,
-    "num_iter_per_epoch": 3,
+    "num_epochs": 50,
+    "num_iter_per_epoch": 37,
     "learning_rate": 0.001,
-    "batch_size": 6,
+    "batch_size": 64,
     "state_size": [784],
     "max_to_keep": 5,
     "dropout": 0.5,

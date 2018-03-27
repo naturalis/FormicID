@@ -33,7 +33,7 @@ from data_loader.data_input import split_in_directory
 from data_scraper.scrape import image_scraper
 from models.models import compile_model
 from models.models import load_model
-from testers.tester import model_evaluate
+from testers.tester import tester
 from trainers.train import trainer_csv
 from trainers.train import trainer_dir
 from utils.load_config import process_config
@@ -89,21 +89,21 @@ def main():
     #     limit_set=200
     # )
     # batch_json_to_csv(
-    #     input_dir='2018-03-21-5sp_200limit',
-    #     output_dir='2018-03-21-5sp_200limit',
+    #     input_dir='2018-03-16-testall',
+    #     output_dir='2018-03-16-testall',
     #     quality='low',
     #     csvname='image_urls.csv'
     # )
     # image_scraper(
     #     csvfile='image_urls.csv',
-    #     input_dir='2018-03-21-5sp_200limit',
+    #     input_dir='2018-03-16-testall',
     #     # start=0,
     #     # end=1491,
     #     dir_out_name='images',
     #     update=False
     # )
     make_image_path_csv(
-        dataset='2018-03-21-5sp_200limit'
+        dataset='2018-03-16-testall'
     )
     # create experiment related directories
     ###########################################################################
@@ -114,12 +114,12 @@ def main():
     # Initializing the data
     ###########################################################################
     split_in_directory(
-        dataset='2018-03-21-5sp_200limit',
+        dataset='2018-03-16-testall',
         shottype='head',
         test_split=0.1,
         val_split=0.2
     )
-    num_species = 5
+    num_species = 97
     # Initialize the model
     ###########################################################################
     model_formicID = load_model(
@@ -134,18 +134,18 @@ def main():
     # Initialize logger
     ###########################################################################
     logger = [
-        # build_mc(
-        #     config=config,
-        #     monitor='val_loss',
-        #     verbose=0,
-        #     mode='auto',
-        #     save_best_only=True,
-        #     period=1
-        # ),
+        build_mc(
+            config=config,
+            monitor='val_loss',
+            verbose=1,
+            mode='min',
+            save_best_only=True,
+            period=5
+        ),
         build_rlrop(
             monitor='val_loss',
             factor=0.1,
-            patience=10,
+            patience=25,
             verbose=1,
             mode='auto',
             epsilon=1e-4,
@@ -185,23 +185,29 @@ def main():
     # )
     history = trainer_dir(
         model=model_formicID,
-        dataset='2018-03-21-5sp_200limit',
+        dataset='2018-03-16-testall',
         shottype='head',
         config=config,
         callbacks=logger
     )
     # trainer_csv(
     #     model=model_formicID,
-    #     csv='data/2018-03-21-5sp_200limit/image_path.csv',
+    #     csv='data/2018-03-16-testall/image_path.csv',
     #     shottype='head',
     #     config=config,
     #     callbacks=None
     # )
     # Evaluation
     ###########################################################################
-    # score = model_evaluate(model_formicID, X_test, Y_test)
     plot_history(
-    history=history
+        history=history,
+        theme='ggplot'
+    )
+    score = tester(
+        model=model_formicID,
+        dataset='2018-03-16-testall',
+        shottype='head',
+        config=config
     )
     # Testing
     ###########################################################################
