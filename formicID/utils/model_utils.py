@@ -62,7 +62,7 @@ def save_model(model, filename, config):
     del model
 
 
-def load_model(filename, input_dir):
+def load_model_from_file(filename, input_dir):
     """Loads a Keras model instance from a `.h5` file.
 
     Args:
@@ -92,24 +92,22 @@ def weights_save(model, filename, config):
 
     """
     out = os.path.join(config.checkpoint_dir, filename)
-    weights_saved = model.save_weights(filepath=out)
+    model.save_weights(filepath=out)
     logging.info('The weights have been saved.')
 
 
-def weights_load(model, filename, input_dir):
+def weights_load(model, weights):
     """Short summary.
 
     Args:
         model (Keras model instance): A Keras model instance.
-        filename (str): Name of the output filename.
-        input_dir (str): the directory that holds the weights.
+        weights (str): Path to weights file.
 
     Returns:
         Keras model instance: A model with its weights initialized.
 
     """
-    input_weights_input = os.path.join(wd, input_dir, filename)
-    model.load_weights = load_weights_input(input_model)
+    model.load_weights(weights)
     logging.info('The weights have been loaded.')
     return model
 

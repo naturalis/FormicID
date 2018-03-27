@@ -31,30 +31,35 @@ from sklearn.metrics import confusion_matrix
 # Additional project imports
 import matplotlib.pylab as plt
 
+import itertools
+
 from trainers.train import _data_generator_dir
 
 # Parameters and settings
 ###############################################################################
 
 
-# Test generator
+# Evaluate generator
 ###############################################################################
 
-def tester(
+def evaluator(
     model,
     dataset,
-    shottype,
-    config
+    config,
+    shottype='head'
 ):
     """Evaluation will return the score of the model on a test set. This
     function will return the loss and accuracy.
 
     Args:
         model (Keras model instance): A trained Keras model instance.
+        dataset (str): The dataset name.
+        config (Bunch object): The JSON configuration Bunch object.
+        shottype (str): The shottype that will be tested. Defaults to `head`.
 
     Returns:
-        float: Returns the loss, accuracy and RMSE for the trained model on a
-        test set.
+        floats: Returns the loss, accuracy and top 3 accuracy for the trained
+            model on atest set.
 
     """
     # print(model.metrics_names)
@@ -66,37 +71,85 @@ def tester(
             target_gen='test'
         )
     )
-    logging.info('Loss: {:.4f}, '
+    logging.info('Test metrics: '
+                 'Loss: {:.4f}, '
                  'Accuracy: {:.2f}%, '
-                 'RMSE: {:.4f}'.format(score[0],
-                                       score[1] * 100,
-                                       score[2]))
+                 'Top 3 accuracy: {:.2f}'.format(
+                     score[0],
+                     score[1] * 100,
+                     score[2] * 100
+                 )
+                 )
     return score
 
 
-def model_test(image, model, X_test, Y_test):
+# Predict labels generator
+###############################################################################
+
+
+def predictor(
+    model,
+    dataset,
+    config,
+    shottype='head'
+):
+    """Function
+
+    Args:
+        model (Keras model instance): A trained Keras model instance.
+        dataset (str): The dataset name.
+        config (Bunch object): The JSON configuration Bunch object.
+        shottype (str): The shottype that will be tested. Defaults to `head`.
+
+    Returns:
+        (type): txt
+
+    """
+    Y_pred = model.predict_generator(
+        _data_generator_dir(
+            dataset=dataset,
+            config=config,
+            shottype=shottype,
+            target_gen='test'
+        )
+    )
+    predictions = [i.argmax() for i in Y_pred]
+    print(predictions)
+    return Y_pred, predictions
+
+
+def model_test(model, image):
     """Short summary.
 
     Args:
-        image (type): Description of parameter `image`.
         model (type): Description of parameter `model`.
+        image (type): Description of parameter `image`.
 
     Returns:
         type: Description of returned object.
 
     """
-    model.test_on_batch(X_test, Y_test)
-    # model.test is for testing a image for label..
-    raise NotImplementedError
+    image = load_img(image)
+    image = img_to_array(image)
+    # TODO: do the same preprocess_input
+    # idg(target_gen='test')
+    prediction = model.predict(image)
+    return prediction
+
+# Predict labels generator
+###############################################################################
 
 
-def plot_confusion_matrix(Y_pred,
-                          Y_true,
-                          target_names,
-                          title='Confusion matrix',
-                          cmap=None,
-                          normalize=False):
-    cm = confusion_matrix(y_pred=predictions, y_true=y_true)
+def plot_confusion_matrix(
+    Y_pred,
+    Y_true,
+    target_names=None,
+    title='Confusion matrix',
+    cmap=None,
+    normalize=False
+):
+    cm = confusion_matrix(y_pred=Y_pred, y_true=Y_true)
+
     accuracy = np.trace(cm) / float(np.sum(cm))
     misclass = 1 - accuracy
     if cmap is None:

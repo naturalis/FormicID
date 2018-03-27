@@ -28,9 +28,6 @@ import pandas as pd
 # Additional project imports
 from tqdm import tqdm
 
-# FormicID imports
-from utils.utils import wd
-
 # Parameters and settings
 ###############################################################################
 
@@ -109,7 +106,7 @@ def _filter_json(
 
 def batch_json_to_csv(
     csvname,
-    input_dir,
+    dataset,
     quality='low',
     output_dir=None
 ):
@@ -118,11 +115,10 @@ def batch_json_to_csv(
 
     Args:
         csvname (str): Name of the output csv file.
-        input_dir (str): the name of the data directory holding the json files
-            inside the `data` folder.
+        dataset (str): The name of the dataset (directory).
         output_dir (str): name of the output directory. Defaults to `None`. If
-            `None`, the images will be placed in the the input_dir in an
-            folder named `images`.
+            `None`, the images will be placed in an `image` subfolder in the
+            dataset directory.
 
     Returns:
         file: A csv file containing the necesarry information for the scrape
@@ -134,17 +130,14 @@ def batch_json_to_csv(
     """
     logging.info('Image quality for downloading is set to `{}`'.format(
         quality))
-    input_direc = os.path.join(wd,
-                               'data',
-                               input_dir,
+    input_direc = os.path.join('data',
+                               dataset,
                                'json_files')
-    if output_dir == None or output_dir == input_dir:
-        output_dir = os.path.join(wd,
-                                  'data',
-                                  input_dir)
+    if output_dir == None or output_dir == dataset:
+        output_dir = os.path.join('data',
+                                  dataset)
     else:
-        outputdir = os.mkdir(os.path.join(wd,
-                                          'data',
+        outputdir = os.mkdir(os.path.join('data',
                                           output_dir))
     nb_files = len(os.listdir(input_direc))
     if nb_files == 0:

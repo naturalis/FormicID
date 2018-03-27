@@ -150,7 +150,8 @@ def split_in_directory(dataset,
     train_dir = os.path.join(input_dir, dirs_split[0])
     val_dir = os.path.join(input_dir, dirs_split[1])
     test_dir = os.path.join(input_dir, dirs_split[2])
-    for species in tqdm(os.listdir(input_dir)):
+    for species in tqdm(os.listdir(input_dir),
+                        description='Splitting into subsets'):
         if species in dirs_split:
             continue
         nb_images = len(os.listdir(os.path.join(input_dir, species)))

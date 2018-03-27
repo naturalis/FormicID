@@ -63,9 +63,10 @@ from utils.model_utils import model_summary
 ###############################################################################
 
 
-def load_model(config,
-               num_classes,
-               base_model='InceptionV3'):
+def load_model(
+    config,
+    num_classes
+):
     """Load a predesigned neural network application from the Keras library.
 
     Args:
@@ -205,8 +206,7 @@ def compile_model(model, config):
         loss='categorical_crossentropy',
         optimizer=opt,
         metrics=['accuracy',
-        # rmse,
-        top_k_categorical_accuracy]
+                 top_k_categorical_accuracy]
     )
     logging.info('The model is compiled with succes.')
     # logging.debug('type ', model)

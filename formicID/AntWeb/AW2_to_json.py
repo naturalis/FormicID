@@ -33,8 +33,7 @@ import requests
 from tqdm import tqdm
 
 # FormicID imports
-from utils.utils import todaystr
-from utils.utils import wd
+from utils.utils import today_timestr
 
 # Parameters and settings
 ###############################################################################
@@ -72,7 +71,7 @@ def _create_url(limit,
     for k in kwargs:
         if k not in allowed_kwargs:
             raise TypeError('Unexpected keyword argument passed to '
-            '_create_url: {}'.format(str(k)))
+                            '_create_url: {}'.format(str(k)))
     genus = kwargs.get('genus', None)
     species = kwargs.get('species', None)
     country = kwargs.get('country', None)
@@ -118,8 +117,7 @@ def _get_json(input_url):
 
 
 def urls_to_json(csv_file,
-                 input_dir,
-                 output_dir,
+                 dataset_name,
                  offset_set=0,
                  limit_set=9999):
     """This function downloads JSON files for a list of species and places them
@@ -128,13 +126,13 @@ def urls_to_json(csv_file,
     you will probably need to set the limit lower.
 
     Args:
-        csv_file (str): the csv file genus and species names.
-        input_dir (str): path to the directory that has the `csv_file`.
-        output_dir (str): a new directory name, created in the `input_dir` for
-            saving the JSON files.
-        offset_set (int): the offset for downloading AntWeb records in
+        csv_file (str): The csv file with genus and species names.
+        dataset_name (str): Name for the dataset, and also for naming the
+            directory that will hold this dataset. The JSON files will be
+            saved here.
+        offset_set (int): The offset for downloading AntWeb records in
             batches. Defaults to `0`.
-        limit_set (int): the limit for downloading a set of AntWeb records.
+        limit_set (int): The limit for downloading a set of AntWeb records.
             Defaults to `9999`.
 
     Returns:
@@ -154,14 +152,13 @@ def urls_to_json(csv_file,
     attempts = 5
     # if limit_set > 12000:
     #     raise ValueError('The `limit_set` should be lower than 12,000.')
-    input_dir = os.path.join(wd, input_dir)
-    output_dir = os.path.join(input_dir,
-                              todaystr + '_' + output_dir,
+    output_dir = os.path.join('data',
+                              dataset_name,
                               'json_files')
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     if csv_file.endswith('.csv') == True:
-        csv_file = os.path.join(input_dir,
+        csv_file = os.path.join('data',
                                 csv_file)
     else:
         raise AssertionError(
@@ -211,12 +208,19 @@ def urls_to_json(csv_file,
                     try:
                         species = _get_json(url.url)
                         if species['count'] > 0:
-                            with open(os.path.join(wd,
-                                                   output_dir,
-                                                   file_name),
-                                      'w') as jsonfile:
-                                json.dump(species,
-                                          jsonfile)
+                            if os.path.isfile(os.path.join(output_dir,
+                                                               file_name)):
+                                logging.info(
+                                    'JSON file for {} already exists and '
+                                    'will not be downloaded '
+                                    'again.'.format(species))
+                                return
+                            else:
+                                with open(os.path.join(output_dir,
+                                                       file_name),
+                                          'w') as jsonfile:
+                                    json.dump(species,
+                                              jsonfile)
                         # If the server returns species with 0 specimen count:
                         if species['count'] == 0:
                             nb_invalid += 1
@@ -238,3 +242,8 @@ def urls_to_json(csv_file,
                      'downloaded. With {} invalid name(s).'.format(
                          nb_downloaded,
                          nb_invalid))
+    data_info = os.path.join('data', dataset_name,
+                             'Info_' + dataset_name + '.txt')
+    if not os.path.isfile(data_info):
+        with open(data_info, 'wt') as txt:
+            txt.write('The dataset was downloaded on {}'.format(today_timestr))

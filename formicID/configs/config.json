@@ -1,7 +1,7 @@
 {
-    "exp_name": "testall",
+    "exp_name": "top5species_Qlow",
     "num_epochs": 50,
-    "num_iter_per_epoch": 37,
+    "num_iter_per_epoch": 12,
     "learning_rate": 0.001,
     "batch_size": 64,
     "state_size": [784],

@@ -34,24 +34,26 @@ import requests
 from tqdm import tqdm
 
 # FormicID imports
-from utils.utils import wd
+from AntWeb.AW2_to_json import urls_to_json
+from AntWeb.json_to_csv import batch_json_to_csv
+from data_loader.data_input import make_image_path_csv
 
 # Parameters and settings
 ###############################################################################
-data_dir = os.path.join(wd, 'data')
 
 
 # Make changes to the csv file
 ###############################################################################
 
 
-def _csv_update(input_dir,
-               csvfile):
+def _csv_update(dataset,
+                csvfile):
     """This function will remove broken links to a different csvfile.
 
     Args:
-        input_dir (str): the input directory containing the csvfile
-        csvfile (str): A .csv file that contains all the specimen and image
+        dataset (str): The dataset (directory), that holds the csv with image
+            URLs and names.
+        csvfile (str): A csv file that contains all the specimen and image
             information with 4 columns, namely:
                 - 'catalog_number',
                 - 'scientific_name',
@@ -68,9 +70,6 @@ def _csv_update(input_dir,
     if not csvfile.endswith('.csv'):
         raise AssertionError('This is not a csv file: {}. Please use a csv ',
                              'file and specify the suffix'.format(csvfile))
-    csvfile = os.path.join(data_dir,
-                           input_dir,
-                           csvfile)
     columns = ['catalog_number',
                'scientific_name',
                'shot_type',
@@ -114,8 +113,7 @@ def _csv_update(input_dir,
 
 
 def image_scraper(csvfile,
-                  input_dir,
-                  dir_out_name,
+                  dataset,
                   start=None,
                   end=None,
                   update=False):
@@ -125,9 +123,7 @@ def image_scraper(csvfile,
 
     Args:
         csvfile (str): name of the csvfile in the `data` folder.
-        input_dir (str): Name of the directory in `data` that contains the csv.
-        dir_out_name (str): Name of the output folder, with the current
-            date as prefix, which is created in the input_dir.
+        dataset (str): Name of the dataset (directory).
         start (int): Set the starting row for downloading. Defaults to `None`.
         end (int): Set the end row for downloading. Defaults to `None`.
         update (bool): if [default=True]; the csv_update() function will be
@@ -137,27 +133,27 @@ def image_scraper(csvfile,
         files: A folder with images.
 
     """
-    csvfile = os.path.join(data_dir,
-                           input_dir,
+    csvfile = os.path.join('data',
+                           dataset,
                            csvfile)
     if update == True:
         logging.info('Update argument has been set to: True. Updating file '
                      'now...')
-        _csv_update(input_dir=input_dir,
-                   csvfile=csvfile)
+        _csv_update(dataset=dataset,
+                    csvfile=csvfile)
         logging.info('The csv file has been updated.')
     else:
         logging.info('Update argument has been set to: False.')
     logging.info('Checking Folders...')
-    if not os.path.exists(os.path.join(data_dir, input_dir, dir_out_name)):
-        os.mkdir(os.path.join(data_dir, input_dir, dir_out_name))
-        os.mkdir(os.path.join(data_dir, input_dir, dir_out_name, 'head'))
-        os.mkdir(os.path.join(data_dir, input_dir, dir_out_name, 'dorsal'))
-        os.mkdir(os.path.join(data_dir, input_dir, dir_out_name, 'profile'))
+    if not os.path.exists(os.path.join('data', dataset, 'images')):
+        os.mkdir(os.path.join('data', dataset, 'images'))
+        os.mkdir(os.path.join('data', dataset, 'images', 'head'))
+        os.mkdir(os.path.join('data', dataset, 'images', 'dorsal'))
+        os.mkdir(os.path.join('data', dataset, 'images', 'profile'))
         logging.info('Folders are created')
-    dir_h = os.path.join(data_dir, input_dir, dir_out_name, 'head')
-    dir_d = os.path.join(data_dir, input_dir, dir_out_name, 'dorsal')
-    dir_p = os.path.join(data_dir, input_dir, dir_out_name, 'profile')
+    dir_h = os.path.join('data', dataset, 'images', 'head')
+    dir_d = os.path.join('data', dataset, 'images', 'dorsal')
+    dir_p = os.path.join('data', dataset, 'images', 'profile')
     nb_rows = sum(1 for line in open(csvfile))
     logging.info('The csv file contains {} images.'.format(nb_rows))
     if end == None:
@@ -227,3 +223,36 @@ def image_scraper(csvfile,
                             logging.error('Error 404: {}'.format(image[3]))
                             continue
         logging.info('{} images were downloaded.'.format(nb_images))
+
+
+def get_dataset(
+    input,
+    dataset_name,
+    quality='low',
+    update=True,
+    offset_set=0,
+    limit_set=9999
+):
+    urls_to_json(
+        csv_file=input,
+        dataset_name=dataset_name,
+        offset_set=offset_set,
+        limit_set=limit_set
+    )
+    batch_json_to_csv(
+        dataset=dataset_name,
+        output_dir=dataset_name,
+        quality=quality,
+        csvname='image_urls.csv'
+    )
+    image_scraper(
+        csvfile='image_urls.csv',
+        dataset=dataset_name,
+        # start=0,
+        # end=1491,
+        update=update
+    )
+    make_image_path_csv(
+        dataset=dataset_name
+    )
+    logging.info('The dataset is created.')

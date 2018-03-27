@@ -26,14 +26,13 @@ from keras import __version__ as keras_version
 from keras import backend as K
 
 # FormicID imports
-from AntWeb.AW2_to_json import urls_to_json
-from AntWeb.json_to_csv import batch_json_to_csv
-from data_loader.data_input import make_image_path_csv
 from data_loader.data_input import split_in_directory
-from data_scraper.scrape import image_scraper
+from data_scraper.scrape import get_dataset
 from models.models import compile_model
 from models.models import load_model
-from testers.tester import tester
+from testers.tester import evaluator
+from testers.tester import plot_confusion_matrix
+from testers.tester import predictor
 from trainers.train import trainer_csv
 from trainers.train import trainer_dir
 from utils.load_config import process_config
@@ -44,6 +43,7 @@ from utils.logger import build_rlrop
 from utils.logger import build_tb
 from utils.logger import plot_history
 from utils.model_utils import make_multi_gpu
+from utils.model_utils import weights_load
 from utils.utils import create_dirs
 from utils.utils import get_args
 
@@ -81,51 +81,35 @@ def main():
 
     # Creating a dataset
     ###########################################################################
-    # urls_to_json(
-    #     csv_file='testgenusspecies.csv',
-    #     input_dir='data',
-    #     output_dir='5sp_200limit',
-    #     offset_set=0,
-    #     limit_set=200
-    # )
-    # batch_json_to_csv(
-    #     input_dir='2018-03-16-testall',
-    #     output_dir='2018-03-16-testall',
+    # get_dataset(
+    #     input='testgenusspecies.csv',
+    #     dataset_name='top5species_Qlow',
     #     quality='low',
-    #     csvname='image_urls.csv'
+    #     update=True,
+    #     offset_set=0,
+    #     limit_set=100000
     # )
-    # image_scraper(
-    #     csvfile='image_urls.csv',
-    #     input_dir='2018-03-16-testall',
-    #     # start=0,
-    #     # end=1491,
-    #     dir_out_name='images',
-    #     update=False
-    # )
-    make_image_path_csv(
-        dataset='2018-03-16-testall'
-    )
+    #
     # create experiment related directories
     ###########################################################################
-    create_dirs(
-        [config.summary_dir,
-         config.checkpoint_dir]
-    )
+    # create_dirs(
+    #     [config.summary_dir,
+    #      config.checkpoint_dir]
+    # )
     # Initializing the data
     ###########################################################################
-    split_in_directory(
-        dataset='2018-03-16-testall',
-        shottype='head',
-        test_split=0.1,
-        val_split=0.2
-    )
-    num_species = 97
+    # split_in_directory(
+    #     dataset='top5species_Qlow',
+    #     shottype='head',
+    #     test_split=0.1,
+    #     val_split=0.2
+    # )
+    num_species = 5
     # Initialize the model
     ###########################################################################
     model_formicID = load_model(
         config=config,
-        num_classes=num_species,
-        base_model='InceptionV3'
+        num_classes=num_species
     )
     model_formicID = compile_model(
         model=model_formicID,
@@ -133,91 +117,93 @@ def main():
     )
     # Initialize logger
     ###########################################################################
-    logger = [
-        build_mc(
-            config=config,
-            monitor='val_loss',
-            verbose=1,
-            mode='min',
-            save_best_only=True,
-            period=5
-        ),
-        build_rlrop(
-            monitor='val_loss',
-            factor=0.1,
-            patience=25,
-            verbose=1,
-            mode='auto',
-            epsilon=1e-4,
-            cooldown=0,
-            min_lr=0
-        ),
-        build_es(
-            monitor='val_loss',
-            min_delta=0,
-            patience=25,
-            verbose=1,
-            mode='min'
-        ),
-        build_tb(
-            model=model_formicID,
-            config=config,
-            histogram_freq=0,
-            write_graph=True,
-            write_images=True
-        ),
-        build_csvl(
-            filename='log.csv',
-            config=config,
-            separator=',',
-            append=False)
-    ]
+    # logger = [
+    #     build_mc(
+    #         config=config,
+    #         monitor='val_loss',
+    #         verbose=0,
+    #         mode='min',
+    #         save_best_only=True,
+    #         period=1
+    #     ),
+    #     build_rlrop(
+    #         monitor='val_loss',
+    #         factor=0.1,
+    #         patience=25,
+    #         verbose=1,
+    #         mode='auto',
+    #         epsilon=1e-4,
+    #         cooldown=0,
+    #         min_lr=0
+    #     ),
+    #     build_es(
+    #         monitor='val_loss',
+    #         min_delta=0,
+    #         patience=25,
+    #         verbose=1,
+    #         mode='min'
+    #     ),
+    #     build_tb(
+    #         model=model_formicID,
+    #         config=config,
+    #         histogram_freq=0,
+    #         write_graph=True,
+    #         write_images=True
+    #     ),
+    #     build_csvl(
+    #         filename='log.csv',
+    #         config=config,
+    #         separator=',',
+    #         append=False)
+    # ]
     # Training in batches with iterator
     ###########################################################################
-    # trainer(
+    # history = trainer_dir(
     #     model=model_formicID,
-    #     X_train=X_train,
-    #     Y_train=Y_train,
-    #     X_val=X_val,
-    #     Y_val=Y_val,
-    #     callbacks=logger,
-    #     config=config
-    # )
-    history = trainer_dir(
-        model=model_formicID,
-        dataset='2018-03-16-testall',
-        shottype='head',
-        config=config,
-        callbacks=logger
-    )
-    # trainer_csv(
-    #     model=model_formicID,
-    #     csv='data/2018-03-16-testall/image_path.csv',
+    #     dataset='top5species_Qlow',
     #     shottype='head',
     #     config=config,
-    #     callbacks=None
+    #     callbacks=logger
     # )
+    # # trainer_csv(
+    # #     model=model_formicID,
+    # #     csv='data/top5species_Qlow/image_path.csv',
+    # #     shottype='head',
+    # #     config=config,
+    # #     callbacks=None
+    # # )
     # Evaluation
     ###########################################################################
-    plot_history(
-        history=history,
-        theme='ggplot'
-    )
-    score = tester(
+    # plot_history(
+    #     history=history,
+    #     theme='ggplot'
+    # )
+    # evaluator(
+    #     model=model_formicID,
+    #     dataset='top5species_Qlow',
+    #     shottype='head',
+    #     config=config
+    # )
+    # Testing
+    ###########################################################################
+    model_formicID = weights_load(
         model=model_formicID,
-        dataset='2018-03-16-testall',
+        weights='experiments/top5species_Qlow/checkpoint/weights_25-0.69.hdf5')
+
+    Y_pred, predictions = predictor(
+        model=model_formicID,
+        dataset='top5species_Qlow',
         shottype='head',
         config=config
     )
-    print(score)
-    # Testing
-    ###########################################################################
-    # prediction = model_formicID.predict_classes(
-    #     X_test,
-    #     verbose=1
+    # plot_confusion_matrix(
+    #     Y_pred=predictions,
+    #     Y_true=predictions,
+    #     # target_names=labels,
+    #     title='Confusion matrix',
+    #     cmap=None,
+    #     normalize=False
     # )
-    # logging.info(prediction)
-
     K.clear_session()
 
 
