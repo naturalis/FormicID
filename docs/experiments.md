@@ -1,6 +1,6 @@
 # Experiments
 
-## Head - Low quality - var number of species
+## Head - Low quality - variable number of species
 
 Settings:
 
@@ -20,7 +20,7 @@ Settings:
 
 ```
 
-### Low quality - 5 species
+### 5 species
 - [x] Downloaded
 
 #### Information
@@ -30,7 +30,8 @@ Settings:
   - Profile images: `496`
 
 #### Results
-<txt placeholder>
+txt placeholder
+
 ### Low quality - 20 species
 - [x] Downloaded
 
@@ -41,10 +42,10 @@ Settings:
   - Profile images: ``
 
 #### Results
-<txt placeholder>
+txt placeholder
 
-### Low quality - 50 Species
-- [] Downloaded
+### 50 Species
+- [ ] Downloaded
 
 #### Information
 - Total number of images: ``
@@ -53,10 +54,10 @@ Settings:
   - Profile images: ``
 
 #### Results
-<txt placeholder>
+txt placeholder
 
 ### Low quality - 97 species
-- [] Downloaded
+- [ ] Downloaded
 
 #### Information
 - Total number of images: ``
@@ -65,4 +66,4 @@ Settings:
   - Profile images: ``
 
 #### Results
-<txt placeholder>
+txt placeholder
