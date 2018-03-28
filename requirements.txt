@@ -5,14 +5,14 @@
 # formicID/main.py: 25,26
 # formicID/models/build.py: 20,21,22,23,24,25,26
 # formicID/models/models.py: 39,40,41,42,43,44,45,46,47,48,49,50
-# formicID/testers/tester.py: 24
+# formicID/testers/tester.py: 25,26
 # formicID/trainers/train.py: 32,33,34,35,36,37
 # formicID/utils/img.py: 23,24,25,26
-# formicID/utils/logger.py: 22,23,24,25,26,27
+# formicID/utils/logger.py: 22,23,24,25,26,27,28
 # formicID/utils/model_utils.py: 24,25,26,27,28
-Keras == 2.1.5
+Keras == 2.1.4
 
-# formicID/utils/img.py: 33
+# formicID/utils/img.py: 35
 Pillow_SIMD == 4.3.0.post0
 
 # formicID/utils/load_config.py: 25
@@ -22,19 +22,22 @@ bunch == 1.0.1
 graphviz == 0.8.2
 
 # formicID/utils/model_utils.py: 31
-h5py == 2.8.0rc1.post0
+# h5py == 2.8.0rc1.post0
+git+https://github.com/h5py/h5py@2.8.0rc1
 
 # formicID/AntWeb/json_to_csv.py: 24
 jmespath == 0.9.3
 
-# formicID/testers/tester.py: 31
+# formicID/testers/tester.py: 33
 # formicID/utils/img.py: 32
+# formicID/utils/logger.py: 34
 matplotlib == 2.2.2
 
 # formicID/data_loader/data_input.py: 62
-# formicID/testers/tester.py: 27
+# formicID/testers/tester.py: 29
 # formicID/trainers/train.py: 40
 # formicID/utils/img.py: 29
+# formicID/utils/logger.py: 31
 numpy == 1.14.2
 
 # formicID/AntWeb/AW2_to_json.py: 28
@@ -55,7 +58,7 @@ pydot_ng == 1.0.0
 requests == 2.18.4
 
 # formicID/data_loader/data_input.py: 64,65
-# formicID/testers/tester.py: 28
+# formicID/testers/tester.py: 30
 scikit_learn == 0.19.1
 
 # formicID/main.py: 24
@@ -67,4 +70,4 @@ tensorflow == 1.6.0
 # formicID/AntWeb/json_to_csv.py: 29
 # formicID/data_loader/data_input.py: 68
 # formicID/data_scraper/scrape.py: 34
-tqdm == 4.19.8
+tqdm == 4.19.9
