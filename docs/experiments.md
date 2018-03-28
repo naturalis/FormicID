@@ -32,7 +32,7 @@ Settings:
 #### Results
 txt placeholder
 
-### Low quality - 20 species
+### 20 species
 - [x] Downloaded
 
 #### Information
@@ -56,7 +56,7 @@ txt placeholder
 #### Results
 txt placeholder
 
-### Low quality - 97 species
+### 97 species
 - [ ] Downloaded
 
 #### Information
