@@ -211,9 +211,11 @@ def urls_to_json(csv_file,
                             if os.path.isfile(os.path.join(output_dir,
                                                            file_name)):
                                 logging.info(
-                                    'JSON file for {} already exists and '
+                                    'JSON file for {0} {1} already exists and '
                                     'will not be downloaded '
-                                    'again.'.format(species))
+                                    'again.'.format(
+                                        row['genus'],
+                                        row['species']))
                                 return
                             else:
                                 with open(os.path.join(output_dir,
