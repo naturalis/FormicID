@@ -463,10 +463,13 @@ def _data_generator_dir(
     batch_size = config.batch_size
     seed = config.seed
     if target_gen == 'training':
+        shuffle = True
         dir = '1-training'
     if target_gen == 'validation':
+        shuffle = False
         dir = '2-validation'
     if target_gen == 'test':
+        shuffle = False
         dir = '3-test'
     data_dir = os.path.join(
         'data',
@@ -482,9 +485,12 @@ def _data_generator_dir(
         color_mode='rgb',
         class_mode='categorical',
         batch_size=batch_size,
+        shuffle=shuffle,
         seed=1
     )
-    return idgen
+    classes = idgen.classes
+    class_indices = idgen.class_indices
+    return idgen, classes, class_indices
 
 
 def trainer_dir(
@@ -511,13 +517,13 @@ def trainer_dir(
     steps_per_epoch = config.num_iter_per_epoch
     epochs = config.num_epochs
     batch_size = config.batch_size
-    train_data_gen_dir = _data_generator_dir(
+    train_data_gen_dir, _, _ = _data_generator_dir(
         dataset=dataset,
         shottype=shottype,
         config=config,
         target_gen='training'
     )
-    val_data_gen_dir = _data_generator_dir(
+    val_data_gen_dir, _, _  = _data_generator_dir(
         dataset=dataset,
         shottype=shottype,
         config=config,

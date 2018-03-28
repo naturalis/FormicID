@@ -227,15 +227,18 @@ def image_scraper(csvfile,
 
 def get_dataset(
     input,
-    dataset_name,
+    n_jsonfiles,
+    config,
     quality='low',
     update=True,
     offset_set=0,
     limit_set=9999
 ):
+    dataset_name= config.exp_name
     urls_to_json(
         csv_file=input,
         dataset_name=dataset_name,
+        n_jsonfiles=n_jsonfiles,
         offset_set=offset_set,
         limit_set=limit_set
     )

@@ -22,7 +22,7 @@ import os
 import sys
 import time
 from urllib.error import HTTPError
-
+from itertools import islice
 # Data tools imports
 import json
 import pandas as pd
@@ -43,9 +43,11 @@ from utils.utils import today_timestr
 ###############################################################################
 
 
-def _create_url(limit,
-                offset,
-                **kwargs):
+def _create_url(
+    limit,
+    offset,
+    **kwargs
+):
     """Creation of the url to access AntWebs API V2, using a base_url and
     arguments.
 
@@ -94,7 +96,9 @@ def _create_url(limit,
 ###############################################################################
 
 
-def _get_json(input_url):
+def _get_json(
+    input_url
+):
     """Scrapes JSON files from AntWeb URLs.
 
     Args:
@@ -116,10 +120,13 @@ def _get_json(input_url):
             input_url.url))
 
 
-def urls_to_json(csv_file,
-                 dataset_name,
-                 offset_set=0,
-                 limit_set=9999):
+def urls_to_json(
+    csv_file,
+    dataset_name,
+    n_jsonfiles=None,
+    offset_set=0,
+    limit_set=9999
+):
     """This function downloads JSON files for a list of species and places them
     in a drecitory. An limit_set higher than 10,000 will usually create
     problems if no species and genus is provided. If you get HTTP ERROR 500
@@ -189,8 +196,11 @@ def urls_to_json(csv_file,
         logging.info('{0} indet species found and will be skipped from '
                      'downloading.'.format(nb_indet))
         nb_specimens = csv_df.shape[0] - nb_indet
-        for index, row in tqdm(csv_df.iterrows(),
-                               total=nb_specimens,
+        if n_jsonfiles is None:
+            n_jsonfiles = nb_specimens
+
+        for index, row in tqdm(islice(csv_df.iterrows(), 0, n_jsonfiles),
+                               total=n_jsonfiles,
                                desc='Downloading species JSON files',
                                unit='Species'):
             url = _create_url(limit=limit_set,
@@ -211,8 +221,8 @@ def urls_to_json(csv_file,
                             if os.path.isfile(os.path.join(output_dir,
                                                            file_name)):
                                 logging.info(
-                                    'JSON file for {0} {1} already exists and '
-                                    'will not be downloaded '
+                                    'JSON file for {0} {1} already exists '
+                                    'and will not be downloaded '
                                     'again.'.format(
                                         row['genus'],
                                         row['species']))
@@ -223,27 +233,30 @@ def urls_to_json(csv_file,
                                           'w') as jsonfile:
                                     json.dump(species,
                                               jsonfile)
-                        # If the server returns species with 0 specimen count:
+
+                        # If server returns species with 0 specimen count:
                         if species['count'] == 0:
                             nb_invalid += 1
-                            logging.info('"{0} {1}" has {2} records or does '
-                                         'not exist as a valid species'.format(
-                                             row['genus'],
-                                             row['species'],
-                                             species['count']))
+                            logging.info(
+                                '"{0} {1}" has {2} records or does not '
+                                'exist as a valid species'.format(
+                                    row['genus'],
+                                    row['species'],
+                                    species['count']))
+
                     except HTTPError as e:
                         print(e)
                     else:
                         break
                 else:
                     logging.debug(
-                        'For {0} attempts the server did not respond for URL: '
-                        '{1}'.format(attempts, url.url))
-        nb_downloaded = nb_specimens - nb_invalid
-        logging.info('Downloading is finished. {} JSON files have been '
-                     'downloaded. With {} invalid name(s).'.format(
-                         nb_downloaded,
-                         nb_invalid))
+                        'For {0} attempts the server did not respond for '
+                        'URL: {1}'.format(attempts, url.url))
+    nb_downloaded = nb_specimens - nb_invalid
+    logging.info('Downloading is finished. {} JSON files have been '
+                 'downloaded. With {} invalid name(s).'.format(
+                     nb_downloaded,
+                     nb_invalid))
     data_info = os.path.join('data', dataset_name,
                              'Info_' + dataset_name + '.txt')
     if not os.path.isfile(data_info):

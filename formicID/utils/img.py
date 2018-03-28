@@ -45,11 +45,10 @@ from .utils import wd
 # Load and show images
 ###############################################################################
 
-def show_img(image):
-    # image = load_img(image)
-    # plt.imshow(image)
-    # plt.show()
-    raise NotImplementedError
+def show_img(array):
+    image = array_to_img(array)
+    plt.imshow(image)
+    plt.show()
 
 
 def show_multi_img(X_train,

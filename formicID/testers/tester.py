@@ -24,16 +24,20 @@ import logging
 # Deeplearning tools imports
 from keras.applications.inception_v3 import preprocess_input
 from keras.models import Model
+from keras import backend as K
+from keras.utils.np_utils import to_categorical
 
 # Data tools imports
 import numpy as np
 from sklearn.metrics import confusion_matrix
+from math import ceil
 
 # Graphical tools imports
-import matplotlib.pylab as plt
+import matplotlib.pyplot as plt
 
 # FormicID imports
 from trainers.train import _data_generator_dir
+from utils.img import show_img
 
 # Parameters and settings
 ###############################################################################
@@ -62,24 +66,20 @@ def evaluator(
             model on atest set.
 
     """
-    # print(model.metrics_names)
-    score = model.evaluate_generator(
-        _data_generator_dir(
-            dataset=dataset,
-            config=config,
-            shottype=shottype,
-            target_gen='test'
-        )
+    test_data_gen_dir, _, _ = _data_generator_dir(
+        dataset=dataset,
+        config=config,
+        shottype=shottype,
+        target_gen='test'
     )
-    logging.info('Test metrics: '
-                 'Loss: {:.4f}, '
-                 'Accuracy: {:.2f}%, '
-                 'Top 3 accuracy: {:.2f}'.format(
-                     score[0],
-                     score[1] * 100,
-                     score[2] * 100
-                 )
-                 )
+    score = model.evaluate_generator(test_data_gen_dir)
+    print('Test metrics: '
+          'Loss: {:.4f}, '
+          'Accuracy: {:.2f}%, '
+          'Top 3 accuracy: {:.2f}'.format(score[0],
+                                          score[1] * 100,
+                                          score[2] * 100)
+          )
     return score
 
 
@@ -93,7 +93,7 @@ def predictor(
     config,
     shottype='head'
 ):
-    """Function
+    """Returns the predition of labels from a set of test images
 
     Args:
         model (Keras model instance): A trained Keras model instance.
@@ -105,21 +105,77 @@ def predictor(
         (type): txt
 
     """
-    Y_pred = model.predict_generator(
-        _data_generator_dir(
-            dataset=dataset,
-            config=config,
-            shottype=shottype,
-            target_gen='test'
-        )
-    )
-    predictions = [i.argmax() for i in Y_pred]
-    print(predictions)
-    return Y_pred, predictions
+    test_data_gen_dir, classes, class_indices = _data_generator_dir(
+        dataset=dataset,
+        config=config,
+        shottype=shottype,
+        target_gen='test')
+    Y_pred = model.predict_generator(test_data_gen_dir, steps=1)
+    print(classes)
+    Y_true = K.argmax(to_categorical(classes, 5), axis=-1)
+    Y_pred = K.argmax(to_categorical(Y_pred, 5), axis=-1)
+    print(Y_pred)
+    print(Y_true)
+    # predictions = [i.argmax() for i in Y_pred]
+    # for prediction in predictions:
+    #     for classe in classes:
+    #         key, value in class_indices.get()
+    #         if value == prediction:
+    #             print(prediction, key, classes)
+    # # print(predictions)
 
+    # for images, labels in test_data_gen_dir:
+    #     labs = [i.argmax() for i in labels]
+    #     for key, value in class_indices.items():
+    #         if value == labs:
+    #             print(labs, key)
+    #         plt.imshow(images[i,:,:,:])
+    #         plt.title('title')
+    #         plt.show()
+    # for image in images:
+    #     for lab in labs:
+
+
+
+    return Y_pred
+
+
+# def plot_predictions(
+#     X_test,
+#     # Y_test,
+#     n_images,
+#     n_col,
+#     # predictions=None
+# ):
+#     n_row = int(ceil(1.0 * n_images // n_col))
+#     fig, axes = plt.subplots(n_row, n_col, figsize=(10, 10))
+#
+#     for i in range(n_row):
+#         for j in range(n_col):
+#             try:
+#                 images = X_test[i * n_cols + j]
+#                 print(images)
+#             except:
+#                 break
+#           axes[j][k].set_axis_off()
+#           if i_inds < N:
+#             axes[j][k].imshow(X[i_data,...], interpolation='nearest')
+#             label = labels[np.argmax(Y[i_data,...])]
+#             axes[j][k].set_title(label)
+#             if predictions is not None:
+#               pred = labels[np.argmax(predictions[i_data,...])]
+#               if label != pred:
+#                 label += " n"
+#                 axes[j][k].set_title(pred, color='red')
+#
+#       fig.set_tight_layout(True)
+#       return(fig)
+
+# Predict one image
+###############################################################################
 
 def model_test(model, image):
-    """Short summary.
+    """Test 1 image.
 
     Args:
         model (type): Description of parameter `model`.

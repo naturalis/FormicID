@@ -44,6 +44,7 @@ from keras.layers import Dense
 from keras.layers import GlobalAveragePooling2D
 from keras.layers import Input
 from keras.models import Model
+from keras.layers import Dropout
 from keras.optimizers import SGD
 from keras.optimizers import Adam
 from keras.optimizers import Nadam
@@ -100,6 +101,7 @@ def load_model(
             channels). The default input size for this model is 299x299.
     """
     model = config.model
+    dropout = config.dropout
     if model not in [
         'InceptionV3',
         'Xception',
@@ -141,15 +143,11 @@ def load_model(
                 weights=None,
                 classes=None
             )
-        # add a global spatial average pooling layer
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
-        # TODO: add dropout
-        # let's add a fully-connected layer
+        x = Dropout(dropout)(x)
         x = Dense(1024, activation='relu')(x)
-        # and a logistic layer with num_species
         predictions = Dense(num_classes, activation='softmax')(x)
-        # this is the model we will train
         end_model = Model(inputs=base_model.input, outputs=predictions)
     logging.info('The model is build with succes.')
     return end_model
