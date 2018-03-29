@@ -45,10 +45,10 @@ txt placeholder
 txt placeholder
 
 ### 50 Species
-- [ ] Downloaded
+- [x] Downloaded
 
 #### Information
-- Total number of images: ``
+- Total number of images: `6526`
   - Dorsal images: ``
   - Head images: ``
   - Profile images: ``

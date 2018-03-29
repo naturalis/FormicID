@@ -495,7 +495,6 @@ def _data_generator_dir(
 
 def trainer_dir(
     model,
-    dataset,
     shottype,
     config,
     callbacks=None
@@ -504,7 +503,6 @@ def trainer_dir(
 
     Args:
         model (type): Description of parameter `model`.
-        dataset (type): Description of parameter `dataset`.
         shottype (type): Description of parameter `shottype`.
         config (type): Description of parameter `config`.
         callbacks (type): Description of parameter `callbacks`. Defaults to
@@ -517,6 +515,7 @@ def trainer_dir(
     steps_per_epoch = config.num_iter_per_epoch
     epochs = config.num_epochs
     batch_size = config.batch_size
+    dataset = config.dataset
     train_data_gen_dir, _, _ = _data_generator_dir(
         dataset=dataset,
         shottype=shottype,

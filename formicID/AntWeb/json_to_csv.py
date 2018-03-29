@@ -28,6 +28,9 @@ import pandas as pd
 # Additional project imports
 from tqdm import tqdm
 
+# FormicID imports
+from utils.utils import today_timestr
+
 # Parameters and settings
 ###############################################################################
 
@@ -187,3 +190,12 @@ def batch_json_to_csv(
     logging.info('All JSON files are read, filtered and added to the csv '
                  'file. "{0}" was created in {1}'.format(csvname,
                                                          output_dir))
+    data_info = os.path.join('data', dataset,
+                             'Info_' + dataset + '.txt')
+    if not os.path.isfile(data_info):
+        with open(data_info, 'wt') as txt:
+            txt.write(
+                'The dataset was downloaded on date: {0}.'
+                'The image quality was set to "{1}"'.format(
+                    today_timestr,
+                    quality))

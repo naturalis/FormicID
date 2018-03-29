@@ -34,6 +34,7 @@ From the Keras documentation:
 
 # Standard library imports
 import logging
+import os
 
 # Deeplearning tools imports
 from keras.applications.densenet import DenseNet169
@@ -65,16 +66,15 @@ from utils.model_utils import model_summary
 
 
 def load_model(
-    config,
-    num_classes
+    config
 ):
-    """Load a predesigned neural network application from the Keras library.
+    """Load a predesigned neural network application from the Keras library or
+    the self-designed neural network from `models/build.py`.
 
     Args:
-        config (Bunch object): The JSON configuration Bunch object.
-        num_classes (int): The number of species.
-        model (Keras model instance): A keras model application. Defaults to
-            'InceptionV3'.
+        config (Bunch object): The JSON configuration Bunch object, which
+            states the model to load, dropout and the correct dataset for
+            counting the number of species.
 
     Returns:
         Keras model instance: A Keras model instance.
@@ -101,7 +101,12 @@ def load_model(
             channels). The default input size for this model is 299x299.
     """
     model = config.model
+    dataset = config.dataset
     dropout = config.dropout
+    # TODO: Get a fix for only counting species in head folder.
+    num_species = sum(os.path.isdir(i) for i in os.listdir(
+        os.path.join('data', dataset, 'images', 'head')))
+    print('species:', num_species)
     if model not in [
         'InceptionV3',
         'Xception',
@@ -147,7 +152,7 @@ def load_model(
         x = GlobalAveragePooling2D()(x)
         x = Dropout(dropout)(x)
         x = Dense(1024, activation='relu')(x)
-        predictions = Dense(num_classes, activation='softmax')(x)
+        predictions = Dense(num_species, activation='softmax')(x)
         end_model = Model(inputs=base_model.input, outputs=predictions)
     logging.info('The model is build with succes.')
     return end_model

@@ -230,11 +230,11 @@ def get_dataset(
     n_jsonfiles,
     config,
     quality='low',
-    update=True,
+    update=False,
     offset_set=0,
     limit_set=9999
 ):
-    dataset_name= config.exp_name
+    dataset_name= config.data_set
     urls_to_json(
         csv_file=input,
         dataset_name=dataset_name,

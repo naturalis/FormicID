@@ -32,8 +32,7 @@ from csv import Sniffer
 import requests
 from tqdm import tqdm
 
-# FormicID imports
-from utils.utils import today_timestr
+
 
 # Parameters and settings
 ###############################################################################
@@ -218,8 +217,16 @@ def urls_to_json(
                     try:
                         species = _get_json(url.url)
                         if species['count'] > 0:
-                            if os.path.isfile(os.path.join(output_dir,
+                            # TODO: fix line below. Stops checking after 2
+                            # json files are present.
+                            if not os.path.isfile(os.path.join(output_dir,
                                                            file_name)):
+                                with open(os.path.join(output_dir,
+                                                       file_name),
+                                          'w') as jsonfile:
+                                    json.dump(species,
+                                              jsonfile)
+                            else:
                                 logging.info(
                                     'JSON file for {0} {1} already exists '
                                     'and will not be downloaded '
@@ -227,13 +234,6 @@ def urls_to_json(
                                         row['genus'],
                                         row['species']))
                                 return
-                            else:
-                                with open(os.path.join(output_dir,
-                                                       file_name),
-                                          'w') as jsonfile:
-                                    json.dump(species,
-                                              jsonfile)
-
                         # If server returns species with 0 specimen count:
                         if species['count'] == 0:
                             nb_invalid += 1
@@ -252,13 +252,8 @@ def urls_to_json(
                     logging.debug(
                         'For {0} attempts the server did not respond for '
                         'URL: {1}'.format(attempts, url.url))
-    nb_downloaded = nb_specimens - nb_invalid
+    nb_downloaded = n_jsonfiles - nb_invalid
     logging.info('Downloading is finished. {} JSON files have been '
                  'downloaded. With {} invalid name(s).'.format(
                      nb_downloaded,
                      nb_invalid))
-    data_info = os.path.join('data', dataset_name,
-                             'Info_' + dataset_name + '.txt')
-    if not os.path.isfile(data_info):
-        with open(data_info, 'wt') as txt:
-            txt.write('The dataset was downloaded on {}'.format(today_timestr))

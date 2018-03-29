@@ -1,5 +1,6 @@
 {
-    "exp_name": "top20species_Qlow",
+    "exp_name": "top97species_Qlow_name",
+    "data_set": "top97species_Qlow",
     "num_epochs": 10,
     "num_iter_per_epoch": 12,
     "learning_rate": 0.001,

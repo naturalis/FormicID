@@ -83,14 +83,13 @@ def main():
     ###########################################################################
     get_dataset(
         input='testall.csv',
-        n_jsonfiles=20,
+        n_jsonfiles=97,
         config=config,
         quality='low',
-        update=False,
+        update=True,
         offset_set=0,
         limit_set=100000
     )
-    #
     # create experiment related directories
     ###########################################################################
     # create_dirs(
@@ -105,7 +104,6 @@ def main():
     #     test_split=0.1,
     #     val_split=0.2
     # )
-    # num_species = 5
     # Initialize the model
     ###########################################################################
     # model_formicID = load_model(
@@ -161,7 +159,6 @@ def main():
     ###########################################################################
     # history = trainer_dir(
     #     model=model_formicID,
-    #     dataset='top5species_Qlow',
     #     shottype='head',
     #     config=config,
     #     callbacks=logger
