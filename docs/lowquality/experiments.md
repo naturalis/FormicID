@@ -39,37 +39,38 @@ This markdown document will show results from experiments.
 
 ## Head view - Low quality
 ### Settings
-Settings:
-```
-"Augmentation": 'small',
-"exp_name": "top20species_Qlow",
-"num_epochs": 10,
-"learning_rate": 0.001,
-"batch_size": 64,
-"dropout": 0.5,
-"optimizer": "Nadam",
-"model": "InceptionV3",
-"seed": 1,
-"testsplit": 0.1,
-"validationsplit": 0.2
+Settings used when training the above dataset:
 
-```
-### Results
+- `Augmentation`: `small`
+- `num_epochs`: `10`
+- `learning_rate`: `0.001`
+- `batch_size`: `64`
+- `dropout`: `0.5`
+- `optimizer`: `Nadam`
+- `model`: `InceptionV3`
+- `seed`: `1`
+- `testsplit`: `0.1`
+- `validationsplit` : `0.2`
+
+### Results - Table
 
 |        Species |    5   |   20   |   50   |  97  |
 |---------------:|:------:|:------:|:------:|:----:|
 | Head images    |    496 |   1169 |   2166 | 3366 |
-|  Training      | 347    |   820  |   1516 |      |
+|  Training images   | 347    |   820  |   1516 |      |
 |                |        |        |        |      |
-|     Validation |  101   | 235    |   435  |      |
+|Validation images |  101   | 235    |   435  |      |
 |           Loss |  0.776 | 1.5883 | 1.5451 |      |
 |       Accuracy | 0.8515 | 0.6591 | 0.7039 |      |
 | Top 3 Accuracy | 0.9901 | 0.8529 | 0.8982 |      |
 |                |        |        |        |      |
-|           Test |  48    |  114   |  215   |      |
+|    Test images |  48    |  114   |  215   |      |
 |           Loss | 0.7963 | 1.5229 | 1.7074 |      |
 |       Accuracy | 0.8750 | 0.6754 | 0.7023 |      |
 | Top 3 Accuracy | 0.9792 | 0.8509 | 0.8791 |      |
+
+### Results - Grahps
+X-axis are the epochs. All training sessions were set for 100 epochs, but with early stopping on.
 
 #### 5 Species
 ![5 Species](/docs/lowquality/top5species_Qlow.png)
@@ -80,5 +81,5 @@ Settings:
 #### 50 Species
 ![5 Species](/docs/lowquality/top50species_Qlow.png)
 
-#### 5 Species
-image
+#### 97 Species
+to be trained
