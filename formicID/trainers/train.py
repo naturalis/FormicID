@@ -515,7 +515,7 @@ def trainer_dir(
     steps_per_epoch = config.num_iter_per_epoch
     epochs = config.num_epochs
     batch_size = config.batch_size
-    dataset = config.dataset
+    dataset = config.data_set
     train_data_gen_dir, _, _ = _data_generator_dir(
         dataset=dataset,
         shottype=shottype,

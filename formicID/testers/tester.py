@@ -48,7 +48,6 @@ from utils.img import show_img
 
 def evaluator(
     model,
-    dataset,
     config,
     shottype='head'
 ):
@@ -66,6 +65,7 @@ def evaluator(
             model on atest set.
 
     """
+    dataset = config.data_set
     test_data_gen_dir, _, _ = _data_generator_dir(
         dataset=dataset,
         config=config,
@@ -76,7 +76,7 @@ def evaluator(
     print('Test metrics: '
           'Loss: {:.4f}, '
           'Accuracy: {:.2f}%, '
-          'Top 3 accuracy: {:.2f}'.format(score[0],
+          'Top 3 accuracy: {:.2f}%'.format(score[0],
                                           score[1] * 100,
                                           score[2] * 100)
           )
@@ -89,7 +89,6 @@ def evaluator(
 
 def predictor(
     model,
-    dataset,
     config,
     shottype='head'
 ):
@@ -105,6 +104,7 @@ def predictor(
         (type): txt
 
     """
+    dataset = config.data_set
     test_data_gen_dir, classes, class_indices = _data_generator_dir(
         dataset=dataset,
         config=config,

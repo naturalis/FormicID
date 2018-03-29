@@ -196,6 +196,6 @@ def batch_json_to_csv(
         with open(data_info, 'wt') as txt:
             txt.write(
                 'The dataset was downloaded on date: {0}.'
-                'The image quality was set to "{1}"'.format(
+                '\nThe image quality was set to "{1}"'.format(
                     today_timestr,
                     quality))

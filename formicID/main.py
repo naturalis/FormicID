@@ -81,88 +81,87 @@ def main():
 
     # Creating a dataset
     ###########################################################################
-    get_dataset(
-        input='testall.csv',
-        n_jsonfiles=97,
-        config=config,
-        quality='low',
-        update=True,
-        offset_set=0,
-        limit_set=100000
-    )
+    # get_dataset(
+    #     input='testall.csv',
+    #     n_jsonfiles=97,
+    #     config=config,
+    #     quality='low',
+    #     update=True,
+    #     offset_set=0,
+    #     limit_set=100000
+    # )
     # create experiment related directories
     ###########################################################################
-    # create_dirs(
-    #     [config.summary_dir,
-    #      config.checkpoint_dir]
-    # )
+    create_dirs(
+        [config.summary_dir,
+         config.checkpoint_dir]
+    )
     # Initializing the data
     ###########################################################################
-    # split_in_directory(
-    #     dataset='top5species_Qlow',
-    #     shottype='head',
-    #     test_split=0.1,
-    #     val_split=0.2
-    # )
+    split_in_directory(
+        config=config,
+        shottype='head',
+        test_split=0.1,
+        val_split=0.2
+    )
     # Initialize the model
     ###########################################################################
-    # model_formicID = load_model(
-    #     config=config,
-    #     num_classes=num_species
-    # )
-    # model_formicID = compile_model(
-    #     model=model_formicID,
-    #     config=config
-    # )
+    model_formicID = load_model(
+        config=config,
+    )
+    model_formicID = compile_model(
+        model=model_formicID,
+        config=config
+    )
     # Initialize logger
     ###########################################################################
-    # logger = [
-    #     build_mc(
-    #         config=config,
-    #         monitor='val_loss',
-    #         verbose=0,
-    #         mode='min',
-    #         save_best_only=True,
-    #         period=1
-    #     ),
-    #     build_rlrop(
-    #         monitor='val_loss',
-    #         factor=0.1,
-    #         patience=25,
-    #         verbose=1,
-    #         mode='auto',
-    #         epsilon=1e-4,
-    #         cooldown=0,
-    #         min_lr=0
-    #     ),
-    #     build_es(
-    #         monitor='val_loss',
-    #         min_delta=0,
-    #         patience=25,
-    #         verbose=1,
-    #         mode='min'
-    #     ),
-    #     build_tb(
-    #         model=model_formicID,
-    #         config=config,
-    #         histogram_freq=0,
-    #         write_graph=True,
-    #         write_images=True
-    #     ),
-    #     build_csvl(
-    #         filename='log.csv',
-    #         config=config,
-    #         separator=',',
-    #         append=False)
-    # ]
+    logger = [
+        build_mc(
+            config=config,
+            monitor='val_loss',
+            verbose=0,
+            mode='min',
+            save_best_only=True,
+            period=1
+        ),
+        build_rlrop(
+            monitor='val_loss',
+            factor=0.1,
+            patience=25,
+            verbose=1,
+            mode='min',
+            epsilon=1e-4,
+            cooldown=0,
+            min_lr=0
+        ),
+        build_es(
+            monitor='val_loss',
+            min_delta=0,
+            patience=50,
+            verbose=1,
+            mode='min'
+        ),
+        build_tb(
+            model=model_formicID,
+            config=config,
+            histogram_freq=0,
+            write_graph=True,
+            write_images=True
+        ),
+        build_csvl(
+            filename='log.csv',
+            config=config,
+            separator=',',
+            append=False)
+    ]
     # Training in batches with iterator
     ###########################################################################
-    # history = trainer_dir(
-    #     model=model_formicID,
-    #     shottype='head',
-    #     config=config,
-    #     callbacks=logger
-    # )
+    history = trainer_dir(
+        model=model_formicID,
+        shottype='head',
+        config=config,
+        callbacks=logger
+    )
     # trainer_csv(
     #     model=model_formicID,
     #     csv='data/top5species_Qlow/image_path.csv',
@@ -176,16 +175,15 @@ def main():
     #     model=model_formicID,
     #     weights='experiments/top5species_Qlow/checkpoint/weights_25-0.69.hdf5'
     # )
-    # evaluator(
-    #     model=model_formicID,
-    #     dataset='top5species_Qlow',
-    #     shottype='head',
-    #     config=config
-    # )
-    # plot_history(
-    #     history=history,
-    #     theme='ggplot'
-    # )
+    evaluator(
+        model=model_formicID,
+        shottype='head',
+        config=config
+    )
+    plot_history(
+        history=history,
+        theme='ggplot'
+    )
     # Testing
     ###########################################################################
     # predictor(

@@ -113,16 +113,17 @@ def make_image_path_csv(dataset):
 ###############################################################################
 
 
-def split_in_directory(dataset,
-                       shottype='head',
-                       test_split=0.1,
-                       val_split=0.2):
+def split_in_directory(
+    config,
+    shottype='head',
+    test_split=0.1,
+    val_split=0.2
+):
     """Split the image files for all species into subfolders for a training,
     validation and test set.
 
     Args:
-        dataset (str): Directory that holds the shottype folders with species
-            and images.
+        config (Bunch object): The JSON configuration Bunch object.
         shottype (str): The shottype folder. Defaults to 'head'.
         test_split (float): Percentage of images for the test set. Defaults to
             0.1.
@@ -130,6 +131,7 @@ def split_in_directory(dataset,
             Defaults to 0.2.
 
     """
+    dataset = config.data_set
     val_split = val_split + test_split
     input_dir = os.path.join(wd, 'data', dataset, 'images', shottype)
     dirs_split = ['1-training', '2-validation', '3-test']
@@ -151,7 +153,7 @@ def split_in_directory(dataset,
     val_dir = os.path.join(input_dir, dirs_split[1])
     test_dir = os.path.join(input_dir, dirs_split[2])
     for species in tqdm(os.listdir(input_dir),
-                        description='Splitting into subsets'):
+                        desc='Splitting into subsets'):
         if species in dirs_split:
             continue
         nb_images = len(os.listdir(os.path.join(input_dir, species)))

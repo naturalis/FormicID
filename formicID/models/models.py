@@ -101,12 +101,14 @@ def load_model(
             channels). The default input size for this model is 299x299.
     """
     model = config.model
-    dataset = config.dataset
+    dataset = config.data_set
     dropout = config.dropout
+    data_dir = os.path.join('data', dataset, 'json_files')
     # TODO: Get a fix for only counting species in head folder.
-    num_species = sum(os.path.isdir(i) for i in os.listdir(
-        os.path.join('data', dataset, 'images', 'head')))
-    print('species:', num_species)
+    num_species = sum(os.path.isfile(
+        os.path.join(
+            data_dir, i)) for i in os.listdir(
+        data_dir))
     if model not in [
         'InceptionV3',
         'Xception',
