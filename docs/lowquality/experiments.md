@@ -39,12 +39,12 @@ This markdown document show results from different experiments and for different
 
 ### Low quality image datasets - Number of images
 
-       Species |  5  |      20      |      50      |        97
--------------: | :-: | :----------: | :----------: | :--------------:
-        Images | 496 | 3638 (3523?) | 6526 (6525?) | 10,151 (10,150?)
- Dorsal images | 496 |     1175     |     2176     |       3384
-   Head images | 496 |     1169     |     2166     |       3366
-Profile images | 496 |     1179     |     2183     |       3400
+|       Species |  5  |      20      |      50      |        97        |
+|-------------: | :-: | :----------: | :----------: | :--------------: |
+|        Images | 496 | 3638 (3523?) | 6526 (6525?) | 10,151 (10,150?) |
+| Dorsal images | 496 |     1175     |     2176     |       3384       |
+|   Head images | 496 |     1169     |     2166     |       3366       |
+|Profile images | 496 |     1179     |     2183     |       3400       |
 
 ## Head view - Low quality
 
@@ -65,20 +65,20 @@ Settings used when training the above dataset:
 
 ### Results - Table
 
-          Species |   5    |   20   |   50   |  97
-----------------: | :----: | :----: | :----: | :--:
-      Head images |  496   |  1169  |  2166  | 3366
-  Training images |  347   |  820   |  1516  |
-                  |        |        |        |
-Validation images |  101   |  235   |  435   |
-             Loss | 0.776  | 1.5883 | 1.5451 |
-         Accuracy | 0.8515 | 0.6591 | 0.7039 |
-   Top 3 Accuracy | 0.9901 | 0.8529 | 0.8982 |
-                  |        |        |        |
-      Test images |   48   |  114   |  215   |
-             Loss | 0.7963 | 1.5229 | 1.7074 |
-         Accuracy | 0.8750 | 0.6754 | 0.7023 |
-   Top 3 Accuracy | 0.9792 | 0.8509 | 0.8791
+|          Species |   5    |   20   |   50   |  97    |
+|----------------: | :----: | :----: | :----: | :--:   |
+|      Head images |  496   |  1169  |  2166  | 3366   |
+|  Training images |  347   |  820   |  1516  |        |
+|                  |        |        |        |        |
+|Validation images |  101   |  235   |  435   |        |
+|             Loss | 0.776  | 1.5883 | 1.5451 |        |
+|         Accuracy | 0.8515 | 0.6591 | 0.7039 |        |
+|   Top 3 Accuracy | 0.9901 | 0.8529 | 0.8982 |        |
+|                  |        |        |        |        |
+|      Test images |   48   |  114   |  215   |        |
+|             Loss | 0.7963 | 1.5229 | 1.7074 |        |
+|         Accuracy | 0.8750 | 0.6754 | 0.7023 |        |
+|   Top 3 Accuracy | 0.9792 | 0.8509 | 0.8791 |        |
 
 ### Results - Grahps
 
