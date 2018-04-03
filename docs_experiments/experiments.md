@@ -109,7 +109,7 @@ X-axis are the epochs. All training sessions were set for 100 epochs, but with e
 
 #### 5 Species
 
-![5 Species](/docs/top5species_Qlow.png)
+![5 Species](/docs_experiments/top5species_Qlow.png)
 
 #### 20 Species
 
