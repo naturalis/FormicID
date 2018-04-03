@@ -570,10 +570,10 @@ def idg(
         idg = ImageDataGenerator(
             preprocessing_function=preprocess_input,
             rotation_range=40,
-            width_shift_range=0.2,
-            height_shift_range=0.2,
-            shear_range=0.2,
-            zoom_range=0.2,
+            width_shift_range=0.15,
+            height_shift_range=0.15,
+            shear_range=0.15,
+            zoom_range=0.15,
             horizontal_flip=True
         )
     if target_gen in ['validation', 'test']:
