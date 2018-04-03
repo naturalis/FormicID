@@ -137,7 +137,7 @@ shear_range=0.25,
 zoom_range=0.25,
 horizontal_flip=True
 ```
-![20 Species](/docs_experiments/top20species_Qlow_augHigh.png)
+![20 Species](/docs_experiments/top20species_Qlow_AugHigh.png)
 
 ###### Lower augmentation and a validation split of 30
 ```
