@@ -19,7 +19,7 @@ This markdown document show results from different experiments and for different
 				- [5 Species graph](#5-species-graph)
 				- [20 Species graph](#20-species-graph)
 					- [Higher augmentation attacks](#higher-augmentation-attacks)
-					- [Lower augmentation and a validation split of 30](#lower-augmentation-and-a-validation-split-of-30)
+					- [Lower augmentation attacks](#lower-augmentation-attacks)
 				- [50 Species graph](#50-species-graph)
 				- [97 Species 1st try graph](#97-species-1st-try-graph)
 				- [97 Species 2nd try graph](#97-species-2nd-try-graph)
@@ -149,7 +149,7 @@ shear_range=0.15,
 zoom_range=0.15,
 horizontal_flip=True
 ```
-![20 Species](/docs_experiments/top20species_Qlow_Auglow.png)
+![20 Species](/docs_experiments/top20species_Qlow_AugLow.png)
 
 ##### 50 Species graph
 
