@@ -27,23 +27,48 @@ pixels in  `[-1, 1]`, samplewise and using the following calculation:
 
 # Standard library imports
 import os
-import warnings
 
 # Deeplearning tools imports
 from keras import backend as K
 from keras.applications.inception_v3 import preprocess_input
 from keras.models import Model
-from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import (ImageDataGenerator, transform_matrix_offset_center, apply_transform, random_channel_shift, flip_axis)
 from keras.preprocessing.image import Iterator
-from keras.preprocessing.image import apply_transform
-from keras.preprocessing.image import flip_axis
-from keras.preprocessing.image import random_brightness
-from keras.preprocessing.image import random_channel_shift
-from keras.preprocessing.image import transform_matrix_offset_center
 
 # Data tools imports
 import numpy as np
 import pandas as pd
+
+import warnings
+
+# TODO: This function is implemented in Keras 2.1.5
+# But due to a bug in 2.1.5, 2.1.4 is used.
+# So when this bug is fixed, Keras can be updated and random_brightness
+# could be imported from keras.preprocessing.image
+
+def random_brightness(x, brightness_range):
+    """Perform a random brightness shift.
+    # Arguments
+        x: Input tensor. Must be 3D.
+        brightness_range: Tuple of floats; brightness range.
+        channel_axis: Index of axis for channels in the input tensor.
+    # Returns
+        Numpy image tensor.
+    # Raises
+        ValueError if `brightness_range` isn't a tuple.
+    """
+    if len(brightness_range) != 2:
+        raise ValueError('`brightness_range should be tuple or list of two floats. '
+                         'Received arg: ', brightness_range)
+
+    x = array_to_img(x)
+    x = imgenhancer_Brightness = ImageEnhance.Brightness(x)
+    u = np.random.uniform(brightness_range[0], brightness_range[1])
+    x = imgenhancer_Brightness.enhance(u)
+    x = img_to_array(x)
+    return x
+
+
 
 # Parameters and settings
 ###############################################################################
@@ -51,7 +76,6 @@ import pandas as pd
 
 # CSV Iterator and ImageDataGenerator
 ###############################################################################
-
 
 class MyImageDataGenerator(object):
     def __init__(
