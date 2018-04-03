@@ -99,10 +99,7 @@ def main():
     # Initializing the data
     ###########################################################################
     split_in_directory(
-        config=config,
-        shottype='head',
-        test_split=0.1,
-        val_split=0.2
+        config=config
     )
     # Initialize the model
     ###########################################################################
@@ -158,7 +155,6 @@ def main():
     ###########################################################################
     history = trainer_dir(
         model=model_formicID,
-        shottype='head',
         config=config,
         callbacks=logger
     )
@@ -177,7 +173,6 @@ def main():
     # )
     evaluator(
         model=model_formicID,
-        shottype='head',
         config=config
     )
     plot_history(

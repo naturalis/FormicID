@@ -114,25 +114,19 @@ def make_image_path_csv(dataset):
 
 
 def split_in_directory(
-    config,
-    shottype='head',
-    test_split=0.1,
-    val_split=0.2
+    config
 ):
     """Split the image files for all species into subfolders for a training,
     validation and test set.
 
     Args:
         config (Bunch object): The JSON configuration Bunch object.
-        shottype (str): The shottype folder. Defaults to 'head'.
-        test_split (float): Percentage of images for the test set. Defaults to
-            0.1.
-        val_split (float): Percentage of images for the validation set.
-            Defaults to 0.2.
 
     """
     dataset = config.data_set
-    val_split = val_split + test_split
+    shottype = config.shottype
+    test_split = config.test_split
+    val_split = config.val_split + config.test_split
     input_dir = os.path.join(wd, 'data', dataset, 'images', shottype)
     dirs_split = ['1-training', '2-validation', '3-test']
     for dir in dirs_split:

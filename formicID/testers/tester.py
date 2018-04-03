@@ -49,7 +49,6 @@ from utils.img import show_img
 def evaluator(
     model,
     config,
-    shottype='head'
 ):
     """Evaluation will return the score of the model on a test set. This
     function will return the loss and accuracy.
@@ -65,6 +64,7 @@ def evaluator(
             model on atest set.
 
     """
+    shottype = config.shottype
     dataset = config.data_set
     test_data_gen_dir, _, _ = _data_generator_dir(
         dataset=dataset,

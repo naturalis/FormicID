@@ -32,17 +32,14 @@ import os
 from keras import backend as K
 from keras.applications.inception_v3 import preprocess_input
 from keras.models import Model
-from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import ImageDataGenerator, transform_matrix_offset_center, apply_transform, random_channel_shift, flip_axis, random_brightness
 from keras.preprocessing.image import Iterator
-from keras.preprocessing.image import *
 
 # Data tools imports
 import numpy as np
 import pandas as pd
 
-# TODO: fix the * import, as for now it is just a temporary  fix for importing
-# image transform functions
-
+import warnings
 
 # Parameters and settings
 ###############################################################################
@@ -53,19 +50,30 @@ import pandas as pd
 
 
 class MyImageDataGenerator(object):
-    def __init__(self,
-                 rotation_range=0.,
-                 width_shift_range=0.,
-                 height_shift_range=0.,
-                 shear_range=0.,
-                 zoom_range=0.,
-                 fill_mode='nearest',
-                 cval=0.,
-                 horizontal_flip=False,
-                 rescale=None,
-                 preprocessing_function=None,
-                 data_format=None,
-                 validation_split=0.0):
+    def __init__(
+        self,
+        featurewise_center=False,
+        samplewise_center=False,
+        featurewise_std_normalization=False,
+        samplewise_std_normalization=False,
+        zca_whitening=False,
+        zca_epsilon=1e-6,
+        rotation_range=0.,
+        width_shift_range=0.,
+        height_shift_range=0.,
+        brightness_range=None,
+        shear_range=0.,
+        zoom_range=0.,
+        channel_shift_range=0.,
+        fill_mode='nearest',
+        cval=0.,
+        horizontal_flip=False,
+        vertical_flip=False,
+        rescale=None,
+        preprocessing_function=None,
+        data_format=None,
+        validation_split=0.0
+    ):
         if data_format is None:
             data_format = K.image_data_format()
         self.rotation_range = rotation_range
@@ -107,12 +115,69 @@ class MyImageDataGenerator(object):
             raise ValueError('`zoom_range` should be a float or '
                              'a tuple or list of two floats. '
                              'Received arg: ', zoom_range)
+        if zca_whitening:
+            if not featurewise_center:
+                self.featurewise_center = True
+                warnings.warn('This ImageDataGenerator specifies '
+                              '`zca_whitening`, which overrides '
+                              'setting of `featurewise_center`.')
+            if featurewise_std_normalization:
+                self.featurewise_std_normalization = False
+                warnings.warn('This ImageDataGenerator specifies '
+                              '`zca_whitening` '
+                              'which overrides setting of'
+                              '`featurewise_std_normalization`.')
+        if featurewise_std_normalization:
+            if not featurewise_center:
+                self.featurewise_center = True
+                warnings.warn('This ImageDataGenerator specifies '
+                              '`featurewise_std_normalization`, '
+                              'which overrides setting of '
+                              '`featurewise_center`.')
+        if samplewise_std_normalization:
+            if not samplewise_center:
+                self.samplewise_center = True
+                warnings.warn('This ImageDataGenerator specifies '
+                              '`samplewise_std_normalization`, '
+                              'which overrides setting of '
+                              '`samplewise_center`.')
 
     def standardize(self, x):
         if self.preprocessing_function:
             x = self.preprocessing_function(x)
         if self.rescale:
             x *= self.rescale
+        if self.samplewise_center:
+            x -= np.mean(x, keepdims=True)
+        if self.samplewise_std_normalization:
+            x /= (np.std(x, keepdims=True) + K.epsilon())
+
+        if self.featurewise_center:
+            if self.mean is not None:
+                x -= self.mean
+            else:
+                warnings.warn('This ImageDataGenerator specifies '
+                              '`featurewise_center`, but it hasn\'t '
+                              'been fit on any training data. Fit it '
+                              'first by calling `.fit(numpy_data)`.')
+        if self.featurewise_std_normalization:
+            if self.std is not None:
+                x /= (self.std + K.epsilon())
+            else:
+                warnings.warn('This ImageDataGenerator specifies '
+                              '`featurewise_std_normalization`, but it hasn\'t '
+                              'been fit on any training data. Fit it '
+                              'first by calling `.fit(numpy_data)`.')
+        if self.zca_whitening:
+            if self.principal_components is not None:
+                flatx = np.reshape(x, (-1, np.prod(x.shape[-3:])))
+                whitex = np.dot(flatx, self.principal_components)
+                x = np.reshape(whitex, x.shape)
+            else:
+                warnings.warn('This ImageDataGenerator specifies '
+                              '`zca_whitening`, but it hasn\'t '
+                              'been fit on any training data. Fit it '
+                              'first by calling `.fit(numpy_data)`.')
         return x
 
     def random_transform(self, x, seed=None):
@@ -120,10 +185,8 @@ class MyImageDataGenerator(object):
         img_row_axis = self.row_axis - 1
         img_col_axis = self.col_axis - 1
         img_channel_axis = self.channel_axis - 1
-
         if seed is not None:
             np.random.seed(seed)
-
         # use composition of homographies
         # to generate final transform that needs to be applied
         if self.rotation_range:
@@ -131,55 +194,108 @@ class MyImageDataGenerator(object):
                 np.random.uniform(-self.rotation_range, self.rotation_range))
         else:
             theta = 0
-
         if self.height_shift_range:
-            tx = np.random.uniform(-self.height_shift_range,
-                                   self.height_shift_range)
+            tx = np.random.uniform(
+                -self.height_shift_range,
+                self.height_shift_range)
             if self.height_shift_range < 1:
                 tx *= x.shape[img_row_axis]
         else:
             tx = 0
-
         if self.width_shift_range:
-            ty = np.random.uniform(-self.width_shift_range,
-                                   self.width_shift_range)
+            ty = np.random.uniform(
+                -self.width_shift_range,
+                self.width_shift_range)
             if self.width_shift_range < 1:
                 ty *= x.shape[img_col_axis]
         else:
             ty = 0
-
         if self.shear_range:
-            shear = np.deg2rad(
-                np.random.uniform(-self.shear_range, self.shear_range))
+            shear = np.deg2rad(np.random.uniform(
+                -self.shear_range,
+                self.shear_range))
         else:
             shear = 0
-
         if self.zoom_range[0] == 1 and self.zoom_range[1] == 1:
             zx, zy = 1, 1
         else:
             zx, zy = np.random.uniform(
-                self.zoom_range[0], self.zoom_range[1], 2)
-
+                self.zoom_range[0],
+                self.zoom_range[1],
+                2)
+        transform_matrix = None
+        if theta != 0:
+            rotation_matrix = np.array([[np.cos(theta), -np.sin(theta), 0],
+                                        [np.sin(theta), np.cos(theta), 0],
+                                        [0, 0, 1]])
+            transform_matrix = rotation_matrix
+        if tx != 0 or ty != 0:
+            shift_matrix = np.array([[1, 0, tx],
+                                     [0, 1, ty],
+                                     [0, 0, 1]])
+            transform_matrix = shift_matrix if transform_matrix is None else np.dot(
+                transform_matrix, shift_matrix)
+        if shear != 0:
+            shear_matrix = np.array([[1, -np.sin(shear), 0],
+                                     [0, np.cos(shear), 0],
+                                     [0, 0, 1]])
+            transform_matrix = shear_matrix if transform_matrix is None else np.dot(
+                transform_matrix, shear_matrix)
+        if zx != 1 or zy != 1:
+            zoom_matrix = np.array([[zx, 0, 0],
+                                    [0, zy, 0],
+                                    [0, 0, 1]])
+            transform_matrix = zoom_matrix if transform_matrix is None else np.dot(
+                transform_matrix, zoom_matrix)
+        if transform_matrix is not None:
+            h, w = x.shape[img_row_axis], x.shape[img_col_axis]
+            transform_matrix = transform_matrix_offset_center(
+                transform_matrix, h, w)
+            x = apply_transform(x, transform_matrix, img_channel_axis,
+                                fill_mode=self.fill_mode, cval=self.cval)
+        if self.channel_shift_range != 0:
+            x = random_channel_shift(x,
+                                     self.channel_shift_range,
+                                     img_channel_axis)
         if self.horizontal_flip:
             if np.random.random() < 0.5:
                 x = flip_axis(x, img_col_axis)
-
+        if self.vertical_flip:
+            if np.random.random() < 0.5:
+                x = flip_axis(x, img_row_axis)
+        if self.brightness_range is not None:
+            x = random_brightness(x, self.brightness_range)
         return x
 
-    def flow_from_csv(self, csv, shotview='head',
-                      target_size=(256, 256), color_mode='rgb',
-                      classes=None, class_mode='categorical',
-                      batch_size=32, shuffle=True, seed=None,
-                      subset=None,
-                      interpolation='nearest'):
+    def flow_from_csv(
+        self,
+        csv,
+        shotview='head',
+        target_size=(256, 256),
+        color_mode='rgb',
+        classes=None,
+        class_mode='categorical',
+        batch_size=32,
+        shuffle=True,
+        seed=None,
+        subset=None,
+        interpolation='nearest'
+    ):
         return CsvIterator(
-            self, csv, shotview=shotview,
-            target_size=target_size, color_mode=color_mode,
-            classes=classes, class_mode=class_mode,
+            self,
+            csv,
+            shotview=shotview,
+            target_size=target_size,
+            color_mode=color_mode,
+            classes=classes,
+            class_mode=class_mode,
             data_format=self.data_format,
-            batch_size=batch_size, shuffle=shuffle, seed=seed,
+            batch_size=batch_size,
+            shuffle=shuffle,
+            seed=seed,
             subset=subset,
-            interpolation=interpolation)
+            interpolation=interpolation
+        )
 
 
 def _iter_csv_rows(csv, shotview):
@@ -326,6 +442,7 @@ class CsvIterator(Iterator):
         batch_x = np.zeros((len(index_array),) +
                            self.image_shape, dtype=K.floatx())
         grayscale = self.color_mode == 'grayscale'
+
         # build batch of image data
         for i, j in enumerate(index_array):
             fname = self.pathways[j]
@@ -495,7 +612,6 @@ def _data_generator_dir(
 
 def trainer_dir(
     model,
-    shottype,
     config,
     callbacks=None
 ):
@@ -503,7 +619,6 @@ def trainer_dir(
 
     Args:
         model (type): Description of parameter `model`.
-        shottype (type): Description of parameter `shottype`.
         config (type): Description of parameter `config`.
         callbacks (type): Description of parameter `callbacks`. Defaults to
             None.
@@ -516,13 +631,14 @@ def trainer_dir(
     epochs = config.num_epochs
     batch_size = config.batch_size
     dataset = config.data_set
+    shottype = config.shottype
     train_data_gen_dir, _, _ = _data_generator_dir(
         dataset=dataset,
         shottype=shottype,
         config=config,
         target_gen='training'
     )
-    val_data_gen_dir, _, _  = _data_generator_dir(
+    val_data_gen_dir, _, _ = _data_generator_dir(
         dataset=dataset,
         shottype=shottype,
         config=config,
