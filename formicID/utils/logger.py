@@ -292,8 +292,8 @@ def plot_history(
             plt.savefig(fname=export)
         else:
             raise ValueError(
-                '`export` did not receive a valid directory to save the '
-                'figure.')
+                'The `export` argument "{}" is not a valid directory for '
+                'saving the figure.'.format(export))
 
 
 # RMSE

@@ -47,7 +47,7 @@ import pandas as pd
 # TODO: This function is implemented in Keras 2.1.5
 # But due to a bug in 2.1.5, 2.1.4 is used.
 # So when this bug is fixed, Keras can be updated and random_brightness
-# could be imported from keras.preprocessing.image
+# could be imported from `keras.preprocessing.image`.
 
 def random_brightness(x, brightness_range):
     """Perform a random brightness shift.

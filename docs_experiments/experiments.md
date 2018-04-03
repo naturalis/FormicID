@@ -18,6 +18,8 @@ This markdown document show results from different experiments and for different
 			- [Results - Graphs](#results-graphs)
 				- [5 Species graph](#5-species-graph)
 				- [20 Species graph](#20-species-graph)
+					- [Higher augmentation attacks](#higher-augmentation-attacks)
+					- [Lower augmentation and a validation split of 30](#lower-augmentation-and-a-validation-split-of-30)
 				- [50 Species graph](#50-species-graph)
 				- [97 Species 1st try graph](#97-species-1st-try-graph)
 				- [97 Species 2nd try graph](#97-species-2nd-try-graph)
@@ -124,6 +126,30 @@ The graphs shows epochs vs loss and accuracy (top-1 and top-3) for training (sol
 ##### 20 Species graph
 
 ![20 Species](/docs_experiments/top20species_Qlow.png)
+
+###### Higher augmentation attacks
+```
+preprocessing_function=preprocess_input,
+rotation_range=45,
+width_shift_range=0.3,
+height_shift_range=0.3,
+shear_range=0.25,
+zoom_range=0.25,
+horizontal_flip=True
+```
+![20 Species](/docs_experiments/top20species_Qlow_augHigh.png)
+
+###### Lower augmentation and a validation split of 30
+```
+preprocessing_function=preprocess_input,
+rotation_range=40,
+width_shift_range=0.15,
+height_shift_range=0.15,
+shear_range=0.15,
+zoom_range=0.15,
+horizontal_flip=True
+```
+![20 Species](/docs_experiments/top20species_Qlow_Auglow_val30.png)
 
 ##### 50 Species graph
 
