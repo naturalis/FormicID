@@ -139,7 +139,7 @@ horizontal_flip=True
 ```
 ![20 Species](/docs_experiments/top20species_Qlow_AugHigh.png)
 
-###### Lower augmentation and a validation split of 30
+###### Lower augmentation attacks
 ```
 preprocessing_function=preprocess_input,
 rotation_range=40,
@@ -149,7 +149,7 @@ shear_range=0.15,
 zoom_range=0.15,
 horizontal_flip=True
 ```
-![20 Species](/docs_experiments/top20species_Qlow_Auglow_val30.png)
+![20 Species](/docs_experiments/top20species_Qlow_Auglow.png)
 
 ##### 50 Species graph
 
