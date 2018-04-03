@@ -27,19 +27,23 @@ pixels in  `[-1, 1]`, samplewise and using the following calculation:
 
 # Standard library imports
 import os
+import warnings
 
 # Deeplearning tools imports
 from keras import backend as K
 from keras.applications.inception_v3 import preprocess_input
 from keras.models import Model
-from keras.preprocessing.image import ImageDataGenerator, transform_matrix_offset_center, apply_transform, random_channel_shift, flip_axis, random_brightness
+from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import Iterator
+from keras.preprocessing.image import apply_transform
+from keras.preprocessing.image import flip_axis
+from keras.preprocessing.image import random_brightness
+from keras.preprocessing.image import random_channel_shift
+from keras.preprocessing.image import transform_matrix_offset_center
 
 # Data tools imports
 import numpy as np
 import pandas as pd
-
-import warnings
 
 # Parameters and settings
 ###############################################################################
