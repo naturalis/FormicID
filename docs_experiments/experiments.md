@@ -2,30 +2,50 @@
 
 This markdown document show results from different experiments and for different datasets.
 
+Experiments are named as follows:
+
+`number_of_species` `_` `castes` `_` `shottype` `_` `quality` `_` `Aug` `_` `Dropout` `_` `LR` `_` `epochs`
+
+So
+`T5_CaAll_QuL_ShH_AugM_D05_LR0001_E100` means:
+- `5` Species
+- all castes
+- shottype: `head`
+- low quality images
+- medium augmentation attacks
+- dropout `0.5`
+- learning rate of `0.001`
+- set for `100` epochs
+
+# Tabel of Contents
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Experiments](#experiments)
+- [Tabel of Contents](#tabel-of-contents)
 - [Low quality image datasets - Number of images](#low-quality-image-datasets-number-of-images)
 - [Training shottype `head`](#training-shottype-head)
 	- [Settings](#settings)
-	- [Events and parameters](#events-and-parameters)
-		- [T5_Qlow_AugM_D05_LR0001_E100 - events](#t5qlowaugmd05lr0001e100-events)
-		- [T20_Qlow_AugM_D05_LR0001_E100 - events](#t20qlowaugmd05lr0001e100-events)
-		- [T50_Qlow_AugM_D05_LR0001_E100 - events](#t50qlowaugmd05lr0001e100-events)
-		- [T97_Qlow_AugM_D05_LR0001_E100 - events](#t97qlowaugmd05lr0001e100-events)
+- [With following settings:](#with-following-settings)
+- [Augmentation as below:](#augmentation-as-below)
 	- [Results - Table](#results-table)
 	- [Results - Graphs](#results-graphs)
-		- [T5_Qlow_AugM_D05_LR0001_E100 - graph](#t5qlowaugmd05lr0001e100-graph)
-		- [T20_Qlow_AugM_D05_LR0002_E100 - graph](#t20qlowaugmd05lr0002e100-graph)
-			- [T20_Qlow_AugH_D05_LR0001_E100 - graph](#t20qlowaughd05lr0001e100-graph)
-			- [T20_Qlow_AugL_D05_LR0001_E100 - graph](#t20qlowaugld05lr0001e100-graph)
-			- [T20_Qlow_AugM_D025_LR0001_E100 - graph](#t20qlowaugmd025lr0001e100-graph)
-		- [T50_Qlow_AugM_D05_LR0003_E100 - graph](#t50qlowaugmd05lr0003e100-graph)
-		- [T97_Qlow_AugM_D05_LR0004_E100 - 1st try - graph](#t97qlowaugmd05lr0004e100-1st-try-graph)
-		- [T97_Qlow_AugM_D05_LR0004_E100 - 2nd try - graph](#t97qlowaugmd05lr0004e100-2nd-try-graph)
+		- [5 Species](#5-species)
+			- [T5_CaAll_QuL_ShH_AugM_D05_LR0001_E100](#t5caallqulshhaugmd05lr0001e100)
+		- [20 species](#20-species)
+			- [T20_CaAll_QuL_ShH_AugM_D05_LR0001_E100](#t20caallqulshhaugmd05lr0001e100)
+			- [T20_CaAll_QuL_ShH_AugH_D05_LR0001_E100](#t20caallqulshhaughd05lr0001e100)
+			- [T20_CaAll_QuL_ShH_AugL_D05_LR0001_E100](#t20caallqulshhaugld05lr0001e100)
+			- [T20_CaAll_QuL_ShH_AugM_D00_LR0001_E100](#t20caallqulshhaugmd00lr0001e100)
+			- [T20_CaAll_QuL_ShH_AugM_D025_LR0001_E100](#t20caallqulshhaugmd025lr0001e100)
+			- [T20_CaAll_QuL_ShH_AugM_D075_LR0001_E100](#t20caallqulshhaugmd075lr0001e100)
+			- [T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100](#t20caallqulshhaugmd05lr00001e100)
+		- [50 Species](#50-species)
+			- [T50_CaAll_QuL_ShH_AugM_D05_LR0001_E100](#t50caallqulshhaugmd05lr0001e100)
+		- [97 Species](#97-species)
+			- [T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100 - 1st try](#t97caallqulshhaugmd05lr0001e100-1st-try)
+			- [T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100 - 2nd try](#t97caallqulshhaugmd05lr0001e100-2nd-try)
 
 <!-- /TOC -->
-
 # Low quality image datasets - Number of images
 
 |       Species |  5  |      20      |      50      |        97        |
@@ -34,73 +54,41 @@ This markdown document show results from different experiments and for different
 | Dorsal images | 496 |     1,175     |   2,176     |    3,384       |
 |   Head images | 496 |     1,169     |   2,166     |    3,366       |
 |Profile images | 496 |     1,179     |   2,183     |    3,400       |
-
+|num_iter_per_epoch | 8 | 18 | 34 | 53 |
 # Training shottype `head`
 
 ## Settings
 
-Training settings were:
+Training settings were mostly as mentioned below. Some of the parameters changes as the optimal parameter is searched.
 
-- `Augmentation`:
-```  
-preprocessing_function=preprocess_input,
+```python
+number_of_species='97' # $ datasets: 5, 20, 50 or 97 species
+image_quality='low'
+castes='all'
+num_epochs=100
+learning_rate=0.001 # Variates in between experiments
+batch_size=64
+dropout=0.5 # Variates in between experiments
+optimizer='Nadam'
+# With following settings:
+	lr =learning_rate,
+	beta_1 =0.9,
+	beta_2 =0.999,
+	epsilon =1e-08,
+	schedule_decay =0.004
+model=InceptionV3 # With modified top layers dropout and a dense layer with num_species.
+seed=1
+testsplit=0.1
+validationsplit=0.2
+weights initialization='imagenet'
+# Augmentation as below:
 rotation_range=40,
-width_shift_range=0.2,
-height_shift_range=0.2,
-shear_range=0.2,
-zoom_range=0.2,
-horizontal_flip=True
+width_shift_range=0.2, # Variates in between experiments
+height_shift_range=0.2, # Variates in between experiments
+shear_range=0.2, # Variates in between experiments
+zoom_range=0.2, # Variates in between experiments
+horizontal_flip=True # Variates in between experiments
 ```
-- `num_epochs`: `10`
-- `learning_rate`: `0.001`
-- `batch_size`: `64`
-- `dropout`: `0.5`
-- `optimizer`: `Nadam`
-  - `lr` : `learning_rate`,
-  - `beta_1` : `0.9`,
-  - `beta_2` : `0.999`,
-  - `epsilon` : `1e-08`,
-  - `schedule_decay` : `0.004`
-- `model`: `InceptionV3`
-  - With modified top layer as a dense layer with `num_species`.
-- `seed`: `1`
-- `testsplit`: `0.1`
-  - 10 % of the dataset is a test set.
-- `validationsplit`: `0.2`
-  - 20 % of the dataset is a test set.
-- `weights initialization`: `imagenet`
-
-## Events and parameters
-4 Datasets are created using the most imaged species on AntWeb. For a `n` species dataset, the `n` most imaged species were used.
-
-### T5_Qlow_AugM_D05_LR0001_E100 - events
-
-- `num_iter_per_epoch`: `8`
-- Epoch 00039: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
-- Epoch 00063: early stopping
-
-### T20_Qlow_AugM_D05_LR0001_E100 - events
-
-- `num_iter_per_epoch`: `18`
-- Epoch 00046: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
-- Epoch 00087: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
-
-### T50_Qlow_AugM_D05_LR0001_E100 - events
-
-- `num_iter_per_epoch`: `34`
-- Epoch 00053: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
-- Epoch 00085: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
-
-### T97_Qlow_AugM_D05_LR0001_E100 - events
-
-**First time**
-- `num_iter_per_epoch`: `53`
-- Epoch 00069: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
-
-**Second time**
-- `num_iter_per_epoch`: `53`
-- Epoch 00064: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
-- Epoch 00097: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
 
 ## Results - Table
 
@@ -122,18 +110,26 @@ horizontal_flip=True
 ## Results - Graphs
 The graphs shows epochs vs loss and accuracy (top-1 and top-3) for training (solid lines) and validation (dashed lines).
 
-### T5_Qlow_AugM_D05_LR0001_E100 - graph
 
-![5 Species](/docs_experiments/top5species_Qlow.png)
+### 5 Species
 
-### T20_Qlow_AugM_D05_LR0002_E100 - graph
+#### T5_CaAll_QuL_ShH_AugM_D05_LR0001_E100
+- Epoch 00039: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00063: early stopping
 
-![20 Species](/docs_experiments/top20species_Qlow.png)
+![](/docs_experiments/T5_CaAll_QuL_ShH_AugM_D05_LR0001_E100.png)
 
-#### T20_Qlow_AugH_D05_LR0001_E100 - graph
+### 20 species
 
-```
-preprocessing_function=preprocess_input,
+#### T20_CaAll_QuL_ShH_AugM_D05_LR0001_E100
+- Epoch 00046: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00087: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
+
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugM_D05_LR0001_E100.png)
+
+#### T20_CaAll_QuL_ShH_AugH_D05_LR0001_E100
+
+```python
 rotation_range=45,
 width_shift_range=0.3,
 height_shift_range=0.3,
@@ -141,12 +137,11 @@ shear_range=0.25,
 zoom_range=0.25,
 horizontal_flip=True
 ```
-![20 Species](/docs_experiments/top20species_Qlow_AugHigh.png)
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugH_D05_LR0001_E100.png)
 
-#### T20_Qlow_AugL_D05_LR0001_E100 - graph
+#### T20_CaAll_QuL_ShH_AugL_D05_LR0001_E100
 
-```
-preprocessing_function=preprocess_input,
+```python
 rotation_range=40,
 width_shift_range=0.15,
 height_shift_range=0.15,
@@ -154,20 +149,50 @@ shear_range=0.15,
 zoom_range=0.15,
 horizontal_flip=True
 ```
-![20 Species](/docs_experiments/top20species_Qlow_AugLow.png)
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugL_D05_LR0001_E100.png)
 
-#### T20_Qlow_AugM_D025_LR0001_E100 - graph
 
-![20 Species](/docs_experiments/top20species_Qlow_DO025.png)
+#### T20_CaAll_QuL_ShH_AugM_D00_LR0001_E100
+- Epoch 00047: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00087: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
 
-### T50_Qlow_AugM_D05_LR0003_E100 - graph
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugM_D00_LR0001_E100.png)
 
-![50 Species](/docs_experiments/top50species_Qlow.png)
+#### T20_CaAll_QuL_ShH_AugM_D025_LR0001_E100
+- Epoch 00085: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00091: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
 
-###T97_Qlow_AugM_D05_LR0004_E100 - 1st try - graph
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugM_D025_LR0001_E100.png)
 
-![97 Species](/docs_experiments/top97species_Qlow.png)
+#### T20_CaAll_QuL_ShH_AugM_D075_LR0001_E100
 
-### T97_Qlow_AugM_D05_LR0004_E100 - 2nd try - graph
+Epoch 00043: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00091: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
 
-![97 Species](/docs_experiments/top97species_Qlow2.png)
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugM_D075_LR0001_E100.png)
+
+#### T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100
+- Epoch 00033: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-06`.
+- Epoch 00057: early stopping
+
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100.png)
+
+### 50 Species
+
+#### T50_CaAll_QuL_ShH_AugM_D05_LR0001_E100
+- Epoch 00053: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00085: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
+
+![](/docs_experiments/T50_CaAll_QuL_ShH_AugM_D05_LR0001_E100.png)
+
+### 97 Species
+#### T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100 - 1st try
+- Epoch 00069: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+
+![](/docs_experiments/T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100.png)
+
+#### T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100 - 2nd try
+- Epoch 00064: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00097: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
+
+![](/docs_experiments/T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100-2.png)
