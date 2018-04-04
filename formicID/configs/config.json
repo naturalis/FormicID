@@ -2,7 +2,7 @@
     "exp_name": "top20species_Qlow_exp",
     "data_set": "top20species_Qlow",
     "batch_size": 64,
-    "dropout": 0.5,
+    "dropout": 0.25,
     "learning_rate": 0.001,
     "model": "InceptionV3",
     "num_epochs": 100,
@@ -10,6 +10,6 @@
     "optimizer": "Nadam",
     "seed": 1,
     "test_split": 0.1,
-    "val_split": 0.3,
+    "val_split": 0.2,
     "shottype": "head"
 }
