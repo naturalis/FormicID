@@ -1,8 +1,6 @@
 # Experiments
 
-This markdown document show results from different experiments and for different datasets.
-
-Experiments are named as follow:
+This markdown document shows results from different experiments and different datasets. Experiments are named as follow:
 
 `number_of_species` `_` `castes` `_` `shottype` `_` `quality` `_` `Aug` `_` `Dropout` `_` `LR` `_` `epochs`
 
