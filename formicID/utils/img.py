@@ -18,6 +18,7 @@ other files.
 # Standard library imports
 import logging
 import os
+from math import ceil
 
 # Deeplearning tools imports
 from keras.preprocessing.image import array_to_img
@@ -27,7 +28,6 @@ from keras.utils.np_utils import to_categorical
 
 # Data tools imports
 import numpy as np
-from math import ceil
 
 # Graphical tools imports
 import matplotlib.pyplot as plt
@@ -129,6 +129,19 @@ def show_augmentation_from_dir(
     max_img,
     n_cols=4
 ):
+    """Short summary.
+
+    Args:
+        aug_dir (type): Description of parameter `aug_dir`.
+        max_img (type): Description of parameter `max_img`.
+        n_cols (type): Description of parameter `n_cols`. Defaults to 4.
+
+    Returns:
+        type: Description of returned object.
+
+    Raises:        ExceptionName: Why the exception is raised.
+
+    """
     img_list = os.listdir(aug_dir)
     fig = plt.figure(figsize=(8, 8))
     n_rows = ceil(max_img / n_cols)

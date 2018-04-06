@@ -44,6 +44,8 @@ from keras.preprocessing.image import transform_matrix_offset_center
 import numpy as np
 import pandas as pd
 
+###############################################################################
+
 # TODO: This function is implemented in Keras 2.1.5
 # But due to a bug in 2.1.5, 2.1.4 is used.
 # So when this bug is fixed, Keras can be updated and random_brightness

@@ -35,6 +35,8 @@ from testers.tester import plot_confusion_matrix
 from testers.tester import predictor
 from trainers.train import trainer_csv
 from trainers.train import trainer_dir
+from utils.img import save_augmentation
+from utils.img import show_augmentation_from_dir
 from utils.load_config import process_config
 from utils.logger import build_csvl
 from utils.logger import build_es
@@ -46,9 +48,7 @@ from utils.model_utils import make_multi_gpu
 from utils.model_utils import weights_load
 from utils.utils import create_dirs
 from utils.utils import get_args
-from utils.img import save_augmentation
 from utils.utils import today_timestr
-from utils.img import show_augmentation_from_dir
 
 # Parameters and settings
 ###############################################################################
