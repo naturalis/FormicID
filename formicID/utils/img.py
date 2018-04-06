@@ -27,6 +27,7 @@ from keras.utils.np_utils import to_categorical
 
 # Data tools imports
 import numpy as np
+from math import ceil
 
 # Graphical tools imports
 import matplotlib.pyplot as plt
@@ -45,16 +46,20 @@ from .utils import wd
 # Load and show images
 ###############################################################################
 
-def show_img(array):
+def show_img(
+    array
+):
     image = array_to_img(array)
     plt.imshow(image)
     plt.show()
 
 
-def show_multi_img(X_train,
-                   Y_train,
-                   cols=4,
-                   rows=4):
+def show_multi_img(
+    X_train,
+    Y_train,
+    cols=4,
+    rows=4
+):
     """Plot n images of X_train using matplotlib.
 
     Args:
@@ -81,8 +86,10 @@ def show_multi_img(X_train,
 ###############################################################################
 
 
-def save_augmentation(image,
-                      config):
+def save_augmentation(
+    image,
+    config
+):
     """This function returns 20 random augmented versions of an input image.
 
     Args:
@@ -99,8 +106,7 @@ def save_augmentation(image,
     augment_dir = os.path.join(config.summary_dir, 'augmented')
     filename, _ = os.path.split(image)
     filename = os.path.basename(filename)
-    img_file = image
-    img_loaded = load_img(img_file)
+    img_loaded = load_img(image)
     img = img_to_array(img_loaded)
     img = img.reshape((1,) + img.shape)
     i = 0
@@ -116,3 +122,20 @@ def save_augmentation(image,
         if i > 19:
             break
     logging.info('Augmented files can be found in {}'.format(augment_dir))
+
+
+def show_augmentation_from_dir(
+    aug_dir,
+    max_img,
+    n_cols=4
+):
+    img_list = os.listdir(aug_dir)
+    fig = plt.figure(figsize=(8, 8))
+    n_rows = ceil(max_img / n_cols)
+    i = 1
+    for img in img_list[0:max_img]:
+        image = load_img(path=os.path.join(aug_dir, img))
+        fig.add_subplot(n_rows, n_cols, i)
+        plt.imshow(image)
+        i += 1
+    plt.show()

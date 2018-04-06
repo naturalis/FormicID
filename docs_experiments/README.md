@@ -53,6 +53,11 @@ So
 |   Head images | 496 |     1,169     |   2,166     |    3,366       |
 |Profile images | 496 |     1,179     |   2,183     |    3,400       |
 |num_iter_per_epoch | 8 | 18 | 34 | 53 |
+
+# Augmentation example
+
+![](/docs_experiments/augmentation.png)
+
 # Training shottype `head`
 
 ## Settings
@@ -174,6 +179,47 @@ Epoch 00043: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513
 - Epoch 00057: early stopping
 
 ![](/docs_experiments/T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100.png)
+
+
+#### T20_CaAll_QuL_ShH_AugH_D075_LR0001_E100
+```python
+rotation_range=40,
+width_shift_range=0.35,
+height_shift_range=0.35,
+shear_range=0.35,
+zoom_range=0.35,
+horizontal_flip=True
+```
+- Epoch 00093: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugH_D075_LR0001_E100.png)
+
+#### T20_CaAll_QuL_ShH_AugH_D025_LR0001_E100
+```python
+rotation_range=40,
+width_shift_range=0.35,
+height_shift_range=0.35,
+shear_range=0.35,
+zoom_range=0.35,
+horizontal_flip=True
+```
+- Epoch 00069: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugH_D025_LR0001_E100.png)
+
+#### T20_CaAll_QuL_ShH_AugH_D025_LR00005_E100
+```python
+rotation_range=40,
+width_shift_range=0.35,
+height_shift_range=0.35,
+shear_range=0.35,
+zoom_range=0.35,
+horizontal_flip=True
+```
+- Epoch 00048: ReduceLROnPlateau reducing learning rate to `5.0000002374872565e-05`.
+- Epoch 00087: ReduceLROnPlateau reducing learning rate to `5.000000237487257e-06`.
+
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugH_D025_LR00005_E100.png)
 
 ### 50 Species
 

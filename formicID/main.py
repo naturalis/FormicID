@@ -46,6 +46,9 @@ from utils.model_utils import make_multi_gpu
 from utils.model_utils import weights_load
 from utils.utils import create_dirs
 from utils.utils import get_args
+from utils.img import save_augmentation
+from utils.utils import today_timestr
+from utils.img import show_augmentation_from_dir
 
 # Parameters and settings
 ###############################################################################
@@ -59,26 +62,24 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
 def main():
-    sess = tf.Session()
-    K.set_session(sess)
-    # Logging
-    ###########################################################################
-    logging.basicConfig(
-        filename='loggerfile.log',
-        format='[%(asctime)s] - [%(levelname)s]: %(message)s',
-        filemode='w',
-        level=logging.DEBUG
-    )
-    logging.info('Keras version: {}'.format(keras_version))
-    # Get args
-    ###########################################################################
     try:
         args = get_args()
         config = process_config(args.config)
     except:
         logging.error('Missing or invalid arguments.')
         exit(0)
-        
+    sess = tf.Session()
+    K.set_session(sess)
+    # Logging
+    ###########################################################################
+    logging.basicConfig(
+        filename=config.exp_name + '.log',
+        format='[%(asctime)s] - [%(levelname)s]: %(message)s',
+        filemode='w',
+        level=logging.DEBUG
+    )
+    logging.info('Keras version: {}'.format(keras_version))
+    logging.info('Logging started on: {}'.format(today_timestr))
     # Creating a dataset
     ###########################################################################
     # get_dataset(
@@ -96,6 +97,15 @@ def main():
         [config.summary_dir,
          config.checkpoint_dir]
     )
+    # save_augmentation(
+    #     image='data/top5species_Qlow/images/head/camponotus_hova/camponotus_hova_casent0101335_h.jpg',
+    #     config=config
+    # )
+    # show_augmentation_from_dir(
+    #     aug_dir='experiments\\T20_CaAll_QuL_ShH_AugH_D025_LR0001_E100\\summary\\augmented',
+    #     max_img=20,
+    #     n_cols=5
+    # )
     # Initializing the data
     ###########################################################################
     split_in_directory(
@@ -180,7 +190,7 @@ def main():
         theme='ggplot'
     )
     # Testing
-    ###########################################################################
+    # #########################################################################
     # predictor(
     #     model=model_formicID,
     #     dataset='top5species_Qlow',
@@ -196,6 +206,7 @@ def main():
     #     normalize=False
     # )
     K.clear_session()
+    logging.info('Logging ended on: {}'.format(today_timestr))
 
 
 if __name__ == '__main__':
