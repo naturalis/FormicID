@@ -144,7 +144,7 @@ def show_augmentation_from_dir(
     """
     img_list = os.listdir(aug_dir)
     fig = plt.figure(figsize=(8, 8))
-    n_rows = ceil(max_img / n_cols)
+    n_rows = int(ceil(max_img // n_cols))
     i = 1
     for img in img_list[0:max_img]:
         image = load_img(path=os.path.join(aug_dir, img))

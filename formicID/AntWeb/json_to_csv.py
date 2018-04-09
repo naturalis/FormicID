@@ -195,5 +195,5 @@ def batch_json_to_csv(
     if not os.path.isfile(data_info):
         with open(data_info, 'wt') as txt:
             txt.write(
-                'The dataset was downloaded on date: {0}.format(
+                'The dataset was downloaded on date: {0}'.format(
                     today_timestr))
