@@ -8,10 +8,10 @@
 #                                 Model testing                               #
 #                                                                             #
 ###############################################################################
-'''
+"""
 Description:
 Evaluation will check if the model is accurately trained using the test set or other images.
-'''
+"""
 
 # Packages
 ###############################################################################
@@ -52,10 +52,8 @@ from utils.img import show_img
 # Evaluate generator for test metrics
 ###############################################################################
 
-def evaluator(
-    model,
-    config,
-):
+
+def evaluator(model, config):
     """Evaluation will return the score of the model on a test set. This
     function will return the loss, accuracy and top-3 accuracy.
 
@@ -71,19 +69,15 @@ def evaluator(
     shottype = config.shottype
     dataset = config.data_set
     test_data_gen_dir, _, _ = _data_generator_dir(
-        dataset=dataset,
-        config=config,
-        shottype=shottype,
-        target_gen='test'
+        dataset=dataset, config=config, shottype=shottype, target_gen="test"
     )
-    score = model.evaluate_generator(
-        test_data_gen_dir
+    score = model.evaluate_generator(test_data_gen_dir)
+    print(
+        "Test metrics: "
+        "Loss: {:.4f}, "
+        "Accuracy: {:.4f}, "
+        "Top 3 accuracy: {:.4f}".format(score[0], score[1], score[2])
     )
-    print('Test metrics: '
-          'Loss: {:.4f}, '
-          'Accuracy: {:.4f}, '
-          'Top 3 accuracy: {:.4f}'.format(
-              score[0], score[1], score[2]))
     return score
 
 
@@ -91,10 +85,7 @@ def evaluator(
 ###############################################################################
 
 
-def predictor(
-    model,
-    config,
-):
+def predictor(model, config):
     """Returns the predition of labels for the test set.
 
     Args:
@@ -108,19 +99,13 @@ def predictor(
     dataset = config.data_set
     shottype = config.shottype
     test_data_gen_dir, classes, class_indices = _data_generator_dir(
-        dataset=dataset,
-        config=config,
-        shottype=shottype,
-        target_gen='test'
+        dataset=dataset, config=config, shottype=shottype, target_gen="test"
     )
     labels = class_indices.keys()
     Y_true = classes
     # print('\nClasses indices from gen:', class_indices)
     # print('\nY_true before argmax:', Y_true)
-    Y_pred = model.predict_generator(
-        test_data_gen_dir,
-        verbose=0
-    )
+    Y_pred = model.predict_generator(test_data_gen_dir, verbose=0)
     # Y_true = K.argmax(to_categorical(Y_true, 5), axis=-1)
     Y_true = [i for i in Y_true]
     # print('\nY_pred before argmax:',Y_pred)
@@ -134,10 +119,8 @@ def predictor(
 # Predict one image
 ###############################################################################
 
-def predict_image_from_url(
-    model,
-    url
-):
+
+def predict_image_from_url(model, url):
     """Predict the label from one image retrieved by an URL.
 
     Args:
@@ -152,34 +135,23 @@ def predict_image_from_url(
 
     """
     dissasembled = urlparse(url)
-    _, ext = os.path.splitext(
-        os.path.basename(
-            dissasembled.path
-        )
-    )
-    if ext not in ['.png',
-                   '.jpg',
-                   '.jpeg',
-                   '.gif',
-                   '.bmp']:
+    _, ext = os.path.splitext(os.path.basename(dissasembled.path))
+    if ext not in [".png", ".jpg", ".jpeg", ".gif", ".bmp"]:
         raise ValueError(
-            'The image exenstion should be one of `.png`, `.jpg`, `.jpeg`, '
-            '`.gif`, `.bmp`, instead of "{}".'.format(ext))
+            "The image exenstion should be one of `.png`, `.jpg`, `.jpeg`, "
+            '`.gif`, `.bmp`, instead of "{}".'.format(ext)
+        )
+
     response = requests.get(url)
-    print('Predicting: {}'.format(url))
+    print("Predicting: {}".format(url))
     image = Image.open(BytesIO(response.content))
     image = img_to_array(image)
     image = preprocess_input(image)
     image = image.reshape((1,) + image.shape)
-    prediction = model.predict(
-        image,
-        batch_size=None,
-        verbose=0,
-        steps=None
-    )
+    prediction = model.predict(image, batch_size=None, verbose=0, steps=None)
     pred = prediction.argmax()
     # TODO: fix prediction as a number, to show as species name
-    print('Predicted species: {}'.format(pred))
+    print("Predicted species: {}".format(pred))
 
 
 # Plotting a confusion matrix
@@ -190,9 +162,9 @@ def plot_confusion_matrix(
     Y_pred,
     Y_true,
     target_names=None,
-    title='Confusion matrix for 5 species',
+    title="Confusion matrix for 5 species",
     cmap=None,
-    normalize=False
+    normalize=False,
 ):
     """Plot a confusion matrix of the predicted labels and the true labels for
     the test set species.
@@ -212,53 +184,47 @@ def plot_confusion_matrix(
         A confusion matrix plot.
 
     """
-    cm = confusion_matrix(
-        y_pred=Y_pred,
-        y_true=Y_true
-    )
+    cm = confusion_matrix(y_pred=Y_pred, y_true=Y_true)
     accuracy = np.trace(cm) / float(np.sum(cm))
     misclass = 1 - accuracy
     if cmap is None:
-        cmap = plt.get_cmap('Blues')
-    plt.figure(
-        figsize=(10, 8)
-    )
-    plt.imshow(
-        cm,
-        interpolation='nearest',
-        cmap=cmap
-    )
+        cmap = plt.get_cmap("Blues")
+    plt.figure(figsize=(10, 8))
+    plt.imshow(cm, interpolation="nearest", cmap=cmap)
     plt.title(title)
     plt.colorbar()
     if target_names is not None:
         tick_marks = np.arange(len(target_names))
-        plt.xticks(
-            tick_marks,
-            target_names,
-            rotation=45
-        )
-        plt.yticks(
-            tick_marks,
-            target_names
-        )
+        plt.xticks(tick_marks, target_names, rotation=45)
+        plt.yticks(tick_marks, target_names)
     if normalize:
-        cm = cm.astype('float32') / cm.sum(axis=1)
+        cm = cm.astype("float32") / cm.sum(axis=1)
         cm = np.round(cm, 2)
     thresh = cm.max() / 1.5 if normalize else cm.max() / 2
-    for i, j in itertools.product(range(
-            cm.shape[0]), range(cm.shape[1])):
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
         if normalize:
-            plt.text(j, i, "{:0.2f}".format(cm[i, j]),
-                     horizontalalignment="center",
-                     color="white" if cm[i, j] > thresh else "black")
+            plt.text(
+                j,
+                i,
+                "{:0.2f}".format(cm[i, j]),
+                horizontalalignment="center",
+                color="white" if cm[i, j] > thresh else "black",
+            )
         else:
-            plt.text(j, i, "{:,}".format(cm[i, j]),
-                     horizontalalignment="center",
-                     color="white" if cm[i, j] > thresh else "black")
+            plt.text(
+                j,
+                i,
+                "{:,}".format(cm[i, j]),
+                horizontalalignment="center",
+                color="white" if cm[i, j] > thresh else "black",
+            )
     plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel("Predicted label\naccuracy={:0.4f}\n misclass={:0.4f}".format(
-        accuracy, misclass))
+    plt.ylabel("True label")
+    plt.xlabel(
+        "Predicted label\naccuracy={:0.4f}\n misclass={:0.4f}".format(
+            accuracy, misclass
+        )
+    )
     plt.show()
 
 

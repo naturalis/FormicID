@@ -8,10 +8,10 @@
 #                                  Utilitiies                                 #
 #                                    Config                                   #
 ###############################################################################
-'''Description:
+"""Description:
 This script will read the config.json file from the configs folder. The json
 file contains settings for running experiments.
-'''
+"""
 # Packages
 ###############################################################################
 
@@ -40,7 +40,7 @@ def _get_config_from_json(json_file):
 
     """
     # parse the configurations from the config json file provided
-    with open(json_file, 'r') as config_file:
+    with open(json_file, "r") as config_file:
         config_dict = json.load(config_file)
     # convert the dictionary to a namespace using bunch lib
     config = Bunch(config_dict)
@@ -58,7 +58,9 @@ def process_config(jsonfile):
     """
     config, _ = _get_config_from_json(jsonfile)
     config.summary_dir = os.path.join(
-        "experiments", config.exp_name, "summary")
+        "experiments", config.exp_name, "summary"
+    )
     config.checkpoint_dir = os.path.join(
-        "experiments", config.exp_name, "checkpoint")
+        "experiments", config.exp_name, "checkpoint"
+    )
     return config

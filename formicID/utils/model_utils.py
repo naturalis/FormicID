@@ -8,9 +8,9 @@
 #                                  Utilitiies                                 #
 #                                    Models                                   #
 ###############################################################################
-'''Description:
+"""Description:
 This file has code utilities for handeling models.
-'''
+"""
 
 # Packages
 ###############################################################################
@@ -58,7 +58,7 @@ def save_model(model, filename, config):
     """
     out = os.path.join(config.checkpoint_dir, filename)
     model.save(filepath=out)
-    logging.info('The model has been saved and deleted from use.')
+    logging.info("The model has been saved and deleted from use.")
     del model
 
 
@@ -75,7 +75,7 @@ def load_model_from_file(filename, input_dir):
     """
     input_model = os.path.join(wd, input_dir, filename)
     model = load_model(input_model)
-    logging.info('The model has been loaded.')
+    logging.info("The model has been loaded.")
     return model
 
 
@@ -93,7 +93,7 @@ def weights_save(model, filename, config):
     """
     out = os.path.join(config.checkpoint_dir, filename)
     model.save_weights(filepath=out)
-    logging.info('The weights have been saved.')
+    logging.info("The weights have been saved.")
 
 
 def weights_load(model, weights):
@@ -108,7 +108,7 @@ def weights_load(model, weights):
 
     """
     model.load_weights(weights)
-    logging.info('The weights have been loaded.')
+    logging.info("The weights have been loaded.")
     return model
 
 
@@ -197,12 +197,14 @@ def model_visualization(model, config):
 
     """
     filename = str(config.exp_name)
-    output_dir = os.path.join(config.summary_dir, filename + '_model.png')
-    logging.info('The model is saved in: {}'.format(output_dir))
-    return plot_model(model=model,
-                      to_file=output_dir,
-                      show_shapes=True,
-                      show_layer_names=True)
+    output_dir = os.path.join(config.summary_dir, filename + "_model.png")
+    logging.info("The model is saved in: {}".format(output_dir))
+    return plot_model(
+        model=model,
+        to_file=output_dir,
+        show_shapes=True,
+        show_layer_names=True,
+    )
 
 
 def make_multi_gpu(model, gpus=2):
@@ -219,7 +221,7 @@ def make_multi_gpu(model, gpus=2):
         Keras model instance: A multi GPU Keras model instance, uncompiled.
 
     """
-    with tf.device('/cpu:0'):
+    with tf.device("/cpu:0"):
         model = model
     gpu_model = multi_gpu_model(model=model, gpus=gpus)
     return multi_gpu_formicID

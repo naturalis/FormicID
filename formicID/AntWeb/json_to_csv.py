@@ -8,11 +8,11 @@
 #                                  ANTWEB API                                 #
 #                                  JSON 2 csv                                 #
 ###############################################################################
-'''Description:
+"""Description:
 Iterate over a number of JSON files in a folder and save relevant information
 in a csv file (containing a `catalog_number`, `scientific_name`, `shot_type`,
 and `image_url`) ready for `scrape.py`.
-'''
+"""
 # Packages
 ###############################################################################
 
@@ -39,10 +39,7 @@ from utils.utils import today_timestr
 ###############################################################################
 
 
-def _filter_json(
-    json_file,
-    quality
-):
+def _filter_json(json_file, quality):
     """Load a JSON object and filter for only relevant values using a set
     quality for images.
 
@@ -66,39 +63,43 @@ def _filter_json(
         AssertionError: When the quality is not set to a correct argument.
 
     """
-    if quality not in ['high', 'low', 'medium', 'thumbview']:
-        raise AssertionError('Quality should be set to one of `high`, `low`,'
-                             '`medium`, `thumbview`. {} is a wrong argument '
-                             'for quality.'.format(quality))
-    if quality == 'high':
+    if quality not in ["high", "low", "medium", "thumbview"]:
+        raise AssertionError(
+            "Quality should be set to one of `high`, `low`,"
+            "`medium`, `thumbview`. {} is a wrong argument "
+            "for quality.".format(quality)
+        )
+
+    if quality == "high":
         qlty = 0
-    if quality == 'low':
+    if quality == "low":
         qlty = 1
-    if quality == 'medium':
+    if quality == "medium":
         qlty = 2
-    if quality == 'thumbview':
+    if quality == "thumbview":
         qlty = 3
     json_txt = json.load(json_file)
-    data_filtered = jmespath.search('specimens[].[catalogNumber,'
-                                    'scientific_name, images."1".shot_types]',
-                                    json_txt)
+    data_filtered = jmespath.search(
+        "specimens[].[catalogNumber,"
+        'scientific_name, images."1".shot_types]',
+        json_txt,
+    )
     lst = []
     for row in data_filtered:
         if row[2] != None:
             catalog_number = row[0]
             scientific_name = row[1]
             image_url = {}
-            if 'h' in row[2]:
-                image_url['h'] = row[2]['h']['img'][qlty]
-            if 'p' in row[2]:
-                image_url['p'] = row[2]['p']['img'][qlty]
-            if 'd' in row[2]:
-                image_url['d'] = row[2]['d']['img'][qlty]
+            if "h" in row[2]:
+                image_url["h"] = row[2]["h"]["img"][qlty]
+            if "p" in row[2]:
+                image_url["p"] = row[2]["p"]["img"][qlty]
+            if "d" in row[2]:
+                image_url["d"] = row[2]["d"]["img"][qlty]
             for key in image_url:
-                new_row = [catalog_number,
-                           scientific_name,
-                           key,
-                           image_url[key]]
+                new_row = [
+                    catalog_number, scientific_name, key, image_url[key]
+                ]
                 lst.append(new_row)
     return lst
 
@@ -108,11 +109,7 @@ def _filter_json(
 
 
 def batch_json_to_csv(
-    csvname,
-    dataset,
-    quality='low',
-    output_dir=None,
-    overwrite=False
+    csvname, dataset, quality="low", output_dir=None, overwrite=False
 ):
     """From a json file or batch of json files a csvfile is created with
     relevant information for downloading the images and naming the files.
@@ -139,61 +136,55 @@ def batch_json_to_csv(
         AssertionError: When there are no files in the input directory.
 
     """
-    logging.info('Image quality for downloading is set to `{}`'.format(
-        quality))
-    input_direc = os.path.join('data',
-                               dataset,
-                               'json_files')
+    logging.info(
+        "Image quality for downloading is set to `{}`".format(quality)
+    )
+    input_direc = os.path.join("data", dataset, "json_files")
     if output_dir == None or output_dir == dataset:
-        output_dir = os.path.join('data',
-                                  dataset)
+        output_dir = os.path.join("data", dataset)
     else:
-        outputdir = os.mkdir(os.path.join('data',
-                                          output_dir))
+        outputdir = os.mkdir(os.path.join("data", output_dir))
     if not os.path.isfile(os.path.join(output_dir, csvname)):
         pass
     if os.path.isfile(os.path.join(output_dir, csvname)):
         if overwrite == False:
-            logging.info('Csv file already exists, and will not be '
-                         'overwritten, due to `overwrite` is set to `False`.')
+            logging.info(
+                "Csv file already exists, and will not be "
+                "overwritten, due to `overwrite` is set to `False`."
+            )
         else:
             pass
     else:
         nb_files = len(os.listdir(input_direc))
         if nb_files == 0:
-            raise AssertionError('There are no files in the input directory.')
+            raise AssertionError("There are no files in the input directory.")
+
         df2 = pd.DataFrame()
-        columns = ['catalog_number',
-                   'scientific_name',
-                   'shot_type',
-                   'image_url']
-        for filename in tqdm(os.listdir(input_direc),
-                             desc='Converting JSON files to csv',
-                             total=nb_files,
-                             unit='JSON files'):
-            if filename.endswith('.json'):
-                with open(os.path.join(input_direc,
-                                       filename)) as data_file:
+        columns = [
+            "catalog_number", "scientific_name", "shot_type", "image_url"
+        ]
+        for filename in tqdm(
+            os.listdir(input_direc),
+            desc="Converting JSON files to csv",
+            total=nb_files,
+            unit="JSON files",
+        ):
+            if filename.endswith(".json"):
+                with open(os.path.join(input_direc, filename)) as data_file:
                     lst = _filter_json(data_file, quality=quality)
-                    df = pd.DataFrame(lst,
-                                      columns=columns)
+                    df = pd.DataFrame(lst, columns=columns)
                     df2 = df2.append(df)
         # replace spaces between genus and species names with underscores
-        df2.replace('\s+', '_',
-                    regex=True,
-                    inplace=True)
+        df2.replace("\s+", "_", regex=True, inplace=True)
         df2.columns = columns
-        df2.to_csv(os.path.join(output_dir,
-                                csvname),
-                   index=False,
-                   header=True)
-    logging.info('All JSON files are read, filtered and added to the csv '
-                 'file. "{0}" was created in {1}'.format(csvname,
-                                                         output_dir))
-    data_info = os.path.join('data', dataset,
-                             'Info_' + dataset + '.txt')
+        df2.to_csv(os.path.join(output_dir, csvname), index=False, header=True)
+    logging.info(
+        "All JSON files are read, filtered and added to the csv "
+        'file. "{0}" was created in {1}'.format(csvname, output_dir)
+    )
+    data_info = os.path.join("data", dataset, "Info_" + dataset + ".txt")
     if not os.path.isfile(data_info):
-        with open(data_info, 'wt') as txt:
+        with open(data_info, "wt") as txt:
             txt.write(
-                'The dataset was downloaded on date: {0}'.format(
-                    today_timestr))
+                "The dataset was downloaded on date: {0}".format(today_timestr)
+            )

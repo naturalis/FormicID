@@ -8,7 +8,7 @@
 #                                  Trainer                                    #
 #                                                                             #
 ###############################################################################
-'''
+"""
 Description:
 This file contains data generators. These generators generate batches of tensor
 image data while also augmenting the images in real-time. The data will be
@@ -22,7 +22,7 @@ pixels in  `[-1, 1]`, samplewise and using the following calculation:
      x -= 1.
      return x`
 
-'''
+"""
 
 # Packages
 ###############################################################################
@@ -53,6 +53,7 @@ import pandas as pd
 # So when this bug is fixed, Keras can be updated and random_brightness
 # could be imported from `keras.preprocessing.image`.
 
+
 def random_brightness(x, brightness_range):
     """Perform a random brightness shift.
     # Arguments
@@ -65,8 +66,11 @@ def random_brightness(x, brightness_range):
         ValueError if `brightness_range` isn't a tuple.
     """
     if len(brightness_range) != 2:
-        raise ValueError('`brightness_range should be tuple or list of two floats. '
-                         'Received arg: ', brightness_range)
+        raise ValueError(
+            "`brightness_range should be tuple or list of two floats. "
+            "Received arg: ",
+            brightness_range,
+        )
 
     x = array_to_img(x)
     x = imgenhancer_Brightness = ImageEnhance.Brightness(x)
@@ -83,7 +87,9 @@ def random_brightness(x, brightness_range):
 # CSV Iterator and ImageDataGenerator
 ###############################################################################
 
+
 class MyImageDataGenerator(object):
+
     def __init__(
         self,
         featurewise_center=False,
@@ -99,14 +105,14 @@ class MyImageDataGenerator(object):
         shear_range=0.,
         zoom_range=0.,
         channel_shift_range=0.,
-        fill_mode='nearest',
+        fill_mode="nearest",
         cval=0.,
         horizontal_flip=False,
         vertical_flip=False,
         rescale=None,
         preprocessing_function=None,
         data_format=None,
-        validation_split=0.0
+        validation_split=0.0,
     ):
         if data_format is None:
             data_format = K.image_data_format()
@@ -119,22 +125,30 @@ class MyImageDataGenerator(object):
         self.rescale = rescale
         self.preprocessing_function = preprocessing_function
 
-        if data_format not in {'channels_last', 'channels_first'}:
-            raise ValueError('`data_format` should be `"channels_last"` (channel after row and '
-                             'column) or `"channels_first"` (channel before row and column). '
-                             'Received arg: ', data_format)
+        if data_format not in {"channels_last", "channels_first"}:
+            raise ValueError(
+                '`data_format` should be `"channels_last"` (channel after row and '
+                'column) or `"channels_first"` (channel before row and column). '
+                "Received arg: ",
+                data_format,
+            )
+
         self.data_format = data_format
-        if data_format == 'channels_first':
+        if data_format == "channels_first":
             self.channel_axis = 1
             self.row_axis = 2
             self.col_axis = 3
-        if data_format == 'channels_last':
+        if data_format == "channels_last":
             self.channel_axis = 3
             self.row_axis = 1
             self.col_axis = 2
         if validation_split and not 0 < validation_split < 1:
-            raise ValueError('`validation_split` must be strictly between 0 and 1. '
-                             ' Received arg: ', validation_split)
+            raise ValueError(
+                "`validation_split` must be strictly between 0 and 1. "
+                " Received arg: ",
+                validation_split,
+            )
+
         self._validation_split = validation_split
 
         self.mean = None
@@ -146,35 +160,47 @@ class MyImageDataGenerator(object):
         elif len(zoom_range) == 2:
             self.zoom_range = [zoom_range[0], zoom_range[1]]
         else:
-            raise ValueError('`zoom_range` should be a float or '
-                             'a tuple or list of two floats. '
-                             'Received arg: ', zoom_range)
+            raise ValueError(
+                "`zoom_range` should be a float or "
+                "a tuple or list of two floats. "
+                "Received arg: ",
+                zoom_range,
+            )
+
         if zca_whitening:
             if not featurewise_center:
                 self.featurewise_center = True
-                warnings.warn('This ImageDataGenerator specifies '
-                              '`zca_whitening`, which overrides '
-                              'setting of `featurewise_center`.')
+                warnings.warn(
+                    "This ImageDataGenerator specifies "
+                    "`zca_whitening`, which overrides "
+                    "setting of `featurewise_center`."
+                )
             if featurewise_std_normalization:
                 self.featurewise_std_normalization = False
-                warnings.warn('This ImageDataGenerator specifies '
-                              '`zca_whitening` '
-                              'which overrides setting of'
-                              '`featurewise_std_normalization`.')
+                warnings.warn(
+                    "This ImageDataGenerator specifies "
+                    "`zca_whitening` "
+                    "which overrides setting of"
+                    "`featurewise_std_normalization`."
+                )
         if featurewise_std_normalization:
             if not featurewise_center:
                 self.featurewise_center = True
-                warnings.warn('This ImageDataGenerator specifies '
-                              '`featurewise_std_normalization`, '
-                              'which overrides setting of '
-                              '`featurewise_center`.')
+                warnings.warn(
+                    "This ImageDataGenerator specifies "
+                    "`featurewise_std_normalization`, "
+                    "which overrides setting of "
+                    "`featurewise_center`."
+                )
         if samplewise_std_normalization:
             if not samplewise_center:
                 self.samplewise_center = True
-                warnings.warn('This ImageDataGenerator specifies '
-                              '`samplewise_std_normalization`, '
-                              'which overrides setting of '
-                              '`samplewise_center`.')
+                warnings.warn(
+                    "This ImageDataGenerator specifies "
+                    "`samplewise_std_normalization`, "
+                    "which overrides setting of "
+                    "`samplewise_center`."
+                )
 
     def standardize(self, x):
         if self.preprocessing_function:
@@ -190,28 +216,34 @@ class MyImageDataGenerator(object):
             if self.mean is not None:
                 x -= self.mean
             else:
-                warnings.warn('This ImageDataGenerator specifies '
-                              '`featurewise_center`, but it hasn\'t '
-                              'been fit on any training data. Fit it '
-                              'first by calling `.fit(numpy_data)`.')
+                warnings.warn(
+                    "This ImageDataGenerator specifies "
+                    "`featurewise_center`, but it hasn't "
+                    "been fit on any training data. Fit it "
+                    "first by calling `.fit(numpy_data)`."
+                )
         if self.featurewise_std_normalization:
             if self.std is not None:
                 x /= (self.std + K.epsilon())
             else:
-                warnings.warn('This ImageDataGenerator specifies '
-                              '`featurewise_std_normalization`, but it hasn\'t '
-                              'been fit on any training data. Fit it '
-                              'first by calling `.fit(numpy_data)`.')
+                warnings.warn(
+                    "This ImageDataGenerator specifies "
+                    "`featurewise_std_normalization`, but it hasn't "
+                    "been fit on any training data. Fit it "
+                    "first by calling `.fit(numpy_data)`."
+                )
         if self.zca_whitening:
             if self.principal_components is not None:
                 flatx = np.reshape(x, (-1, np.prod(x.shape[-3:])))
                 whitex = np.dot(flatx, self.principal_components)
                 x = np.reshape(whitex, x.shape)
             else:
-                warnings.warn('This ImageDataGenerator specifies '
-                              '`zca_whitening`, but it hasn\'t '
-                              'been fit on any training data. Fit it '
-                              'first by calling `.fit(numpy_data)`.')
+                warnings.warn(
+                    "This ImageDataGenerator specifies "
+                    "`zca_whitening`, but it hasn't "
+                    "been fit on any training data. Fit it "
+                    "first by calling `.fit(numpy_data)`."
+                )
         return x
 
     def random_transform(self, x, seed=None):
@@ -225,72 +257,81 @@ class MyImageDataGenerator(object):
         # to generate final transform that needs to be applied
         if self.rotation_range:
             theta = np.deg2rad(
-                np.random.uniform(-self.rotation_range, self.rotation_range))
+                np.random.uniform(-self.rotation_range, self.rotation_range)
+            )
         else:
             theta = 0
         if self.height_shift_range:
             tx = np.random.uniform(
-                -self.height_shift_range,
-                self.height_shift_range)
+                -self.height_shift_range, self.height_shift_range
+            )
             if self.height_shift_range < 1:
                 tx *= x.shape[img_row_axis]
         else:
             tx = 0
         if self.width_shift_range:
             ty = np.random.uniform(
-                -self.width_shift_range,
-                self.width_shift_range)
+                -self.width_shift_range, self.width_shift_range
+            )
             if self.width_shift_range < 1:
                 ty *= x.shape[img_col_axis]
         else:
             ty = 0
         if self.shear_range:
-            shear = np.deg2rad(np.random.uniform(
-                -self.shear_range,
-                self.shear_range))
+            shear = np.deg2rad(
+                np.random.uniform(-self.shear_range, self.shear_range)
+            )
         else:
             shear = 0
         if self.zoom_range[0] == 1 and self.zoom_range[1] == 1:
             zx, zy = 1, 1
         else:
             zx, zy = np.random.uniform(
-                self.zoom_range[0],
-                self.zoom_range[1],
-                2)
+                self.zoom_range[0], self.zoom_range[1], 2
+            )
         transform_matrix = None
         if theta != 0:
-            rotation_matrix = np.array([[np.cos(theta), -np.sin(theta), 0],
-                                        [np.sin(theta), np.cos(theta), 0],
-                                        [0, 0, 1]])
+            rotation_matrix = np.array(
+                [
+                    [np.cos(theta), -np.sin(theta), 0],
+                    [np.sin(theta), np.cos(theta), 0],
+                    [0, 0, 1],
+                ]
+            )
             transform_matrix = rotation_matrix
         if tx != 0 or ty != 0:
-            shift_matrix = np.array([[1, 0, tx],
-                                     [0, 1, ty],
-                                     [0, 0, 1]])
+            shift_matrix = np.array([[1, 0, tx], [0, 1, ty], [0, 0, 1]])
             transform_matrix = shift_matrix if transform_matrix is None else np.dot(
-                transform_matrix, shift_matrix)
+                transform_matrix, shift_matrix
+            )
         if shear != 0:
-            shear_matrix = np.array([[1, -np.sin(shear), 0],
-                                     [0, np.cos(shear), 0],
-                                     [0, 0, 1]])
+            shear_matrix = np.array(
+                [[1, -np.sin(shear), 0], [0, np.cos(shear), 0], [0, 0, 1]]
+            )
             transform_matrix = shear_matrix if transform_matrix is None else np.dot(
-                transform_matrix, shear_matrix)
+                transform_matrix, shear_matrix
+            )
         if zx != 1 or zy != 1:
-            zoom_matrix = np.array([[zx, 0, 0],
-                                    [0, zy, 0],
-                                    [0, 0, 1]])
+            zoom_matrix = np.array([[zx, 0, 0], [0, zy, 0], [0, 0, 1]])
             transform_matrix = zoom_matrix if transform_matrix is None else np.dot(
-                transform_matrix, zoom_matrix)
+                transform_matrix, zoom_matrix
+            )
         if transform_matrix is not None:
             h, w = x.shape[img_row_axis], x.shape[img_col_axis]
             transform_matrix = transform_matrix_offset_center(
-                transform_matrix, h, w)
-            x = apply_transform(x, transform_matrix, img_channel_axis,
-                                fill_mode=self.fill_mode, cval=self.cval)
+                transform_matrix, h, w
+            )
+            x = apply_transform(
+                x,
+                transform_matrix,
+                img_channel_axis,
+                fill_mode=self.fill_mode,
+                cval=self.cval,
+            )
         if self.channel_shift_range != 0:
-            x = random_channel_shift(x,
-                                     self.channel_shift_range,
-                                     img_channel_axis)
+            x = random_channel_shift(
+                x, self.channel_shift_range, img_channel_axis
+            )
         if self.horizontal_flip:
             if np.random.random() < 0.5:
                 x = flip_axis(x, img_col_axis)
@@ -304,16 +345,16 @@ class MyImageDataGenerator(object):
     def flow_from_csv(
         self,
         csv,
-        shotview='head',
+        shotview="head",
         target_size=(256, 256),
-        color_mode='rgb',
+        color_mode="rgb",
         classes=None,
-        class_mode='categorical',
+        class_mode="categorical",
         batch_size=32,
         shuffle=True,
         seed=None,
         subset=None,
-        interpolation='nearest'
+        interpolation="nearest",
     ):
         return CsvIterator(
             self,
@@ -328,14 +369,14 @@ class MyImageDataGenerator(object):
             shuffle=shuffle,
             seed=seed,
             subset=subset,
-            interpolation=interpolation
+            interpolation=interpolation,
         )
 
 
 def _iter_csv_rows(csv, shotview):
-    with open(csv, 'rt') as open_csv:
-        df = pd.read_csv(open_csv, sep=',')
-        df_shot = df.loc[df['shottype'] == shotview]
+    with open(csv, "rt") as open_csv:
+        df = pd.read_csv(open_csv, sep=",")
+        df_shot = df.loc[df["shottype"] == shotview]
         for row in df_shot.itertuples():
             # yield path, species
             path = row[4]
@@ -356,7 +397,7 @@ def _list_pathways_in_csv(csv, split, class_indices, shotview):
     if split:
         num_paths = len(list(_iter_csv_rows(csv, shotview)))
         start, stop = int(split[0] * num_paths), int(split[1] * num_paths)
-        pathways = list(_iter_csv_rows(csv, shotview))[start: stop]
+        pathways = list(_iter_csv_rows(csv, shotview))[start:stop]
     else:
         pathways = _iter_csv_rows(csv, shotview)
 
@@ -370,65 +411,87 @@ def _list_pathways_in_csv(csv, split, class_indices, shotview):
 
 
 class CsvIterator(Iterator):
-    def __init__(self, image_data_generator,
-                 csv, shotview='head',
-                 target_size=(299, 299), color_mode='rgb',
-                 classes=None, class_mode='categorical',
-                 batch_size=32, shuffle=True, seed=None,
-                 data_format=None,
-                 subset=None,
-                 interpolation='nearest'):
+
+    def __init__(
+        self,
+        image_data_generator,
+        csv,
+        shotview="head",
+        target_size=(299, 299),
+        color_mode="rgb",
+        classes=None,
+        class_mode="categorical",
+        batch_size=32,
+        shuffle=True,
+        seed=None,
+        data_format=None,
+        subset=None,
+        interpolation="nearest",
+    ):
         if data_format is None:
             data_format = K.image_data_format()
         self.csv = csv
         self.image_data_generator = image_data_generator
         self.target_size = tuple(target_size)
-        if color_mode not in {'rgb', 'grayscale'}:
-            raise ValueError('Invalid color mode:', color_mode,
-                             '; expected "rgb" or "grayscale".')
+        if color_mode not in {"rgb", "grayscale"}:
+            raise ValueError(
+                "Invalid color mode:",
+                color_mode,
+                '; expected "rgb" or "grayscale".',
+            )
+
         self.color_mode = color_mode
         self.data_format = data_format
-        if self.color_mode == 'rgb':
-            if self.data_format == 'channels_last':
+        if self.color_mode == "rgb":
+            if self.data_format == "channels_last":
                 self.image_shape = self.target_size + (3,)
             else:
                 self.image_shape = (3,) + self.target_size
         else:
-            if self.data_format == 'channels_last':
+            if self.data_format == "channels_last":
                 self.image_shape = self.target_size + (1,)
             else:
                 self.image_shape = (1,) + self.target_size
         self.classes = classes
-        if class_mode not in {'categorical', 'binary', 'sparse',
-                              'input', None}:
-            raise ValueError('Invalid class_mode:', class_mode,
-                             '; expected one of "categorical", '
-                             '"binary", "sparse", "input"'
-                             ' or None.')
+        if class_mode not in {
+            "categorical", "binary", "sparse", "input", None
+        }:
+            raise ValueError(
+                "Invalid class_mode:",
+                class_mode,
+                '; expected one of "categorical", '
+                '"binary", "sparse", "input"'
+                " or None.",
+            )
+
         self.class_mode = class_mode
         self.interpolation = interpolation
         if subset is not None:
             validation_split = self.image_data_generator._validation_split
-            if subset == 'validation':
+            if subset == "validation":
                 split = (0, validation_split)
-            elif subset == 'training':
+            elif subset == "training":
                 split = (validation_split, 1)
             else:
-                raise ValueError('Invalid subset name: ', subset,
-                                 '; expected "training" or "validation"')
+                raise ValueError(
+                    "Invalid subset name: ",
+                    subset,
+                    '; expected "training" or "validation"',
+                )
+
         else:
             split = None
         self.subset = subset
 
-    ###########################################################################
+        ###########################################################################
         # first, count the number of samples and classes
 
         # self.samples = 0
         if not classes:
-            with open(csv, 'rt') as csv_open:
-                df = pd.read_csv(csv_open, sep=',')
+            with open(csv, "rt") as csv_open:
+                df = pd.read_csv(csv_open, sep=",")
                 # filter for shottype
-                df_shot = df.loc[df['shottype'] == shotview]
+                df_shot = df.loc[df["shottype"] == shotview]
                 # get classes, count and put in dict
                 classes = df_shot.species.unique()
                 self.num_classes = len(classes)
@@ -439,12 +502,16 @@ class CsvIterator(Iterator):
                 shottypes = df_shot.shottype.unique()
                 self.num_shottypes = len(shottypes)
                 self.shottype_indicies = dict(
-                    zip(shottypes, range(len(shottypes))))
+                    zip(shottypes, range(len(shottypes)))
+                )
 
-        print('Found {0} images belonging to {1} classes for shottype {2}.'.format(
-            self.samples, self.num_classes, shotview))
+        print(
+            "Found {0} images belonging to {1} classes for shottype {2}.".format(
+                self.samples, self.num_classes, shotview
+            )
+        )
 
-    ###########################################################################
+        ###########################################################################
         # second build an index of the images in the different class subfolders
         # results = []
         # self.pathways = []
@@ -454,10 +521,7 @@ class CsvIterator(Iterator):
         #     df = pd.read_csv(csv_open, sep=',')
         #     for row in df.itertuples():
         results = _list_pathways_in_csv(
-            csv,
-            split,
-            self.class_indices,
-            shotview
+            csv, split, self.class_indices, shotview
         )
         self.classes, self.pathways = results
 
@@ -470,43 +534,44 @@ class CsvIterator(Iterator):
         #     i += len(classes)
 
         super(CsvIterator, self).__init__(
-            self.samples, batch_size, shuffle, seed)
+            self.samples, batch_size, shuffle, seed
+        )
 
     def _get_batches_of_transformed_samples(self, index_array):
-        batch_x = np.zeros((len(index_array),) +
-                           self.image_shape, dtype=K.floatx())
-        grayscale = self.color_mode == 'grayscale'
+        batch_x = np.zeros(
+            (len(index_array),) + self.image_shape, dtype=K.floatx()
+        )
+        grayscale = self.color_mode == "grayscale"
 
         # build batch of image data
         for i, j in enumerate(index_array):
             fname = self.pathways[j]
-            img = load_img(fname,
-                           grayscale=grayscale,
-                           target_size=self.target_size,
-                           interpolation=self.interpolation)
+            img = load_img(
+                fname,
+                grayscale=grayscale,
+                target_size=self.target_size,
+                interpolation=self.interpolation,
+            )
             x = img_to_array(img, data_format=self.data_format)
             x = self.image_data_generator.random_transform(x)
             x = self.image_data_generator.standardize(x)
             batch_x[i] = x
 
         # build batch of labels
-        if self.class_mode == 'categorical':
+        if self.class_mode == "categorical":
             batch_y = np.zeros(
-                (len(batch_x), self.num_classes), dtype=K.floatx())
-            # TODO: fix 2 lines below - What do they do?
-            # for i, label in enumerate(self.classes[index_array]):
-            #     batch_y[i, label] = 1.
+                (len(batch_x), self.num_classes), dtype=K.floatx()
+            )
+        # TODO: fix 2 lines below - What do they do?
+        # for i, label in enumerate(self.classes[index_array]):
+        #     batch_y[i, label] = 1.
         else:
             return batch_x
+
         return batch_x, batch_y
 
 
-def trainer_csv(model,
-                csv,
-                shottype,
-                config,
-                callbacks=None
-                ):
+def trainer_csv(model, csv, shottype, config, callbacks=None):
     epochs = config.num_epochs
     batch_size = config.batch_size
     idg_t = MyImageDataGenerator(
@@ -517,21 +582,16 @@ def trainer_csv(model,
         shear_range=0.2,
         zoom_range=0.2,
         horizontal_flip=True,
-        validation_split=0.20
+        validation_split=0.20,
     )
     train_data_generator = idg_t.flow_from_csv(
-        csv=csv,
-        shotview='head',
-        subset='training'
+        csv=csv, shotview="head", subset="training"
     )
     idg_v = MyImageDataGenerator(
-        preprocessing_function=preprocess_input,
-        validation_split=0.20
+        preprocessing_function=preprocess_input, validation_split=0.20
     )
     val_data_generator = idg_v.flow_from_csv(
-        csv=csv,
-        shotview='head',
-        subset='validation'
+        csv=csv, shotview="head", subset="validation"
     )
     model.fit_generator(
         generator=train_data_generator,
@@ -539,7 +599,7 @@ def trainer_csv(model,
         epochs=epochs,
         validation_data=val_data_generator,
         validation_steps=3,
-        callbacks=callbacks
+        callbacks=callbacks,
     )
 
 
@@ -547,9 +607,7 @@ def trainer_csv(model,
 ###############################################################################
 
 
-def idg(
-    target_gen='training'
-):
+def idg(target_gen="training"):
     """Initialize an augmentation generator for either a `training`,
     `validation`, `test` dataset.
 
@@ -564,15 +622,13 @@ def idg(
         ValueError: If target_gen is not set to acorrectly value.
 
     """
-    if target_gen not in [
-        'training',
-        'validation',
-        'test'
-    ]:
+    if target_gen not in ["training", "validation", "test"]:
         raise ValueError(
-            'Argument {} is in invalid  for `target_gen`. It should be one of '
-            '`training`, `validation`, or `testing`.'.format(target_gen))
-    if target_gen == 'training':
+            "Argument {} is in invalid  for `target_gen`. It should be one of "
+            "`training`, `validation`, or `testing`.".format(target_gen)
+        )
+
+    if target_gen == "training":
         idg = ImageDataGenerator(
             preprocessing_function=preprocess_input,
             rotation_range=40,
@@ -580,9 +636,9 @@ def idg(
             height_shift_range=0.2,
             shear_range=0.2,
             zoom_range=0.2,
-            horizontal_flip=True
+            horizontal_flip=True,
         )
-    if target_gen in ['validation', 'test']:
+    if target_gen in ["validation", "test"]:
         idg = ImageDataGenerator(preprocessing_function=preprocess_input)
 
     return idg
@@ -593,10 +649,7 @@ def idg(
 
 
 def _data_generator_dir(
-    dataset,
-    config,
-    shottype='head',
-    target_gen='training'
+    dataset, config, shottype="head", target_gen="training"
 ):
     """Generator for reading images out of directories. Can be used for a
     `training`, `validation` or `test` set. `Validation` and `test` sets will
@@ -617,42 +670,32 @@ def _data_generator_dir(
     """
     batch_size = config.batch_size
     seed = config.seed
-    if target_gen == 'training':
+    if target_gen == "training":
         shuffle = True
-        dir = '1-training'
-    if target_gen == 'validation':
+        dir = "1-training"
+    if target_gen == "validation":
         shuffle = False
-        dir = '2-validation'
-    if target_gen == 'test':
+        dir = "2-validation"
+    if target_gen == "test":
         shuffle = False
-        dir = '3-test'
-    data_dir = os.path.join(
-        'data',
-        dataset,
-        'images',
-        shottype,
-        dir
-    )
+        dir = "3-test"
+    data_dir = os.path.join("data", dataset, "images", shottype, dir)
     idgen = idg(target_gen=target_gen)
     idgen = idgen.flow_from_directory(
         directory=data_dir,
         target_size=(299, 299),
-        color_mode='rgb',
-        class_mode='categorical',
+        color_mode="rgb",
+        class_mode="categorical",
         batch_size=batch_size,
         shuffle=shuffle,
-        seed=1
+        seed=1,
     )
     classes = idgen.classes
     class_indices = idgen.class_indices
     return idgen, classes, class_indices
 
 
-def trainer_dir(
-    model,
-    config,
-    callbacks=None
-):
+def trainer_dir(model, config, callbacks=None):
     """The directory trainer. This combines the validation and training data
         generators and trains on the input model.
 
@@ -675,14 +718,14 @@ def trainer_dir(
         dataset=dataset,
         shottype=shottype,
         config=config,
-        target_gen='training'
+        target_gen="training",
     )
     train_samples = train_data_gen_dir.samples
     val_data_gen_dir, _, _ = _data_generator_dir(
         dataset=dataset,
         shottype=shottype,
         config=config,
-        target_gen='validation'
+        target_gen="validation",
     )
     val_samples = val_data_gen_dir.samples
     history = model.fit_generator(
@@ -691,7 +734,7 @@ def trainer_dir(
         epochs=epochs,
         validation_data=val_data_gen_dir,
         validation_steps=val_samples // batch_size,
-        callbacks=callbacks
+        callbacks=callbacks,
     )
 
     return history

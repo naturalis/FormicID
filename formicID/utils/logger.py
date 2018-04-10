@@ -8,10 +8,10 @@
 #                                  Utilitiies                                 #
 #                                    Logger                                   #
 ###############################################################################
-'''Description:
+"""Description:
 Loggers are created in this file. They can be used in training to get feedback
 on the models performance.
-'''
+"""
 # Packages
 ###############################################################################
 
@@ -44,11 +44,7 @@ from .utils import today_timestr
 
 
 def build_tb(
-    model,
-    config,
-    histogram_freq=0,
-    write_graph=True,
-    write_images=True
+    model, config, histogram_freq=0, write_graph=True, write_images=True
 ):
     """A TensorBoard class object for viewing metrics of the trained model.
 
@@ -62,9 +58,9 @@ def build_tb(
             dashboard
 
     """
-    filepath = os.path.join(config.summary_dir,
-                            'graphs',
-                            'logs-{}'.format(today_timestr))
+    filepath = os.path.join(
+        config.summary_dir, "graphs", "logs-{}".format(today_timestr)
+    )
     model = model
     batch_size = config.batch_size
     tb = TensorBoard(
@@ -72,7 +68,7 @@ def build_tb(
         histogram_freq=histogram_freq,
         batch_size=batch_size,
         write_graph=write_graph,
-        write_images=write_images
+        write_images=write_images,
     )
 
     tb.set_model(model)
@@ -81,17 +77,18 @@ def build_tb(
 
     return tb
 
+
 # Model Checkpoint
 ###############################################################################
 
 
 def build_mc(
     config,
-    monitor='val_loss',
+    monitor="val_loss",
     verbose=0,
-    mode='auto',
+    mode="auto",
     save_best_only=True,
-    period=1
+    period=1,
 ):
     """Callback object for saving Model Checkpoints.
 
@@ -103,15 +100,16 @@ def build_mc(
 
     """
     output_dir = config.checkpoint_dir
-    filepath = os.path.join(output_dir,
-                            'weights_{epoch:02d}-{val_loss:.2f}.hdf5')
+    filepath = os.path.join(
+        output_dir, "weights_{epoch:02d}-{val_loss:.2f}.hdf5"
+    )
     mcp = ModelCheckpoint(
         filepath=filepath,
         monitor=monitor,
         verbose=verbose,
         mode=mode,
         save_best_only=save_best_only,
-        period=period
+        period=period,
     )
 
     return mcp
@@ -122,11 +120,7 @@ def build_mc(
 
 
 def build_es(
-    monitor='val_loss',
-    min_delta=0,
-    patience=10,
-    verbose=1,
-    mode='min'
+    monitor="val_loss", min_delta=0, patience=10, verbose=1, mode="min"
 ):
     """For initializing EarlyStopping. This monitors validation loss.
 
@@ -139,7 +133,7 @@ def build_es(
         min_delta=min_delta,
         patience=patience,
         verbose=verbose,
-        mode=mode
+        mode=mode,
     )
 
     return es
@@ -148,15 +142,16 @@ def build_es(
 # Reduce learning rate on plateau
 ###############################################################################
 
+
 def build_rlrop(
-    monitor='val_loss',
+    monitor="val_loss",
     factor=0.1,
     patience=10,
     verbose=1,
-    mode='auto',
+    mode="auto",
     epsilon=1e-4,
     cooldown=0,
-    min_lr=0
+    min_lr=0,
 ):
     """Reduce learning rate when a metric has stopped improving.
 
@@ -172,7 +167,7 @@ def build_rlrop(
         mode=mode,
         epsilon=epsilon,
         cooldown=cooldown,
-        min_lr=min_lr
+        min_lr=min_lr,
     )
 
     return rlrop
@@ -182,19 +177,10 @@ def build_rlrop(
 ###############################################################################
 
 
-def build_csvl(
-    filename,
-    config,
-    separator=',',
-    append=False
-):
+def build_csvl(filename, config, separator=",", append=False):
     output_dir = config.summary_dir
-    fname = os.path.join(output_dir, today_timestr + '_' + filename)
-    csvlogger = CSVLogger(
-        filename=fname,
-        separator=separator,
-        append=append
-    )
+    fname = os.path.join(output_dir, today_timestr + "_" + filename)
+    csvlogger = CSVLogger(filename=fname, separator=separator, append=append)
 
     return csvlogger
 
@@ -203,11 +189,7 @@ def build_csvl(
 ###############################################################################
 
 
-def plot_history(
-    history,
-    theme='ggplot',
-    export=None
-):
+def plot_history(history, theme="ggplot", export=None):
     """This function will plot the loss, accuracy and top k accuracy after
     training from a Keras Histroy object, with ggplot theme.
 
@@ -225,66 +207,120 @@ def plot_history(
 
     """
     if not isinstance(history, History):
-        raise AssertionError('The `history` argument: {} is not a Keras '
-                             'History object.'.format(history))
+        raise AssertionError(
+            "The `history` argument: {} is not a Keras "
+            "History object.".format(history)
+        )
+
         return
-    loss_list = [s for s in history.history.keys()
-                 if 'loss' in s and 'val' not in s]
-    val_loss_list = [s for s in history.history.keys()
-                     if 'loss' in s and 'val' in s]
-    acc_list = [s for s in history.history.keys()
-                if 'acc' in s and 'val' not in s and 'top' not in s]
-    val_acc_list = [s for s in history.history.keys()
-                    if 'acc' in s and 'val' in s and 'top' not in s]
-    top_acc_list = [s for s in history.history.keys()
-                    if 'acc' in s and 'val' not in s and 'top' in s]
-    val_top_acc_list = [s for s in history.history.keys()
-                        if 'acc' in s and 'val' in s and 'top' in s]
+
+    loss_list = [
+        s for s in history.history.keys() if "loss" in s and "val" not in s
+    ]
+    val_loss_list = [
+        s for s in history.history.keys() if "loss" in s and "val" in s
+    ]
+    acc_list = [
+        s
+        for s in history.history.keys()
+        if "acc" in s and "val" not in s and "top" not in s
+    ]
+    val_acc_list = [
+        s
+        for s in history.history.keys()
+        if "acc" in s and "val" in s and "top" not in s
+    ]
+    top_acc_list = [
+        s
+        for s in history.history.keys()
+        if "acc" in s and "val" not in s and "top" in s
+    ]
+    val_top_acc_list = [
+        s
+        for s in history.history.keys()
+        if "acc" in s and "val" in s and "top" in s
+    ]
     if len(loss_list) == 0:
-        print('Loss is missing in history')
+        print("Loss is missing in history")
         return
+
     epochs = range(1, len(history.history[loss_list[0]]) + 1)
     if theme is not None:
         if theme not in plt.style.available:
-            raise ValueError('Theme is not one of {}. {} is not a correct '
-                             'theme.'.format(plt.style.available(), theme))
+            raise ValueError(
+                "Theme is not one of {}. {} is not a correct "
+                "theme.".format(plt.style.available(), theme)
+            )
+
         else:
             plt.style.use(theme)
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
     ax2 = ax1.twinx()
     for l in loss_list:
-        ax1.plot(epochs, history.history[l], color='b', linestyle='-',
-                 label='Training loss '
-                 '({0:.5f})'.format(history.history['loss'][-1]))
+        ax1.plot(
+            epochs,
+            history.history[l],
+            color="b",
+            linestyle="-",
+            label="Training loss "
+            "({0:.5f})".format(history.history["loss"][-1]),
+        )
     for l in val_loss_list:
-        ax1.plot(epochs, history.history[l], color='b', linestyle=':',
-                 label='Validation loss '
-                 '({0:.5f})'.format(history.history['val_loss'][-1]))
+        ax1.plot(
+            epochs,
+            history.history[l],
+            color="b",
+            linestyle=":",
+            label="Validation loss "
+            "({0:.5f})".format(history.history["val_loss"][-1]),
+        )
     for l in acc_list:
-        ax2.plot(epochs, history.history[l], color='r', linestyle='-')
+        ax2.plot(epochs, history.history[l], color="r", linestyle="-")
     for l in val_acc_list:
-        ax2.plot(epochs, history.history[l], color='r', linestyle=':', )
+        ax2.plot(epochs, history.history[l], color="r", linestyle=":")
     for l in top_acc_list:
-        ax2.plot(epochs, history.history[l], color='g', linestyle='-', )
+        ax2.plot(epochs, history.history[l], color="g", linestyle="-")
     for l in val_top_acc_list:
-        ax2.plot(epochs, history.history[l], color='g', linestyle=':', )
-    ax1.plot(np.nan, color='r', linestyle='-', label='Training accuracy: '
-             '({0:.5f})'.format(history.history['acc'][-1]))
-    ax1.plot(np.nan, color='r', linestyle=':', label='Validation acccuracy: '
-             '({0:.5f})'.format(history.history['val_acc'][-1]))
-    ax1.plot(np.nan, color='g', linestyle='-', label='Training top 3 '
-             'accuracy: ({0:.5f})'.format(
-                 history.history['top_k_categorical_accuracy'][-1]))
-    ax1.plot(np.nan, color='g', linestyle=':', label='Validation top 3 '
-             'acccuracy: ({0:.5f})'.format(
-                 history.history['val_top_k_categorical_accuracy'][-1]))
-    ax1.legend(loc='best', fancybox=True, framealpha=0.5)
+        ax2.plot(epochs, history.history[l], color="g", linestyle=":")
+    ax1.plot(
+        np.nan,
+        color="r",
+        linestyle="-",
+        label="Training accuracy: "
+        "({0:.5f})".format(history.history["acc"][-1]),
+    )
+    ax1.plot(
+        np.nan,
+        color="r",
+        linestyle=":",
+        label="Validation acccuracy: "
+        "({0:.5f})".format(history.history["val_acc"][-1]),
+    )
+    ax1.plot(
+        np.nan,
+        color="g",
+        linestyle="-",
+        label="Training top 3 "
+        "accuracy: ({0:.5f})".format(
+            history.history["top_k_categorical_accuracy"][-1]
+        ),
+    )
+    ax1.plot(
+        np.nan,
+        color="g",
+        linestyle=":",
+        label="Validation top 3 "
+        "acccuracy: ({0:.5f})".format(
+            history.history["val_top_k_categorical_accuracy"][-1]
+        ),
+    )
+    ax1.legend(loc="best", fancybox=True, framealpha=0.5)
     ax1.grid()
-    ax1.set_title('Model accuracy and loss')
-    ax1.set_xlabel('Epochs')
-    ax1.set_ylabel('Loss', color='blue')
-    ax2.set_ylabel('Accuracy (%)', color='red')
+    ax1.set_title("Model accuracy and loss")
+    ax1.set_xlabel("Epochs")
+    ax1.set_ylabel("Loss", color="blue")
+    ax2.set_ylabel("Accuracy (%)", color="red")
     fig.tight_layout()
     plt.show()
     if export is not None:
@@ -293,17 +329,15 @@ def plot_history(
         else:
             raise ValueError(
                 'The `export` argument "{}" is not a valid directory for '
-                'saving the figure.'.format(export))
+                "saving the figure.".format(export)
+            )
 
 
 # RMSE
 ###############################################################################
 
 
-def rmse(
-    y_true,
-    y_pred
-):
+def rmse(y_true, y_pred):
     """The root-mean-square-error as a metric to be used in model compilation.
 
     Args:
@@ -321,9 +355,5 @@ def rmse(
 ###############################################################################
 
 
-def top_k_categorical_accuracy(
-    y_true,
-    y_pred,
-    k=3
-):
+def top_k_categorical_accuracy(y_true, y_pred, k=3):
     return K.mean(K.in_top_k(y_pred, K.argmax(y_true, axis=-1), k), axis=-1)

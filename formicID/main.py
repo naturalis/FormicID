@@ -8,11 +8,11 @@
 #                                      main                                   #
 #                                                                             #
 ###############################################################################
-'''Description:
+"""Description:
 This is were it all happens. This file loads the data, initializes the model
 and trains the model. Log files are made and a prediction can be made for the
 test set.
-'''
+"""
 # Packages
 ###############################################################################
 
@@ -53,7 +53,7 @@ from utils.utils import today_timestr
 
 # Parameters and settings
 ###############################################################################
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 # To disable the tf warning for compiling in SEE4.2
 # 0 = all logs, 1 = info, 2 = warnings, 3 = error
 
@@ -66,153 +66,137 @@ def main():
     # Logging
     ###########################################################################
     logging.basicConfig(
-        filename=config.exp_name + '.log',
-        format='[%(asctime)s] - [%(levelname)s]: %(message)s',
-        filemode='w',
-        level=logging.DEBUG
+        filename=config.exp_name + ".log",
+        format="[%(asctime)s] - [%(levelname)s]: %(message)s",
+        filemode="w",
+        level=logging.DEBUG,
     )
-    logging.info('Logging started on: {}'.format(today_timestr))
-    logging.info('Keras version: {}'.format(keras_version))
+    logging.info("Logging started on: {}".format(today_timestr))
+    logging.info("Keras version: {}".format(keras_version))
+
     # Arguments
     ###########################################################################
     try:
         args = get_args()
         config = process_config(args.config)
     except:
-        logging.error('Missing or invalid arguments.')
+        logging.error("Missing or invalid arguments.")
         exit(0)
     sess = tf.Session()
     K.set_session(sess)
+
     # Creating a dataset
     ###########################################################################
-    # get_dataset(
-    #     input='testgenusspecies.csv',
-    #     n_jsonfiles=100,
-    #     config=config,
-    #     quality='low',
-    #     update=True,
-    #     offset_set=0,
-    #     limit_set=500
-    # )
+    get_dataset(
+        input="testgenusspecies.csv",
+        n_jsonfiles=100,
+        config=config,
+        quality="low",
+        update=True,
+        offset_set=0,
+        limit_set=500,
+    )
+
     # create experiment related directories
     ###########################################################################
-    create_dirs(
-        [config.summary_dir,
-         config.checkpoint_dir]
-    )
-    # save_augmentation(
-    #     image='data/top5species_Qlow/images/head/camponotus_hova/camponotus_hova_casent0101335_h.jpg',
-    #     config=config
-    # )
-    # show_augmentation_from_dir(
-    #     aug_dir='experiments\\T20_CaAll_QuL_ShH_AugH_D025_LR0001_E100\\summary\\augmented',
-    #     max_img=20,
-    #     n_cols=5
-    # )
+    create_dirs([config.summary_dir, config.checkpoint_dir])
+
     # Initializing the data
     ###########################################################################
-    # split_in_directory(
-    #     config=config
-    # )
-    # Initialize the model
+    split_in_directory(config=config)
+
+    # Augmentation handeling
     ###########################################################################
-    model_formicID = load_model(
+    save_augmentation(
+        image="data/top5species_Qlow/images/head/camponotus_hova/camponotus_hova_casent0101335_h.jpg",
         config=config,
     )
-    model_formicID = compile_model(
-        model=model_formicID,
-        config=config
+    show_augmentation_from_dir(
+        aug_dir="experiments\\T20_CaAll_QuL_ShH_AugH_D025_LR0001_E100\\summary\\augmented",
+        max_img=20,
+        n_cols=5,
     )
+
+    # Initialize the model
+    ###########################################################################
+    model_formicID = load_model(config=config)
+    model_formicID = compile_model(model=model_formicID, config=config)
+
     # Initialize logger
     ###########################################################################
-    # logger = [
-    #     build_mc(
-    #         config=config,
-    #         monitor='val_loss',
-    #         verbose=0,
-    #         mode='min',
-    #         save_best_only=True,
-    #         period=1
-    #     ),
-    #     build_rlrop(
-    #         monitor='val_loss',
-    #         factor=0.1,
-    #         patience=25,
-    #         verbose=1,
-    #         mode='min',
-    #         epsilon=1e-4,
-    #         cooldown=0,
-    #         min_lr=0
-    #     ),
-    #     build_es(
-    #         monitor='val_loss',
-    #         min_delta=0,
-    #         patience=50,
-    #         verbose=1,
-    #         mode='min'
-    #     ),
-    #     build_tb(
-    #         model=model_formicID,
-    #         config=config,
-    #         histogram_freq=0,
-    #         write_graph=True,
-    #         write_images=True
-    #     ),
-    #     build_csvl(
-    #         filename='log.csv',
-    #         config=config,
-    #         separator=',',
-    #         append=False)
-    # ]
+    logger = [
+        build_mc(
+            config=config,
+            monitor="val_loss",
+            verbose=0,
+            mode="min",
+            save_best_only=True,
+            period=1,
+        ),
+        build_rlrop(
+            monitor="val_loss",
+            factor=0.1,
+            patience=25,
+            verbose=1,
+            mode="min",
+            epsilon=1e-4,
+            cooldown=0,
+            min_lr=0,
+        ),
+        build_es(
+            monitor="val_loss", min_delta=0, patience=50, verbose=1, mode="min"
+        ),
+        build_tb(
+            model=model_formicID,
+            config=config,
+            histogram_freq=0,
+            write_graph=True,
+            write_images=True,
+        ),
+        build_csvl(
+            filename="log.csv", config=config, separator=",", append=False
+        ),
+    ]
+
     # Training in batches with iterator
     ###########################################################################
-    # history = trainer_dir(
-    #     model=model_formicID,
-    #     config=config,
-    #     callbacks=logger
-    # )
-    # trainer_csv(
-    #     model=model_formicID,
-    #     csv='data/top5species_Qlow/image_path.csv',
-    #     shottype='head',
-    #     config=config,
-    #     callbacks=None
-    # )
+    history = trainer_dir(
+        model=model_formicID, config=config, callbacks=logger
+    )
+    trainer_csv(
+        model=model_formicID,
+        csv="data/top5species_Qlow/image_path.csv",
+        shottype="head",
+        config=config,
+        callbacks=None,
+    )
+
     # Evaluation
     ###########################################################################
-    # plot_history(
-    #     history=history,
-    #     theme='ggplot'
-    # )
+    plot_history(history=history, theme="ggplot")
     model_formicID = weights_load(
-        model=model_formicID,
-        weights='experiments/weights_13-0.62.hdf5'
+        model=model_formicID, weights="experiments/weights_13-0.62.hdf5"
     )
-    evaluator(
-        model=model_formicID,
-        config=config
-    )
+    evaluator(model=model_formicID, config=config)
+
     # Testing
     # #########################################################################
-    Y_true, Y_pred, labels = predictor(
-        model=model_formicID,
-        config=config
-    )
+    Y_true, Y_pred, labels = predictor(model=model_formicID, config=config)
     plot_confusion_matrix(
         Y_pred=Y_pred,
         Y_true=Y_true,
         target_names=labels,
-        title='Confusion matrix',
+        title="Confusion matrix",
         cmap=None,
-        normalize=True
+        normalize=True,
     )
     predict_image_from_url(
         model=model_formicID,
-        url='https://www.antweb.org/images/casent0235370/casent0235370_h_1_high.jpg'
+        url="https://www.antweb.org/images/casent0235370/casent0235370_h_1_high.jpg",
     )
     K.clear_session()
-    logging.info('Logging ended on: {}'.format(today_timestr))
+    logging.info("Logging ended on: {}".format(today_timestr))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -8,10 +8,10 @@
 #                                  Utilitiies                                 #
 #                                                                             #
 ###############################################################################
-'''Description:
+"""Description:
 This file has code for generatl utility functions that can be used in other
 scripts.
-'''
+"""
 
 # Packages
 ###############################################################################
@@ -31,6 +31,8 @@ import requests
 
 # URL info
 ###############################################################################
+
+
 def get_url_info(input_url):
     """Provides status and information on the URL.
 
@@ -42,19 +44,19 @@ def get_url_info(input_url):
         URL information.
 
     """
-    print('URL:', input_url.url)
-    print('Connection status:', input_url.status_code)
-    print('Time elapsed to connect to URL:', input_url.elapsed)
-    print('URL headers:', input_url.headers)
-    print('URL type:', type(input_url.content))
+    print("URL:", input_url.url)
+    print("Connection status:", input_url.status_code)
+    print("Time elapsed to connect to URL:", input_url.elapsed)
+    print("URL headers:", input_url.headers)
+    print("URL type:", type(input_url.content))
 
 
 # Date and time stamps
 ###############################################################################
 # YYYYMMDD
-todaystr = datetime.date.today().strftime('%Y%m%d')
+todaystr = datetime.date.today().strftime("%Y%m%d")
 # YYYYMMDD_HHMMSS
-today_timestr = datetime.datetime.today().strftime('%Y%m%d_%H%M%S')
+today_timestr = datetime.datetime.today().strftime("%Y%m%d_%H%M%S")
 
 
 # Directory utilities
@@ -74,9 +76,11 @@ def create_dirs(dirs):
             if not os.path.exists(dir_):
                 os.makedirs(dir_)
         return 0
+
     except Exception as err:
         logging.error("Creating directories error: {0}".format(err))
         exit(-1)
+
 
 # Directory utilities
 ###############################################################################
@@ -92,9 +96,11 @@ def get_args():
     """
     argparser = argparse.ArgumentParser(description=__doc__)
     argparser.add_argument(
-        '-c', '--config',
-        metavar='C',
-        default='None',
-        help='The Configuration file')
+        "-c",
+        "--config",
+        metavar="C",
+        default="None",
+        help="The Configuration file",
+    )
     args = argparser.parse_args()
     return args

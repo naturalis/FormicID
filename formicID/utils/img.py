@@ -8,10 +8,10 @@
 #                                    Utilities                                #
 #                                 Image handeling                             #
 ###############################################################################
-'''Description:
+"""Description:
 This script contains several image related scripts that can be loaded in to
 other files.
-'''
+"""
 # Packages
 ###############################################################################
 
@@ -44,20 +44,14 @@ from .utils import wd
 # Load and show images
 ###############################################################################
 
-def show_img(
-    array
-):
+
+def show_img(array):
     image = array_to_img(array)
     plt.imshow(image)
     plt.show()
 
 
-def show_multi_img(
-    X_train,
-    Y_train,
-    cols=4,
-    rows=4
-):
+def show_multi_img(X_train, Y_train, cols=4, rows=4):
     """Plot n images of X_train using matplotlib.
 
     Args:
@@ -80,14 +74,12 @@ def show_multi_img(
         plt.imshow(img)
     plt.show()
 
+
 # Visualizing data agumentation
 ###############################################################################
 
 
-def save_augmentation(
-    image,
-    config
-):
+def save_augmentation(image, config):
     """This function returns 20 random augmented versions of an input image.
 
     Args:
@@ -99,34 +91,31 @@ def save_augmentation(
         experiment folder.
 
     """
-    if not os.path.exists(os.path.join(config.summary_dir, 'augmented')):
-        os.mkdir(os.path.join(config.summary_dir, 'augmented'))
-    augment_dir = os.path.join(config.summary_dir, 'augmented')
+    if not os.path.exists(os.path.join(config.summary_dir, "augmented")):
+        os.mkdir(os.path.join(config.summary_dir, "augmented"))
+    augment_dir = os.path.join(config.summary_dir, "augmented")
     filename, _ = os.path.split(image)
     filename = os.path.basename(filename)
     img_loaded = load_img(image)
     img = img_to_array(img_loaded)
     img = img.reshape((1,) + img.shape)
     i = 0
-    idgen = idg(target_gen='training')
+    idgen = idg(target_gen="training")
     for batch in idgen.flow(
         img,
         batch_size=1,
         save_to_dir=augment_dir,
         save_prefix=filename,
-        save_format='jpeg'
+        save_format="jpeg",
     ):
         i += 1
         if i > 19:
             break
-    logging.info('Augmented files can be found in {}'.format(augment_dir))
+
+    logging.info("Augmented files can be found in {}".format(augment_dir))
 
 
-def show_augmentation_from_dir(
-    aug_dir,
-    max_img,
-    n_cols=4
-):
+def show_augmentation_from_dir(aug_dir, max_img, n_cols=4):
     """Short summary.
 
     Args:
