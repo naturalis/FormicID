@@ -31,8 +31,6 @@ import numpy as np
 
 # Graphical tools imports
 import matplotlib.pyplot as plt
-
-# Additional project imports
 import PIL  # Imports PIL-SIMD. PIL is needed for load_img()
 
 # FormicID imports

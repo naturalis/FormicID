@@ -42,10 +42,10 @@ from keras.applications.inception_v3 import InceptionV3
 from keras.applications.resnet50 import ResNet50
 from keras.applications.xception import Xception
 from keras.layers import Dense
+from keras.layers import Dropout
 from keras.layers import GlobalAveragePooling2D
 from keras.layers import Input
 from keras.models import Model
-from keras.layers import Dropout
 from keras.optimizers import SGD
 from keras.optimizers import Adam
 from keras.optimizers import Nadam

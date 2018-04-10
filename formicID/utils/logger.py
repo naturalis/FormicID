@@ -22,10 +22,10 @@ import os
 import keras.backend as K
 from keras.callbacks import CSVLogger
 from keras.callbacks import EarlyStopping
+from keras.callbacks import History
 from keras.callbacks import ModelCheckpoint
 from keras.callbacks import ReduceLROnPlateau
 from keras.callbacks import TensorBoard
-from keras.callbacks import History
 
 # Data tools imports
 import numpy as np

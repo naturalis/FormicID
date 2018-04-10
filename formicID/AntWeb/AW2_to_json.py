@@ -21,8 +21,9 @@ import logging
 import os
 import sys
 import time
-from urllib.error import HTTPError
 from itertools import islice
+from urllib.error import HTTPError
+
 # Data tools imports
 import json
 import pandas as pd
@@ -31,8 +32,6 @@ from csv import Sniffer
 # Additional project imports
 import requests
 from tqdm import tqdm
-
-
 
 # Parameters and settings
 ###############################################################################

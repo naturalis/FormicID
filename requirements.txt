@@ -5,14 +5,15 @@
 # formicID/main.py: 25,26
 # formicID/models/build.py: 20,21,22,23,24,25,26
 # formicID/models/models.py: 40,41,42,43,44,45,46,47,48,49,50,51,52
-# formicID/testers/tester.py: 25,26,27,28
+# formicID/testers/tester.py: 29,30,31,32
 # formicID/trainers/train.py: 33,34,35,36,37,38,39,40,41
-# formicID/utils/img.py: 23,24,25,26
+# formicID/utils/img.py: 24,25,26,27
 # formicID/utils/logger.py: 22,23,24,25,26,27,28
 # formicID/utils/model_utils.py: 24,25,26,27,28
 Keras == 2.1.4
 
-# formicID/utils/img.py: 35
+# formicID/testers/tester.py: 40
+# formicID/utils/img.py: 34
 Pillow_SIMD == 4.3.0.post0
 
 # formicID/utils/load_config.py: 25
@@ -27,19 +28,19 @@ h5py == 2.8.0rc1.post0
 # formicID/AntWeb/json_to_csv.py: 24
 jmespath == 0.9.3
 
-# formicID/testers/tester.py: 36
-# formicID/utils/img.py: 32
+# formicID/testers/tester.py: 39
+# formicID/utils/img.py: 33
 # formicID/utils/logger.py: 34
 matplotlib == 2.2.2
 
 # formicID/data_loader/data_input.py: 62
-# formicID/testers/tester.py: 31
+# formicID/testers/tester.py: 35
 # formicID/trainers/train.py: 44
-# formicID/utils/img.py: 29
+# formicID/utils/img.py: 30
 # formicID/utils/logger.py: 31
 numpy == 1.14.2
 
-# formicID/AntWeb/AW2_to_json.py: 28
+# formicID/AntWeb/AW2_to_json.py: 29
 # formicID/AntWeb/AW3_to_json.py: 27
 # formicID/AntWeb/json_to_csv.py: 26
 # formicID/data_loader/data_input.py: 63
@@ -56,14 +57,15 @@ pydot_ng == 1.0.0
 # setup.py: 5
 pypandoc == 1.4
 
-# formicID/AntWeb/AW2_to_json.py: 32
+# formicID/AntWeb/AW2_to_json.py: 33
 # formicID/AntWeb/AW3_to_json.py: 30
 # formicID/data_scraper/scrape.py: 33
+# formicID/testers/tester.py: 43
 # formicID/utils/utils.py: 26
 requests == 2.18.4
 
 # formicID/data_loader/data_input.py: 64,65
-# formicID/testers/tester.py: 32
+# formicID/testers/tester.py: 36
 scikit_learn == 0.19.1
 
 # setup.py: 11
@@ -73,9 +75,9 @@ setuptools == 39.0.1
 # formicID/utils/model_utils.py: 23
 tensorflow == 1.7.0
 
-# formicID/AntWeb/AW2_to_json.py: 33
+# formicID/AntWeb/AW2_to_json.py: 34
 # formicID/AntWeb/AW3_to_json.py: 31
 # formicID/AntWeb/json_to_csv.py: 29
 # formicID/data_loader/data_input.py: 68
 # formicID/data_scraper/scrape.py: 34
-tqdm == 4.20.0
+tqdm == 4.21.0
