@@ -63,14 +63,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
 def main():
-    try:
-        args = get_args()
-        config = process_config(args.config)
-    except:
-        logging.error('Missing or invalid arguments.')
-        exit(0)
-    sess = tf.Session()
-    K.set_session(sess)
     # Logging
     ###########################################################################
     logging.basicConfig(
@@ -79,8 +71,18 @@ def main():
         filemode='w',
         level=logging.DEBUG
     )
-    logging.info('Keras version: {}'.format(keras_version))
     logging.info('Logging started on: {}'.format(today_timestr))
+    logging.info('Keras version: {}'.format(keras_version))
+    # Arguments
+    ###########################################################################
+    try:
+        args = get_args()
+        config = process_config(args.config)
+    except:
+        logging.error('Missing or invalid arguments.')
+        exit(0)
+    sess = tf.Session()
+    K.set_session(sess)
     # Creating a dataset
     ###########################################################################
     # get_dataset(

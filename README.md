@@ -5,43 +5,42 @@ _Classification of images of ants using deep learning_
 [![Build Status](https://travis-ci.org/naturalis/FormicID.svg?branch=master)](https://travis-ci.org/naturalis/FormicID) · [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/naturalis/FormicID/blob/master/LICENSE) · [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) · [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/naturalis/FormicID/graphs/commit-activity) · [![GitHub contributors](https://img.shields.io/github/contributors/naturalis/FormicID.svg)](https://GitHub.com/naturalis/FormicID/graphs/contributors/) · [![GitHub issues](https://img.shields.io/github/issues/naturalis/FormicID.svg)](https://github.com/naturalis/FormicID/issues)
 
 
-
-<!-- TOC depthFrom:1 depthTo:2 withLinks:1 updateOnSave:0 orderedList:0 -->
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [FormicID](#formicid)
-- [Description](#pencil-description)
-  - [Proposal](#blacknib-proposal)
-- [How to use](#arrowforward-how-to-use)
-  - [Step 1 - Get the code](#step-1-get-the-code)
-  - [Step 2 - Downloading the data](#step-2-downloading-the-data)
-  - [Step 3 - Configuration](#step-3-configuration)
-  - [Step 4 - Model initialisation and training](#step-4-model-initialisation-and-training)
-  - [Step 5 Evaluation](#step-5-evaluation)
-  - [Additional](#additional)
-- [Project Structure](#bookmark-project-structure)
-- [AntWeb](#ant-antweb)
-  - [AntWeb API](#satellite-antweb-api)
-  - [Images / Dataset](#openfilefolder-images-dataset)
-- [Neural Network](#computer-neural-network)
-  - [Ready to use models](#mag-ready-to-use-models)
-  - [Self-made model](#triangularruler-self-made-model)
-- [Requirements](#clipboard-requirements)
-- [Credits](#scroll-credits)
-- [Why this name, FormicID?](#exclamation-why-this-name-formicid)
+- [Description](#description)
+	- [Proposal](#proposal)
+- [How to use](#how-to-use)
+	- [Step 1 - Get the code](#step-1-get-the-code)
+	- [Step 2 - Downloading the data](#step-2-downloading-the-data)
+	- [Step 3 - Configuration](#step-3-configuration)
+	- [Step 4 - Model initialisation and training](#step-4-model-initialisation-and-training)
+	- [Step 5 - Evaluation](#step-5-evaluation)
+	- [Step 6 - Optional](#step-6-optional)
+- [Project Structure](#project-structure)
+- [AntWeb](#antweb)
+	- [AntWeb API](#antweb-api)
+	- [Images / Dataset](#images-dataset)
+- [Neural Network](#neural-network)
+	- [Ready to use models](#ready-to-use-models)
+	- [Self-made model](#self-made-model)
+- [Requirements](#requirements)
+- [Credits](#credits)
+- [Why this name, FormicID?](#why-this-name-formicid)
 
 <!-- /TOC -->
 
-# :pencil: Description
+# Description
 
 Code repository for CNN-based image classification of AntWeb images
 
 ![](https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true)
 
-## :black_nib: Proposal
+## Proposal
 
 The proposal can be found [here](https://github.com/naturalis/FormicID-proposal).
 
-# :arrow_forward: How to use
+# How to use
 
 ## Step 1 - Get the code
 
@@ -56,7 +55,7 @@ $ cd ./FormicID
 
 _Skip step 2 if you don't need to download the data._
 
-Create a 2 column csv file with the genus+species you want to download from AntWeb as follows:
+Create a 2 column .csv file with the genus + species specified for downloading from AntWeb. `indet` species will be skipped because it it just a aggregation of unidentified specimens within a genus. Species that will show `0` specimen count will also be skipped.
 
 genus  | species
 ------ | --------
@@ -64,8 +63,7 @@ genus1 | species1
 genus2 | species2
 ...    | ...
 
-
-Set the correct values for the following function. This function will download json files that will hold all the information on species (such as names, catalog identifier and URLs to images). Then it will filter out the relevant information for downloading and naming the images, after which it will download the images. Quality of images is one of: `low`, `medium`, `thumbview` or `high`.
+Next, set the correct values for the function below. This function will download json files that will hold all the information on species (such as names, catalog identifier and URLs to images). Then it will filter out the relevant information for downloading and naming the images, after which it will download the images. Quality of images is one of: `low`, `medium`, `thumbview` or `high`.
 
 ```python
 get_dataset(
@@ -84,8 +82,13 @@ get_dataset(
 Configure `formicID/configs/config.json`
 - Give the experiment a name.
 - Set a dataset to use.
-- Set the number of `epochs`, `iterations per epoch`, `learning rate`, `batch size`, `dropout` and `seed`.
-- Set the `model` to one of the Keras model applications that can be loaded from `models/models.py`:
+- Set the following (as integers):
+  - `epochs`
+  - `learning rate`
+  - `batch size`
+  - `dropout`
+  - `seed`
+- Set the `model` to one of:
   - `InceptionV3`
   - `Xception`
   - `Resnet50`
@@ -96,8 +99,8 @@ Configure `formicID/configs/config.json`
   - `Adam`
   - `RMSprop`
   - `SGD`
-- Set the test and validation split percentages as float.
-- Set the shottype to use (dorsal, head or profile).
+- Set the `test_split` and `val_split` percentages as float.
+- Set the `shottype` to use (`dorsal`, `head` or `profile`).
 
 ```json
 {
@@ -121,35 +124,39 @@ Configure `formicID/configs/config.json`
 
 Now you can run `formicID/main.py` with `config.json` as system argument and the data will be downloaded, split, and prepared. Then the model will be initialized, compiled and trained.
 
-## Step 5 Evaluation
+## Step 5 - Evaluation
 
-After training it will be possible to launch TensorBoard to view loss, accuracy, and top-3 accuracy for training and validation. Further callbacks,  loaded from `utils/logger.py`, are `EarlyStopping`, `ModelCheckpoint`, `CSVLogger` and `ReduceLROnPlateau`. Further evaluation options are:
+After training it will be possible to launch TensorBoard to view loss, accuracy, and top-3 accuracy for training and validation. Using `evaluator()` the test set could be run against the model to see test metrics.
+
+Possible callbacks, loaded using `utils/logger.py`, are `EarlyStopping`, `ModelCheckpoint`, `CSVLogger` and `ReduceLROnPlateau`.
+
+Further evaluation options are:
 - It is possible to plot these metrics using `plot_history()`.  
 - Predict labels for the test set using `predictor()`.
 - Predict the label for a URL retrieved image using `predict_image_from_url()`.
 - Plot a confusion matrix using the species names, true labels and predicted labels using `plot_confusion_matrix()`.
 
-## Additional
+## Step 6 - Optional
 
 Utilities that can be loaded are:
 - Image utilities
-  - Saving data augmentation examples of 1 sample image using (`save_augmentation()`).
-  - Viewing data augmentation for 1 sample images using  (`show_augmentation_from_dir()`).
-  - Viewing a few images using (`show_multi_img()`).
+  - Saving data augmentation examples of 1 sample image using `save_augmentation()`.
+  - Viewing data augmentation for 1 sample images using  `show_augmentation_from_dir()`.
+  - Viewing a few images using img`show_multi_imgimg()`.
 - Handeling models and weights.
-  - Saving a model using (`save_model()`).
-  - Loading a model from a file using ()`load_model_from_file()`).
-  - Saving weights using ()`weights_load()`).
-  - Model summary (`model_summary()`).
-  - Saving a models as configuation file (`model_config()`).
-  - Load a model from a configuration file (`model_from_config()`).
-  - Load a model from a JSON file (`model_from_architecture()`).
-  - Visualize the model (`model_visualization()`).
-  - Train using multiple GPUs (`make_multi_gpu()`).
+  - Saving a model using `save_model()`.
+  - Loading a model from a file using `load_model_from_file()`.
+  - Saving weights using `weights_load()`.
+  - Model summary `model_summary()`.
+  - Saving a models as configuation file `model_config()`.
+  - Load a model from a configuration file `model_from_config()`.
+  - Load a model from a JSON file `model_from_architecture()`.
+  - Visualize the model `model_visualization()`.
+  - Train using multiple GPUs `make_multi_gpu()`.
 - _More coming later_
 
 
-# :bookmark: Project Structure
+# Project Structure
 
 ```
 |-- formicID
@@ -179,7 +186,7 @@ Utilities that can be loaded are:
         |-- utils.py
 ```
 
-# :ant: AntWeb
+# AntWeb
 
 > AntWeb is the world's largest online database of images, specimen records, and natural history information on ants. It is community driven and open to contribution from anyone with specimen records, natural history comments, or images.
 
@@ -187,14 +194,14 @@ Utilities that can be loaded are:
 
 _Text is taken from [www.AntWeb.org](www.antweb.org)_
 
-## :satellite: AntWeb API
+## AntWeb API
 
 Images are harvested from [www.AntWeb.org](www.antweb.org). At this moment version 2 is used because version 3 was not released when the project started. Version 3 is also still in beta. Later, the scripts will be changed to use version 3.
 
 - [AntWeb API version 2](https://www.antweb.org/api/v2/)
 - [AntWeb API version 3 beta](https://www.antweb.org/documentation/api/apiV3.jsp)
 
-## :open_file_folder: Images / Dataset
+## Images / Dataset
 
 Below you can see two images representing the dataset. One is an image of _Lasius flavus_ and the other one is a mosaic of _Tetramorium gollum_ I made using the image set.
 
@@ -202,32 +209,32 @@ Below you can see two images representing the dataset. One is an image of _Lasiu
 |----------------------------------- | ----------------------------------|
 |![](https://github.com/naturalis/FormicID/blob/master/img/lasiusflavus.jpg?raw=true) | ![](https://github.com/naturalis/FormicID/blob/master/img/mosaic.jpg?raw=true)|
 
-# :computer: Neural Network
+# Neural Network
 
-## :mag: Ready to use models
+## Ready to use models
 
 - Inception v3 (recommended)
 - Xception (Inception based)
 - ResNet
 - DenseNet (ResNet based)
 
-## :triangular_ruler: Self-made model
+## Self-made model
 
 It is also possible to use a model made by the author by flagging the model in the configuration file as `Build`.
 
-# :clipboard: Requirements
+# Requirements
 
 - [Python3 (3.6)](https://www.python.org/downloads/release/python-364/)
 - [Keras | Why use Keras?](https://keras.io/why-use-keras/)
 - [Requirements](requirements.txt)
 
-# :scroll: Credits
+# Credits
 
 - Naturalis Biodiversity Center
 - Supervisor: dr. Rutger Vos
 - 2nd Corrector: dr. Jeremy Miller
 - [Bookmarks and Resources](docs/Bookmarks-and-resources.md)
 
-# :exclamation: Why this name, FormicID?
+# Why this name, FormicID?
 
 FormicID is a concatenation of Formicidae (the family name of ants) and identification
