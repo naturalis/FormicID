@@ -5,14 +5,14 @@
 # formicID/main.py: 25,26
 # formicID/models/build.py: 20,21,22,23,24,25,26
 # formicID/models/models.py: 40,41,42,43,44,45,46,47,48,49,50,51,52
-# formicID/testers/tester.py: 29,30,31,32
-# formicID/trainers/train.py: 33,34,35,36,37,38,39,40,41
+# formicID/testers/tester.py: 28,29,30,31
+# formicID/trainers/train.py: 35,36,37,38,39,40,41,42,43
 # formicID/utils/img.py: 24,25,26,27
 # formicID/utils/logger.py: 22,23,24,25,26,27,28
 # formicID/utils/model_utils.py: 24,25,26,27,28
 Keras == 2.1.4
 
-# formicID/testers/tester.py: 40
+# formicID/testers/tester.py: 39
 # formicID/utils/img.py: 34
 Pillow_SIMD == 4.3.0.post0
 
@@ -28,14 +28,14 @@ h5py == 2.8.0rc1.post0
 # formicID/AntWeb/json_to_csv.py: 24
 jmespath == 0.9.3
 
-# formicID/testers/tester.py: 39
+# formicID/testers/tester.py: 38
 # formicID/utils/img.py: 33
 # formicID/utils/logger.py: 34
 matplotlib == 2.2.2
 
 # formicID/data_loader/data_input.py: 62
-# formicID/testers/tester.py: 35
-# formicID/trainers/train.py: 44
+# formicID/testers/tester.py: 34
+# formicID/trainers/train.py: 46
 # formicID/utils/img.py: 30
 # formicID/utils/logger.py: 31
 numpy == 1.14.2
@@ -45,7 +45,7 @@ numpy == 1.14.2
 # formicID/AntWeb/json_to_csv.py: 26
 # formicID/data_loader/data_input.py: 63
 # formicID/data_scraper/scrape.py: 30
-# formicID/trainers/train.py: 45
+# formicID/trainers/train.py: 47
 pandas == 0.22.0
 
 # setup.py: 2
@@ -60,12 +60,12 @@ pypandoc == 1.4
 # formicID/AntWeb/AW2_to_json.py: 33
 # formicID/AntWeb/AW3_to_json.py: 30
 # formicID/data_scraper/scrape.py: 33
-# formicID/testers/tester.py: 43
+# formicID/testers/tester.py: 42
 # formicID/utils/utils.py: 26
 requests == 2.18.4
 
 # formicID/data_loader/data_input.py: 64,65
-# formicID/testers/tester.py: 36
+# formicID/testers/tester.py: 35
 scikit_learn == 0.19.1
 
 # setup.py: 11

@@ -56,8 +56,6 @@ $ cd ./FormicID
 
 _Skip step 2 if you don't need to download the data._
 
-### Step 2.1 - Which species
-
 Create a 2 column csv file with the genus+species you want to download from AntWeb as follows:
 
 genus  | species
@@ -66,44 +64,27 @@ genus1 | species1
 genus2 | species2
 ...    | ...
 
-## Step 2.2 - Get the species information
 
-Uncomment the `urls_to_json()` function. This will download all the JSON objects for your species, but it will ignore `indet` species if these are in the csv file (because this is not a set of real species). Set the following arguments in `urls_to_json`:
+Set the correct values for the following function. This function will download json files that will hold all the information on species (such as names, catalog identifier and URLs to images). Then it will filter out the relevant information for downloading and naming the images, after which it will download the images. Quality of images is one of: `low`, `medium`, `thumbview` or `high`.
 
-- `csv_file`: csvfile name
-- `input_dir`: input directory
-- `output_dir`: output directory
-- `offset_set`: offset
-- `limit_set`: limit
-
-## Step 2.3 - Format the species information
-
-Uncomment the `batch_json_to_csv()` function. This will create a csv file with the relevant information for downloading and naming images correctly to the output folder. Set the following arguments in `batch_json_to_csv`):
-
-- `input_dir`: input directory
-- `output_dir`: output directory
-- `csvname`: csv name for the new csv
-
-## Step 2.4 - Download the images
-
-Uncomment the `image_scraper()` function. This will download the images to an output folder, split by shottype, and then by species.
-
-> The csv file from step 2.3 could contain some unvalid URLs and these will be repaired if you flag `image_scraper(update=True)`. This will repair broken URls (usually from `blf` or `hjr` collections because AntWebs API changes `(` and `)` to `_`).
-
-Set the following settings in `image_scraper()`:
-
-- `csvfile`: csv file from step 2.3
-- `input_dir`: input_dir directory of the csv file
-- `start`: start number (line where to start in the csv file)
-- `end`: end number (line where to end in the csv file)
-- `output_dir_name`: directory name for the images
-- `update`: update (whether to update the csv file for broken urls or not)
+```python
+get_dataset(
+    input='species.csv',    # The csv file from step `2.1.
+    n_jsonfiles=5,          # Set a max number of JSON files to download.
+    config=config,          # The configuration file.
+    quality='low',          # The quality of images.
+    update=True,            # Whether to update for broken URLs.
+    offset_set=0,           # The offset for specimens in a JSON file.
+    limit_set=9999          # The specimen limit in a JSON file.
+)
+```
 
 ## Step 3 - Configuration
 
 Configure `formicID/configs/config.json`
 - Give the experiment a name.
-- Set the number of `epochs`, `iterations per epoch`, `learning rate`, `batch size`, `dropout` and `seed`
+- Set a dataset to use.
+- Set the number of `epochs`, `iterations per epoch`, `learning rate`, `batch size`, `dropout` and `seed`.
 - Set the `model` to one of the Keras model applications that can be loaded from `models/models.py`:
   - `InceptionV3`
   - `Xception`
@@ -115,74 +96,82 @@ Configure `formicID/configs/config.json`
   - `Adam`
   - `RMSprop`
   - `SGD`
+- Set the test and validation split percentages as float.
+- Set the shottype to use (dorsal, head or profile).
 
 ```json
 {
-    "exp_name": "test1",
-    "num_epochs": 5,
-    "num_iter_per_epoch": 10,
-    "learning_rate": 0.001,
-    "batch_size": 10,
+    "exp_name": "experiment_name",
+    "data_set": "dataset_name",
+    "batch_size": 32,
     "dropout": 0.5,
-    "optimizer": "Nadam",
+    "learning_rate": 0.001,
     "model": "InceptionV3",
-    "seed": 1
+    "num_epochs": 100,
+    "num_iter_per_epoch": 32,
+    "optimizer": "Nadam",
+    "seed": 1,
+    "test_split": 0.1,
+    "val_split": 0.2,
+    "shottype": "head"
 }
 ```
 
 ## Step 4 - Model initialisation and training
 
-Now you can run `formicID/main.py` with `config.json` as argument and the data will be downloaded, split, and prepared using the `load_data()` function from `data_loader/data_input.py` where the shottype can be specified. Then the model will be loaded that is specified in the configuration file. The trainer is loaded from `trainers/train.py` and training will begin.
+Now you can run `formicID/main.py` with `config.json` as system argument and the data will be downloaded, split, and prepared. Then the model will be initialized, compiled and trained.
 
 ## Step 5 Evaluation
 
-After training it will be possible to launch TensorBoard to view loss, accuracy, and RMSE for training and validation. Further callbacks are `EarlyStopping` and `ModelCheckpoint`. Callbacks are loaded from `utils/logger.py`
+After training it will be possible to launch TensorBoard to view loss, accuracy, and top-3 accuracy for training and validation. Further callbacks,  loaded from `utils/logger.py`, are `EarlyStopping`, `ModelCheckpoint`, `CSVLogger` and `ReduceLROnPlateau`. Further evaluation options are:
+- It is possible to plot these metrics using `plot_history()`.  
+- Predict labels for the test set using `predictor()`.
+- Predict the label for a URL retrieved image using `predict_image_from_url()`.
+- Plot a confusion matrix using the species names, true labels and predicted labels using `plot_confusion_matrix()`.
 
 ## Additional
 
 Utilities that can be loaded are:
-
-- Saving examples of data augmentation (`utils/img.py`)
-- Visualizing a few of images in a plot (`utils/img.py`)
-- Handeling models (e.g. saving, loading, visualizing, etc.) (`utils/model_utils.py`)
-- Training on multiple GPUs (`utils/model_utils.py`)
-- The `utils/load_config.py` is for reading the configuration file from step 3.
-- `utils/utils.py` has general utility functions and variables.
+- Image utilities
+  - Saving data augmentation examples of 1 sample image using (`save_augmentation()`).
+  - Viewing data augmentation for 1 sample images using  (`show_augmentation_from_dir()`).
+  - Viewing a few images using (`show_multi_img()`).
+- Handeling models and weights.
+  - Saving a model using (`save_model()`).
+  - Loading a model from a file using ()`load_model_from_file()`).
+  - Saving weights using ()`weights_load()`).
+  - Model summary (`model_summary()`).
+  - Saving a models as configuation file (`model_config()`).
+  - Load a model from a configuration file (`model_from_config()`).
+  - Load a model from a JSON file (`model_from_architecture()`).
+  - Visualize the model (`model_visualization()`).
+  - Train using multiple GPUs (`make_multi_gpu()`).
 - _More coming later_
 
-_To be continued_
 
 # :bookmark: Project Structure
 
 ```
 |-- formicID
-    |-- __init__.py
     |-- main.py
     |-- AntWeb
-    |   |-- __init__.py
     |   |-- AW2_to_json.py
     |   |-- AW3_to_json.py    
     |   |-- json_to_csv.py
     |-- configs
     |   |-- config.json
     |-- data_loader
-    |   |-- __init__.py
     |   |-- data_input.py
     |-- data_scraper
-    |   |-- __init__.py
     |   |-- scrape.py
     |-- models
-    |   |-- __init__.py
     |   |-- build.py
     |   |-- models.py
     |-- testers
-    |   |-- __init__.py
     |   |-- tester.py
     |-- trainers
-    |   |-- __init__.py
     |   |-- train.py
     |-- utils
-        |-- __init__.py
         |-- img.py
         |-- load_config.py
         |-- logger.py
@@ -196,11 +185,11 @@ _To be continued_
 
 > Our mission is to publish for the scientific community high quality images of all the world's ant species. AntWeb provides tools for submitting images, specimen records, annotating species pages, and managing regional species lists.
 
-_Text from Antweb.org_
+_Text is taken from [www.AntWeb.org](www.antweb.org)_
 
 ## :satellite: AntWeb API
 
-Images are harvested from [`www.AntWeb.org`](www.antweb.org). At this moment version 2 is used because version 3 was not released when the project started. Version 3 is also still in beta. Later, the scripts will be changed to use version 3.
+Images are harvested from [www.AntWeb.org](www.antweb.org). At this moment version 2 is used because version 3 was not released when the project started. Version 3 is also still in beta. Later, the scripts will be changed to use version 3.
 
 - [AntWeb API version 2](https://www.antweb.org/api/v2/)
 - [AntWeb API version 3 beta](https://www.antweb.org/documentation/api/apiV3.jsp)
@@ -218,17 +207,17 @@ Below you can see two images representing the dataset. One is an image of _Lasiu
 ## :mag: Ready to use models
 
 - Inception v3 (recommended)
-- Xception
+- Xception (Inception based)
 - ResNet
-- DenseNet
+- DenseNet (ResNet based)
 
 ## :triangular_ruler: Self-made model
 
-It will also be possible to use a model made by the author.
+It is also possible to use a model made by the author by flagging the model in the configuration file as `Build`.
 
 # :clipboard: Requirements
 
-- [Python3 (3.6)](https://www.python.org/downloads/release/python-364/) 
+- [Python3 (3.6)](https://www.python.org/downloads/release/python-364/)
 - [Keras | Why use Keras?](https://keras.io/why-use-keras/)
 - [Requirements](requirements.txt)
 

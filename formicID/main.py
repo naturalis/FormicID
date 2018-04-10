@@ -32,6 +32,7 @@ from models.models import compile_model
 from models.models import load_model
 from testers.tester import evaluator
 from testers.tester import plot_confusion_matrix
+from testers.tester import predict_image_from_url
 from testers.tester import predictor
 from trainers.train import trainer_csv
 from trainers.train import trainer_dir
@@ -177,6 +178,10 @@ def main():
     # )
     # Evaluation
     ###########################################################################
+    # plot_history(
+    #     history=history,
+    #     theme='ggplot'
+    # )
     model_formicID = weights_load(
         model=model_formicID,
         weights='experiments/weights_13-0.62.hdf5'
@@ -185,10 +190,6 @@ def main():
         model=model_formicID,
         config=config
     )
-    # plot_history(
-    #     history=history,
-    #     theme='ggplot'
-    # )
     # Testing
     # #########################################################################
     Y_true, Y_pred, labels = predictor(
@@ -201,7 +202,11 @@ def main():
         target_names=labels,
         title='Confusion matrix',
         cmap=None,
-        normalize=False
+        normalize=True
+    )
+    predict_image_from_url(
+        model=model_formicID,
+        url='https://www.antweb.org/images/casent0235370/casent0235370_h_1_high.jpg'
     )
     K.clear_session()
     logging.info('Logging ended on: {}'.format(today_timestr))

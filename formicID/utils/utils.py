@@ -39,7 +39,7 @@ def get_url_info(input_url):
             create_url().
 
     Returns:
-        type: information on the URL
+        URL information.
 
     """
     print('URL:', input_url.url)
@@ -68,8 +68,6 @@ def create_dirs(dirs):
     Args:
         dirs (list): A list of directory names..
 
-    Returns:
-        Creates directories.
     """
     try:
         for dir_ in dirs:

@@ -17,9 +17,11 @@ also augments the images with different methods, and a val_data_generator which
 does only preprocess the data. Validation data should not be augmented. The
 `preprocessing_function` is needed for the inception_v3 model. It scales the
 pixels in  `[-1, 1]`, samplewise and using the following calculation:
+
     `x /= 127.5
      x -= 1.
      return x`
+
 '''
 
 # Packages
@@ -548,8 +550,8 @@ def trainer_csv(model,
 def idg(
     target_gen='training'
 ):
-    """Initialize an augmentation generator for validation. Validation data
-    should not be augmentatd, only correctly preprocessed for the model.
+    """Initialize an augmentation generator for either a `training`,
+    `validation`, `test` dataset.
 
     Args:
         target_gen (str): Should be either `training`, `validation`, or
@@ -559,7 +561,7 @@ def idg(
         generator: A Keras image data generator object.
 
     Raises:
-        ValueError: If target_gen is not set correctly.
+        ValueError: If target_gen is not set to acorrectly value.
 
     """
     if target_gen not in [
@@ -596,17 +598,21 @@ def _data_generator_dir(
     shottype='head',
     target_gen='training'
 ):
-    """Short summary.
+    """Generator for reading images out of directories. Can be used for a
+    `training`, `validation` or `test` set. `Validation` and `test` sets will
+    not be shuffled.
 
     Args:
-        dataset (type): Description of parameter `dataset`.
-        config (type): Description of parameter `config`.
-        shottype (type): Description of parameter `shottype`.
-        target_gen (str): Should be either `training`, `validation`, or
-            `test`. Defaults to `training`..
+        dataset (str): Description of parameter `dataset`.
+        config (Bunch object): The JSON configuration Bunch object.
+        shottype (str): Sets the shottype for the dataset. Defaults to 'head'.
+        target_gen (str): Sets the generator to either `training`,
+            `validation` or `test.`. Defaults to 'training'.
 
     Returns:
-        type: Description of returned object.
+        Image directory generator.
+        list: A list of all classes.
+        dict: A dictionary mapping of the classes.
 
     """
     batch_size = config.batch_size
@@ -647,19 +653,20 @@ def trainer_dir(
     config,
     callbacks=None
 ):
-    """Short summary.
+    """The directory trainer. This combines the validation and training data
+        generators and trains on the input model.
 
     Args:
-        model (type): Description of parameter `model`.
-        config (type): Description of parameter `config`.
-        callbacks (type): Description of parameter `callbacks`. Defaults to
-            None.
+        model (Keras model instance): A trained Keras model instance.
+        config (Bunch object): The JSON configuration Bunch object.
+        callbacks (type): A list of the callbacks for viewing training and
+            validation metrics. Defaults to None.
 
     Returns:
-        type: Description of returned object.
+        Keras History instance with training and validation metrics.
 
     """
-    steps_per_epoch = config.num_iter_per_epoch
+    # steps_per_epoch = config.num_iter_per_epoch
     epochs = config.num_epochs
     batch_size = config.batch_size
     dataset = config.data_set
@@ -670,18 +677,20 @@ def trainer_dir(
         config=config,
         target_gen='training'
     )
+    train_samples = train_data_gen_dir.samples
     val_data_gen_dir, _, _ = _data_generator_dir(
         dataset=dataset,
         shottype=shottype,
         config=config,
         target_gen='validation'
     )
+    val_samples = val_data_gen_dir.samples
     history = model.fit_generator(
         generator=train_data_gen_dir,
-        steps_per_epoch=steps_per_epoch,  # Fix by using samples // batch size
+        steps_per_epoch=train_samples // batch_size,
         epochs=epochs,
         validation_data=val_data_gen_dir,
-        validation_steps=steps_per_epoch,  # Fix by using samples // batch size
+        validation_steps=val_samples // batch_size,
         callbacks=callbacks
     )
 

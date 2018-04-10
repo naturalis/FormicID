@@ -53,7 +53,7 @@ def save_model(model, filename, config):
         config (Bunch object): The JSON configuration Bunch object.
 
     Returns:
-        file: A `.h5` file of the model.
+        A `.h5` file of the model.
 
     """
     out = os.path.join(config.checkpoint_dir, filename)
@@ -70,7 +70,7 @@ def load_model_from_file(filename, input_dir):
         input_dir (path): the directory that holds the model.
 
     Returns:
-        Keras model instance: A Keras model instance.
+        A Keras model instance.
 
     """
     input_model = os.path.join(wd, input_dir, filename)
@@ -84,11 +84,11 @@ def weights_save(model, filename, config):
 
     Args:
         model (Keras model instance): A Keras model instance.
-        filename (str): Description of parameter `filename`.
+        filename (str): Filename for the weights.
         config (Bunch object): The JSON configuration Bunch object.
 
     Returns:
-        file: A `.h5` file.
+        A `.h5` file that holds weights.
 
     """
     out = os.path.join(config.checkpoint_dir, filename)
@@ -97,14 +97,14 @@ def weights_save(model, filename, config):
 
 
 def weights_load(model, weights):
-    """Short summary.
+    """Loads weights in to a model.
 
     Args:
         model (Keras model instance): A Keras model instance.
         weights (str): Path to weights file.
 
     Returns:
-        Keras model instance: A model with its weights initialized.
+        A model with weights initialized.
 
     """
     model.load_weights(weights)
@@ -119,7 +119,7 @@ def model_summary(model):
         model (Keras model instance): A Keras model instance.
 
     Returns:
-        str: A summary
+        str: A summary for the model.
 
     """
     summary = model.summary()
@@ -133,7 +133,7 @@ def model_config(model):
         model (Keras model instance): A Keras model instance.
 
     Returns:
-        dict: A dictionary containing the configuration of the model
+        dict: A dictionary containing the configuration of the model.
 
     """
     config = model.config()
@@ -148,7 +148,7 @@ def model_from_config(config):
         config (JSON object): The config file that holds a Keras model instance.
 
     Returns:
-        Keras model instance: A Keras model instance.
+        A Keras model instance.
 
     """
     config = model.get_config()
