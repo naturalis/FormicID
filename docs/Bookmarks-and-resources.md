@@ -53,6 +53,7 @@
 - [Deep learning for complete beginners: neural network fine-tuning techniques](https://cambridgespark.com/content/tutorials/neural-networks-tuning-techniques/index.html)
 - ["Convolutional neural networks (CNN) tutorial"](https://jhui.github.io/2017/03/16/CNN-Convolutional-neural-network/)
 - [Introduction to Convolutional Neural Networks](https://rubikscode.net/2018/02/26/introduction-to-convolutional-neural-networks/)
+- [how to use fit_generator with multiple image inputs](https://github.com/keras-team/keras/issues/8130)
 
 #### Visuazizing Keras
 
