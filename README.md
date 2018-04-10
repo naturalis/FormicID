@@ -140,19 +140,19 @@ Further evaluation options are:
 
 Utilities that can be loaded are:
 - Image utilities
-  - Saving data augmentation examples of 1 sample image using `save_augmentation()`.
-  - Viewing data augmentation for 1 sample images using  `show_augmentation_from_dir()`.
-  - Viewing a few images using img`show_multi_imgimg()`.
+  - Saving data augmentation examples of 1 sample image `save_augmentation()`.
+  - Viewing data augmentation for 1 sample images  `show_augmentation_from_dir()`.
+  - Viewing a few images `show_multi_imgimg()`.
 - Handeling models and weights.
-  - Saving a model using `save_model()`.
-  - Loading a model from a file using `load_model_from_file()`.
-  - Saving weights using `weights_load()`.
+  - Saving a model `save_model()`.
+  - Loading a model from a file `load_model_from_file()`.
+  - Saving weights `weights_load()`.
   - Model summary `model_summary()`.
   - Saving a models as configuation file `model_config()`.
   - Load a model from a configuration file `model_from_config()`.
   - Load a model from a JSON file `model_from_architecture()`.
   - Visualize the model `model_visualization()`.
-  - Train using multiple GPUs `make_multi_gpu()`.
+  - Train multiple GPUs `make_multi_gpu()`.
 - _More coming later_
 
 
