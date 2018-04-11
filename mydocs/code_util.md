@@ -84,7 +84,7 @@ pigar
 ### Format code using black
 
 ```sh
-black /Users/nijram13/Google\ Drive/4.\ Biologie/Studie\ Biologie/Master\ Year\ 2/Internship\ CNN/8.\ FormicID/FormicID/formicID -l 79
+black FormicID -l 79
 ```
 
 ### Delete all .DS_Store in project folders
