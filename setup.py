@@ -37,7 +37,7 @@ requires_python = ">=3.6.0"
 version = None
 
 with open('requirements.txt') as f:
-    required = f.read().splitlines()
+    required = f.readlines()
 
 # required = [
 #     "Keras == 2.1.4",
