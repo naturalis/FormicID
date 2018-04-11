@@ -81,6 +81,12 @@ pigar
 
 ## Additional
 
+### Format code using black
+
+```sh
+black /Users/nijram13/Google\ Drive/4.\ Biologie/Studie\ Biologie/Master\ Year\ 2/Internship\ CNN/8.\ FormicID/FormicID/formicID -l 79
+```
+
 ### Delete all .DS_Store in project folders
 These files happen to break the script as it sometimes needs to know which files there are in a folder, and how many. These files cause no harm, as they store information on MacOS on how the finder window is set. They can be deleted savely. __Run this script only in the project folder directory!__
 

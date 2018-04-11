@@ -232,19 +232,13 @@ def plot_confusion_matrix(
 ###############################################################################
 
 
-# def plot_predictions(
-#     n_images,
-#     n_cols,
-#     # predictions=None
-# ):
+# def plot_predictions(n_images, n_cols, predictions=None):
 #     n_rows = int(ceil(max_img // n_cols))
 #     fig, axes = plt.subplots(n_row, n_cols, figsize=(10, 10))
 #
 #     test_data_gen_dir, classes, class_indices = _data_generator_dir(
-#         dataset=dataset,
-#         config=config,
-#         shottype=shottype,
-#         target_gen='test')
+#         dataset=dataset, config=config, shottype=shottype, target_gen="test"
+#     )
 #
 #     for i in range(n_row):
 #         for j in range(n_col):
@@ -253,40 +247,43 @@ def plot_confusion_matrix(
 #                 print(images)
 #             except:
 #                 break
+#
 #             axes[j][k].set_axis_off()
 #             if i_inds < N:
-#                 axes[j][k].imshow(X[i_data,...], interpolation='nearest')
-#                 label = labels[np.argmax(Y[i_data,...])]
+#                 axes[j][k].imshow(X[i_data, ...], interpolation="nearest")
+#                 label = labels[np.argmax(Y[i_data, ...])]
 #                 axes[j][k].set_title(label)
 #                 if predictions is not None:
-#                     pred = labels[np.argmax(predictions[i_data,...])]
+#                     pred = labels[np.argmax(predictions[i_data, ...])]
 #                     if label != pred:
 #                         label += " n"
-#                         axes[j][k].set_title(pred, color='red')
+#                         axes[j][k].set_title(pred, color="red")
 #
 #     fig.set_tight_layout(True)
-#       return(fig)
-# --------
+#
+#     return(fig)
+#
 #     for prediction in Y_pred:
 #         for classe in classes:
 #             key, value = class_indices.get()
 #             if value == prediction:
-#                 print('5:', prediction, key, classes)
-#     print('6:',predictions)
-# --------
+#                 print("5:", prediction, key, classes)
+#     print("6:", predictions)
+#
 #     for images, labels in test_data_gen_dir:
 #         labs = [i.argmax() for i in labels]
 #         for key, value in class_indices.items():
 #             if value == labs:
 #                 print(labs, key)
-#             plt.imshow(images[i,:,:,:])
-#             plt.title('title')
+#             plt.imshow(images[i, :, :, :])
+#             plt.title("title")
 #             plt.show()
 #     for image in images:
 #         for lab in labs:
-# -----------
-#     x, y in next(test_data_gen_dir)
-#     for j in range(0,5):
+#             break
+#
+#     x, y = next(test_data_gen_dir)
+#     for j in range(5):
 #         image = x[j]
 #         plt.imshow(image)
 #         plt.show()
