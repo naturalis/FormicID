@@ -1,0 +1,6 @@
+site_name: FormicID Documentation
+theme: rtd-dropdown
+repo-url: http://github.com/naturalis/FormicID/
+site-description: 'Documentation for FormicID'
+pages:
+    - Home: 'index.md'

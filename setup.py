@@ -36,7 +36,7 @@ author = "Marijn J. A. Boer"
 requires_python = ">=3.6.0"
 version = None
 
-with open('requirements.txt') as f:
+with open("requirements.txt") as f:
     required = f.readlines()
 
 # required = [
