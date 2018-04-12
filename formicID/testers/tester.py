@@ -85,8 +85,8 @@ def evaluator(model, config):
 ###############################################################################
 
 
-def predictor(model, config):
-    """Returns the predition of labels for the test set.
+def predictor(model, config, plot=False, n_img=None, n_cols=None):
+    """Returns the prediction of labels for the test set.
 
     Args:
         model (Keras model instance): A trained Keras model instance.
@@ -96,6 +96,8 @@ def predictor(model, config):
         True labels, predicted labels and the label names.
 
     """
+    if plot == False:
+        n_img, n_cols = None, None
     dataset = config.data_set
     shottype = config.shottype
     test_data_gen_dir, classes, class_indices = _data_generator_dir(
@@ -103,24 +105,45 @@ def predictor(model, config):
     )
     labels = class_indices.keys()
     Y_true = classes
-    # print('\nClasses indices from gen:', class_indices)
-    # print('\nY_true before argmax:', Y_true)
+    # print("Classes indices from gen:", class_indices)
     Y_pred = model.predict_generator(test_data_gen_dir, verbose=0)
+    # print('Y_true before argmax:', Y_true)
+    # print('Y_pred before argmax:',Y_pred)
     # Y_true = K.argmax(to_categorical(Y_true, 5), axis=-1)
-    Y_true = [i for i in Y_true]
-    # print('\nY_pred before argmax:',Y_pred)
     # Y_pred = K.argmax(to_categorical(Y_pred, 5), axis=-1)
+    Y_true = [i for i in Y_true]
     Y_pred = [i.argmax() for i in Y_pred]
-    # print('\nY_true after argmax:', Y_true)
-    # print('\nY_pred after argmax:', Y_pred)
-    return Y_true, Y_pred, labels
+    # print("Y_true after argmax:", Y_true)
+    # print("Y_pred after argmax:", Y_pred)
+    # for i in Y_pred:
+    #     for j in Y_true:
+    #         if i == value in class_indices.items():
+    #             print(i, key, j)
+    if plot == True:
+        n_rows = int(ceil(n_img // n_cols))
+        fig = plt.figure()
+        for i in range(1, n_img + 1):
+            x, y = next(test_data_gen_dir)
+            sub = plt.subplots(n_rows, n_cols, figsize=(10, 10))
+            # sub.set_title('y')
+            # sub.axis("off")
+            sub.imshow(data[x])
+        plt.show()
+
+    return Y_true, Y_pred, labels, class_indices
 
 
 # Predict one image
 ###############################################################################
 
 
-def predict_image_from_url(model, url):
+def _process_species_dict(dict, species):
+    for k, v in dict.items():
+        if v == species:
+            return str(k)
+
+
+def predict_image_from_url(model, url, species_dict=None):
     """Predict the label from one image retrieved by an URL.
 
     Args:
@@ -145,13 +168,19 @@ def predict_image_from_url(model, url):
     response = requests.get(url)
     print("Predicting: {}".format(url))
     image = Image.open(BytesIO(response.content))
+    plt.imshow(image)
     image = img_to_array(image)
     image = preprocess_input(image)
     image = image.reshape((1,) + image.shape)
     prediction = model.predict(image, batch_size=None, verbose=0, steps=None)
     pred = prediction.argmax()
-    # TODO: fix prediction as a number, to show as species name
-    print("Predicted species: {}".format(pred))
+    species = _process_species_dict(species_dict, pred)
+    species = species.capitalize()
+    species = species.replace("_", " ")
+    print("Predicted species: {}".format(species))
+
+    plt.title("Predicted species: {}".format(species))
+    plt.show()
 
 
 # Plotting a confusion matrix
@@ -189,7 +218,7 @@ def plot_confusion_matrix(
     misclass = 1 - accuracy
     if cmap is None:
         cmap = plt.get_cmap("Blues")
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(8, 8))
     plt.imshow(cm, interpolation="nearest", cmap=cmap)
     plt.title(title)
     plt.colorbar()
@@ -232,58 +261,49 @@ def plot_confusion_matrix(
 ###############################################################################
 
 
-# def plot_predictions(n_images, n_cols, predictions=None):
-#     n_rows = int(ceil(max_img // n_cols))
-#     fig, axes = plt.subplots(n_row, n_cols, figsize=(10, 10))
-#
+# def plot_predictions(, predictions=None):
+#     dataset = config.data_set
+#     shottype = config.shottype
 #     test_data_gen_dir, classes, class_indices = _data_generator_dir(
 #         dataset=dataset, config=config, shottype=shottype, target_gen="test"
 #     )
+
+
 #
-#     for i in range(n_row):
-#         for j in range(n_col):
-#             try:
-#                 images = X_test[i * n_cols + j]
-#                 print(images)
-#             except:
-#                 break
+# for i in range(n_rows):
+#     for j in range(n_cols):
+# for img in img_list[0:max_img]:
+#     image = load_img(path=os.path.join(aug_dir, img))
+#     fig.add_subplot(n_rows, n_cols, i)
+#     plt.imshow(image)
+# plt.show()
 #
-#             axes[j][k].set_axis_off()
-#             if i_inds < N:
-#                 axes[j][k].imshow(X[i_data, ...], interpolation="nearest")
-#                 label = labels[np.argmax(Y[i_data, ...])]
-#                 axes[j][k].set_title(label)
-#                 if predictions is not None:
-#                     pred = labels[np.argmax(predictions[i_data, ...])]
-#                     if label != pred:
-#                         label += " n"
-#                         axes[j][k].set_title(pred, color="red")
 #
-#     fig.set_tight_layout(True)
 #
-#     return(fig)
+#         axes[j][k].set_axis_off()
+#         if i_inds < N:
+#             axes[j][k].imshow(X[i_data, ...], interpolation="nearest")
+#             label = labels[np.argmax(Y[i_data, ...])]
+#             axes[j][k].set_title(label)
+#             if predictions is not None:
+#                 pred = _process_species_dict(species_dict, pred)
+#                 if label != pred:
+#                     label += " n"
+#                     axes[j][k].set_title(pred, color="red")
 #
-#     for prediction in Y_pred:
-#         for classe in classes:
-#             key, value = class_indices.get()
-#             if value == prediction:
-#                 print("5:", prediction, key, classes)
-#     print("6:", predictions)
+# fig.set_tight_layout(True)
 #
-#     for images, labels in test_data_gen_dir:
-#         labs = [i.argmax() for i in labels]
-#         for key, value in class_indices.items():
-#             if value == labs:
-#                 print(labs, key)
-#             plt.imshow(images[i, :, :, :])
-#             plt.title("title")
-#             plt.show()
-#     for image in images:
-#         for lab in labs:
-#             break
+# return(fig)
 #
-#     x, y = next(test_data_gen_dir)
-#     for j in range(5):
-#         image = x[j]
-#         plt.imshow(image)
+#
+# for images, labels in test_data_gen_dir:
+#     labs = [i.argmax() for i in labels]
+#     for key, value in class_indices.items():
+#         if value == labs:
+#             print(labs, key)
+#         plt.imshow(images[i, :, :, :])
+#         plt.title("title")
 #         plt.show()
+# for image in images:
+#     for lab in labs:
+#         break
