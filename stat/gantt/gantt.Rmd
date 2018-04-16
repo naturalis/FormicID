@@ -10,7 +10,7 @@ library(timevis)
 ```
 
 ```{r data handeling, echo = FALSE}
-data <- data.frame(read.csv('gantt.csv', sep = ';'))
+data <- data.frame(read.csv('gantt/gantt.csv', sep = ';'))
 data$subgroup
 groups <- data.frame(
     id = c('Internship', 'Other'),
