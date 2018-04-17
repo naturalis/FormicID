@@ -240,3 +240,14 @@ horizontal_flip=True
 - Epoch 00097: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
 
 ![](/docs_experiments/T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100-2.png)
+
+#### T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4
+- InceptionResNetV2 did not work with `batch_size = 64` due to memory issues. So `batch_size = 32` was used.
+- Epoch 00043: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00082: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
+
+![](/docs_experiments/T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4.png)
+
+### 97 species confusion matrix
+
+![](/docs_experiments/confusion_matrix_test.png)

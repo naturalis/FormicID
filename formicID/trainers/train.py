@@ -36,7 +36,7 @@ from keras import backend as K
 from keras.applications.inception_v3 import preprocess_input as ppi_I3
 from keras.applications.inception_resnet_v2 import preprocess_input as ppi_IR
 from keras.applications.densenet import preprocess_input as ppi_Dn
-from keras.applications.resnet import preprocess_input as ppi_Rn
+from keras.applications.resnet50 import preprocess_input as ppi_Rn
 from keras.models import Model
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import Iterator
@@ -578,13 +578,13 @@ def trainer_csv(model, csv, shottype, config, callbacks=None):
     epochs = config.num_epochs
     batch_size = config.batch_size
     if model in ["InceptionV3", "Xception", "Build"]:
-        preprocess_input == ppi_I3
+        preprocess_input = ppi_I3
     if model == "InceptionResNetV2":
-        preprocess_input == ppi_IR
+        preprocess_input = ppi_IR
     if model == "ResNet50":
-        preprocess_input == ppi_Rn
+        preprocess_input = ppi_Rn
     if model == "DenseNet169":
-        preprocess_input == ppi_Dn
+        preprocess_input = ppi_Dn
     idg_t = MyImageDataGenerator(
         preprocessing_function=preprocess_input,
         rotation_range=40,
@@ -635,13 +635,13 @@ def idg(config, target_gen="training"):
     """
     model = config.model
     if model in ["InceptionV3", "Xception", "Build"]:
-        preprocess_input == ppi_I3
+        preprocess_input = ppi_I3
     if model == "InceptionResNetV2":
-        preprocess_input == ppi_IR
+        preprocess_input = ppi_IR
     if model == "ResNet50":
-        preprocess_input == ppi_Rn
+        preprocess_input = ppi_Rn
     if model == "DenseNet169":
-        preprocess_input == ppi_Dn
+        preprocess_input = ppi_Dn
     if target_gen not in ["training", "validation", "test"]:
         raise ValueError(
             "Argument {} is in invalid  for `target_gen`. It should be one of "

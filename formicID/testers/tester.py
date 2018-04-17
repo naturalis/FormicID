@@ -119,16 +119,16 @@ def predictor(model, config, plot=False, n_img=None, n_cols=None):
     #     for j in Y_true:
     #         if i == value in class_indices.items():
     #             print(i, key, j)
-    if plot == True:
-        n_rows = int(ceil(n_img // n_cols))
-        fig = plt.figure()
-        for i in range(1, n_img + 1):
-            x, y = next(test_data_gen_dir)
-            sub = plt.subplots(n_rows, n_cols, figsize=(10, 10))
-            # sub.set_title('y')
-            # sub.axis("off")
-            sub.imshow(data[x])
-        plt.show()
+    # if plot == True:
+    #     n_rows = int(ceil(n_img // n_cols))
+    #     fig = plt.figure()
+    #     for i in range(1, n_img + 1):
+    #         x, y = next(test_data_gen_dir)
+    #         sub = plt.subplots(n_rows, n_cols, figsize=(10, 10))
+    #         # sub.set_title('y')
+    #         # sub.axis("off")
+    #         sub.imshow(data[x])
+    #     plt.show()
 
     return Y_true, Y_pred, labels, class_indices
 
@@ -194,6 +194,8 @@ def plot_confusion_matrix(
     title="Confusion matrix for 5 species",
     cmap=None,
     normalize=False,
+    scores=False,
+    save=None
 ):
     """Plot a confusion matrix of the predicted labels and the true labels for
     the test set species.
@@ -208,6 +210,8 @@ def plot_confusion_matrix(
         cmap (str): Colormap of the plot. Defaults to None.
         normalize (Bool): Will normalize the confusion matrix to [0,1].
             Defaults to False.
+        scores (Bool): If set to True it will show scores for predicted labels
+            and true labels in the confusion matrix. Defaults to False.
 
     Returns:
         A confusion matrix plot.
@@ -218,35 +222,36 @@ def plot_confusion_matrix(
     misclass = 1 - accuracy
     if cmap is None:
         cmap = plt.get_cmap("Blues")
-    plt.figure(figsize=(8, 8))
+    plt.figure(figsize=(35, 25))
     plt.imshow(cm, interpolation="nearest", cmap=cmap)
     plt.title(title)
     plt.colorbar()
     if target_names is not None:
         tick_marks = np.arange(len(target_names))
-        plt.xticks(tick_marks, target_names, rotation=45)
+        plt.xticks(tick_marks, target_names, rotation=45, horizontalalignment="right")
         plt.yticks(tick_marks, target_names)
     if normalize:
         cm = cm.astype("float32") / cm.sum(axis=1)
         cm = np.round(cm, 2)
     thresh = cm.max() / 1.5 if normalize else cm.max() / 2
-    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        if normalize:
-            plt.text(
-                j,
-                i,
-                "{:0.2f}".format(cm[i, j]),
-                horizontalalignment="center",
-                color="white" if cm[i, j] > thresh else "black",
-            )
-        else:
-            plt.text(
-                j,
-                i,
-                "{:,}".format(cm[i, j]),
-                horizontalalignment="center",
-                color="white" if cm[i, j] > thresh else "black",
-            )
+    if scores:
+        for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+            if normalize:
+                plt.text(
+                    j,
+                    i,
+                    "{:0.2f}".format(cm[i, j]),
+                    horizontalalignment="center",
+                    color="white" if cm[i, j] > thresh else "black",
+                )
+            else:
+                plt.text(
+                    j,
+                    i,
+                    "{:,}".format(cm[i, j]),
+                    horizontalalignment="center",
+                    color="white" if cm[i, j] > thresh else "black",
+                )
     plt.tight_layout()
     plt.ylabel("True label")
     plt.xlabel(
@@ -254,8 +259,11 @@ def plot_confusion_matrix(
             accuracy, misclass
         )
     )
-    plt.show()
-
+    if save is not None:
+        plt.savefig(save)
+        print("The confusion matrix has been saved as {}".format(save))
+    else:
+        plt.show()
 
 # Plot predictions
 ###############################################################################

@@ -87,8 +87,6 @@ def main():
     ###########################################################################
     sess = tf.Session()
     K.set_session(sess)
-    from tensorflow.python.client import device_lib
-    print(device_lib.list_local_devices())
 
     # Creating a dataset
     ###########################################################################
@@ -129,45 +127,45 @@ def main():
 
     # Initialize logger
     ###########################################################################
-    logger = [
-        build_mc(
-            config=config,
-            monitor="val_loss",
-            verbose=0,
-            mode="min",
-            save_best_only=True,
-            period=1,
-        ),
-        build_rlrop(
-            monitor="val_loss",
-            factor=0.1,
-            patience=25,
-            verbose=1,
-            mode="min",
-            epsilon=1e-4,
-            cooldown=0,
-            min_lr=0,
-        ),
-        build_es(
-            monitor="val_loss", min_delta=0, patience=50, verbose=1, mode="min"
-        ),
-        build_tb(
-            model=model_formicID,
-            config=config,
-            histogram_freq=0,
-            write_graph=True,
-            write_images=True,
-        ),
-        build_csvl(
-            filename="log.csv", config=config, separator=",", append=False
-        ),
-    ]
+    # logger = [
+    #     build_mc(
+    #         config=config,
+    #         monitor="val_loss",
+    #         verbose=0,
+    #         mode="min",
+    #         save_best_only=True,
+    #         period=1,
+    #     ),
+    #     build_rlrop(
+    #         monitor="val_loss",
+    #         factor=0.1,
+    #         patience=25,
+    #         verbose=1,
+    #         mode="min",
+    #         epsilon=1e-4,
+    #         cooldown=0,
+    #         min_lr=0,
+    #     ),
+    #     build_es(
+    #         monitor="val_loss", min_delta=0, patience=50, verbose=1, mode="min"
+    #     ),
+    #     build_tb(
+    #         model=model_formicID,
+    #         config=config,
+    #         histogram_freq=0,
+    #         write_graph=True,
+    #         write_images=True,
+    #     ),
+    #     build_csvl(
+    #         filename="log.csv", config=config, separator=",", append=False
+    #     ),
+    # ]
 
     # Training in batches with iterator
     ###########################################################################
-    history = trainer_dir(
-        model=model_formicID, config=config, callbacks=logger
-    )
+    # history = trainer_dir(
+    #     model=model_formicID, config=config, callbacks=logger
+    # )
     # trainer_csv(
     #     model=model_formicID,
     #     csv="data/top5species_Qlow/image_path.csv",
@@ -178,10 +176,10 @@ def main():
 
     # Evaluation
     ###########################################################################
-    plot_history(history=history, theme="ggplot")
-    # model_formicID = weights_load(
-    #     model=model_formicID, weights="experiments/weights_13-0.62.hdf5"
-    # )
+    # plot_history(history=history, theme="ggplot")
+    model_formicID = weights_load(
+        model=model_formicID, weights="experiments\T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4\checkpoint\weights_56-1.57.hdf5"
+    )
     evaluator(model=model_formicID, config=config)
 
     # Testing
@@ -196,12 +194,14 @@ def main():
         title="Confusion matrix",
         cmap=None,
         normalize=True,
+        scores=False,
+        save="confusion_matrix_test.png"
     )
-    predict_image_from_url(
-        model=model_formicID,
-        url="http://www.antwiki.org/wiki/images/a/ab/Pheidole_megacephala_casent0059654_head_1.jpg",
-        species_dict=species_dict,
-    )
+    # predict_image_from_url(
+    #     model=model_formicID,
+    #     url="http://www.antwiki.org/wiki/images/a/ab/Pheidole_megacephala_casent0059654_head_1.jpg",
+    #     species_dict=species_dict,
+    # )
     K.clear_session()
     logging.info("Logging ended on: {}".format(today_timestr))
 
