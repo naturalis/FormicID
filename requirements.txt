@@ -14,7 +14,7 @@ Keras == 2.1.4
 
 # formicID/testers/tester.py: 39
 # formicID/utils/img.py: 34
-Pillow_SIMD == 4.3.0.post0
+Pillow_SIMD == 5.1.1.post0
 
 # formicID/utils/load_config.py: 25
 bunch == 1.0.1
@@ -23,7 +23,7 @@ bunch == 1.0.1
 graphviz == 0.8.2
 
 # formicID/utils/model_utils.py: 31
-h5py == 2.8.0rc1
+h5py == 2.8.0rc1.post0
 
 # formicID/AntWeb/json_to_csv.py: 24
 jmespath == 0.9.3
@@ -77,4 +77,4 @@ tensorflow == 1.7.0
 # formicID/AntWeb/json_to_csv.py: 29
 # formicID/data_loader/data_input.py: 68
 # formicID/data_scraper/scrape.py: 34
-tqdm == 4.21.0
+tqdm == 4.22.0
