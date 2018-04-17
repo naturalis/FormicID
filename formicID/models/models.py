@@ -41,6 +41,7 @@ from keras.applications.densenet import DenseNet169
 from keras.applications.inception_v3 import InceptionV3
 from keras.applications.resnet50 import ResNet50
 from keras.applications.xception import Xception
+from keras.applications.inception_resnet_v2 import InceptionResNetV2
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import GlobalAveragePooling2D
@@ -104,11 +105,11 @@ def load_model(config):
         os.path.isfile(os.path.join(data_dir, i)) for i in os.listdir(data_dir)
     )
     if model not in [
-        "InceptionV3", "Xception", "Resnet50", "DenseNet169", "Build"
+        "InceptionV3", "InceptionResNetV2", "Xception", "Resnet50", "DenseNet169", "Build"
     ]:
         raise ValueError(
-            "Model should be one of `InceptionV3`, `Xception`, "
-            "`Resnet50` or `DenseNet169` or `Build`. Please "
+            "Model should be one of `InceptionV3`, `InceptionResNetV2`, "
+            "`Xception`, `Resnet50` or `DenseNet169` or `Build`. Please "
             "set a correct model instead of {}.".format(model)
         )
 
@@ -121,17 +122,21 @@ def load_model(config):
             base_model = InceptionV3(
                 include_top=False, weights="imagenet", classes=None
             )
+        if model == "InceptionResNetV2":
+            base_model = InceptionResNetV2(
+                include_top=False, weights="imagenet", classes=None
+            )
         if model == "ResNet50":
             base_model = ResNet50(
-                include_top=False, weights=None, classes=None
+                include_top=False, weights="imagenet", classes=None
             )
         if model == "DenseNet169":
             base_model = DenseNet169(
-                include_top=False, weights=None, classes=None
+                include_top=False, weights="imagenet", classes=None
             )
         if model == "Xception":
             base_model = Xception(
-                include_top=False, weights=None, classes=None
+                include_top=False, weights="imagenet", classes=None
             )
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
