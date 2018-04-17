@@ -1,4 +1,4 @@
-###############################################################################
+ ###############################################################################
 #                     __                      _      ___ ____                 #
 #                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                #
 #                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |               #
@@ -76,11 +76,14 @@ def load_model(config):
         A Keras model instance.
 
     Model information:
-        Build model:
+        Build:
             This is the self-designed model from this research. For more
             information see `models/build.py`.
 
-        Inception V3 model:
+        InceptionV3:
+            The default input size for this model is 299x299.
+
+        InceptionResNetV2:
             The default input size for this model is 299x299.
 
         ResNet50 model:
@@ -90,7 +93,7 @@ def load_model(config):
             The data format convention used by the model is the one specified
             in your Keras config file.
 
-        Xception V1 model,
+        Xception V1:
             Note that this model is only available for the TensorFlow backend,
             due to its reliance on SeparableConvolution layers. Additionally
             it only supports the data format 'channels_last' (height, width,
@@ -105,11 +108,11 @@ def load_model(config):
         os.path.isfile(os.path.join(data_dir, i)) for i in os.listdir(data_dir)
     )
     if model not in [
-        "InceptionV3", "InceptionResNetV2", "Xception", "Resnet50", "DenseNet169", "Build"
+        "InceptionV3", "InceptionResNetV2", "Xception", "ResNet50", "DenseNet169", "Build"
     ]:
         raise ValueError(
             "Model should be one of `InceptionV3`, `InceptionResNetV2`, "
-            "`Xception`, `Resnet50` or `DenseNet169` or `Build`. Please "
+            "`Xception`, `ResNet50` or `DenseNet169` or `Build`. Please "
             "set a correct model instead of {}.".format(model)
         )
 

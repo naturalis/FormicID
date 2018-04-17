@@ -33,7 +33,10 @@ import warnings
 
 # Deeplearning tools imports
 from keras import backend as K
-from keras.applications.inception_v3 import preprocess_input
+from keras.applications.inception_v3 import preprocess_input as ppi_I3
+from keras.applications.inception_resnet_v2 import preprocess_input as ppi_IR
+from keras.applications.densenet import preprocess_input as ppi_Dn
+from keras.applications.resnet import preprocess_input as ppi_Rn
 from keras.models import Model
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import Iterator
@@ -574,6 +577,14 @@ class CsvIterator(Iterator):
 def trainer_csv(model, csv, shottype, config, callbacks=None):
     epochs = config.num_epochs
     batch_size = config.batch_size
+    if model in ["InceptionV3", "Xception", "Build"]:
+        preprocess_input == ppi_I3
+    if model == "InceptionResNetV2":
+        preprocess_input == ppi_IR
+    if model == "ResNet50":
+        preprocess_input == ppi_Rn
+    if model == "DenseNet169":
+        preprocess_input == ppi_Dn
     idg_t = MyImageDataGenerator(
         preprocessing_function=preprocess_input,
         rotation_range=40,
@@ -607,7 +618,7 @@ def trainer_csv(model, csv, shottype, config, callbacks=None):
 ###############################################################################
 
 
-def idg(target_gen="training"):
+def idg(config, target_gen="training"):
     """Initialize an augmentation generator for either a `training`,
     `validation`, `test` dataset.
 
@@ -622,12 +633,20 @@ def idg(target_gen="training"):
         ValueError: If target_gen is not set to acorrectly value.
 
     """
+    model = config.model
+    if model in ["InceptionV3", "Xception", "Build"]:
+        preprocess_input == ppi_I3
+    if model == "InceptionResNetV2":
+        preprocess_input == ppi_IR
+    if model == "ResNet50":
+        preprocess_input == ppi_Rn
+    if model == "DenseNet169":
+        preprocess_input == ppi_Dn
     if target_gen not in ["training", "validation", "test"]:
         raise ValueError(
             "Argument {} is in invalid  for `target_gen`. It should be one of "
             "`training`, `validation`, or `testing`.".format(target_gen)
         )
-
     if target_gen == "training":
         idg = ImageDataGenerator(
             preprocessing_function=preprocess_input,
@@ -640,7 +659,6 @@ def idg(target_gen="training"):
         )
     if target_gen in ["validation", "test"]:
         idg = ImageDataGenerator(preprocessing_function=preprocess_input)
-
     return idg
 
 
@@ -668,6 +686,11 @@ def _data_generator_dir(
         dict: A dictionary mapping of the classes.
 
     """
+    model = config.model
+    if model in ["InceptionV3", "InceptionResNetV2", "Xception"]:
+        target_size = (299, 299)
+    if model in ["ResNet50", "DenseNet169"]:
+        target_size = (224, 224)
     batch_size = config.batch_size
     seed = config.seed
     if target_gen == "training":
@@ -680,10 +703,10 @@ def _data_generator_dir(
         shuffle = False
         dir = "3-test"
     data_dir = os.path.join("data", dataset, "images", shottype, dir)
-    idgen = idg(target_gen=target_gen)
+    idgen = idg(config=config, target_gen=target_gen)
     idgen = idgen.flow_from_directory(
         directory=data_dir,
-        target_size=(299, 299),
+        target_size=target_size,
         color_mode="rgb",
         class_mode="categorical",
         batch_size=batch_size,
@@ -736,5 +759,4 @@ def trainer_dir(model, config, callbacks=None):
         validation_steps=val_samples // batch_size,
         callbacks=callbacks,
     )
-
     return history
