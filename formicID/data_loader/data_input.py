@@ -51,24 +51,12 @@ import os
 import random
 import shutil
 
-# Deeplearning tools imports
-from keras import backend as K
-from keras.preprocessing.image import img_to_array
-from keras.preprocessing.image import load_img
-from keras.utils import normalize
-from keras.utils import to_categorical
-
 # Data tools imports
-import numpy as np
 import pandas as pd
-from sklearn.model_selection import StratifiedShuffleSplit
-from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
 
 # Additional project imports
 from tqdm import tqdm
-
-# FormicID imports
-from utils.utils import wd
 
 # Parameters and settings
 ###############################################################################
@@ -78,8 +66,20 @@ from utils.utils import wd
 ###############################################################################
 
 
-def make_image_path_csv(dataset):
-    dataset = os.path.join("data", dataset)
+def image_path_csv(config):
+    """Short summary.
+
+    Args:
+        config (type): Description of parameter `config`.
+
+    Returns:
+        type: Description of returned object.
+
+    """
+    test_split = config.test_split
+    val_split = config.val_split
+    seed = config.seed
+    dataset = os.path.join("data", config.data_set)
     image_dir = os.path.join(dataset, "images")
     path_col = []
     shottype_col = []
@@ -101,8 +101,33 @@ def make_image_path_csv(dataset):
     df = pd.DataFrame(
         data, columns=["identifier", "species", "shottype", "path"]
     )
-    output_csv = os.path.join(dataset, "image_path.csv")
-    df.to_csv(path_or_buf=output_csv, header=True, index=False, sep=",")
+    x = df
+    y = df.species
+    train, test = train_test_split(
+        df, test_size=test_split, shuffle=True, random_state=seed, stratify=y
+    )
+    y2 = train.species
+    val, train = train_test_split(
+        train, test_size=val_split, shuffle=True, random_state=seed, stratify=y2
+    )
+    train.to_csv(
+        path_or_buf=os.path.join(dataset, "image_path_val.csv"),
+        header=True,
+        index=False,
+        sep=",",
+    )
+    val.to_csv(
+        path_or_buf=os.path.join(dataset, "image_path_train.csv"),
+        header=True,
+        index=False,
+        sep=",",
+    )
+    test.to_csv(
+        path_or_buf=os.path.join(dataset, "image_path_test.csv"),
+        header=True,
+        index=False,
+        sep=",",
+    )
 
 
 # Split training/validation/test in folder
@@ -121,7 +146,7 @@ def split_in_directory(config):
     shottype = config.shottype
     test_split = config.test_split
     val_split = config.val_split + config.test_split
-    input_dir = os.path.join(wd, "data", dataset, "images", shottype)
+    input_dir = os.path.join("data", dataset, "images", shottype)
     dirs_split = ["1-training", "2-validation", "3-test"]
     for dir in dirs_split:
         if os.path.exists(os.path.join(input_dir, dir)):

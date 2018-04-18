@@ -29,7 +29,7 @@ import pandas as pd
 from tqdm import tqdm
 
 # FormicID imports
-from utils.utils import today_timestr
+from utils.utils import today_time_clean
 
 # Parameters and settings
 ###############################################################################
@@ -186,5 +186,5 @@ def batch_json_to_csv(
     if not os.path.isfile(data_info):
         with open(data_info, "wt") as txt:
             txt.write(
-                "The dataset was downloaded on date: {0}".format(today_timestr)
+                "The dataset was downloaded on date: {0}".format(today_time_clean)
             )

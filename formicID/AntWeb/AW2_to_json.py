@@ -205,12 +205,12 @@ def urls_to_json(
             "downloading.".format(nb_indet)
         )
         nb_specimens = csv_df.shape[0] - nb_indet
-        if n_jsonfiles is None:
-            n_jsonfiles = nb_specimens
+        if n_jsonfiles is not None:
+            nb_specimens = n_jsonfiles
 
         for index, row in tqdm(
             islice(csv_df.iterrows(), 0, n_jsonfiles),
-            total=n_jsonfiles,
+            total=nb_specimens,
             desc="Downloading species JSON files",
             unit="Species",
         ):

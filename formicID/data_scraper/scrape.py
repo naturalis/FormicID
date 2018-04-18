@@ -36,7 +36,7 @@ from tqdm import tqdm
 # FormicID imports
 from AntWeb.AW2_to_json import urls_to_json
 from AntWeb.json_to_csv import batch_json_to_csv
-from data_loader.data_input import make_image_path_csv
+from data_loader.data_input import image_path_csv
 
 # Parameters and settings
 ###############################################################################
@@ -106,7 +106,7 @@ def _csv_update(dataset, csvfile):
 ###############################################################################
 
 
-def image_scraper(csvfile, dataset, start=None, end=None, update=False):
+def image_scraper(csvfile, dataset, shottypes="hdp", start=None, end=None, update=False):
     """This function scrapes images of urls found in the csv file that is made
     with the download_to_csv function. It will check if files already exist.
     If a file already exists, it will not be downloaded again.
@@ -114,6 +114,7 @@ def image_scraper(csvfile, dataset, start=None, end=None, update=False):
     Args:
         csvfile (str): Name of the csvfile in the `data` folder.
         dataset (str): Name of the dataset (directory).
+        shottypes (str): One, two or all of `h`, `d`, `p`. Defaults to `hdp`.
         start (int): Set the starting row for downloading. Defaults to `None`.
         end (int): Set the end row for downloading. Defaults to `None`.
         update (bool): If [default=True]; the csv_update() function will be
@@ -132,13 +133,19 @@ def image_scraper(csvfile, dataset, start=None, end=None, update=False):
     logging.info("Checking Folders...")
     if not os.path.exists(os.path.join("data", dataset, "images")):
         os.mkdir(os.path.join("data", dataset, "images"))
-        os.mkdir(os.path.join("data", dataset, "images", "head"))
-        os.mkdir(os.path.join("data", dataset, "images", "dorsal"))
-        os.mkdir(os.path.join("data", dataset, "images", "profile"))
+        if 'h'in shottypes:
+            os.mkdir(os.path.join("data", dataset, "images", "head"))
+        if 'd'in shottypes:
+            os.mkdir(os.path.join("data", dataset, "images", "dorsal"))
+        if 'p'in shottypes:
+            os.mkdir(os.path.join("data", dataset, "images", "profile"))
         logging.info("Folders are created")
-    dir_h = os.path.join("data", dataset, "images", "head")
-    dir_d = os.path.join("data", dataset, "images", "dorsal")
-    dir_p = os.path.join("data", dataset, "images", "profile")
+    if os.path.exists(os.path.join("data", dataset, "images", "head")):
+        dir_h = os.path.join("data", dataset, "images", "head")
+    if os.path.exists(os.path.join("data", dataset, "images", "profile")):
+        dir_p = os.path.join("data", dataset, "images", "profile")
+    if os.path.exists(os.path.join("data", dataset, "images", "dorsal")):
+        dir_d = os.path.join("data", dataset, "images", "dorsal")
     nb_rows = sum(1 for line in open(csvfile))
     logging.info("The csv file contains {} images.".format(nb_rows))
     if end == None:
@@ -158,70 +165,71 @@ def image_scraper(csvfile, dataset, start=None, end=None, update=False):
             if image[3] != "image_url":  # Don't scrape the header line
                 # Create a folder for the species in a shot type folder if it
                 # does not exist already, then download the image.
-                if image[2] == "h":
-                    if not os.path.exists(os.path.join(dir_h, image[1])):
-                        os.mkdir(os.path.join(dir_h, image[1]))
-                    filename = os.path.join(
-                        dir_h,
-                        image[1],
-                        "{}_{}_{}.jpg".format(image[1], image[0], image[2]),
-                    )
-                    try:
-                        if not os.path.isfile(filename):
-                            urlretrieve(url=image[3], filename=filename)
-                        else:
-                            continue
+                if "h" in shottypes.lower():
+                    if image[2] == "h":
+                        if not os.path.exists(os.path.join(dir_h, image[1])):
+                            os.mkdir(os.path.join(dir_h, image[1]))
+                        filename = os.path.join(
+                            dir_h,
+                            image[1],
+                            "{}_{}_{}.jpg".format(image[1], image[0], image[2]),
+                        )
+                        try:
+                            if not os.path.isfile(filename):
+                                urlretrieve(url=image[3], filename=filename)
+                            else:
+                                continue
 
-                    except HTTPError as err:
-                        if err.code == 404:
-                            logging.error("Error 404: {}".format(image[3]))
-                            continue
+                        except HTTPError as err:
+                            if err.code == 404:
+                                logging.error("Error 404: {}".format(image[3]))
+                                continue
+                if "d" in shottypes.lower():
+                    if image[2] == "d":
+                        if not os.path.exists(os.path.join(dir_d, image[1])):
+                            os.mkdir(os.path.join(dir_d, image[1]))
+                        filename = os.path.join(
+                            dir_d,
+                            image[1],
+                            "{}_{}_{}.jpg".format(image[1], image[0], image[2]),
+                        )
+                        try:
+                            if not os.path.isfile(filename):
+                                urlretrieve(url=image[3], filename=filename)
+                            else:
+                                continue
 
-                if image[2] == "d":
-                    if not os.path.exists(os.path.join(dir_d, image[1])):
-                        os.mkdir(os.path.join(dir_d, image[1]))
-                    filename = os.path.join(
-                        dir_d,
-                        image[1],
-                        "{}_{}_{}.jpg".format(image[1], image[0], image[2]),
-                    )
-                    try:
-                        if not os.path.isfile(filename):
-                            urlretrieve(url=image[3], filename=filename)
-                        else:
-                            continue
+                        except HTTPError as err:
+                            if err.code == 404:
+                                logging.error("Error 404: {}".format(image[3]))
+                                continue
+                if "p" in shottypes.lower():
+                    if image[2] == "p":
+                        if not os.path.exists(os.path.join(dir_p, image[1])):
+                            os.mkdir(os.path.join(dir_p, image[1]))
+                        filename = os.path.join(
+                            dir_p,
+                            image[1],
+                            "{}_{}_{}.jpg".format(image[1], image[0], image[2]),
+                        )
+                        try:
+                            if not os.path.isfile(filename):
+                                urlretrieve(url=image[3], filename=filename)
+                            else:
+                                continue
 
-                    except HTTPError as err:
-                        if err.code == 404:
-                            logging.error("Error 404: {}".format(image[3]))
-                            continue
-
-                if image[2] == "p":
-                    if not os.path.exists(os.path.join(dir_p, image[1])):
-                        os.mkdir(os.path.join(dir_p, image[1]))
-                    filename = os.path.join(
-                        dir_p,
-                        image[1],
-                        "{}_{}_{}.jpg".format(image[1], image[0], image[2]),
-                    )
-                    try:
-                        if not os.path.isfile(filename):
-                            urlretrieve(url=image[3], filename=filename)
-                        else:
-                            continue
-
-                    except HTTPError as err:
-                        if err.code == 404:
-                            logging.error("Error 404: {}".format(image[3]))
-                            continue
-
-        logging.info("{} images were downloaded.".format(nb_images))
+                        except HTTPError as err:
+                            if err.code == 404:
+                                logging.error("Error 404: {}".format(image[3]))
+                                continue
+    logging.info("{} images were downloaded.".format(nb_images))
 
 
 def get_dataset(
     input,
     n_jsonfiles,
     config,
+    shottypes="hdp",
     quality="low",
     update=False,
     offset_set=0,
@@ -264,10 +272,10 @@ def get_dataset(
     image_scraper(
         csvfile="image_urls.csv",
         dataset=dataset_name,
+        shottypes=shottypes,
         # start=0,
         # end=1491,
         update=update,
     )
-    # Function below makes everything ready for when the CSVGenerator works.
-    make_image_path_csv(dataset=dataset_name)
+    image_path_csv(config=config)
     logging.info("The dataset is created.")
