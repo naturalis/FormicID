@@ -1,6 +1,6 @@
 {
     "exp_name": "testtesttesttesttest",
-    "data_set": "testtesttest",
+    "data_set": "top97species_Qmed",
     "batch_size": 32,
     "dropout": 0.5,
     "learning_rate": 0.001,

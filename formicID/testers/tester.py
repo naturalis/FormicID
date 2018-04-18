@@ -25,7 +25,6 @@ from math import ceil
 from urllib.parse import urlparse
 
 # Deeplearning tools imports
-from keras import backend as K
 from keras.applications.inception_v3 import preprocess_input
 from keras.preprocessing.image import img_to_array
 from keras.utils.np_utils import to_categorical
@@ -43,7 +42,6 @@ import requests
 
 # FormicID imports
 from trainers.train import _data_generator_dir
-from utils.img import show_img
 
 # Parameters and settings
 ###############################################################################
@@ -101,7 +99,7 @@ def predictor(model, config, plot=False, n_img=None, n_cols=None):
     dataset = config.data_set
     shottype = config.shottype
     test_data_gen_dir, classes, class_indices = _data_generator_dir(
-        dataset=dataset, config=config, shottype=shottype, target_gen="test"
+        config=config, target_gen="test"
     )
     labels = class_indices.keys()
     Y_true = classes
@@ -143,18 +141,22 @@ def _process_species_dict(dict, species):
             return str(k)
 
 
-def predict_image_from_url(model, url, species_dict=None):
-    """Predict the label from one image retrieved by an URL.
+def predict_image(model, url=None, image=None, species_dict=None):
+    """Predict the label from one image, either retrieved by URL, or a local
+    input.
 
     Args:
         model (Keras model instance): A trained Keras model instance.
-        url (str): An valid image URL.
+        url (str): An URL leading to an image. Defaults to None.
+        image (str): The pathway to an image. Defaults to None.
+        species_dict (dict): dictionary mapping of the species, as output by
+            the `predictor` function. Defaults to None.
 
     Returns:
         A prediction of the correct species.
 
     Raises:
-        ValueError: When the image URL does not have a correct image exentsion.
+        ValueError: When the image is not in the correct image exentsion.
 
     """
     dissasembled = urlparse(url)
@@ -165,14 +167,18 @@ def predict_image_from_url(model, url, species_dict=None):
             '`.gif`, `.bmp`, instead of "{}".'.format(ext)
         )
 
-    response = requests.get(url)
-    print("Predicting: {}".format(url))
-    image = Image.open(BytesIO(response.content))
-    plt.imshow(image)
-    image = img_to_array(image)
-    image = preprocess_input(image)
-    image = image.reshape((1,) + image.shape)
-    prediction = model.predict(image, batch_size=None, verbose=0, steps=None)
+    if url:
+        response = requests.get(url)
+        logging.info("Predicting from URL: {}".format(url))
+        img = Image.open(BytesIO(response.content))
+    if image:
+        logging.info("Predicting from local image: {}".format(image))
+        img = load_img(image)
+    plt.imshow(img)
+    img = img_to_array(img)
+    img = preprocess_input(img)
+    img = img.reshape((1,) + img.shape)
+    prediction = model.predict(img, batch_size=None, verbose=0, steps=None)
     pred = prediction.argmax()
     species = _process_species_dict(species_dict, pred)
     species = species.capitalize()
@@ -191,11 +197,11 @@ def plot_confusion_matrix(
     Y_pred,
     Y_true,
     target_names=None,
-    title="Confusion matrix for 5 species",
+    title="Confusion matrix",
     cmap=None,
     normalize=False,
     scores=False,
-    save=None
+    save=None,
 ):
     """Plot a confusion matrix of the predicted labels and the true labels for
     the test set species.
@@ -206,7 +212,7 @@ def plot_confusion_matrix(
         target_names (list): The species names as genus + species. Defaults to
             None.
         title (str): Title of the confusion matrix. Defaults to 'Confusion
-            matrix for 5 species'.
+            matrix'.
         cmap (str): Colormap of the plot. Defaults to None.
         normalize (Bool): Will normalize the confusion matrix to [0,1].
             Defaults to False.
@@ -222,13 +228,15 @@ def plot_confusion_matrix(
     misclass = 1 - accuracy
     if cmap is None:
         cmap = plt.get_cmap("Blues")
-    plt.figure(figsize=(35, 25))
+    plt.figure(figsize=(25, 15))
     plt.imshow(cm, interpolation="nearest", cmap=cmap)
     plt.title(title)
     plt.colorbar()
     if target_names is not None:
         tick_marks = np.arange(len(target_names))
-        plt.xticks(tick_marks, target_names, rotation=45, horizontalalignment="right")
+        plt.xticks(
+            tick_marks, target_names, rotation=45, horizontalalignment="right"
+        )
         plt.yticks(tick_marks, target_names)
     if normalize:
         cm = cm.astype("float32") / cm.sum(axis=1)
@@ -262,8 +270,8 @@ def plot_confusion_matrix(
     if save is not None:
         plt.savefig(save)
         print("The confusion matrix has been saved as {}".format(save))
-    else:
-        plt.show()
+    plt.show()
+
 
 # Plot predictions
 ###############################################################################

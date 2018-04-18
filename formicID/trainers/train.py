@@ -37,7 +37,7 @@ from keras.applications.inception_v3 import preprocess_input as ppi_I3
 from keras.applications.inception_resnet_v2 import preprocess_input as ppi_IR
 from keras.applications.densenet import preprocess_input as ppi_Dn
 from keras.applications.resnet50 import preprocess_input as ppi_Rn
-from keras.models import Model
+# from keras.models import Model
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import Iterator
 from keras.preprocessing.image import apply_transform
@@ -520,20 +520,19 @@ class CsvIterator(Iterator):
         # self.pathways = []
         # self.classes = np.zeros((self.samples,), dtype='int32')
         i = 0
-        # with open(csv, 'rt') as csv_open:
-        #     df = pd.read_csv(csv_open, sep=',')
-        #     for row in df.itertuples():
+
         results = _list_pathways_in_csv(
             csv, split, self.class_indices, shotview
         )
         self.classes, self.pathways = results
-
+        print("self.classes: ", self.classes)
+        print("self.pathways: ", self.pathways)
+        assert len(self.classes) == len(self.pathways)
         # TODO: Fix lines below
         # for res in results:
-        #     # 0, species = dict{0: species}.get()
         #     classes, pathways = res.get()
         #     self.classes[i:i + len(classes)] = classes
-        #     # self.pathways += pathways
+        #     self.pathways += pathways
         #     i += len(classes)
 
         super(CsvIterator, self).__init__(
@@ -647,6 +646,7 @@ def idg(config, target_gen="training"):
             "Argument {} is in invalid  for `target_gen`. It should be one of "
             "`training`, `validation`, or `testing`.".format(target_gen)
         )
+
     if target_gen == "training":
         idg = ImageDataGenerator(
             preprocessing_function=preprocess_input,
@@ -667,17 +667,15 @@ def idg(config, target_gen="training"):
 
 
 def _data_generator_dir(
-    dataset, config, shottype="head", target_gen="training"
+    config, target_gen="training"
 ):
     """Generator for reading images out of directories. Can be used for a
     `training`, `validation` or `test` set. `Validation` and `test` sets will
     not be shuffled.
 
     Args:
-        dataset (str): Description of parameter `dataset`.
         config (Bunch object): The JSON configuration Bunch object.
-        shottype (str): Sets the shottype for the dataset. Defaults to 'head'.
-        target_gen (str): Sets the generator to either `training`,
+        target_gen (str): Sets the generator to either 'training',
             `validation` or `test.`. Defaults to 'training'.
 
     Returns:
@@ -687,6 +685,9 @@ def _data_generator_dir(
 
     """
     model = config.model
+    seed = config.seed
+    dataset = config.data_set
+    shottype = config.shottype
     if model in ["InceptionV3", "InceptionResNetV2", "Xception"]:
         target_size = (299, 299)
     if model in ["ResNet50", "DenseNet169"]:
@@ -711,7 +712,7 @@ def _data_generator_dir(
         class_mode="categorical",
         batch_size=batch_size,
         shuffle=shuffle,
-        seed=1,
+        seed=seed,
     )
     classes = idgen.classes
     class_indices = idgen.class_indices
@@ -735,18 +736,12 @@ def trainer_dir(model, config, callbacks=None):
     # steps_per_epoch = config.num_iter_per_epoch
     epochs = config.num_epochs
     batch_size = config.batch_size
-    dataset = config.data_set
-    shottype = config.shottype
     train_data_gen_dir, _, _ = _data_generator_dir(
-        dataset=dataset,
-        shottype=shottype,
         config=config,
         target_gen="training",
     )
     train_samples = train_data_gen_dir.samples
     val_data_gen_dir, _, _ = _data_generator_dir(
-        dataset=dataset,
-        shottype=shottype,
         config=config,
         target_gen="validation",
     )

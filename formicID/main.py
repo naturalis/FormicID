@@ -90,16 +90,16 @@ def main():
 
     # Creating a dataset
     ###########################################################################
-    get_dataset(
-        input="testgenusspecies.csv",
-        n_jsonfiles=25,
-        config=config,
-        shottypes="d",
-        quality="low",
-        update=True,
-        offset_set=0,
-        limit_set=200,
-    )
+    # get_dataset(
+    #     input="testgenusspecies.csv",
+    #     n_jsonfiles=25,
+    #     config=config,
+    #     shottypes="d",
+    #     quality="low",
+    #     update=True,
+    #     offset_set=0,
+    #     limit_set=200,
+    # )
 
     # create experiment related directories
     ###########################################################################
@@ -123,8 +123,8 @@ def main():
 
     # Initialize the model
     ###########################################################################
-    # model_formicID = load_model(config=config)
-    # model_formicID = compile_model(model=model_formicID, config=config)
+    model_formicID = load_model(config=config)
+    model_formicID = compile_model(model=model_formicID, config=config)
 
     # Initialize logger
     ###########################################################################
@@ -163,7 +163,7 @@ def main():
     # ]
 
     # Training in batches with iterator
-    ##########################################################################
+    ###########################################################################
     # history = trainer_dir(
     #     model=model_formicID, config=config, callbacks=logger
     # )
@@ -178,32 +178,32 @@ def main():
     # Evaluation
     ###########################################################################
     # plot_history(history=history, theme="ggplot")
-    # model_formicID = weights_load(
-    #     model=model_formicID,
-    #     weights="experiments\T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4\checkpoint\weights_64-1.21.hdf5",
-    # )
+    model_formicID = weights_load(
+        model=model_formicID,
+        weights="experiments\T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4\checkpoint\weights_64-1.21.hdf5",
+    )
     # evaluator(model=model_formicID, config=config)
 
     # Testing
     ###########################################################################
-    # Y_true, Y_pred, labels, species_dict = predictor(
-    #     model=model_formicID, config=config, plot=True, n_img=10, n_cols=3
-    # )
-    # plot_confusion_matrix(
-    #     Y_pred=Y_pred,
-    #     Y_true=Y_true,
-    #     target_names=labels,
-    #     title="Confusion matrix",
-    #     cmap=None,
-    #     normalize=True,
-    #     scores=False,
-    #     save="confusion_matrix_test.png",
-    # )
-    # predict_image(
-    #     model=model_formicID,
-    #     url="https://upload.wikimedia.org/wikipedia/commons/f/fd/Camponotus_atriceps_casent0173392_head_1.jpg",
-    #     species_dict=species_dict,
-    # )
+    Y_true, Y_pred, labels, species_dict = predictor(
+        model=model_formicID, config=config, plot=True, n_img=10, n_cols=3
+    )
+    plot_confusion_matrix(
+        Y_pred=Y_pred,
+        Y_true=Y_true,
+        target_names=labels,
+        title="Confusion matrix",
+        cmap=None,
+        normalize=True,
+        scores=False,
+        save="confusion_matrix_test.png",
+    )
+    predict_image(
+        model=model_formicID,
+        url="https://upload.wikimedia.org/wikipedia/commons/f/fd/Camponotus_atriceps_casent0173392_head_1.jpg",
+        species_dict=species_dict,
+    )
     K.clear_session()
     logging.info("Logging ended on: {}".format(today_time_clean))
 
