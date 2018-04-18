@@ -57,6 +57,7 @@ def get_url_info(input_url):
 todaystr = datetime.date.today().strftime("%Y%m%d")
 # YYYYMMDD_HHMMSS
 today_timestr = datetime.datetime.today().strftime("%Y%m%d_%H%M%S")
+today_time_clean = datetime.datetime.today().strftime("%Y-%m-%d_%H:%M:%S")
 
 
 # Directory utilities

@@ -32,7 +32,7 @@ from models.models import compile_model
 from models.models import load_model
 from testers.tester import evaluator
 from testers.tester import plot_confusion_matrix
-from testers.tester import predict_image_from_url
+from testers.tester import predict_image
 from testers.tester import predictor
 from trainers.train import trainer_csv
 from trainers.train import trainer_dir
@@ -49,7 +49,7 @@ from utils.model_utils import make_multi_gpu
 from utils.model_utils import weights_load
 from utils.utils import create_dirs
 from utils.utils import get_args
-from utils.utils import today_timestr
+from utils.utils import today_time_clean
 
 # Parameters and settings
 ###############################################################################
@@ -80,7 +80,7 @@ def main():
         filemode="w",
         level=logging.DEBUG,
     )
-    logging.info("Logging started on: {}".format(today_timestr))
+    logging.info("Logging started on: {}".format(today_time_clean))
     logging.info("Keras version: {}".format(keras_version))
 
     # Session
@@ -90,15 +90,16 @@ def main():
 
     # Creating a dataset
     ###########################################################################
-    # get_dataset(
-    #     input="testgenusspecies.csv",
-    #     n_jsonfiles=100,
-    #     config=config,
-    #     quality="low",
-    #     update=True,
-    #     offset_set=0,
-    #     limit_set=500,
-    # )
+    get_dataset(
+        input="testall.csv",
+        n_jsonfiles=150,
+        config=config,
+        shottypes="hdp",
+        quality="medium",
+        update=True,
+        offset_set=0,
+        limit_set=99999,
+    )
 
     # create experiment related directories
     ###########################################################################
@@ -106,7 +107,7 @@ def main():
 
     # Initializing the data
     ###########################################################################
-    # split_in_directory(config=config)
+    split_in_directory(config=config)
 
     # Augmentation handeling
     ###########################################################################
@@ -127,45 +128,45 @@ def main():
 
     # Initialize logger
     ###########################################################################
-    # logger = [
-    #     build_mc(
-    #         config=config,
-    #         monitor="val_loss",
-    #         verbose=0,
-    #         mode="min",
-    #         save_best_only=True,
-    #         period=1,
-    #     ),
-    #     build_rlrop(
-    #         monitor="val_loss",
-    #         factor=0.1,
-    #         patience=25,
-    #         verbose=1,
-    #         mode="min",
-    #         epsilon=1e-4,
-    #         cooldown=0,
-    #         min_lr=0,
-    #     ),
-    #     build_es(
-    #         monitor="val_loss", min_delta=0, patience=50, verbose=1, mode="min"
-    #     ),
-    #     build_tb(
-    #         model=model_formicID,
-    #         config=config,
-    #         histogram_freq=0,
-    #         write_graph=True,
-    #         write_images=True,
-    #     ),
-    #     build_csvl(
-    #         filename="log.csv", config=config, separator=",", append=False
-    #     ),
-    # ]
+    logger = [
+        build_mc(
+            config=config,
+            monitor="val_loss",
+            verbose=0,
+            mode="min",
+            save_best_only=True,
+            period=1,
+        ),
+        build_rlrop(
+            monitor="val_loss",
+            factor=0.1,
+            patience=25,
+            verbose=1,
+            mode="min",
+            epsilon=1e-4,
+            cooldown=0,
+            min_lr=0,
+        ),
+        build_es(
+            monitor="val_loss", min_delta=0, patience=50, verbose=1, mode="min"
+        ),
+        build_tb(
+            model=model_formicID,
+            config=config,
+            histogram_freq=0,
+            write_graph=True,
+            write_images=True,
+        ),
+        build_csvl(
+            filename="log.csv", config=config, separator=",", append=False
+        ),
+    ]
 
     # Training in batches with iterator
-    ###########################################################################
-    # history = trainer_dir(
-    #     model=model_formicID, config=config, callbacks=logger
-    # )
+    ##########################################################################
+    history = trainer_dir(
+        model=model_formicID, config=config, callbacks=logger
+    )
     # trainer_csv(
     #     model=model_formicID,
     #     csv="data/top5species_Qlow/image_path.csv",
@@ -176,14 +177,15 @@ def main():
 
     # Evaluation
     ###########################################################################
-    # plot_history(history=history, theme="ggplot")
+    plot_history(history=history, theme="ggplot")
     model_formicID = weights_load(
-        model=model_formicID, weights="experiments\T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4\checkpoint\weights_56-1.57.hdf5"
+        model=model_formicID,
+        weights="experiments\T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4\checkpoint\weights_56-1.57.hdf5",
     )
     evaluator(model=model_formicID, config=config)
 
     # Testing
-    # #########################################################################
+    ###########################################################################
     Y_true, Y_pred, labels, species_dict = predictor(
         model=model_formicID, config=config, plot=True, n_img=10, n_cols=3
     )
@@ -195,15 +197,15 @@ def main():
         cmap=None,
         normalize=True,
         scores=False,
-        save="confusion_matrix_test.png"
+        save="confusion_matrix_test.png",
     )
-    # predict_image_from_url(
-    #     model=model_formicID,
-    #     url="http://www.antwiki.org/wiki/images/a/ab/Pheidole_megacephala_casent0059654_head_1.jpg",
-    #     species_dict=species_dict,
-    # )
+    predict_image(
+        model=model_formicID,
+        url="https://upload.wikimedia.org/wikipedia/commons/f/fd/Camponotus_atriceps_casent0173392_head_1.jpg",
+        species_dict=species_dict,
+    )
     K.clear_session()
-    logging.info("Logging ended on: {}".format(today_timestr))
+    logging.info("Logging ended on: {}".format(today_time_clean))
 
 
 if __name__ == "__main__":

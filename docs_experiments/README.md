@@ -248,6 +248,13 @@ horizontal_flip=True
 
 ![](/docs_experiments/T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4.png)
 
+#### T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4
+- Epoch 00044: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00090: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
+
+![](/docs_experiments/T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4.png)
+
 ### 97 species confusion matrix
+- created from [T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4](#T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4)
 
 ![](/docs_experiments/confusion_matrix_test.png)

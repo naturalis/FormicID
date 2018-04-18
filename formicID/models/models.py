@@ -1,4 +1,4 @@
- ###############################################################################
+###############################################################################
 #                     __                      _      ___ ____                 #
 #                    / _| ___  _ __ _ __ ___ (_) ___|_ _|  _ \                #
 #                   | |_ / _ \| '__| '_ ` _ \| |/ __|| || | | |               #
@@ -108,7 +108,12 @@ def load_model(config):
         os.path.isfile(os.path.join(data_dir, i)) for i in os.listdir(data_dir)
     )
     if model not in [
-        "InceptionV3", "InceptionResNetV2", "Xception", "ResNet50", "DenseNet169", "Build"
+        "InceptionV3",
+        "InceptionResNetV2",
+        "Xception",
+        "ResNet50",
+        "DenseNet169",
+        "Build",
     ]:
         raise ValueError(
             "Model should be one of `InceptionV3`, `InceptionResNetV2`, "
@@ -147,7 +152,7 @@ def load_model(config):
         x = Dense(1024, activation="relu")(x)
         predictions = Dense(num_species, activation="softmax")(x)
         end_model = Model(inputs=base_model.input, outputs=predictions)
-    logging.info("The model is build with succes.")
+    logging.info("The model is build with success.")
     return end_model
 
 
@@ -196,6 +201,6 @@ def compile_model(model, config):
         optimizer=opt,
         metrics=["accuracy", top_k_categorical_accuracy],
     )
-    logging.info("The model is compiled with succes.")
+    logging.info("The model is compiled with success.")
 
     return model

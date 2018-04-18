@@ -39,6 +39,8 @@ from tqdm import tqdm
 
 # Creating an URL
 ###############################################################################
+
+
 def get_most_imaged_species(min_images=68):
     # url = "http://www.antweb.org/taxonomicPage.do?rank=species"
     # for Taxon Name in the table on url:
@@ -46,6 +48,7 @@ def get_most_imaged_species(min_images=68):
     #         df.append(Taxon Name as genus + species)
     # df.to_csv()
     raise NotImplementedError
+
 
 def _create_url(limit, offset, **kwargs):
     """Creation of the url to access AntWebs API V2, using a base_url and
