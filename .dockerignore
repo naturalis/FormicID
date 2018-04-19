@@ -1,0 +1,44 @@
+# Git
+.git
+.gitignore
+
+# CI
+.travis.yml
+
+# Docker
+docker-compose.yml
+.docker
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*/*/*/__pycache__/
+*.py[cod]
+*/*.py[cod]
+*/*/*.py[cod]
+*/*/*/*.py[cod]
+
+# Folders
+data/*
+!data/testall.csv
+*.log
+docs_experiments
+experiments/*

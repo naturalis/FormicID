@@ -5,10 +5,11 @@ FROM python:3.6
 WORKDIR /FormicID
 
 # Copy the current directory contents into the container at /FormicID
-ADD . /FormicID
+COPY . /FormicID
 
 # Install any needed packages specified in requirements.txt
-RUN pip3 install --trusted-host pypi.python.org -r requirements.txt
+RUN pip3 install --upgrade pip && \
+    pip3 install -r requirements.txt
 
 # Make port 80 available to the world outside this container
 # EXPOSE 80
@@ -17,4 +18,4 @@ RUN pip3 install --trusted-host pypi.python.org -r requirements.txt
 ENV NAME FormicID
 
 # Run the program when the container launches
-CMD ["python3", "main.py", "-c", "formicID/configs/config.json"]
+CMD ["python3", "formicID/main.py", "-c", "formicID/configs/config.json"]
