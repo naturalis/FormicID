@@ -38,10 +38,10 @@ import os
 
 # Deeplearning tools imports
 from keras.applications.densenet import DenseNet169
+from keras.applications.inception_resnet_v2 import InceptionResNetV2
 from keras.applications.inception_v3 import InceptionV3
 from keras.applications.resnet50 import ResNet50
 from keras.applications.xception import Xception
-from keras.applications.inception_resnet_v2 import InceptionResNetV2
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import GlobalAveragePooling2D
