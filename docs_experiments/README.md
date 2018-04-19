@@ -21,6 +21,7 @@ So
 - [Experiments](#experiments)
 - [Tabel of Contents](#tabel-of-contents)
 - [Low quality image datasets - Number of images](#low-quality-image-datasets-number-of-images)
+- [Augmentation example](#augmentation-example)
 - [Training shottype `head`](#training-shottype-head)
 	- [Settings](#settings)
 - [With following settings:](#with-following-settings)
@@ -37,11 +38,18 @@ So
 			- [T20_CaAll_QuL_ShH_AugM_D025_LR0001_E100](#t20caallqulshhaugmd025lr0001e100)
 			- [T20_CaAll_QuL_ShH_AugM_D075_LR0001_E100](#t20caallqulshhaugmd075lr0001e100)
 			- [T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100](#t20caallqulshhaugmd05lr00001e100)
+			- [T20_CaAll_QuL_ShH_AugH_D075_LR0001_E100](#t20caallqulshhaughd075lr0001e100)
+			- [T20_CaAll_QuL_ShH_AugH_D025_LR0001_E100](#t20caallqulshhaughd025lr0001e100)
+			- [T20_CaAll_QuL_ShH_AugH_D025_LR00005_E100](#t20caallqulshhaughd025lr00005e100)
 		- [50 Species](#50-species)
 			- [T50_CaAll_QuL_ShH_AugM_D05_LR0001_E100](#t50caallqulshhaugmd05lr0001e100)
 		- [97 Species](#97-species)
 			- [T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100 - 1st try](#t97caallqulshhaugmd05lr0001e100-1st-try)
 			- [T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100 - 2nd try](#t97caallqulshhaugmd05lr0001e100-2nd-try)
+			- [T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4](#t97caallqulshhaugmd05lr0001e100i4)
+			- [T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4](#t97caallqumshhaugmd05lr0001e100i4)
+		- [97 species confusion matrix](#97-species-confusion-matrix)
+		- [Test image](#test-image)
 
 <!-- /TOC -->
 # Low quality image datasets - Number of images
@@ -258,3 +266,11 @@ horizontal_flip=True
 - created from [T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4](#T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4)
 
 ![](/docs_experiments/confusion_matrix_test.png)
+
+### Test image
+Below is an example of an external image, tested in the model. When trained with high accuracy, this could be used to identify new material.
+The image is taken from:
+
+`https://upload.wikimedia.org/wikipedia/commons/f/fd/Camponotus_atriceps_casent0173392_head_1.jpg`
+
+![](/docs_experiments/testimage.png)

@@ -67,7 +67,7 @@ def evaluator(model, config):
     shottype = config.shottype
     dataset = config.data_set
     test_data_gen_dir, _, _ = _data_generator_dir(
-        dataset=dataset, config=config, shottype=shottype, target_gen="test"
+        config=config, target_gen="test"
     )
     score = model.evaluate_generator(test_data_gen_dir)
     print(
