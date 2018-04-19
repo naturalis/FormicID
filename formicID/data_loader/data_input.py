@@ -108,7 +108,11 @@ def image_path_csv(config):
     )
     y2 = train.species
     val, train = train_test_split(
-        train, test_size=val_split, shuffle=True, random_state=seed, stratify=y2
+        train,
+        test_size=val_split,
+        shuffle=True,
+        random_state=seed,
+        stratify=y2,
     )
     train.to_csv(
         path_or_buf=os.path.join(dataset, "image_path_val.csv"),

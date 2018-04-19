@@ -33,11 +33,10 @@ import warnings
 
 # Deeplearning tools imports
 from keras import backend as K
-from keras.applications.inception_v3 import preprocess_input as ppi_I3
-from keras.applications.inception_resnet_v2 import preprocess_input as ppi_IR
 from keras.applications.densenet import preprocess_input as ppi_Dn
+from keras.applications.inception_resnet_v2 import preprocess_input as ppi_IR
+from keras.applications.inception_v3 import preprocess_input as ppi_I3
 from keras.applications.resnet50 import preprocess_input as ppi_Rn
-# from keras.models import Model
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import Iterator
 from keras.preprocessing.image import apply_transform
@@ -304,20 +303,26 @@ class MyImageDataGenerator(object):
             transform_matrix = rotation_matrix
         if tx != 0 or ty != 0:
             shift_matrix = np.array([[1, 0, tx], [0, 1, ty], [0, 0, 1]])
-            transform_matrix = shift_matrix if transform_matrix is None else np.dot(
-                transform_matrix, shift_matrix
+            transform_matrix = (
+                shift_matrix if transform_matrix is None else np.dot(
+                    transform_matrix, shift_matrix
+                )
             )
         if shear != 0:
             shear_matrix = np.array(
                 [[1, -np.sin(shear), 0], [0, np.cos(shear), 0], [0, 0, 1]]
             )
-            transform_matrix = shear_matrix if transform_matrix is None else np.dot(
-                transform_matrix, shear_matrix
+            transform_matrix = (
+                shear_matrix if transform_matrix is None else np.dot(
+                    transform_matrix, shear_matrix
+                )
             )
         if zx != 1 or zy != 1:
             zoom_matrix = np.array([[zx, 0, 0], [0, zy, 0], [0, 0, 1]])
-            transform_matrix = zoom_matrix if transform_matrix is None else np.dot(
-                transform_matrix, zoom_matrix
+            transform_matrix = (
+                zoom_matrix if transform_matrix is None else np.dot(
+                    transform_matrix, zoom_matrix
+                )
             )
         if transform_matrix is not None:
             h, w = x.shape[img_row_axis], x.shape[img_col_axis]
@@ -486,7 +491,7 @@ class CsvIterator(Iterator):
             split = None
         self.subset = subset
 
-        ###########################################################################
+        #######################################################################
         # first, count the number of samples and classes
 
         # self.samples = 0
@@ -509,12 +514,12 @@ class CsvIterator(Iterator):
                 )
 
         print(
-            "Found {0} images belonging to {1} classes for shottype {2}.".format(
+            "Found {0} images for {1} classes with shottype: {2}.".format(
                 self.samples, self.num_classes, shotview
             )
         )
 
-        ###########################################################################
+        #######################################################################
         # second build an index of the images in the different class subfolders
         # results = []
         # self.pathways = []
@@ -666,9 +671,7 @@ def idg(config, target_gen="training"):
 ###############################################################################
 
 
-def _data_generator_dir(
-    config, target_gen="training"
-):
+def _data_generator_dir(config, target_gen="training"):
     """Generator for reading images out of directories. Can be used for a
     `training`, `validation` or `test` set. `Validation` and `test` sets will
     not be shuffled.
@@ -737,13 +740,11 @@ def trainer_dir(model, config, callbacks=None):
     epochs = config.num_epochs
     batch_size = config.batch_size
     train_data_gen_dir, _, _ = _data_generator_dir(
-        config=config,
-        target_gen="training",
+        config=config, target_gen="training"
     )
     train_samples = train_data_gen_dir.samples
     val_data_gen_dir, _, _ = _data_generator_dir(
-        config=config,
-        target_gen="validation",
+        config=config, target_gen="validation"
     )
     val_samples = val_data_gen_dir.samples
     history = model.fit_generator(

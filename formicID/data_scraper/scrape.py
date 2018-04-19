@@ -106,7 +106,9 @@ def _csv_update(dataset, csvfile):
 ###############################################################################
 
 
-def image_scraper(csvfile, dataset, shottypes="hdp", start=None, end=None, update=False):
+def image_scraper(
+    csvfile, dataset, shottypes="hdp", start=None, end=None, update=False
+):
     """This function scrapes images of urls found in the csv file that is made
     with the download_to_csv function. It will check if files already exist.
     If a file already exists, it will not be downloaded again.
@@ -133,11 +135,11 @@ def image_scraper(csvfile, dataset, shottypes="hdp", start=None, end=None, updat
     logging.info("Checking Folders...")
     if not os.path.exists(os.path.join("data", dataset, "images")):
         os.mkdir(os.path.join("data", dataset, "images"))
-        if 'h'in shottypes:
+        if "h" in shottypes:
             os.mkdir(os.path.join("data", dataset, "images", "head"))
-        if 'd'in shottypes:
+        if "d" in shottypes:
             os.mkdir(os.path.join("data", dataset, "images", "dorsal"))
-        if 'p'in shottypes:
+        if "p" in shottypes:
             os.mkdir(os.path.join("data", dataset, "images", "profile"))
         logging.info("Folders are created")
     if os.path.exists(os.path.join("data", dataset, "images", "head")):
@@ -172,7 +174,9 @@ def image_scraper(csvfile, dataset, shottypes="hdp", start=None, end=None, updat
                         filename = os.path.join(
                             dir_h,
                             image[1],
-                            "{}_{}_{}.jpg".format(image[1], image[0], image[2]),
+                            "{}_{}_{}.jpg".format(
+                                image[1], image[0], image[2]
+                            ),
                         )
                         try:
                             if not os.path.isfile(filename):
@@ -184,6 +188,7 @@ def image_scraper(csvfile, dataset, shottypes="hdp", start=None, end=None, updat
                             if err.code == 404:
                                 logging.error("Error 404: {}".format(image[3]))
                                 continue
+
                 if "d" in shottypes.lower():
                     if image[2] == "d":
                         if not os.path.exists(os.path.join(dir_d, image[1])):
@@ -191,7 +196,9 @@ def image_scraper(csvfile, dataset, shottypes="hdp", start=None, end=None, updat
                         filename = os.path.join(
                             dir_d,
                             image[1],
-                            "{}_{}_{}.jpg".format(image[1], image[0], image[2]),
+                            "{}_{}_{}.jpg".format(
+                                image[1], image[0], image[2]
+                            ),
                         )
                         try:
                             if not os.path.isfile(filename):
@@ -203,6 +210,7 @@ def image_scraper(csvfile, dataset, shottypes="hdp", start=None, end=None, updat
                             if err.code == 404:
                                 logging.error("Error 404: {}".format(image[3]))
                                 continue
+
                 if "p" in shottypes.lower():
                     if image[2] == "p":
                         if not os.path.exists(os.path.join(dir_p, image[1])):
@@ -210,7 +218,9 @@ def image_scraper(csvfile, dataset, shottypes="hdp", start=None, end=None, updat
                         filename = os.path.join(
                             dir_p,
                             image[1],
-                            "{}_{}_{}.jpg".format(image[1], image[0], image[2]),
+                            "{}_{}_{}.jpg".format(
+                                image[1], image[0], image[2]
+                            ),
                         )
                         try:
                             if not os.path.isfile(filename):
@@ -222,6 +232,7 @@ def image_scraper(csvfile, dataset, shottypes="hdp", start=None, end=None, updat
                             if err.code == 404:
                                 logging.error("Error 404: {}".format(image[3]))
                                 continue
+
     logging.info("{} images were downloaded.".format(nb_images))
 
 
