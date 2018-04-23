@@ -55,6 +55,15 @@ from keras.optimizers import RMSprop
 from models.build import build_model
 from utils.logger import top_k_categorical_accuracy
 
+try:
+    from Eve import Eve
+except ImportError:
+    Eve = None
+    raise ImportError(
+        "Eve is not installed. Please copy https://github.com/tdeboissiere/DeepLearningImplementations/blob/master/Eve/Eve.py into the `site-packges` folder."
+    )
+
+
 # Parameters and settings
 ###############################################################################
 
@@ -169,12 +178,22 @@ def compile_model(model, config):
     """
     optimizer = config.optimizer
     learning_rate = config.learning_rate
-    if optimizer not in ["Nadam", "Adam", "SGD", "RMSprop"]:
+    if optimizer not in ["Nadam", "Adam", "SGD", "RMSprop", "Eve"]:
         raise ValueError(
             "The optimizer should be one of: `Nadam`, `Adam`, "
             "`SGD` or `RMSprop`"
         )
 
+    if optimizer == "Eve":
+        opt = Eve(
+            lr=learning_rate,
+            beta_1=0.9,
+            beta_2=0.999,
+            beta_3=0.999,
+            small_k=0.1,
+            big_K=10,
+            epsilon=1e-8,
+        )
     if optimizer == "Nadam":
         opt = Nadam(
             lr=learning_rate,
@@ -196,11 +215,15 @@ def compile_model(model, config):
         opt = SGD(lr=learning_rate, decay=1e-6, momentum=0.9, nesterov=True)
     if optimizer == "RMSprop":
         opt = RMSprop(lr=learning_rate, rho=0.9, epsilon=1e-08, decay=0.0)
-    model.compile(
-        loss="categorical_crossentropy",
-        optimizer=opt,
-        metrics=["accuracy", top_k_categorical_accuracy],
-    )
+    if opt is not None:
+        model.compile(
+            loss="categorical_crossentropy",
+            optimizer=opt,
+            metrics=["accuracy", top_k_categorical_accuracy],
+        )
+    else:
+        raise ValueError("The optimizer is of None type.")
+
     logging.info("The model is compiled with success.")
 
     return model
