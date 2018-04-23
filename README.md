@@ -101,6 +101,7 @@ Configure `formicID/configs/config.json`
   - `Adam`
   - `RMSprop`
   - `SGD`
+  - `Eve`
 - Set the `test_split` and `val_split` percentages as float.
 - Set the `shottype` to use (`dorsal`, `head` or `profile`).
 

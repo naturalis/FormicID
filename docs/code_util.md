@@ -52,6 +52,11 @@ python3 formicID/main.py -c formicID/configs/config.json
 python formicID\main.py -c formicID\configs\config.json
 ```
 
+### Install from folder (editable)
+
+```shell
+pip3 install --upgrade -e .
+```
 ### Tensorboard launch
 
 In order to launch TensorBoard from the terminal, copy the line below and replace the `test` with the correct experiment name. Run this after you set the working directory to the project directory.
