@@ -667,11 +667,11 @@ def idg(config, target_gen="training"):
     return idg
 
 
-# flow_from_directory part
+# flow_from_directory
 ###############################################################################
 
 
-def _data_generator_dir(config, target_gen="training"):
+def _generator_dir(config, target_gen="training", shottype=None):
     """Generator for reading images out of directories. Can be used for a
     `training`, `validation` or `test` set. `Validation` and `test` sets will
     not be shuffled.
@@ -690,7 +690,8 @@ def _data_generator_dir(config, target_gen="training"):
     model = config.model
     seed = config.seed
     dataset = config.data_set
-    shottype = config.shottype
+    if shottype == None:
+        shottype = config.shottype
     if model in ["InceptionV3", "InceptionResNetV2", "Xception"]:
         target_size = (299, 299)
     if model in ["ResNet50", "DenseNet169"]:
@@ -739,11 +740,11 @@ def trainer_dir(model, config, callbacks=None):
     # steps_per_epoch = config.num_iter_per_epoch
     epochs = config.num_epochs
     batch_size = config.batch_size
-    train_data_gen_dir, _, _ = _data_generator_dir(
+    train_data_gen_dir, _, _ = _generator_dir(
         config=config, target_gen="training"
     )
     train_samples = train_data_gen_dir.samples
-    val_data_gen_dir, _, _ = _data_generator_dir(
+    val_data_gen_dir, _, _ = _generator_dir(
         config=config, target_gen="validation"
     )
     val_samples = val_data_gen_dir.samples
@@ -753,6 +754,45 @@ def trainer_dir(model, config, callbacks=None):
         epochs=epochs,
         validation_data=val_data_gen_dir,
         validation_steps=val_samples // batch_size,
+        callbacks=callbacks,
+    )
+    return history
+
+
+# Multi-view generator with flow_from_directory
+###############################################################################
+
+
+def multiview_generator_dir():
+    train_h_data_gen_dir, _, _ = _generator_dir(
+        config=config, target_gen="training", shottype="head"
+    )
+    train_d_data_gen_dir, _, _ = _generator_dir(
+        config=config, target_gen="training", shottype="dorsal"
+    )
+    train_p_data_gen_dir, _, _ = _generator_dir(
+        config=config, target_gen="training", shottype="profile"
+    )
+    while True:
+        hgen = train_h_data_gen_dir.next()
+        dgen = train_d_data_gen_dir.next()
+        pgen = train_p_data_gen_dir.next()
+        # TODO: catch the specimens that don't have all 3 shottypes
+        yield [hgen[0], dgen[0], pgen[0]], hgen[1]
+
+
+def train_multiview_dir(model, config, generator, callbacks=None):
+    epochs = config.num_epochs
+    batch_size = config.batch_size
+    train_samples = generator.samples
+    # TODO: fix validation
+    # val_samples = val_data_gen_dir.samples
+    history = model.fit_generator(
+        generator=generator,
+        steps_per_epoch=train_samples // batch_size,
+        epochs=epochs,
+        # validation_data=val_data_gen_dir,
+        # validation_steps=val_samples // batch_size,
         callbacks=callbacks,
     )
     return history
