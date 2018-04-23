@@ -40,6 +40,7 @@ from utils.utils import wd
 # Creating an URL
 ###############################################################################
 
+
 def create_url(limit, offset, **kwargs):
     """Creation of the url to access AntWebs API V3, using a base_url and
     arguments.
