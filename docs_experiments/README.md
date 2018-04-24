@@ -314,11 +314,15 @@ horizontal_flip=True
 
 ![](/docs_experiments/T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4.png)
 
+### 20 species confusion matrix
+- created from [T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve](#T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve)
+
+![](/docs_experiments/CM-T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve.png)
 
 ### 97 species confusion matrix
-- created from [T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4](#T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4)
+- created from [T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4](#T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4)
 
-![](/docs_experiments/confusion_matrix_test.png)
+![](/docs_experiments/CM-T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4.png)
 
 ### Test image
 Below is an example of an external image, tested in the model. When trained with high accuracy, this could be used to identify new material.
