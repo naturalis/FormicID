@@ -656,10 +656,10 @@ def idg(config, target_gen="training"):
         idg = ImageDataGenerator(
             preprocessing_function=preprocess_input,
             rotation_range=40,
-            width_shift_range=0.2,
-            height_shift_range=0.2,
-            shear_range=0.2,
-            zoom_range=0.2,
+            width_shift_range=0.35,
+            height_shift_range=0.35,
+            shear_range=0.35,
+            zoom_range=0.35,
             horizontal_flip=True,
         )
     if target_gen in ["validation", "test"]:

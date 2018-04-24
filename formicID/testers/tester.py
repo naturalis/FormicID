@@ -223,6 +223,7 @@ def plot_confusion_matrix(
         A confusion matrix plot.
 
     """
+    # TODO: Fix the tick lines through the plot
     cm = confusion_matrix(y_pred=Y_pred, y_true=Y_true)
     accuracy = np.trace(cm) / float(np.sum(cm))
     misclass = 1 - accuracy

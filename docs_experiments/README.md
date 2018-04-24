@@ -16,6 +16,7 @@ So
 - set for `100` epochs
 
 # Tabel of Contents
+
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Experiments](#experiments)
@@ -41,6 +42,8 @@ So
 			- [T20_CaAll_QuL_ShH_AugH_D075_LR0001_E100](#t20caallqulshhaughd075lr0001e100)
 			- [T20_CaAll_QuL_ShH_AugH_D025_LR0001_E100](#t20caallqulshhaughd025lr0001e100)
 			- [T20_CaAll_QuL_ShH_AugH_D025_LR00005_E100](#t20caallqulshhaughd025lr00005e100)
+			- [T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve](#t20caallqulshhaugmd05lr00001e100i4eve)
+			- [T20_CaAll_QuL_ShH_AugH_D075_LR00001_E100_I4_Eve](#t20caallqulshhaughd075lr00001e100i4eve)
 		- [50 Species](#50-species)
 			- [T50_CaAll_QuL_ShH_AugM_D05_LR0001_E100](#t50caallqulshhaugmd05lr0001e100)
 		- [97 Species](#97-species)
@@ -52,6 +55,7 @@ So
 		- [Test image](#test-image)
 
 <!-- /TOC -->
+
 # Low quality image datasets - Number of images
 
 |       Species |  5  |      20      |      50      |        97        |
@@ -247,6 +251,34 @@ decay=0.0001 	# Important!
 - Epoch 00053: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-06`.
 
 ![](/docs_experiments/T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve.png)
+
+#### T20_CaAll_QuL_ShH_AugH_D075_LR00001_E100_I4_Eve
+Training with the Eve optimizer as follows:
+
+```python
+lr=0.0001,  	# Important!
+beta_1=0.9,
+beta_2=0.999,
+beta_3=0.999,
+small_k=0.1,
+big_K=10,
+epsilon=1e-8,
+decay=0.0001 	# Important!
+```
+Augmentation settings:
+```python
+rotation_range=40,
+width_shift_range=0.35,
+height_shift_range=0.35,
+shear_range=0.35,
+zoom_range=0.35,
+horizontal_flip=True
+```
+
+- Epoch 00045: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-06`.
+- Epoch 00069: early stopping
+
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugH_D075_LR00001_E100_I4_Eve.png)
 
 
 ### 50 Species

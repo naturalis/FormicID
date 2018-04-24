@@ -1,8 +1,8 @@
 {
-    "exp_name": "T97_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve",
+    "exp_name": "T20_CaAll_QuL_ShH_AugH_D075_LR00001_E100_I4_Eve",
     "data_set": "top20species_Qlow",
     "batch_size": 32,
-    "dropout": 0.5,
+    "dropout": 0.75,
     "learning_rate": 0.0001,
     "model": "InceptionResNetV2",
     "num_epochs": 100,
