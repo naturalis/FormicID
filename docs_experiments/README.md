@@ -73,14 +73,14 @@ So
 Training settings were mostly as mentioned below. Some of the parameters changes as the optimal parameter is searched.
 
 ```python
-number_of_species='97' # $ datasets: 5, 20, 50 or 97 species
-image_quality='low'
-castes='all'
+number_of_species="97" # $ datasets: 5, 20, 50 or 97 species
+image_quality="low"
+castes="all"
 num_epochs=100
 learning_rate=0.001 # Variates in between experiments
 batch_size=64
 dropout=0.5 # Variates in between experiments
-optimizer='Nadam'
+optimizer="Nadam"
 # With following settings:
 	lr =learning_rate,
 	beta_1 =0.9,
@@ -91,7 +91,8 @@ model=InceptionV3 # With modified top layers dropout and a dense layer with num_
 seed=1
 testsplit=0.1
 validationsplit=0.2
-weights initialization='imagenet'
+weights initialization="imagenet"
+The prelast Dense Layer activation="relu" or PReLU
 # Augmentation as below:
 rotation_range=40,
 width_shift_range=0.2, # Variates in between experiments
@@ -229,6 +230,25 @@ horizontal_flip=True
 
 ![](/docs_experiments/T20_CaAll_QuL_ShH_AugH_D025_LR00005_E100.png)
 
+#### T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve
+Training with the Eve optimizer as follows:
+
+```python
+lr=0.0001,  	# Important!
+beta_1=0.9,
+beta_2=0.999,
+beta_3=0.999,
+small_k=0.1,
+big_K=10,
+epsilon=1e-8,
+decay=0.0001 	# Important!
+```
+
+- Epoch 00053: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-06`.
+
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve.png)
+
+
 ### 50 Species
 
 #### T50_CaAll_QuL_ShH_AugM_D05_LR0001_E100
@@ -261,6 +281,7 @@ horizontal_flip=True
 - Epoch 00090: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
 
 ![](/docs_experiments/T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4.png)
+
 
 ### 97 species confusion matrix
 - created from [T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4](#T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4)
