@@ -104,7 +104,7 @@ Configure `formicID/configs/config.json`
   - `Eve`
 - Set the `test_split` and `val_split` percentages as float.
 - Set the `shottype` to use (`dorsal`, `head` or `profile`).
-
+- The prelast Dense Layer activation: `"relu"` or `PReLU`
 ```json
 {
     "exp_name": "experiment_name",

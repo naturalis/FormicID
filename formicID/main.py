@@ -125,10 +125,10 @@ def main():
     ###########################################################################
     model_formicID = load_model(config=config)
     model_formicID = compile_model(model=model_formicID, config=config)
-    model_formicID = weights_load(
-        model=model_formicID,
-        weights="experiments\T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4\checkpoint\weights_64-1.21.hdf5",
-    )
+    # model_formicID = weights_load(
+    #     model=model_formicID,
+    #     weights="experiments\T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4\checkpoint\weights_64-1.21.hdf5",
+    # )
     # Initialize logger
     ###########################################################################
     logger = [
@@ -167,9 +167,9 @@ def main():
 
     # Training in batches with iterator
     ###########################################################################
-    # history = trainer_dir(
-    #     model=model_formicID, config=config, callbacks=logger
-    # )
+    history = trainer_dir(
+        model=model_formicID, config=config, callbacks=logger
+    )
     # trainer_csv(
     #     model=model_formicID,
     #     csv="data/top5species_Qlow/image_path.csv",
@@ -180,8 +180,8 @@ def main():
 
     # Evaluation
     ###########################################################################
-    # plot_history(history=history, theme="ggplot")
-    # evaluator(model=model_formicID, config=config)
+    plot_history(history=history, theme="ggplot")
+    evaluator(model=model_formicID, config=config)
 
     # Testing
     ###########################################################################

@@ -46,6 +46,7 @@ from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import GlobalAveragePooling2D
 from keras.models import Model
+from keras.layers import PReLU
 from keras.optimizers import SGD
 from keras.optimizers import Adam
 from keras.optimizers import Nadam
@@ -54,14 +55,7 @@ from keras.optimizers import RMSprop
 # FormicID imports
 from models.build import build_model
 from utils.logger import top_k_categorical_accuracy
-
-try:
-    from Eve import Eve
-except ImportError:
-    Eve = None
-    raise ImportError(
-        "Eve is not installed. Please copy https://github.com/tdeboissiere/DeepLearningImplementations/blob/master/Eve/Eve.py into the `site-packges` folder."
-    )
+from models.optimizer import Eve
 
 
 # Parameters and settings
@@ -193,6 +187,7 @@ def compile_model(model, config):
             small_k=0.1,
             big_K=10,
             epsilon=1e-8,
+            decay=0.0004,
         )
     if optimizer == "Nadam":
         opt = Nadam(
