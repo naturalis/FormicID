@@ -737,7 +737,6 @@ def trainer_dir(model, config, callbacks=None):
         Keras History instance with training and validation metrics.
 
     """
-    # steps_per_epoch = config.num_iter_per_epoch
     epochs = config.num_epochs
     batch_size = config.batch_size
     train_data_gen_dir, _, _ = _generator_dir(

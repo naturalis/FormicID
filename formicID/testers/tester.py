@@ -41,7 +41,7 @@ from PIL import Image
 import requests
 
 # FormicID imports
-from trainers.train import _data_generator_dir
+from trainers.train import _generator_dir
 
 # Parameters and settings
 ###############################################################################
@@ -66,7 +66,7 @@ def evaluator(model, config):
     """
     shottype = config.shottype
     dataset = config.data_set
-    test_data_gen_dir, _, _ = _data_generator_dir(
+    test_data_gen_dir, _, _ = _generator_dir(
         config=config, target_gen="test"
     )
     score = model.evaluate_generator(test_data_gen_dir)
@@ -98,7 +98,7 @@ def predictor(model, config, plot=False, n_img=None, n_cols=None):
         n_img, n_cols = None, None
     dataset = config.data_set
     shottype = config.shottype
-    test_data_gen_dir, classes, class_indices = _data_generator_dir(
+    test_data_gen_dir, classes, class_indices = _generator_dir(
         config=config, target_gen="test"
     )
     labels = class_indices.keys()
@@ -280,7 +280,7 @@ def plot_confusion_matrix(
 # def plot_predictions(, predictions=None):
 #     dataset = config.data_set
 #     shottype = config.shottype
-#     test_data_gen_dir, classes, class_indices = _data_generator_dir(
+#     test_data_gen_dir, classes, class_indices = _generator_dir(
 #         dataset=dataset, config=config, shottype=shottype, target_gen="test"
 #     )
 
