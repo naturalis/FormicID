@@ -45,7 +45,6 @@ from utils.logger import build_mc
 from utils.logger import build_rlrop
 from utils.logger import build_tb
 from utils.logger import plot_history
-from utils.model_utils import make_multi_gpu
 from utils.model_utils import weights_load
 from utils.utils import create_dirs
 from utils.utils import get_args
@@ -75,7 +74,7 @@ def main():
     # Logging
     ###########################################################################
     logging.basicConfig(
-        filename=config.exp_name + ".log",
+        filename=os.path.join("logs", config.exp_name + ".log"),
         format="[%(asctime)s] - [%(levelname)s]: %(message)s",
         filemode="w",
         level=logging.DEBUG,
@@ -90,16 +89,16 @@ def main():
 
     # Creating a dataset
     ###########################################################################
-    # get_dataset(
-    #     input="testgenusspecies.csv",
-    #     n_jsonfiles=25,
-    #     config=config,
-    #     shottypes="d",
-    #     quality="low",
-    #     update=True,
-    #     offset_set=0,
-    #     limit_set=200,
-    # )
+    get_dataset(
+        input="testall.csv",
+        n_jsonfiles=100,
+        config=config,
+        shottypes="h",
+        quality="thumbview",
+        update=True,
+        offset_set=0,
+        limit_set=9999,
+    )
 
     # create experiment related directories
     ###########################################################################
@@ -107,7 +106,7 @@ def main():
 
     # Initializing the data
     ###########################################################################
-    # split_in_directory(config=config)
+    split_in_directory(config=config)
 
     # Augmentation handeling
     ###########################################################################

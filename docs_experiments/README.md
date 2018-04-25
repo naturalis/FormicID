@@ -280,6 +280,33 @@ horizontal_flip=True
 
 ![](/docs_experiments/T20_CaAll_QuL_ShH_AugH_D075_LR00001_E100_I4_Eve.png)
 
+#### T20_CaAll_QuL_ShH_AugH_D025_LR00001_E100_I4_Eve
+Training with the Eve optimizer as follows:
+
+```python
+lr=0.0001,  	# Important!
+beta_1=0.9,
+beta_2=0.999,
+beta_3=0.999,
+small_k=0.1,
+big_K=10,
+epsilon=1e-8,
+decay=0.0001 	# Important!
+```
+Augmentation settings:
+```python
+rotation_range=40,
+width_shift_range=0.35,
+height_shift_range=0.35,
+shear_range=0.35,
+zoom_range=0.35,
+horizontal_flip=True
+```
+
+- Epoch 00054: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-06`.
+- Epoch 00078: early stopping
+
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugH_D025_LR00001_E100_I4_Eve.png)
 
 ### 50 Species
 
@@ -313,6 +340,53 @@ horizontal_flip=True
 - Epoch 00090: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
 
 ![](/docs_experiments/T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4.png)
+
+#### T97_CaAll_QuM_ShH_AugH_D05_LR00001_E150_I4_Eve
+Training with the Eve optimizer as follows:
+
+```python
+lr=0.0001,  	# Important!
+beta_1=0.9,
+beta_2=0.999,
+beta_3=0.999,
+small_k=0.1,
+big_K=10,
+epsilon=1e-8,
+decay=0.0001 	# Important!
+```
+Augmentation settings:
+```python
+rotation_range=40,
+width_shift_range=0.35,
+height_shift_range=0.35,
+shear_range=0.35,
+zoom_range=0.35,
+horizontal_flip=True
+```
+- Epoch 00038: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-06`.
+- Epoch 00068: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-07`.
+- Epoch 00092: early stopping
+
+![](/docs_experiments/T97_CaAll_QuM_ShH_AugH_D05_LR00001_E150_I4_Eve.png)
+
+
+#### T97_CaAll_QuT_ShH_AugM_D05_LR00001_E100_I4_Eve
+Training with the Eve optimizer as follows:
+
+```python
+lr=0.0001,  	# Important!
+beta_1=0.9,
+beta_2=0.999,
+beta_3=0.999,
+small_k=0.1,
+big_K=10,
+epsilon=1e-8,
+decay=0.0001 	# Important!
+```
+- Epoch 00036: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-06`.
+- Epoch 00060: early stopping
+
+![](/docs_experiments/T97_CaAll_QuT_ShH_AugM_D05_LR00001_E100_I4_Eve.png)
 
 ### 20 species confusion matrix
 - created from [T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve](#T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve)
