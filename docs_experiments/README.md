@@ -42,8 +42,9 @@ So
 			- [T20_CaAll_QuL_ShH_AugH_D075_LR0001_E100](#t20caallqulshhaughd075lr0001e100)
 			- [T20_CaAll_QuL_ShH_AugH_D025_LR0001_E100](#t20caallqulshhaughd025lr0001e100)
 			- [T20_CaAll_QuL_ShH_AugH_D025_LR00005_E100](#t20caallqulshhaughd025lr00005e100)
-			- [T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve](#t20caallqulshhaugmd05lr00001e100i4eve)
-			- [T20_CaAll_QuL_ShH_AugH_D075_LR00001_E100_I4_Eve](#t20caallqulshhaughd075lr00001e100i4eve)
+			- [T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4](#t20caallqulshhaugmd05lr00001e100i4)
+			- [T20_CaAll_QuL_ShH_AugH_D075_LR00001_E100_I4](#t20caallqulshhaughd075lr00001e100i4)
+			- [T20_CaAll_QuL_ShH_AugH_D025_LR00001_E100_I4](#t20caallqulshhaughd025lr00001e100i4)
 		- [50 Species](#50-species)
 			- [T50_CaAll_QuL_ShH_AugM_D05_LR0001_E100](#t50caallqulshhaugmd05lr0001e100)
 		- [97 Species](#97-species)
@@ -51,6 +52,9 @@ So
 			- [T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100 - 2nd try](#t97caallqulshhaugmd05lr0001e100-2nd-try)
 			- [T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100_I4](#t97caallqulshhaugmd05lr0001e100i4)
 			- [T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4](#t97caallqumshhaugmd05lr0001e100i4)
+			- [T97_CaAll_QuM_ShH_AugH_D05_LR00001_E150_I4](#t97caallqumshhaughd05lr00001e150i4)
+			- [T97_CaAll_QuT_ShH_AugM_D05_LR00001_E100_I4](#t97caallqutshhaugmd05lr00001e100i4)
+		- [20 species confusion matrix](#20-species-confusion-matrix)
 		- [97 species confusion matrix](#97-species-confusion-matrix)
 		- [Test image](#test-image)
 
@@ -234,37 +238,12 @@ horizontal_flip=True
 
 ![](/docs_experiments/T20_CaAll_QuL_ShH_AugH_D025_LR00005_E100.png)
 
-#### T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve
-Training with the Eve optimizer as follows:
-
-```python
-lr=0.0001,  	# Important!
-beta_1=0.9,
-beta_2=0.999,
-beta_3=0.999,
-small_k=0.1,
-big_K=10,
-epsilon=1e-8,
-decay=0.0001 	# Important!
-```
-
+#### T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4
 - Epoch 00053: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-06`.
 
-![](/docs_experiments/T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve.png)
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4.png)
 
-#### T20_CaAll_QuL_ShH_AugH_D075_LR00001_E100_I4_Eve
-Training with the Eve optimizer as follows:
-
-```python
-lr=0.0001,  	# Important!
-beta_1=0.9,
-beta_2=0.999,
-beta_3=0.999,
-small_k=0.1,
-big_K=10,
-epsilon=1e-8,
-decay=0.0001 	# Important!
-```
+#### T20_CaAll_QuL_ShH_AugH_D075_LR00001_E100_I4
 Augmentation settings:
 ```python
 rotation_range=40,
@@ -278,21 +257,9 @@ horizontal_flip=True
 - Epoch 00045: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-06`.
 - Epoch 00069: early stopping
 
-![](/docs_experiments/T20_CaAll_QuL_ShH_AugH_D075_LR00001_E100_I4_Eve.png)
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugH_D075_LR00001_E100_I4.png)
 
-#### T20_CaAll_QuL_ShH_AugH_D025_LR00001_E100_I4_Eve
-Training with the Eve optimizer as follows:
-
-```python
-lr=0.0001,  	# Important!
-beta_1=0.9,
-beta_2=0.999,
-beta_3=0.999,
-small_k=0.1,
-big_K=10,
-epsilon=1e-8,
-decay=0.0001 	# Important!
-```
+#### T20_CaAll_QuL_ShH_AugH_D025_LR00001_E100_I4
 Augmentation settings:
 ```python
 rotation_range=40,
@@ -306,7 +273,7 @@ horizontal_flip=True
 - Epoch 00054: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-06`.
 - Epoch 00078: early stopping
 
-![](/docs_experiments/T20_CaAll_QuL_ShH_AugH_D025_LR00001_E100_I4_Eve.png)
+![](/docs_experiments/T20_CaAll_QuL_ShH_AugH_D025_LR00001_E100_I4.png)
 
 ### 50 Species
 
@@ -341,19 +308,7 @@ horizontal_flip=True
 
 ![](/docs_experiments/T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4.png)
 
-#### T97_CaAll_QuM_ShH_AugH_D05_LR00001_E150_I4_Eve
-Training with the Eve optimizer as follows:
-
-```python
-lr=0.0001,  	# Important!
-beta_1=0.9,
-beta_2=0.999,
-beta_3=0.999,
-small_k=0.1,
-big_K=10,
-epsilon=1e-8,
-decay=0.0001 	# Important!
-```
+#### T97_CaAll_QuM_ShH_AugH_D05_LR00001_E150_I4
 Augmentation settings:
 ```python
 rotation_range=40,
@@ -367,31 +322,19 @@ horizontal_flip=True
 - Epoch 00068: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-07`.
 - Epoch 00092: early stopping
 
-![](/docs_experiments/T97_CaAll_QuM_ShH_AugH_D05_LR00001_E150_I4_Eve.png)
+![](/docs_experiments/T97_CaAll_QuM_ShH_AugH_D05_LR00001_E150_I4.png)
 
 
-#### T97_CaAll_QuT_ShH_AugM_D05_LR00001_E100_I4_Eve
-Training with the Eve optimizer as follows:
-
-```python
-lr=0.0001,  	# Important!
-beta_1=0.9,
-beta_2=0.999,
-beta_3=0.999,
-small_k=0.1,
-big_K=10,
-epsilon=1e-8,
-decay=0.0001 	# Important!
-```
+#### T97_CaAll_QuT_ShH_AugM_D05_LR00001_E100_I4
 - Epoch 00036: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-06`.
 - Epoch 00060: early stopping
 
-![](/docs_experiments/T97_CaAll_QuT_ShH_AugM_D05_LR00001_E100_I4_Eve.png)
+![](/docs_experiments/T97_CaAll_QuT_ShH_AugM_D05_LR00001_E100_I4.png)
 
 ### 20 species confusion matrix
-- created from [T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve](#T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve)
+- created from [T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4](#T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4)
 
-![](/docs_experiments/CM-T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4_Eve.png)
+![](/docs_experiments/CM-T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4.png)
 
 ### 97 species confusion matrix
 - created from [T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4](#T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4)
