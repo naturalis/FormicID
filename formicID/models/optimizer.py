@@ -83,7 +83,7 @@ class Eve(Optimizer):
         lr = self.lr
         if self.initial_decay > 0:
             # fmt: off
-            lr *= (1. / (
+            lr = lr * (1. / (
                 1. + self.decay * K.cast(self.iterations, K.dtype(self.decay))
             ))
         t = K.cast(self.iterations, K.floatx()) + 1

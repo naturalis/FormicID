@@ -66,9 +66,7 @@ def evaluator(model, config):
     """
     shottype = config.shottype
     dataset = config.data_set
-    test_data_gen_dir, _, _ = _generator_dir(
-        config=config, target_gen="test"
-    )
+    test_data_gen_dir, _, _ = _generator_dir(config=config, target_gen="test")
     score = model.evaluate_generator(test_data_gen_dir)
     print(
         "Test metrics: "
@@ -229,7 +227,7 @@ def plot_confusion_matrix(
     misclass = 1 - accuracy
     if cmap is None:
         cmap = plt.get_cmap("Blues")
-    plt.figure(figsize=(25, 15))
+    plt.figure(figsize=(20, 10))
     plt.imshow(cm, interpolation="nearest", cmap=cmap)
     plt.title(title)
     plt.colorbar()

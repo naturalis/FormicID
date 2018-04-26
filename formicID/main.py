@@ -89,16 +89,16 @@ def main():
 
     # Creating a dataset
     ###########################################################################
-    get_dataset(
-        input="testall.csv",
-        n_jsonfiles=100,
-        config=config,
-        shottypes="h",
-        quality="thumbview",
-        update=True,
-        offset_set=0,
-        limit_set=9999,
-    )
+    # get_dataset(
+    #     input="testall.csv",
+    #     n_jsonfiles=100,
+    #     config=config,
+    #     shottypes="h",
+    #     quality="thumbview",
+    #     update=True,
+    #     offset_set=0,
+    #     limit_set=9999,
+    # )
 
     # create experiment related directories
     ###########################################################################
@@ -126,7 +126,7 @@ def main():
     model_formicID = compile_model(model=model_formicID, config=config)
     # model_formicID = weights_load(
     #     model=model_formicID,
-    #     weights="experiments\T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4\checkpoint\weights_64-1.21.hdf5",
+    #     weights="experiments\T20_CaAll_QuL_ShH_AugH_D075_LR0001_E100\checkpoint\weights_67-1.12.hdf5",
     # )
     # Initialize logger
     ###########################################################################
@@ -160,7 +160,10 @@ def main():
             write_images=True,
         ),
         build_csvl(
-            filename="log.csv", config=config, separator=",", append=False
+            filename="metricslog.csv",
+            config=config,
+            separator=",",
+            append=False,
         ),
     ]
 
@@ -179,7 +182,7 @@ def main():
 
     # Evaluation
     ###########################################################################
-    plot_history(history=history, theme="ggplot")
+    plot_history(history=history, theme="ggplot", export="history_plot.png")
     evaluator(model=model_formicID, config=config)
 
     # Testing
