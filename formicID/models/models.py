@@ -54,7 +54,8 @@ from keras.optimizers import RMSprop
 
 # FormicID imports
 from models.build import build_model
-from utils.logger import top_k_categorical_accuracy
+from utils.logger import top_k_cat_accuracy
+from utils.logger import rmse
 from models.optimizer import Eve
 
 
@@ -187,7 +188,9 @@ def compile_model(model, config):
             small_k=0.1,
             big_K=10,
             epsilon=1e-8,
-            decay=0.0004,
+            decay=0.0001,
+            # clipnorm=1.,
+            # clipvalue=0.5,
         )
     if optimizer == "Nadam":
         opt = Nadam(
@@ -210,14 +213,18 @@ def compile_model(model, config):
         opt = SGD(lr=learning_rate, decay=1e-6, momentum=0.9, nesterov=True)
     if optimizer == "RMSprop":
         opt = RMSprop(lr=learning_rate, rho=0.9, epsilon=1e-08, decay=0.0)
-    if opt is not None:
+    if opt:
         model.compile(
             loss="categorical_crossentropy",
             optimizer=opt,
-            metrics=["accuracy", top_k_categorical_accuracy],
+            metrics=[
+                "accuracy",
+                top_k_cat_accuracy,
+                # rmse,
+            ],
         )
     else:
-        raise ValueError("The optimizer is of None type.")
+        raise ValueError("There is no optimizer.")
 
     logging.info("The model is compiled with success.")
 

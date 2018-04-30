@@ -82,6 +82,7 @@ class Eve(Optimizer):
         self.updates = [K.update_add(self.iterations, 1)]
         lr = self.lr
         if self.initial_decay > 0:
+<<<<<<< HEAD
             lr *= (
                 1.
                 / (
@@ -98,6 +99,17 @@ class Eve(Optimizer):
                 / (1. - K.pow(self.beta_1, t))
             )
         )
+=======
+            # fmt: off
+            lr = lr * (1. / (
+                1. + self.decay * K.cast(self.iterations, K.dtype(self.decay))
+            ))
+        t = K.cast(self.iterations, K.floatx()) + 1
+        lr_t = (lr * (K.sqrt(1. - K.pow(
+            self.beta_2, t)) / (1. - K.pow(self.beta_1, t))
+            ))
+            # fmt: on
+>>>>>>> refs/remotes/origin/master
         shapes = [K.int_shape(p) for p in params]
         ms = [K.zeros(shape) for shape in shapes]
         vs = [K.zeros(shape) for shape in shapes]

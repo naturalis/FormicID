@@ -45,7 +45,6 @@ from utils.logger import build_mc
 from utils.logger import build_rlrop
 from utils.logger import build_tb
 from utils.logger import plot_history
-from utils.model_utils import make_multi_gpu
 from utils.model_utils import weights_load
 from utils.utils import create_dirs
 from utils.utils import get_args
@@ -75,7 +74,7 @@ def main():
     # Logging
     ###########################################################################
     logging.basicConfig(
-        filename=config.exp_name + ".log",
+        filename=os.path.join("logs", config.exp_name + ".log"),
         format="[%(asctime)s] - [%(levelname)s]: %(message)s",
         filemode="w",
         level=logging.DEBUG,
@@ -91,14 +90,14 @@ def main():
     # Creating a dataset
     ###########################################################################
     # get_dataset(
-    #     input="testgenusspecies.csv",
-    #     n_jsonfiles=25,
+    #     input="testall.csv",
+    #     n_jsonfiles=100,
     #     config=config,
-    #     shottypes="d",
-    #     quality="low",
+    #     shottypes="h",
+    #     quality="thumbview",
     #     update=True,
     #     offset_set=0,
-    #     limit_set=200,
+    #     limit_set=9999,
     # )
 
     # create experiment related directories
@@ -107,7 +106,7 @@ def main():
 
     # Initializing the data
     ###########################################################################
-    # split_in_directory(config=config)
+    split_in_directory(config=config)
 
     # Augmentation handeling
     ###########################################################################
@@ -125,6 +124,7 @@ def main():
     ###########################################################################
     model_formicID = load_model(config=config)
     model_formicID = compile_model(model=model_formicID, config=config)
+<<<<<<< HEAD
     model_formicID = weights_load(
         model=model_formicID, weights="experiments/weights_13-0.62.hdf5"
     )
@@ -164,6 +164,50 @@ def main():
     #         filename="log.csv", config=config, separator=",", append=False
     #     ),
     # ]
+=======
+    # model_formicID = weights_load(
+    #     model=model_formicID,
+    #     weights="experiments\T20_CaAll_QuL_ShH_AugH_D075_LR0001_E100\checkpoint\weights_67-1.12.hdf5",
+    # )
+    # Initialize logger
+    ###########################################################################
+    logger = [
+        build_mc(
+            config=config,
+            monitor="val_loss",
+            verbose=0,
+            mode="min",
+            save_best_only=True,
+            period=1,
+        ),
+        build_rlrop(
+            monitor="val_loss",
+            factor=0.1,
+            patience=25,
+            verbose=1,
+            mode="min",
+            epsilon=1e-4,
+            cooldown=0,
+            min_lr=0,
+        ),
+        build_es(
+            monitor="val_loss", min_delta=0, patience=50, verbose=1, mode="min"
+        ),
+        build_tb(
+            model=model_formicID,
+            config=config,
+            histogram_freq=0,
+            write_graph=True,
+            write_images=True,
+        ),
+        build_csvl(
+            filename="metricslog.csv",
+            config=config,
+            separator=",",
+            append=False,
+        ),
+    ]
+>>>>>>> refs/remotes/origin/master
 
     # Training in batches with iterator
     ###########################################################################
@@ -180,8 +224,13 @@ def main():
 
     # Evaluation
     ###########################################################################
+<<<<<<< HEAD
     # plot_history(history=history, theme="ggplot")
     # evaluator(model=model_formicID, config=config)
+=======
+    plot_history(history=history, theme="ggplot", export="history_plot.png")
+    evaluator(model=model_formicID, config=config)
+>>>>>>> refs/remotes/origin/master
 
     # Testing
     ###########################################################################

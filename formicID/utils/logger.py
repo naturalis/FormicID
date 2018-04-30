@@ -303,7 +303,7 @@ def plot_history(history, theme="ggplot", export=None):
         linestyle="-",
         label="Training top 3 "
         "accuracy: ({0:.5f})".format(
-            history.history["top_k_categorical_accuracy"][-1]
+            history.history["top_k_cat_accuracy"][-1]
         ),
     )
     ax1.plot(
@@ -312,7 +312,7 @@ def plot_history(history, theme="ggplot", export=None):
         linestyle=":",
         label="Validation top 3 "
         "acccuracy: ({0:.5f})".format(
-            history.history["val_top_k_categorical_accuracy"][-1]
+            history.history["val_top_k_cat_accuracy"][-1]
         ),
     )
     ax1.legend(loc="best", fancybox=True, framealpha=0.5)
@@ -323,6 +323,7 @@ def plot_history(history, theme="ggplot", export=None):
     ax2.set_ylabel("Accuracy (%)", color="red")
     fig.tight_layout()
     plt.show()
+<<<<<<< HEAD
     plt.close(fig)
     # TODO: Fix export
     # if save is not None:
@@ -336,6 +337,16 @@ def plot_history(history, theme="ggplot", export=None):
     #             'The `export` argument "{}" is not a valid directory for '
     #             "saving the figure.".format(export)
     #         )
+=======
+    if export is not None:
+        plt.savefig(fname=export)
+    else:
+        raise ValueError(
+            'The `export` argument "{}" is not a valid directory for '
+            "saving the figure.".format(export)
+        )
+    plt.close()
+>>>>>>> refs/remotes/origin/master
 
 
 # RMSE
@@ -360,5 +371,5 @@ def rmse(y_true, y_pred):
 ###############################################################################
 
 
-def top_k_categorical_accuracy(y_true, y_pred, k=3):
+def top_k_cat_accuracy(y_true, y_pred, k=3):
     return K.mean(K.in_top_k(y_pred, K.argmax(y_true, axis=-1), k), axis=-1)
