@@ -323,14 +323,19 @@ def plot_history(history, theme="ggplot", export=None):
     ax2.set_ylabel("Accuracy (%)", color="red")
     fig.tight_layout()
     plt.show()
-    if export is not None:
-        if export is os.path.isdir():
-            plt.savefig(fname=export)
-        else:
-            raise ValueError(
-                'The `export` argument "{}" is not a valid directory for '
-                "saving the figure.".format(export)
-            )
+    plt.close(fig)
+    # TODO: Fix export
+    # if save is not None:
+    #     plt.savefig(save)
+    #     print("The confusion matrix has been saved as {}".format(save))
+    # if export is not None:
+    #     if export is os.path.isdir():
+    #         plt.savefig(fname=export)
+    #     else:
+    #         raise ValueError(
+    #             'The `export` argument "{}" is not a valid directory for '
+    #             "saving the figure.".format(export)
+    #         )
 
 
 # RMSE

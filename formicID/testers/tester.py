@@ -10,7 +10,7 @@
 ###############################################################################
 """
 Description:
-Evaluation will check if the model is accurately trained using the test set or other images.
+Testing functions will check if the model is accurately trained using the test set or other images.
 """
 
 # Packages
@@ -66,9 +66,7 @@ def evaluator(model, config):
     """
     shottype = config.shottype
     dataset = config.data_set
-    test_data_gen_dir, _, _ = _generator_dir(
-        config=config, target_gen="test"
-    )
+    test_data_gen_dir, _, _ = _generator_dir(config=config, target_gen="test")
     score = model.evaluate_generator(test_data_gen_dir)
     print(
         "Test metrics: "
@@ -229,9 +227,13 @@ def plot_confusion_matrix(
     misclass = 1 - accuracy
     if cmap is None:
         cmap = plt.get_cmap("Blues")
+    if normalize:
+        cm = cm.astype("float32") / cm.sum(axis=1)[:, np.newaxis]
+        cm = np.round(cm, 2)
+    thresh = cm.max() / 1.5 if normalize else cm.max() / 2
     plt.figure(figsize=(25, 15))
-    plt.imshow(cm, interpolation="nearest", cmap=cmap)
     plt.title(title)
+    plt.imshow(cm, interpolation="nearest", cmap=cmap)
     plt.colorbar()
     if target_names is not None:
         tick_marks = np.arange(len(target_names))
@@ -239,20 +241,17 @@ def plot_confusion_matrix(
             tick_marks, target_names, rotation=45, horizontalalignment="right"
         )
         plt.yticks(tick_marks, target_names)
-    if normalize:
-        cm = cm.astype("float32") / cm.sum(axis=1)
-        cm = np.round(cm, 2)
-    thresh = cm.max() / 1.5 if normalize else cm.max() / 2
     if scores:
         for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
             if normalize:
-                plt.text(
-                    j,
-                    i,
-                    "{:0.2f}".format(cm[i, j]),
-                    horizontalalignment="center",
-                    color="white" if cm[i, j] > thresh else "black",
-                )
+                if cm[i, j] > 0:
+                    plt.text(
+                        j,
+                        i,
+                        "{:0.2f}".format(cm[i, j]),
+                        horizontalalignment="center",
+                        color="white" if cm[i, j] > thresh else "black",
+                    )
             else:
                 plt.text(
                     j,

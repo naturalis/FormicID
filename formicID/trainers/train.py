@@ -304,25 +304,25 @@ class MyImageDataGenerator(object):
         if tx != 0 or ty != 0:
             shift_matrix = np.array([[1, 0, tx], [0, 1, ty], [0, 0, 1]])
             transform_matrix = (
-                shift_matrix if transform_matrix is None else np.dot(
-                    transform_matrix, shift_matrix
-                )
+                shift_matrix
+                if transform_matrix is None
+                else np.dot(transform_matrix, shift_matrix)
             )
         if shear != 0:
             shear_matrix = np.array(
                 [[1, -np.sin(shear), 0], [0, np.cos(shear), 0], [0, 0, 1]]
             )
             transform_matrix = (
-                shear_matrix if transform_matrix is None else np.dot(
-                    transform_matrix, shear_matrix
-                )
+                shear_matrix
+                if transform_matrix is None
+                else np.dot(transform_matrix, shear_matrix)
             )
         if zx != 1 or zy != 1:
             zoom_matrix = np.array([[zx, 0, 0], [0, zy, 0], [0, 0, 1]])
             transform_matrix = (
-                zoom_matrix if transform_matrix is None else np.dot(
-                    transform_matrix, zoom_matrix
-                )
+                zoom_matrix
+                if transform_matrix is None
+                else np.dot(transform_matrix, zoom_matrix)
             )
         if transform_matrix is not None:
             h, w = x.shape[img_row_axis], x.shape[img_col_axis]
