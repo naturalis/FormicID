@@ -323,7 +323,6 @@ def plot_history(history, theme="ggplot", export=None):
     ax2.set_ylabel("Accuracy (%)", color="red")
     fig.tight_layout()
     plt.show()
-<<<<<<< HEAD
     plt.close(fig)
     # TODO: Fix export
     # if save is not None:
@@ -337,16 +336,6 @@ def plot_history(history, theme="ggplot", export=None):
     #             'The `export` argument "{}" is not a valid directory for '
     #             "saving the figure.".format(export)
     #         )
-=======
-    if export is not None:
-        plt.savefig(fname=export)
-    else:
-        raise ValueError(
-            'The `export` argument "{}" is not a valid directory for '
-            "saving the figure.".format(export)
-        )
-    plt.close()
->>>>>>> refs/remotes/origin/master
 
 
 # RMSE

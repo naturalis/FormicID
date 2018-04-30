@@ -227,16 +227,11 @@ def plot_confusion_matrix(
     misclass = 1 - accuracy
     if cmap is None:
         cmap = plt.get_cmap("Blues")
-<<<<<<< HEAD
     if normalize:
         cm = cm.astype("float32") / cm.sum(axis=1)[:, np.newaxis]
         cm = np.round(cm, 2)
     thresh = cm.max() / 1.5 if normalize else cm.max() / 2
     plt.figure(figsize=(25, 15))
-=======
-    plt.figure(figsize=(20, 10))
-    plt.imshow(cm, interpolation="nearest", cmap=cmap)
->>>>>>> refs/remotes/origin/master
     plt.title(title)
     plt.imshow(cm, interpolation="nearest", cmap=cmap)
     plt.colorbar()

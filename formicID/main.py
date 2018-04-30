@@ -124,51 +124,11 @@ def main():
     ###########################################################################
     model_formicID = load_model(config=config)
     model_formicID = compile_model(model=model_formicID, config=config)
-<<<<<<< HEAD
     model_formicID = weights_load(
         model=model_formicID, weights="experiments/weights_13-0.62.hdf5"
     )
 
-    # Initialize logger
-    ###########################################################################
-    # logger = [
-    #     build_mc(
-    #         config=config,
-    #         monitor="val_loss",
-    #         verbose=0,
-    #         mode="min",
-    #         save_best_only=True,
-    #         period=1,
-    #     ),
-    #     build_rlrop(
-    #         monitor="val_loss",
-    #         factor=0.1,
-    #         patience=25,
-    #         verbose=1,
-    #         mode="min",
-    #         epsilon=1e-4,
-    #         cooldown=0,
-    #         min_lr=0,
-    #     ),
-    #     build_es(
-    #         monitor="val_loss", min_delta=0, patience=50, verbose=1, mode="min"
-    #     ),
-    #     build_tb(
-    #         model=model_formicID,
-    #         config=config,
-    #         histogram_freq=0,
-    #         write_graph=True,
-    #         write_images=True,
-    #     ),
-    #     build_csvl(
-    #         filename="log.csv", config=config, separator=",", append=False
-    #     ),
-    # ]
-=======
-    # model_formicID = weights_load(
-    #     model=model_formicID,
-    #     weights="experiments\T20_CaAll_QuL_ShH_AugH_D075_LR0001_E100\checkpoint\weights_67-1.12.hdf5",
-    # )
+
     # Initialize logger
     ###########################################################################
     logger = [
@@ -207,7 +167,6 @@ def main():
             append=False,
         ),
     ]
->>>>>>> refs/remotes/origin/master
 
     # Training in batches with iterator
     ###########################################################################
@@ -224,13 +183,8 @@ def main():
 
     # Evaluation
     ###########################################################################
-<<<<<<< HEAD
-    # plot_history(history=history, theme="ggplot")
-    # evaluator(model=model_formicID, config=config)
-=======
     plot_history(history=history, theme="ggplot", export="history_plot.png")
     evaluator(model=model_formicID, config=config)
->>>>>>> refs/remotes/origin/master
 
     # Testing
     ###########################################################################
