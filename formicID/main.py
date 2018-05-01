@@ -128,7 +128,6 @@ def main():
         model=model_formicID, weights="experiments/weights_13-0.62.hdf5"
     )
 
-
     # Initialize logger
     ###########################################################################
     logger = [
