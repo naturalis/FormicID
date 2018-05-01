@@ -189,7 +189,7 @@ def build_csvl(filename, config, separator=",", append=False):
 ###############################################################################
 
 
-def plot_history(history, theme="ggplot", export=None):
+def plot_history(history, theme="ggplot", save=None):
     """This function will plot the loss, accuracy and top k accuracy after
     training from a Keras Histroy object, with ggplot theme.
 
@@ -204,6 +204,7 @@ def plot_history(history, theme="ggplot", export=None):
     Raises:
         AssertionError: If the history argument is not a Keras History object.
         ValueError: If `theme` is not one of the available themes.
+        TypeError: If `save` is not a valid path.
 
     """
     if not isinstance(history, History):
@@ -323,19 +324,17 @@ def plot_history(history, theme="ggplot", export=None):
     ax2.set_ylabel("Accuracy (%)", color="red")
     fig.tight_layout()
     plt.show()
-    plt.close(fig)
-    # TODO: Fix export
-    # if save is not None:
-    #     plt.savefig(save)
-    #     print("The confusion matrix has been saved as {}".format(save))
-    # if export is not None:
-    #     if export is os.path.isdir():
-    #         plt.savefig(fname=export)
-    #     else:
-    #         raise ValueError(
-    #             'The `export` argument "{}" is not a valid directory for '
-    #             "saving the figure.".format(export)
-    #         )
+    plt.close("all")
+    # TODO: fix saving
+    if save is not None:
+        try:
+            plt.savefig(save)
+            print("The confusion matrix has been saved as {}".format(save))
+        except TypeError as exc:
+            raise ValueError(
+                'The `export` argument "{}" is not a valid directory for '
+                "saving the figure.".format(export)
+            )
 
 
 # RMSE

@@ -182,7 +182,7 @@ def predict_image(model, url=None, image=None, species_dict=None):
     species = species.capitalize()
     species = species.replace("_", " ")
     print("Predicted species: {}".format(species))
-
+    plt.grid(False)
     plt.title("Predicted species: {}".format(species))
     plt.show()
 
@@ -199,6 +199,7 @@ def plot_confusion_matrix(
     cmap=None,
     normalize=False,
     scores=False,
+    score_size=12,
     save=None,
 ):
     """Plot a confusion matrix of the predicted labels and the true labels for
@@ -231,16 +232,21 @@ def plot_confusion_matrix(
         cm = cm.astype("float32") / cm.sum(axis=1)[:, np.newaxis]
         cm = np.round(cm, 2)
     thresh = cm.max() / 1.5 if normalize else cm.max() / 2
-    plt.figure(figsize=(25, 15))
-    plt.title(title)
+    fig = plt.figure(figsize=(35, 35))
+    plt.title(title, fontsize=45)
     plt.imshow(cm, interpolation="nearest", cmap=cmap)
+    plt.grid(False)
     plt.colorbar()
     if target_names is not None:
         tick_marks = np.arange(len(target_names))
         plt.xticks(
-            tick_marks, target_names, rotation=45, horizontalalignment="right"
+            tick_marks,
+            target_names,
+            rotation=45,
+            horizontalalignment="right",
+            fontsize=9,
         )
-        plt.yticks(tick_marks, target_names)
+        plt.yticks(tick_marks, target_names, fontsize=9)
     if scores:
         for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
             if normalize:
@@ -251,6 +257,7 @@ def plot_confusion_matrix(
                         "{:0.2f}".format(cm[i, j]),
                         horizontalalignment="center",
                         color="white" if cm[i, j] > thresh else "black",
+                        fontsize=score_size,
                     )
             else:
                 plt.text(
@@ -259,18 +266,21 @@ def plot_confusion_matrix(
                     "{:,}".format(cm[i, j]),
                     horizontalalignment="center",
                     color="white" if cm[i, j] > thresh else "black",
+                    fontsize=score_size,
                 )
     plt.tight_layout()
-    plt.ylabel("True label")
+    plt.ylabel("True label", fontsize=25)
     plt.xlabel(
         "Predicted label\naccuracy={:0.4f}\n misclass={:0.4f}".format(
             accuracy, misclass
-        )
+        ),
+        fontsize=25,
     )
     if save is not None:
         plt.savefig(save)
-        print("The confusion matrix has been saved as {}".format(save))
-    plt.show()
+        logging.info("The confusion matrix has been saved as {}".format(save))
+    plt.show(fig)
+    plt.close()
 
 
 # Plot predictions

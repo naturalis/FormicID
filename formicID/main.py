@@ -37,7 +37,6 @@ from testers.tester import predictor
 from trainers.train import trainer_csv
 from trainers.train import trainer_dir
 from utils.img import save_augmentation
-from utils.img import show_augmentation_from_dir
 from utils.load_config import process_config
 from utils.logger import build_csvl
 from utils.logger import build_es
@@ -111,13 +110,9 @@ def main():
     # Augmentation handeling
     ###########################################################################
     # save_augmentation(
-    #     image="data/top5species_Qlow/images/head/camponotus_hova/camponotus_hova_casent0101335_h.jpg",
+    #     image="data/top97species_Qmed/bothroponera_cambouei_blf0561(26)-1_h.jpg",
     #     config=config,
-    # )
-    # show_augmentation_from_dir(
-    #     aug_dir="experiments\\T20_CaAll_QuL_ShH_AugH_D025_LR0001_E100\\summary\\augmented",
-    #     max_img=20,
-    #     n_cols=5,
+    #     show=True,
     # )
 
     # Initialize the model
@@ -125,7 +120,8 @@ def main():
     model_formicID = load_model(config=config)
     model_formicID = compile_model(model=model_formicID, config=config)
     model_formicID = weights_load(
-        model=model_formicID, weights="experiments/weights_13-0.62.hdf5"
+        model=model_formicID,
+        weights="experiments\T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4\checkpoint\weights_64-1.21.hdf5",
     )
 
     # Initialize logger
@@ -182,7 +178,7 @@ def main():
 
     # Evaluation
     ###########################################################################
-    plot_history(history=history, theme="ggplot", export="history_plot.png")
+    # plot_history(history=history, theme="ggplot", save="history_plot.png")
     evaluator(model=model_formicID, config=config)
 
     # Testing
@@ -198,6 +194,7 @@ def main():
         cmap="viridis",
         normalize=True,
         scores=True,
+        score_size=8,
         save="confusion_matrix_test.png",
     )
     # predict_image(
@@ -205,6 +202,9 @@ def main():
     #     url="https://upload.wikimedia.org/wikipedia/commons/f/fd/Camponotus_atriceps_casent0173392_head_1.jpg",
     #     species_dict=species_dict,
     # )
+
+    # Footer
+    ###########################################################################
     K.clear_session()
     logging.info("Logging ended on: {}".format(today_time_clean))
 

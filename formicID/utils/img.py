@@ -35,7 +35,8 @@ import PIL  # Imports PIL-SIMD. PIL is needed for load_img()
 
 # FormicID imports
 from trainers.train import idg
-from .utils import wd
+
+from deprecation import deprecated
 
 # Parameters and settings
 ###############################################################################
@@ -51,6 +52,9 @@ def show_img(array):
     plt.show()
 
 
+@deprecated(
+    details="This function needs X_train and Y_train input, of which the loading function is deprecated."
+)
 def show_multi_img(X_train, Y_train, cols=4, rows=4):
     """Plot n images of X_train using matplotlib.
 
@@ -79,54 +83,15 @@ def show_multi_img(X_train, Y_train, cols=4, rows=4):
 ###############################################################################
 
 
-def save_augmentation(image, config):
-    """This function returns 20 random augmented versions of an input image.
+def _show_augmentation_from_dir(aug_dir, max_img, n_cols=4):
+    """Visualize a number of augmented images from a directory.
 
     Args:
-        image (str): path to image.
-        config (Bunch object): The JSON configuration Bunch object.
-
-    Returns:
-        files: 20 augmented images (`.jpeg`) of the input image inside the
-        experiment folder.
-
-    """
-    if not os.path.exists(os.path.join(config.summary_dir, "augmented")):
-        os.mkdir(os.path.join(config.summary_dir, "augmented"))
-    augment_dir = os.path.join(config.summary_dir, "augmented")
-    filename, _ = os.path.split(image)
-    filename = os.path.basename(filename)
-    img_loaded = load_img(image)
-    img = img_to_array(img_loaded)
-    img = img.reshape((1,) + img.shape)
-    i = 0
-    idgen = idg(target_gen="training")
-    for batch in idgen.flow(
-        img,
-        batch_size=1,
-        save_to_dir=augment_dir,
-        save_prefix=filename,
-        save_format="jpeg",
-    ):
-        i += 1
-        if i > 19:
-            break
-
-    logging.info("Augmented files can be found in {}".format(augment_dir))
-
-
-def show_augmentation_from_dir(aug_dir, max_img, n_cols=4):
-    """Short summary.
-
-    Args:
-        aug_dir (type): Description of parameter `aug_dir`.
-        max_img (type): Description of parameter `max_img`.
-        n_cols (type): Description of parameter `n_cols`. Defaults to 4.
-
-    Returns:
-        type: Description of returned object.
-
-    Raises:        ExceptionName: Why the exception is raised.
+        aug_dir (str): Path to directory that holds the augmented images.
+        max_img (int): Maximum number of images as subplot in the plot.
+        n_cols (int): Number of columns to divide the images in.
+            Automatically calculates the number of rows to complement to the
+            maximum number of images. Defaults to 4.
 
     """
     img_list = os.listdir(aug_dir)
@@ -139,3 +104,38 @@ def show_augmentation_from_dir(aug_dir, max_img, n_cols=4):
         plt.imshow(image)
         i += 1
     plt.show()
+
+
+def save_augmentation(image, config, show=False):
+    """This function saves 20 random augmented (jpg) image versions of an
+    input image to a directory.
+
+    Args:
+        image (str): path to image.
+        config (Bunch object): The JSON configuration Bunch object.
+
+    """
+    if not os.path.exists(os.path.join(config.summary_dir, "augmented")):
+        os.mkdir(os.path.join(config.summary_dir, "augmented"))
+    augment_dir = os.path.join(config.summary_dir, "augmented")
+    filename, _ = os.path.split(image)
+    filename = os.path.basename(filename)
+    img_loaded = load_img(image)
+    img = img_to_array(img_loaded)
+    img = img.reshape((1,) + img.shape)
+    i = 0
+    idgen = idg(config=config, target_gen="training")
+    for batch in idgen.flow(
+        img,
+        batch_size=1,
+        save_to_dir=augment_dir,
+        save_prefix=filename,
+        save_format="jpeg",
+    ):
+        i += 1
+        if i > 19:
+            break
+
+    logging.info("Augmented files can be found in {}".format(augment_dir))
+    if show:
+        _show_augmentation_from_dir(aug_dir=augment_dir, max_img=20, n_cols=5)
