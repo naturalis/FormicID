@@ -1,11 +1,11 @@
 {
-    "exp_name": "plot_tests",
+    "exp_name": "T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4_run2",
     "data_set": "top97species_Qmed",
     "batch_size": 32,
     "dropout": 0.5,
     "learning_rate": 0.001,
     "model": "InceptionResNetV2",
-    "num_epochs": 2,
+    "num_epochs": 100,
     "optimizer": "Nadam",
     "seed": 1,
     "test_split": 0.1,

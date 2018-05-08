@@ -308,6 +308,12 @@ horizontal_flip=True
 
 ![](/docs_experiments/T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4.png)
 
+#### T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4_run2
+- Epoch 00057: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00090: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
+
+![](/docs_experiments/T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4_run2.png)
+
 #### T97_CaAll_QuM_ShH_AugH_D05_LR00001_E150_I4
 Augmentation settings:
 ```python
@@ -324,12 +330,17 @@ horizontal_flip=True
 
 ![](/docs_experiments/T97_CaAll_QuM_ShH_AugH_D05_LR00001_E150_I4.png)
 
-
 #### T97_CaAll_QuT_ShH_AugM_D05_LR00001_E100_I4
 - Epoch 00036: ReduceLROnPlateau reducing learning rate to `9.999999747378752e-06`.
 - Epoch 00060: early stopping
 
 ![](/docs_experiments/T97_CaAll_QuT_ShH_AugM_D05_LR00001_E100_I4.png)
+
+#### T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4_Adam
+- Epoch 00068: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00099: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
+
+![](/docs_experiments/T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4_Adam.png)
 
 ### 20 species confusion matrix
 - created from [T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4](#T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4)
