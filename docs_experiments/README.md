@@ -131,7 +131,7 @@ horizontal_flip=True # Variates in between experiments
 The graphs shows epochs vs loss and accuracy (top-1 and top-3) for training (solid lines) and validation (dashed lines).
 
 
-### 5 Species
+<!-- ### 5 Species
 
 #### T5_CaAll_QuL_ShH_AugM_D05_LR0001_E100
 - Epoch 00039: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
@@ -281,7 +281,7 @@ horizontal_flip=True
 - Epoch 00053: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
 - Epoch 00085: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
 
-![](/docs_experiments/T50_CaAll_QuL_ShH_AugM_D05_LR0001_E100.png)
+![](/docs_experiments/T50_CaAll_QuL_ShH_AugM_D05_LR0001_E100.png) -->
 
 ### 97 Species
 #### T97_CaAll_QuL_ShH_AugM_D05_LR0001_E100 - 1st try
@@ -341,6 +341,18 @@ horizontal_flip=True
 - Epoch 00099: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
 
 ![](/docs_experiments/T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4_Adam.png)
+
+#### T97_CaAll_QuM_ShP_AugM_D05_LR0001_E100_I4
+- Epoch 00034: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00064: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
+- Epoch 00088: early stopping
+
+![](/docs_experiments/T97_CaAll_QuM_ShP_AugM_D05_LR0001_E100_I4.png)
+
+#### T97_CaAll_QuM_ShD_AugM_D05_LR0001_E100_I4
+- Epoch 00071: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+
+![](/docs_experiments/T97_CaAll_QuM_ShD_AugM_D05_LR0001_E100_I4.png)
 
 ### 20 species confusion matrix
 - created from [T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4](#T20_CaAll_QuL_ShH_AugM_D05_LR00001_E100_I4)

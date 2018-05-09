@@ -28,6 +28,7 @@ from urllib.parse import urlparse
 from keras.applications.inception_v3 import preprocess_input
 from keras.preprocessing.image import img_to_array
 from keras.utils.np_utils import to_categorical
+from keras import backend as K
 
 # Data tools imports
 import numpy as np
@@ -169,13 +170,14 @@ def predict_image(model, url=None, image=None, species_dict=None):
         response = requests.get(url)
         logging.info("Predicting from URL: {}".format(url))
         img = Image.open(BytesIO(response.content))
+        img = img.resize((299,299), resample=Image.LANCZOS)
     if image:
         logging.info("Predicting from local image: {}".format(image))
-        img = load_img(image)
+        img = load_img(image, target_size=(299,299))
     plt.imshow(img)
-    img = img_to_array(img)
-    img = preprocess_input(img)
+    img = img_to_array(img, data_format="channels_last")
     img = img.reshape((1,) + img.shape)
+    img = preprocess_input(img)
     prediction = model.predict(img, batch_size=None, verbose=0, steps=None)
     pred = prediction.argmax()
     species = _process_species_dict(species_dict, pred)
