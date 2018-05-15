@@ -23,6 +23,9 @@ import os
 from io import BytesIO
 from math import ceil
 from urllib.parse import urlparse
+import re
+from io import StringIO
+import pandas as pd
 
 # Deeplearning tools imports
 from keras.applications.inception_v3 import preprocess_input
@@ -33,6 +36,7 @@ from keras import backend as K
 # Data tools imports
 import numpy as np
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
 
 # Graphical tools imports
 import matplotlib.pyplot as plt
@@ -170,10 +174,10 @@ def predict_image(model, url=None, image=None, species_dict=None):
         response = requests.get(url)
         logging.info("Predicting from URL: {}".format(url))
         img = Image.open(BytesIO(response.content))
-        img = img.resize((299,299), resample=Image.LANCZOS)
+        img = img.resize((299, 299), resample=Image.LANCZOS)
     if image:
         logging.info("Predicting from local image: {}".format(image))
-        img = load_img(image, target_size=(299,299))
+        img = load_img(image, target_size=(299, 299))
     plt.imshow(img)
     img = img_to_array(img, data_format="channels_last")
     img = img.reshape((1,) + img.shape)
@@ -224,7 +228,6 @@ def plot_confusion_matrix(
         A confusion matrix plot.
 
     """
-    # TODO: Fix the tick lines through the plot
     cm = confusion_matrix(y_pred=Y_pred, y_true=Y_true)
     accuracy = np.trace(cm) / float(np.sum(cm))
     misclass = 1 - accuracy
@@ -283,6 +286,55 @@ def plot_confusion_matrix(
         logging.info("The confusion matrix has been saved as {}".format(save))
     plt.show(fig)
     plt.close()
+
+
+def _report_to_df(report):
+    """
+    https://stackoverflow.com/a/46447871
+    """
+    report = re.sub(r" +", " ", report).replace(
+        "avg / total", "avg/total"
+    ).replace(
+        "\n ", "\n"
+    )
+    report_df = pd.read_csv(StringIO("Classes" + report), sep=" ", index_col=0)
+    return (report_df)
+
+
+def predictor_reports(
+    Y_true,
+    Y_pred,
+    config,
+    species_dict,
+    labels=None,
+    target_names=None,
+    digits=2,
+):
+    # Report 1: 5 column spreadsheat with classes, precision, recall, f1 and
+    # support.
+    output_cr = os.path.join(
+        config.summary_dir, config.exp_name + "_classification_report.csv"
+    )
+    report = classification_report(
+        y_true=Y_true,
+        y_pred=Y_pred,
+        labels=labels,
+        target_names=target_names,
+        sample_weight=None,
+        digits=digits,
+    )
+    report_df = _report_to_df(report)
+    report_df.to_csv(output_cr, sep=",")
+    # Report 2: 2 column spreadsheat of true labels and predicted labels for
+    # all samples.
+    output_tp = os.path.join(
+        config.summary_dir, config.exp_name + "_truths_preds.csv"
+    )
+    truths = [_process_species_dict(species_dict, true) for true in Y_true]
+    preds = [_process_species_dict(species_dict, pred) for pred in Y_pred]
+    pred_true = list(zip(truths, preds))
+    pred_true_df = pd.DataFrame(pred_true, columns=["truths", "preds"])
+    pred_true_df.to_csv(output_tp, sep=",")
 
 
 # Plot predictions
