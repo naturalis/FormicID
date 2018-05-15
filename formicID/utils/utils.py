@@ -63,6 +63,7 @@ today_time_clean = datetime.datetime.today().strftime("%Y-%m-%d_%H:%M:%S")
 
 wd = os.getcwd()
 
+
 def create_dirs(dirs):
     """General function for creating directories..
 

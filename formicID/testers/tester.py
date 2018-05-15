@@ -336,7 +336,13 @@ def _report_to_df(report):
 
 
 def predictor_reports(
-Y_true, Y_pred, config, species_dict, labels=None, target_names=None, digits=2
+    Y_true,
+    Y_pred,
+    config,
+    species_dict,
+    labels=None,
+    target_names=None,
+    digits=2,
 ):
     """Exports 2 types of reports as csv file.
 

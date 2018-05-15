@@ -773,6 +773,7 @@ def trainer_dir(model, config, callbacks=None):
 
 # TODO: Fix functions below.
 
+
 def multiview_generator_dir():
     train_h_data_gen_dir, _, _ = _generator_dir(
         config=config, target_gen="training", shottype="head"
