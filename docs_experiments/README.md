@@ -86,7 +86,7 @@ image_quality="low"
 castes="all"
 num_epochs=100
 learning_rate=0.001 # Variates in between experiments
-batch_size=64
+batch_size=64 #32 when using InceptionResNetV2
 dropout=0.5 # Variates in between experiments
 optimizer="Nadam"
 # With following settings:
