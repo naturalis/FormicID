@@ -25,10 +25,6 @@ import os
 # Additional project imports
 import requests
 
-# Parameters and settings
-###############################################################################
-
-
 # URL info
 ###############################################################################
 
@@ -53,17 +49,19 @@ def get_url_info(input_url):
 
 # Date and time stamps
 ###############################################################################
+
 # YYYYMMDD
 todaystr = datetime.date.today().strftime("%Y%m%d")
 # YYYYMMDD_HHMMSS
 today_timestr = datetime.datetime.today().strftime("%Y%m%d_%H%M%S")
+# YYYY-MM-DD_HH:MM:SS
 today_time_clean = datetime.datetime.today().strftime("%Y-%m-%d_%H:%M:%S")
 
 
 # Directory utilities
 ###############################################################################
-wd = os.getcwd()
 
+wd = os.getcwd()
 
 def create_dirs(dirs):
     """General function for creating directories..
@@ -83,7 +81,7 @@ def create_dirs(dirs):
         exit(-1)
 
 
-# Directory utilities
+# Parse arguments for terminal - Use of config.json
 ###############################################################################
 
 

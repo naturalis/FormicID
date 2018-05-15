@@ -38,16 +38,15 @@ from AntWeb.AW2_to_json import urls_to_json
 from AntWeb.json_to_csv import batch_json_to_csv
 from data_loader.data_input import image_path_csv
 
-# Parameters and settings
-###############################################################################
 
-
-# Make changes to the csv file
+# Repair broken `blf`and `hjr`specimens
 ###############################################################################
 
 
 def _csv_update(dataset, csvfile):
-    """This function will remove broken links to a different csvfile.
+    """This function will repair broken links in the csvfile. For example
+    `blf` and `hjr` collection specimens contain underscores (`_`) which
+    should be a `(` or `)` in the url and in the `catalog_number`.
 
     Args:
         dataset (str): The dataset (directory), that holds the csv with image
@@ -236,17 +235,21 @@ def image_scraper(
     logging.info("{} images were downloaded.".format(nb_images))
 
 
+# Getting the dataset - final function
+###############################################################################
+
+
 def get_dataset(
     input,
     n_jsonfiles,
     config,
     shottypes="hdp",
     quality="low",
-    update=False,
+    update=True,
     offset_set=0,
     limit_set=9999,
 ):
-    """This function combines all the functions for finalizing the dataset.
+    """This function combines all the functions for downloading the dataset.
 
     Args:
         input (file): The `genus` and `species` csv file.

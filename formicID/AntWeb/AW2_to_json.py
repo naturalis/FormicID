@@ -13,6 +13,7 @@ This script requires the use of an csv file with 2 columns, filled with a genus
 and a species name. The script will go over the csv file and download a json
 file for this genus+species and places the JSON file in a folder.
 """
+
 # Packages
 ###############################################################################
 
@@ -33,11 +34,8 @@ from csv import Sniffer
 import requests
 from tqdm import tqdm
 
-# Parameters and settings
-###############################################################################
 
-
-# Creating an URL
+# Extracting the most imaged specimens to a csv file
 ###############################################################################
 
 
@@ -48,6 +46,10 @@ def get_most_imaged_species(min_images=68):
     #         df.append(Taxon Name as genus + species)
     # df.to_csv()
     raise NotImplementedError
+
+
+# Creating an URL
+###############################################################################
 
 
 def _create_url(limit, offset, **kwargs):

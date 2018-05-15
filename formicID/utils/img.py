@@ -12,6 +12,7 @@
 This script contains several image related scripts that can be loaded in to
 other files.
 """
+
 # Packages
 ###############################################################################
 
@@ -38,15 +39,13 @@ from trainers.train import idg
 
 from deprecation import deprecated
 
-# Parameters and settings
-###############################################################################
-
 
 # Load and show images
 ###############################################################################
 
 
 def show_img(array):
+    # TODO: test and implement in other scripts?
     image = array_to_img(array)
     plt.imshow(image)
     plt.show()
@@ -113,6 +112,7 @@ def save_augmentation(image, config, show=False):
     Args:
         image (str): path to image.
         config (Bunch object): The JSON configuration Bunch object.
+        show (Bool): Wheter to show the augmentation after saving or not. Defaults to False.
 
     """
     if not os.path.exists(os.path.join(config.summary_dir, "augmented")):

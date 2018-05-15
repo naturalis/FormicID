@@ -48,9 +48,6 @@ import requests
 # FormicID imports
 from trainers.train import _generator_dir
 
-# Parameters and settings
-###############################################################################
-
 
 # Evaluate generator for test metrics
 ###############################################################################
@@ -93,8 +90,17 @@ def predictor(model, config, plot=False, n_img=None, n_cols=None):
         model (Keras model instance): A trained Keras model instance.
         config (Bunch object): The JSON configuration Bunch object.
 
+        Not implemented yet:
+            plot (Bool): whether to plot images or not. Defaults to None.
+            n_img: The maximum number of images to plot. Defaults to None.
+            n_cols (int): divide the maximum number of images in a number of
+                columns. Rows will be calculated directly. Defaults to None.
+
     Returns:
-        True labels, predicted labels and the label names.
+        Y_true (list): True labels
+        Y_pred (list): Predicted labels
+        labels (list): Species names
+        class_indices (dict): Integer: species
 
     """
     if plot == False:
@@ -139,6 +145,19 @@ def predictor(model, config, plot=False, n_img=None, n_cols=None):
 
 
 def _process_species_dict(dict, species):
+    """Process the species dictionary in order to return the key (genus and
+    species) name if the value in the dictionary matches the value of
+    `species`.
+
+    Args:
+        dict (dict): A species dictionary with integers as value and the
+            species names as key.
+        species (int): The true species or predicted species as integer.
+
+    Returns:
+        k (str): The genus and species taxa.
+
+    """
     for k, v in dict.items():
         if v == species:
             return str(k)
@@ -223,6 +242,9 @@ def plot_confusion_matrix(
             Defaults to False.
         scores (Bool): If set to True it will show scores for predicted labels
             and true labels in the confusion matrix. Defaults to False.
+        score_size (float): Size of the scores text. Defaults to `12`.
+        save (str): Pathway to where the confusion matrix could be saved.
+            Defaults to None.
 
     Returns:
         A confusion matrix plot.
@@ -288,9 +310,21 @@ def plot_confusion_matrix(
     plt.close()
 
 
+# Extracting prediction reports
+###############################################################################
+
+
 def _report_to_df(report):
-    """
-    https://stackoverflow.com/a/46447871
+    """Converts the text from `sklearn.metrics.classification_report` to a
+    pandas DataFrame. Source: https://stackoverflow.com/a/46447871
+
+    Args:
+        report (type): Classification report made by
+            `sklearn.metrics.classification_report`
+
+    Returns:
+        Pandas DataFrame: DataFrame of a classification_report
+
     """
     report = re.sub(r" +", " ", report).replace(
         "avg / total", "avg/total"
@@ -302,14 +336,29 @@ def _report_to_df(report):
 
 
 def predictor_reports(
-    Y_true,
-    Y_pred,
-    config,
-    species_dict,
-    labels=None,
-    target_names=None,
-    digits=2,
+Y_true, Y_pred, config, species_dict, labels=None, target_names=None, digits=2
 ):
+    """Exports 2 types of reports as csv file.
+
+    First one is a classification report providing `precision`, `recall`, `f1
+    score` and `support` for all classes.
+
+    Second one is a 2 column csv file with true labels and predicted labels.
+
+    Args:
+        Y_pred (array): Predicted labels.
+        Y_true (array): True labels.
+        config (Bunch object): The JSON configuration Bunch object.
+        species_dict (dict): dictionary mapping of the species, as output by
+            the `predictor` function. Defaults to None.
+        labels (list): Optional display names matching the labels (same
+            order). Defaults to None.
+        target_names (list): The species names as genus + species. Defaults to
+            None.
+        digits (int): Amount of digits behind the decimal point. Used in
+            report 1. Defaults to 2.
+
+    """
     # Report 1: 5 column spreadsheat with classes, precision, recall, f1 and
     # support.
     output_cr = os.path.join(
@@ -335,55 +384,3 @@ def predictor_reports(
     pred_true = list(zip(truths, preds))
     pred_true_df = pd.DataFrame(pred_true, columns=["truths", "preds"])
     pred_true_df.to_csv(output_tp, sep=",")
-
-
-# Plot predictions
-###############################################################################
-
-
-# def plot_predictions(, predictions=None):
-#     dataset = config.data_set
-#     shottype = config.shottype
-#     test_data_gen_dir, classes, class_indices = _generator_dir(
-#         dataset=dataset, config=config, shottype=shottype, target_gen="test"
-#     )
-
-
-#
-# for i in range(n_rows):
-#     for j in range(n_cols):
-# for img in img_list[0:max_img]:
-#     image = load_img(path=os.path.join(aug_dir, img))
-#     fig.add_subplot(n_rows, n_cols, i)
-#     plt.imshow(image)
-# plt.show()
-#
-#
-#
-#         axes[j][k].set_axis_off()
-#         if i_inds < N:
-#             axes[j][k].imshow(X[i_data, ...], interpolation="nearest")
-#             label = labels[np.argmax(Y[i_data, ...])]
-#             axes[j][k].set_title(label)
-#             if predictions is not None:
-#                 pred = _process_species_dict(species_dict, pred)
-#                 if label != pred:
-#                     label += " n"
-#                     axes[j][k].set_title(pred, color="red")
-#
-# fig.set_tight_layout(True)
-#
-# return(fig)
-#
-#
-# for images, labels in test_data_gen_dir:
-#     labs = [i.argmax() for i in labels]
-#     for key, value in class_indices.items():
-#         if value == labs:
-#             print(labs, key)
-#         plt.imshow(images[i, :, :, :])
-#         plt.title("title")
-#         plt.show()
-# for image in images:
-#     for lab in labs:
-#         break

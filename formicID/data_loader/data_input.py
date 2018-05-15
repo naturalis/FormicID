@@ -8,16 +8,12 @@
 #                                  data_input                                 #
 ###############################################################################
 """Description:
-`These scripts can import data from image files in folders and split them in
-different subsets. If data is downloaded using the scraper script the files
-should be in a correct folder structure (divided per shottype and species). The
-script also encodes labels and preprocesses the images into the right format
-for tensorflow ([-1, 1] range) and in RGB. With `train_val_test_split` the
-data can be split in 3 subsets: Training, validation and test sets. You can
-set the splits. Imags are always in (width, height, channel) format. Only the
-Keras `load_img()` function reads a target size in (height, width).
-
-The files should be structured as follows:
+These scripts will sort out the images so they can be loaded by a trainer
+function. One function could split folders containing images in different
+subsets. The other function can create training, validation, test csv files
+with the pathway to the images stored in them. If data is downloaded using the
+scraper script the files should be in a correct folder structure (divided per
+shottype and species). The files should be structured as follows:
 
 ```
     directory_name/
@@ -42,6 +38,7 @@ The files should be structured as follows:
 ```
 
 """
+
 # Packages
 ###############################################################################
 
@@ -58,22 +55,18 @@ from sklearn.model_selection import train_test_split
 # Additional project imports
 from tqdm import tqdm
 
-# Parameters and settings
-###############################################################################
 
-
-# Create image loading csvfile
+# Create image loading csvfiles
 ###############################################################################
 
 
 def image_path_csv(config):
-    """Short summary.
+    """Split the image path csv file in a training, validation and test image
+    path csv file, using the validation and test split numbers defined in the
+    configuration file.
 
     Args:
-        config (type): Description of parameter `config`.
-
-    Returns:
-        type: Description of returned object.
+        config (Bunch object): The JSON configuration Bunch object.
 
     """
     test_split = config.test_split
@@ -134,13 +127,14 @@ def image_path_csv(config):
     )
 
 
-# Split training/validation/test in folder
+# Split training/validation/test images to their own folder
 ###############################################################################
 
 
 def split_in_directory(config):
-    """Split the image files for all species into subfolders for a training,
-    validation and test set.
+    """Copies and split the image files for all species folders into
+    subfolders for a training, validation and test set, called respectively
+    `1-training`, `2-validation` and `3-test`.
 
     Args:
         config (Bunch object): The JSON configuration Bunch object.
@@ -178,17 +172,15 @@ def split_in_directory(config):
             continue
 
         nb_images = len(os.listdir(os.path.join(input_dir, species)))
-        # print(nb_images)
         image_files = os.listdir(os.path.join(input_dir, species))
         shuffled = image_files[:]
         random.shuffle(shuffled)
         num1 = round(len(shuffled) * test_split)
         num2 = round(len(shuffled) * val_split)
+        # fmt: off
         to_test, to_val, to_train = shuffled[:num1], shuffled[
-            num1:num2
-        ], shuffled[
-            num2:
-        ]
+            num1:num2], shuffled[num2:]
+        # fmt: on
         for image in os.listdir(os.path.join(input_dir, species)):
             if image.endswith(".jpg"):
                 for img in to_test:

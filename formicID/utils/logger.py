@@ -9,9 +9,10 @@
 #                                    Logger                                   #
 ###############################################################################
 """Description:
-Loggers are created in this file. They can be used in training to get feedback
-on the models performance.
+Loggers are created in this file. They can be used while training to get
+feedback on the models performance.
 """
+
 # Packages
 ###############################################################################
 
@@ -35,9 +36,6 @@ import matplotlib.pyplot as plt
 
 from .utils import today_timestr
 
-# Parameters and settings
-###############################################################################
-
 
 # TensorBoard
 ###############################################################################
@@ -52,10 +50,19 @@ def build_tb(
         model (Keras model instance): The Keras model instance that is
             training.
         config (Bunch object): The JSON configuration Bunch object.
+        histogram_freq (int):  Frequency (in epochs) at which to compute
+            activation and weight histograms for the layers of the model. If
+            set to 0, histograms won't be computed. Validation data (or split)
+            must be specified for histogram visualizations. Defaults to True.
+        write_graph (Bool): whether to visualize the graph in TensorBoard.
+            The log file can become quite large when write_graph is set to
+            True. Defaults to True.
+        write_images (Bool): Whether to visualize the graph in TensorBoard.
+            The log file can become quite large when write_graph is set to
+            True. Defaults to True.
 
     Returns:
-        files: TensorBoard files that can be by launching the TensorBoard
-            dashboard
+        TensorBoard files that can be by launching the TensorBoard dashboard.
 
     """
     filepath = os.path.join(
@@ -90,13 +97,27 @@ def build_mc(
     save_best_only=True,
     period=1,
 ):
-    """Callback object for saving Model Checkpoints.
+    """Callback object for saving Model Checkpoints. Saves the models at
+    certain checkpoints as `.h5` files.
 
     Args:
         config (Bunch object): The JSON configuration Bunch object.
+        monitor (str): Quantity to monitor. Defaults to `val_loss`.
+        verbose (int): Verbosity mode, 0 or 1. Defaults to 0.
+        save_best_only (Bool): If save_best_only=True, the latest best model
+            according to the quantity monitored will not be overwritten.
+            Defaults to True
+        mode (str): One of {auto, min, max}. If save_best_only=True, the
+            decision to overwrite the current save file is made based on
+            either the maximization or the minimization of the monitored
+            quantity. For val_acc, this should be max, for val_loss this
+            should be min, etc. In auto mode, the direction is automatically
+            inferred from the name of the monitored quantity. Defaults to
+            `auto`.
+        period (int): Interval (number of epochs) between checkpoints.
 
     Returns:
-        Saves the models at certain checkpoints as `.h5` files.
+        ModelCheckpoint callback
 
     """
     output_dir = config.checkpoint_dir
@@ -122,10 +143,25 @@ def build_mc(
 def build_es(
     monitor="val_loss", min_delta=0, patience=10, verbose=1, mode="min"
 ):
-    """For initializing EarlyStopping. This monitors validation loss.
+    """For initializing EarlyStopping. Training will stop when validation loss
+    is not decreasing anymore. This monitors validation loss.
+
+    Args:
+        monitor (str): quantity to be monitored. Defaults to val_loss.
+        min_delta (int): minimum change in the monitored quantity to qualify
+            as an improvement, i.e. an absolute change of less than min_delta,
+            will count as no improvement. Defaults to 0.
+        patience (int): number of epochs with no improvement after which
+            training will be stopped. Defaults to 10.
+        verbose (int): verbosity mode. Defaults to 1.
+        mode (str): one of {auto, min, max}. In min mode, training will stop
+            when the quantity monitored has stopped decreasing; in max mode it
+            will stop when the quantity monitored has stopped increasing; in
+            auto mode, the direction is automatically inferred from the name
+            of the monitored quantity. Defaults to min.
 
     Returns:
-        Training will stop when validation loss is not decreasing anymore.
+        EarlyStopping callback
 
     """
     es = EarlyStopping(
@@ -155,8 +191,25 @@ def build_rlrop(
 ):
     """Reduce learning rate when a metric has stopped improving.
 
+    Args:
+        monitor: quantity to be monitored. Defaults to val_loss.
+        factor: factor by which the learning rate will be reduced. new_lr = lr
+            * factor. Defaults to 0.1.
+        patience: number of epochs with no improvement after which learning
+            rate will be reduced. Defaults to 10.
+        verbose: int. 0: quiet, 1: update messages. Defaults to 1.
+        mode: one of {auto, min, max}. In min mode, lr will be reduced when
+            the quantity monitored has stopped decreasing; in max mode it will
+            be reduced when the quantity monitored has stopped increasing; in
+            auto mode, the direction is automatically inferred from the name
+            of the monitored quantity. Defaults to auto.
+        min_delta: threshold for measuring the new optimum, to only focus on
+            significant changes. Defaults to 1e-4.
+        cooldown: number of epochs to wait before resuming normal operation
+            after lr has been reduced. Defaults to 0.
+        min_lr: lower bound on the learning rate. Defaults to 0.
+
     Returns:
-        Learning rate will decrease when a metric is not improving anymore.
 
     """
     rlrop = ReduceLROnPlateau(
@@ -178,6 +231,19 @@ def build_rlrop(
 
 
 def build_csvl(filename, config, separator=",", append=False):
+    """Export metrics to a csv file.
+
+    Args:
+        filename (str): Name of the csvfile.
+        config (Bunch object): The JSON configuration Bunch object.
+        separator (str): Set a seperator for the csv file. Defaults to `,`.
+        append (Bool): True: append if file exists (useful for continuing
+            training). False: overwrite existing file,. Defaults to False.
+
+    Returns:
+        CSVLogger callback
+
+    """
     output_dir = config.summary_dir
     fname = os.path.join(output_dir, today_timestr + "_" + filename)
     csvlogger = CSVLogger(filename=fname, separator=separator, append=append)
@@ -355,9 +421,23 @@ def rmse(y_true, y_pred):
     return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))
 
 
-# top k categorical accuracy
+# Top k categorical accuracy
 ###############################################################################
 
 
 def top_k_cat_accuracy(y_true, y_pred, k=3):
+    """Metric for showing the top k categorical accuracy, to be used in model
+    compilation.
+
+    Args:
+        y_true (str): The true label.
+        y_pred (str): The predicted label.
+        k (int): Defines the number for a top k accuracy. Defaults to 3.
+
+    Returns:
+        type: Description of returned object.
+
+    Raises:        ExceptionName: Why the exception is raised.
+
+    """
     return K.mean(K.in_top_k(y_pred, K.argmax(y_true, axis=-1), k), axis=-1)

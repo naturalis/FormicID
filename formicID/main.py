@@ -13,6 +13,7 @@ This is were it all happens. This file loads the data, initializes the model
 and trains the model. Log files are made and a prediction can be made for the
 test set.
 """
+
 # Packages
 ###############################################################################
 

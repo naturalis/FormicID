@@ -14,9 +14,10 @@ This file contains data generators. These generators generate batches of tensor
 image data while also augmenting the images in real-time. The data will be
 looped over (in batches) indefinitely. There is a train_data_generator, which
 also augments the images with different methods, and a val_data_generator which
-does only preprocess the data. Validation data should not be augmented. The
-`preprocessing_function` is needed for the inception_v3 model. It scales the
-pixels in  `[-1, 1]`, samplewise and using the following calculation:
+does only preprocess the data. Validation data should not be augmented and
+could be used for testing. The `preprocessing_function` is needed for the
+inception_v3 model. It scales the pixels in  `[-1, 1]`, samplewise and using
+the following calculation:
 
     `x /= 127.5
      x -= 1.
@@ -627,6 +628,7 @@ def idg(config, target_gen="training"):
     `validation`, `test` dataset.
 
     Args:
+        config (Bunch object): The JSON configuration Bunch object.
         target_gen (str): Should be either `training`, `validation`, or
             `test`. Defaults to `training`.
 
@@ -680,6 +682,9 @@ def _generator_dir(config, target_gen="training", shottype=None):
         config (Bunch object): The JSON configuration Bunch object.
         target_gen (str): Sets the generator to either 'training',
             `validation` or `test.`. Defaults to 'training'.
+        shottype (str): Should be either  `dorsal`, `head` or `profile`. If no
+            shottype is provided, shottype will be taken from the
+            configuration file. Defaults to None.
 
     Returns:
         Image directory generator.
@@ -723,6 +728,10 @@ def _generator_dir(config, target_gen="training", shottype=None):
     return idgen, classes, class_indices
 
 
+# Stitching idg and flow_from_directory in to one function
+###############################################################################
+
+
 def trainer_dir(model, config, callbacks=None):
     """The directory trainer. This combines the validation and training data
         generators and trains on the input model.
@@ -761,6 +770,8 @@ def trainer_dir(model, config, callbacks=None):
 # Multi-view generator with flow_from_directory
 ###############################################################################
 
+
+# TODO: Fix functions below.
 
 def multiview_generator_dir():
     train_h_data_gen_dir, _, _ = _generator_dir(

@@ -9,15 +9,17 @@
 #                                                                             #
 ###############################################################################
 """Description:
-Using this script 4 existing neural netwerks from the Keras library
-(https://keras.io/applications/) can be imported in a class object. This class
-has four methods to call in order to load the 4 models.
+Using this script 5 existing neural netwerks from the Keras library
+(https://keras.io/applications/) or `models/build.py` could be imported and or
+build. Afterwards the model needs to be compiled using the compile function.
 
 The models are:
     - ResNet50
     - DenseNet169
+    - InceptionResNetV2
     - InceptionV3
     - Xception
+    - Build
 
 From the Keras documentation:
     All of these architectures (except Xception) are compatible with both
@@ -29,6 +31,7 @@ From the Keras documentation:
     "Height-Width-Depth". The Xception model is only available for TensorFlow,
     due to its reliance on SeparableConvolution layers.
 """
+
 # Packages
 ###############################################################################
 
@@ -59,17 +62,14 @@ from utils.logger import rmse
 from models.optimizer import Eve
 
 
-# Parameters and settings
-###############################################################################
-
-
-# Models
+# Load models
 ###############################################################################
 
 
 def load_model(config):
     """Load a predesigned neural network application from the Keras library or
-    the self-designed neural network from `models/build.py`.
+    the self-designed neural network from `models/build.py`. See text below
+    for more information on the different models that can be loaded.
 
     Args:
         config (Bunch object): The JSON configuration Bunch object, which
@@ -102,6 +102,7 @@ def load_model(config):
             due to its reliance on SeparableConvolution layers. Additionally
             it only supports the data format 'channels_last' (height, width,
             channels). The default input size for this model is 299x299.
+
     """
     model = config.model
     dataset = config.data_set
@@ -158,6 +159,10 @@ def load_model(config):
         end_model = Model(inputs=base_model.input, outputs=predictions)
     logging.info("The model is build with success.")
     return end_model
+
+
+# Compile a model
+###############################################################################
 
 
 def compile_model(model, config):
