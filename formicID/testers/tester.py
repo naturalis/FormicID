@@ -219,6 +219,7 @@ def predict_image(model, url=None, image=None, species_dict=None):
 def plot_confusion_matrix(
     Y_pred,
     Y_true,
+    config,
     target_names=None,
     title="Confusion matrix",
     cmap=None,
@@ -228,11 +229,13 @@ def plot_confusion_matrix(
     save=None,
 ):
     """Plot a confusion matrix of the predicted labels and the true labels for
-    the test set species.
+    the test set species. The export is probably better for viewing than the
+    matplotlib view.
 
     Args:
         Y_pred (array): Predicted labels.
         Y_true (array): True labels.
+        config (Bunch object): The JSON configuration Bunch object.
         target_names (list): The species names as genus + species. Defaults to
             None.
         title (str): Title of the confusion matrix. Defaults to 'Confusion
@@ -250,6 +253,8 @@ def plot_confusion_matrix(
         A confusion matrix plot.
 
     """
+    if title is False:
+        title = config.exp_name
     cm = confusion_matrix(y_pred=Y_pred, y_true=Y_true)
     accuracy = np.trace(cm) / float(np.sum(cm))
     misclass = 1 - accuracy
@@ -259,11 +264,12 @@ def plot_confusion_matrix(
         cm = cm.astype("float32") / cm.sum(axis=1)[:, np.newaxis]
         cm = np.round(cm, 2)
     thresh = cm.max() / 1.5 if normalize else cm.max() / 2
-    fig = plt.figure(figsize=(35, 35))
-    plt.title(title, fontsize=45)
+    fig = plt.figure(figsize=(35, 36))
+    plt.title(title, fontsize=75)
     plt.imshow(cm, interpolation="nearest", cmap=cmap)
     plt.grid(False)
-    plt.colorbar()
+    cb = plt.colorbar(fraction=0.046, pad=0.04)
+    cb.ax.tick_params(labelsize=45)
     if target_names is not None:
         tick_marks = np.arange(len(target_names))
         plt.xticks(
@@ -296,12 +302,12 @@ def plot_confusion_matrix(
                     fontsize=score_size,
                 )
     plt.tight_layout()
-    plt.ylabel("True label", fontsize=25)
+    plt.ylabel("True label", fontsize=45)
     plt.xlabel(
         "Predicted label\naccuracy={:0.4f}\n misclass={:0.4f}".format(
             accuracy, misclass
         ),
-        fontsize=25,
+        fontsize=45,
     )
     if save is not None:
         plt.savefig(save)

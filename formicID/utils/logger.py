@@ -255,7 +255,7 @@ def build_csvl(filename, config, separator=",", append=False):
 ###############################################################################
 
 
-def plot_history(history, theme="ggplot", save=None):
+def plot_history(history, config, theme="ggplot", save=None):
     """This function will plot the loss, accuracy and top k accuracy after
     training from a Keras Histroy object, with ggplot theme.
 
@@ -384,7 +384,7 @@ def plot_history(history, theme="ggplot", save=None):
     )
     ax1.legend(loc="best", fancybox=True, framealpha=0.5)
     ax1.grid()
-    ax1.set_title("Model accuracy and loss")
+    ax1.set_title(config.exp_name)
     ax1.set_xlabel("Epochs")
     ax1.set_ylabel("Loss", color="blue")
     ax2.set_ylabel("Accuracy (%)", color="red")
