@@ -121,10 +121,10 @@ def main():
     ###########################################################################
     model_formicID = load_model(config=config)
     model_formicID = compile_model(model=model_formicID, config=config)
-    # model_formicID = weights_load(
-    #     model=model_formicID,
-    #     weights="experiments\T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4_def\checkpoint\weights_62-1.27.hdf5",
-    # )
+    model_formicID = weights_load(
+        model=model_formicID,
+        weights="experiments\T97_CaAll_QuM_ShP_AugM_D05_LR0001_E200_I4_def\checkpoint\weights_73-1.80.hdf5",
+    )
 
     # Initialize logger
     ###########################################################################
@@ -167,13 +167,13 @@ def main():
 
     # Training in batches with iterator
     ###########################################################################
-    history = trainer_dir(
-        model=model_formicID, config=config, callbacks=logger
-    )
+    # history = trainer_dir(
+    #     model=model_formicID, config=config, callbacks=logger
+    # )
 
     # Evaluation
     ###########################################################################
-    plot_history(history=history, config=config, theme="ggplot", save=None)
+    # plot_history(history=history, config=config, theme="ggplot", save=None)
     evaluator(model=model_formicID, config=config)
 
     # Testing
@@ -181,36 +181,36 @@ def main():
     Y_true, Y_pred, labels, species_dict = predictor(
         model=model_formicID, config=config, plot=True, n_img=10, n_cols=3
     )
-    predictor_reports(
-        Y_true=Y_true,
-        Y_pred=Y_pred,
-        config=config,
-        species_dict=species_dict,
-        target_names=labels,
-        digits=5,
-    )
-    plot_confusion_matrix(
-        Y_pred=Y_pred,
-        Y_true=Y_true,
-        config=config,
-        target_names=labels,
-        title=False,
-        cmap="viridis",
-        normalize=True,
-        scores=True,
-        score_size=8,
-        save="confusion_matrix_test.png",
-    )
-    # predict_image(
-    #     model=model_formicID,
-    #     url="https://i.imgur.com/mCQTAVC.jpg",
+    # predictor_reports(
+    #     Y_true=Y_true,
+    #     Y_pred=Y_pred,
+    #     config=config,
     #     species_dict=species_dict,
+    #     target_names=labels,
+    #     digits=5,
     # )
+    # plot_confusion_matrix(
+    #     Y_pred=Y_pred,
+    #     Y_true=Y_true,
+    #     config=config,
+    #     target_names=labels,
+    #     title=False,
+    #     cmap="viridis",
+    #     normalize=True,
+    #     scores=True,
+    #     score_size=8,
+    #     save="confusion_matrix_test.png",
+    # )
+    predict_image(
+        model=model_formicID,
+        url="https://i.imgur.com/uUcBKx8.jpg",
+        species_dict=species_dict,
+    )
 
     # Footer
     ###########################################################################
     K.clear_session()
-    logging.info("Logging ended on: {}".format(today_time_clean))
+    logging.info("Logging ended: {}")
 
 
 if __name__ == "__main__":

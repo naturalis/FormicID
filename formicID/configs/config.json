@@ -1,5 +1,5 @@
 {
-    "exp_name": "T97_CaAll_QuM_ShP_AugM_D05_LR0001_E200_I4_def",
+    "exp_name": "T97_CaAll_QuM_ShP_AugM_D05_LR0001_E200_I4_def_imgtest",
     "data_set": "top97species_Qmed_def",
     "batch_size": 32,
     "dropout": 0.5,

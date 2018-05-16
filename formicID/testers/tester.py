@@ -191,11 +191,11 @@ def predict_image(model, url=None, image=None, species_dict=None):
 
     if url:
         response = requests.get(url)
-        logging.info("Predicting from URL: {}".format(url))
+        print("Predicting from URL: '{}''".format(url))
         img = Image.open(BytesIO(response.content))
         img = img.resize((299, 299), resample=Image.LANCZOS)
     if image:
-        logging.info("Predicting from local image: {}".format(image))
+        print("Predicting from local image: '{}''".format(image))
         img = load_img(image, target_size=(299, 299))
     plt.imshow(img)
     img = img_to_array(img, data_format="channels_last")
@@ -264,7 +264,7 @@ def plot_confusion_matrix(
         cm = cm.astype("float32") / cm.sum(axis=1)[:, np.newaxis]
         cm = np.round(cm, 2)
     thresh = cm.max() / 1.5 if normalize else cm.max() / 2
-    fig = plt.figure(figsize=(35, 36))
+    fig = plt.figure(figsize=(35, 37))
     plt.title(title, fontsize=75)
     plt.imshow(cm, interpolation="nearest", cmap=cmap)
     plt.grid(False)
