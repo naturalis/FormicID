@@ -90,16 +90,16 @@ def main():
 
     # Creating a dataset
     ###########################################################################
-    get_dataset(
-        input="testall.csv",
-        n_jsonfiles=100,
-        config=config,
-        shottypes="hdp",
-        quality="medium",
-        update=True,
-        offset_set=0,
-        limit_set=99999,
-    )
+    # get_dataset(
+    #     input="testall.csv",
+    #     n_jsonfiles=100,
+    #     config=config,
+    #     shottypes="hdp",
+    #     quality="medium",
+    #     update=True,
+    #     offset_set=0,
+    #     limit_set=99999,
+    # )
 
     # create experiment related directories
     ###########################################################################
@@ -123,7 +123,7 @@ def main():
     model_formicID = compile_model(model=model_formicID, config=config)
     # model_formicID = weights_load(
     #     model=model_formicID,
-    #     weights="experiments\T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4\checkpoint\weights_64-1.21.hdf5",
+    #     weights="experiments\T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4_def\checkpoint\weights_62-1.27.hdf5",
     # )
 
     # Initialize logger
@@ -173,7 +173,7 @@ def main():
 
     # Evaluation
     ###########################################################################
-    plot_history(history=history, theme="ggplot", save=None)
+    plot_history(history=history, config=config, theme="ggplot", save=None)
     evaluator(model=model_formicID, config=config)
 
     # Testing
@@ -192,8 +192,9 @@ def main():
     plot_confusion_matrix(
         Y_pred=Y_pred,
         Y_true=Y_true,
+        config=config,
         target_names=labels,
-        title="Confusion matrix",
+        title=False,
         cmap="viridis",
         normalize=True,
         scores=True,
