@@ -45,7 +45,7 @@ def _get_species_name_from_line(htmlline):
     genus = htmlline.split(a)[-1].split(b)[0]
     c = ';species='
     d = '&amp;rank='
-    species = htmlline.split(d)[-1].split(d)[0]
+    species = htmlline.split(c)[-1].split(d)[0]
     return genus, species
 
 # <div class="list_extras images"><a href="https://www.antweb.org/images.do?genus=acanthognathus&amp;species=rudis&amp;rank=species&amp;project=allantwebants"><span class="numbers">4</span> Images</a></div>
@@ -61,6 +61,7 @@ def _get_relevant_lines_from_html(url, min_images):
                 nb_images = map(int, re.findall('\d+', line))
                 if nb_images >= min_images:
                     lines.append(line)
+    return lines
 
 def most_imaged_species_to_csv(output, min_images=100):
     url = "https://www.antweb.org/taxonomicPage.do?rank=species&project=allantwebants&statusSetSize=max&statusSet=valid%20extant&statusSet=typed"
