@@ -13,7 +13,6 @@ This script requires the use of an csv file with 2 columns, filled with a genus
 and a species name. The script will go over the csv file and download a json
 file for this genus+species and places the JSON file in a folder.
 """
-
 # Packages
 ###############################################################################
 
@@ -36,21 +35,42 @@ import requests
 from tqdm import tqdm
 
 
-# Extracting the most imaged specimens to a csv file
+
+# Extract most imaged species from AntWeb
 ###############################################################################
 
+def _get_species_name_from_line(htmlline):
+    a = '?genus='
+    b = '&amp;species='
+    genus = htmlline.split(a)[-1].split(b)[0]
+    c = ';species='
+    d = '&amp;rank='
+    species = htmlline.split(d)[-1].split(d)[0]
+    return genus, species
 
-def get_most_imaged_species(url, min_images=68):
+# <div class="list_extras images"><a href="https://www.antweb.org/images.do?genus=acanthognathus&amp;species=rudis&amp;rank=species&amp;project=allantwebants"><span class="numbers">4</span> Images</a></div>
+
+
+def _get_relevant_lines_from_html(url, min_images):
     htmldata = requests.get(url)
     htmldata = htmldata.text
-    data = []
+    lines = []
     for line in htmldata:
         if "list_extras images" in line:
             if re.findall('\d+', line):
                 nb_images = map(int, re.findall('\d+', line))
                 if nb_images >= min_images:
-                    data.append(line)
-    print(data)
+                    lines.append(line)
+
+def most_imaged_species_to_csv(output, min_images=100):
+    url = "https://www.antweb.org/taxonomicPage.do?rank=species&project=allantwebants&statusSetSize=max&statusSet=valid%20extant&statusSet=typed"
+    df = pd.DataFrame(columns="genus", "species", "nb_images")
+    relevant_lines = _get_relevant_lines_from_html(url, min_images)
+    for line in relevant_lines:
+        nb_images = map(int, re.findall('\d+', line)):
+        row = [_get_species_name_from_line(line), nb_images]
+    df.append(row)
+    df.to_csv(os.path.join("data", output), sep=",")
 
 
 # Creating an URL
