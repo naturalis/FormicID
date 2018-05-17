@@ -10,9 +10,9 @@
 ###############################################################################
 """Description:
 This script contains code for building a neural network using Keras' Sequential
-model. The class has a `.build` and `.compile` attribute which needs to be
-called when instantiaitng the model.
+model. The build could be loaded in the `models/models.py` file.
 """
+
 # Packages
 ###############################################################################
 
@@ -24,9 +24,6 @@ from keras.layers import Dropout
 from keras.layers import Flatten
 from keras.layers import MaxPooling2D
 from keras.models import Sequential
-
-# Parameters and settings
-###############################################################################
 
 
 # Build the network
@@ -41,6 +38,7 @@ def build_model(config, num_species, input_shape=(None, None, 3)):
         config (Bunch object): The JSON configuration Bunch object.
         num_species (int): The number of species, needed for the last layer.
         input_shape (int): list of image height and width, with channels=last.
+            Defaults to (None, None, 3).
 
     Returns:
         Keras model instance: Returns an uncompiled Keras model instance.

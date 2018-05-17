@@ -13,6 +13,7 @@ Iterate over a number of JSON files in a folder and save relevant information
 in a csv file (containing a `catalog_number`, `scientific_name`, `shot_type`,
 and `image_url`) ready for `scrape.py`.
 """
+
 # Packages
 ###############################################################################
 
@@ -31,11 +32,8 @@ from tqdm import tqdm
 # FormicID imports
 from utils.utils import today_time_clean
 
-# Parameters and settings
-###############################################################################
 
-
-# Extract needed information
+# Filter JSON files for needed information
 ###############################################################################
 
 
@@ -104,7 +102,7 @@ def _filter_json(json_file, quality):
     return lst
 
 
-# Filter batches of josn files to a csv file
+# Extract the right information from batches of JSON files to a csv file
 ###############################################################################
 
 

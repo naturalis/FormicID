@@ -20,15 +20,13 @@ https://arxiv.org/pdf/1611.01505v1.pdf
 Original
 https://github.com/jayanthkoushik/sgd-feedback/blob/master/src/eve.py
 """
+
 # Packages
 ###############################################################################
 
 # Deeplearning tools imports
 import keras.backend as K
 from keras.optimizers import Optimizer
-
-# Parameters and settings
-###############################################################################
 
 
 # Eve
@@ -37,7 +35,7 @@ from keras.optimizers import Optimizer
 
 class Eve(Optimizer):
     """Eve optimizer. Default parameters follow those provided in the original
-    paper.
+    paper. See page description for more information.
 
     Args:
         lr: float >= 0. Learning rate.

@@ -12,6 +12,7 @@
 This script will read the config.json file from the configs folder. The json
 file contains settings for running experiments.
 """
+
 # Packages
 ###############################################################################
 
@@ -23,6 +24,7 @@ import json
 
 # Additional project imports
 from bunch import Bunch
+
 
 # Load and process config
 ###############################################################################
@@ -55,6 +57,7 @@ def process_config(jsonfile):
 
     Returns:
         Bunch object: the JSON configuration Bunch object.
+
     """
     config, _ = _get_config_from_json(jsonfile)
     config.summary_dir = os.path.join(

@@ -13,6 +13,7 @@ This is were it all happens. This file loads the data, initializes the model
 and trains the model. Log files are made and a prediction can be made for the
 test set.
 """
+
 # Packages
 ###############################################################################
 
@@ -34,6 +35,7 @@ from testers.tester import evaluator
 from testers.tester import plot_confusion_matrix
 from testers.tester import predict_image
 from testers.tester import predictor
+from testers.tester import predictor_reports
 from trainers.train import trainer_csv
 from trainers.train import trainer_dir
 from utils.img import save_augmentation
@@ -92,11 +94,11 @@ def main():
     #     input="testall.csv",
     #     n_jsonfiles=100,
     #     config=config,
-    #     shottypes="h",
-    #     quality="thumbview",
+    #     shottypes="hdp",
+    #     quality="medium",
     #     update=True,
     #     offset_set=0,
-    #     limit_set=9999,
+    #     limit_set=99999,
     # )
 
     # create experiment related directories
@@ -121,7 +123,7 @@ def main():
     model_formicID = compile_model(model=model_formicID, config=config)
     model_formicID = weights_load(
         model=model_formicID,
-        weights="experiments\T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4\checkpoint\weights_64-1.21.hdf5",
+        weights="experiments\T97_CaAll_QuM_ShP_AugM_D05_LR0001_E200_I4_def\checkpoint\weights_73-1.80.hdf5",
     )
 
     # Initialize logger
@@ -168,17 +170,10 @@ def main():
     # history = trainer_dir(
     #     model=model_formicID, config=config, callbacks=logger
     # )
-    # trainer_csv(
-    #     model=model_formicID,
-    #     csv="data/top5species_Qlow/image_path.csv",
-    #     shottype="head",
-    #     config=config,
-    #     callbacks=None,
-    # )
 
     # Evaluation
     ###########################################################################
-    # plot_history(history=history, theme="ggplot", save=None)
+    # plot_history(history=history, config=config, theme="ggplot", save=None)
     evaluator(model=model_formicID, config=config)
 
     # Testing
@@ -186,11 +181,20 @@ def main():
     Y_true, Y_pred, labels, species_dict = predictor(
         model=model_formicID, config=config, plot=True, n_img=10, n_cols=3
     )
+    # predictor_reports(
+    #     Y_true=Y_true,
+    #     Y_pred=Y_pred,
+    #     config=config,
+    #     species_dict=species_dict,
+    #     target_names=labels,
+    #     digits=5,
+    # )
     # plot_confusion_matrix(
     #     Y_pred=Y_pred,
     #     Y_true=Y_true,
+    #     config=config,
     #     target_names=labels,
-    #     title="Confusion matrix",
+    #     title=False,
     #     cmap="viridis",
     #     normalize=True,
     #     scores=True,
@@ -199,14 +203,14 @@ def main():
     # )
     predict_image(
         model=model_formicID,
-        url="https://i.imgur.com/mCQTAVC.jpg",
+        url="https://i.imgur.com/uUcBKx8.jpg",
         species_dict=species_dict,
     )
 
     # Footer
     ###########################################################################
     K.clear_session()
-    logging.info("Logging ended on: {}".format(today_time_clean))
+    logging.info("Logging ended: {}")
 
 
 if __name__ == "__main__":
