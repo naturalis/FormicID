@@ -23,6 +23,7 @@ import sys
 import time
 from itertools import islice
 from urllib.error import HTTPError
+import re
 
 # Data tools imports
 import json
@@ -41,13 +42,17 @@ from tqdm import tqdm
 ###############################################################################
 
 
-def get_most_imaged_species(min_images=68):
-    # url = "http://www.antweb.org/taxonomicPage.do?rank=species"
-    # for Taxon Name in the table on url:
-    #     if images >= min_images:
-    #         df.append(Taxon Name as genus + species)
-    # df.to_csv()
-    raise NotImplementedError
+def get_most_imaged_species(url, min_images=68):
+    htmldata = requests.get(url)
+    htmldata = htmldata.text
+    data = []
+    for line in htmldata:
+        if "list_extras images" in line:
+            if re.findall('\d+', line):
+                nb_images = map(int, re.findall('\d+', line))
+                if nb_images >= min_images:
+                    data.append(line)
+    print(data)
 
 
 def _create_url(limit, offset, **kwargs):
