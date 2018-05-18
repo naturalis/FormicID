@@ -23,6 +23,7 @@ import sys
 import time
 from itertools import islice
 from urllib.error import HTTPError
+from urllib.request import urlopen
 import re
 
 # Data tools imports
@@ -40,38 +41,47 @@ from tqdm import tqdm
 ###############################################################################
 
 def _get_species_name_from_line(htmlline):
-    a = '?genus='
-    b = '&amp;species='
+    a = "?genus="
+    b = "&species="
     genus = htmlline.split(a)[-1].split(b)[0]
-    c = ';species='
-    d = '&amp;rank='
+    c = "species="
+    d = "&rank="
     species = htmlline.split(c)[-1].split(d)[0]
     return genus, species
 
 # <div class="list_extras images"><a href="https://www.antweb.org/images.do?genus=acanthognathus&amp;species=rudis&amp;rank=species&amp;project=allantwebants"><span class="numbers">4</span> Images</a></div>
 
 
+
 def _get_relevant_lines_from_html(url, min_images):
     htmldata = requests.get(url)
-    htmldata = htmldata.text
+    htmldata.text
     lines = []
-    for line in htmldata:
-        if "list_extras images" in line:
-            if re.findall('\d+', line):
-                nb_images = map(int, re.findall('\d+', line))
-                if nb_images >= min_images:
-                    lines.append(line)
+    string = "list_extras images"
+    for line in tqdm(htmldata.iter_lines(decode_unicode='utf-8'), desc="Reading HTML lines", unit=" lines"):
+        if line:
+            if string in line:
+                if re.findall('\d+', line):
+                    nb_images = int(re.search(r'\d+', line).group())
+                    if nb_images >= min_images:
+                        lines.append(line)
     return lines
 
 def most_imaged_species_to_csv(output, min_images=100):
+    """
+    these scripts work, problem is that some specimens have lots of close-up pictures, e.g. for genetelia (see https://www.antweb.org/specimenImages.do?name=antweb1008499&project=allantwebants)
+    """
     url = "https://www.antweb.org/taxonomicPage.do?rank=species&project=allantwebants&statusSetSize=max&statusSet=valid%20extant&statusSet=typed"
-    df = pd.DataFrame(columns="genus", "species", "nb_images")
     relevant_lines = _get_relevant_lines_from_html(url, min_images)
+    # print(relevant_lines)
+    rows = []
     for line in relevant_lines:
-        nb_images = map(int, re.findall('\d+', line)):
-        row = [_get_species_name_from_line(line), nb_images]
-    df.append(row)
-    df.to_csv(os.path.join("data", output), sep=",")
+        nb_images = int(re.search(r'\d+', line).group())
+        genus, species  = _get_species_name_from_line(line)
+        row = [genus, species, nb_images]
+        rows.append(row)
+    df = pd.DataFrame(rows, columns=("genus", "species", "nb_images"))
+    df.to_csv(os.path.join("data", output), sep=",", index=False)
 
 
 # Creating an URL
