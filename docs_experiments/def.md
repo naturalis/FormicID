@@ -32,29 +32,24 @@ The prelast Dense Layer activation="relu"
 ```
 
 ## Dorsal
-`T97_CaAll_QuM_ShD_AugM_D05_LR0001_E100_I4_def`
-
+`T97_CaAll_QuM_ShD_AugM_D05_LR0001_E200_I4_def`
 ### Training
--
+- Epoch 00041: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00079: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
+- Epoch 00103: early stopping
 
-![](/docs_experiments/T97_CaAll_QuM_ShD_AugM_D05_LR0001_E100_I4_def.png)
+![](/docs_experiments/T97_CaAll_QuM_ShD_AugM_D05_LR0001_E200_I4_def.png)
 
 ### Confusion matrix
 
-![](/docs_experiments/CM-T97_CaAll_QuM_ShD_AugM_D05_LR0001_E100_I4_def.png)
+![](/docs_experiments/CM-T97_CaAll_QuM_ShD_AugM_D05_LR0001_E200_I4_def.png)
 
 ## Head
 `T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4_def`
 
 ### Training
-- Epoch 00044: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
-- Epoch 00088: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
-
-![](/docs_experiments/T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4_def.png)
 
 ### Confusion matrix
-
-![](/docs_experiments/CM-T97_CaAll_QuM_ShH_AugM_D05_LR0001_E100_I4_def.png)
 
 ## Profile
 `T97_CaAll_QuM_ShP_AugM_D05_LR0001_E200_I4_def`
