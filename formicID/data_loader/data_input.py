@@ -131,7 +131,7 @@ def image_path_csv(config):
 ###############################################################################
 
 
-def split_in_directory(config):
+def split_in_directory(config, bad=None):
     """Copies and split the image files for all species folders into
     subfolders for a training, validation and test set, called respectively
     `1-training`, `2-validation` and `3-test`.
@@ -167,6 +167,8 @@ def split_in_directory(config):
     train_dir = os.path.join(input_dir, dirs_split[0])
     val_dir = os.path.join(input_dir, dirs_split[1])
     test_dir = os.path.join(input_dir, dirs_split[2])
+    # with open("data/badspecimens.csv", r) as fp:
+    #     bad_specimens = [fp]
     for species in tqdm(os.listdir(input_dir), desc="Splitting into subsets"):
         if species in dirs_split:
             continue
@@ -182,6 +184,7 @@ def split_in_directory(config):
             num1:num2], shuffled[num2:]
         # fmt: on
         for image in os.listdir(os.path.join(input_dir, species)):
+            # if string in image contains any of bad_specimen_list dont move
             if image.endswith(".jpg"):
                 for img in to_test:
                     shutil.copy2(
