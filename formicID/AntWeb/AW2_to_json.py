@@ -36,9 +36,9 @@ import requests
 from tqdm import tqdm
 
 
-
 # Extract most imaged species from AntWeb
 ###############################################################################
+
 
 def _get_species_name_from_line(htmlline):
     a = "?genus="
@@ -49,8 +49,8 @@ def _get_species_name_from_line(htmlline):
     species = htmlline.split(c)[-1].split(d)[0]
     return genus, species
 
-# <div class="list_extras images"><a href="https://www.antweb.org/images.do?genus=acanthognathus&amp;species=rudis&amp;rank=species&amp;project=allantwebants"><span class="numbers">4</span> Images</a></div>
 
+# <div class="list_extras images"><a href="https://www.antweb.org/images.do?genus=acanthognathus&amp;species=rudis&amp;rank=species&amp;project=allantwebants"><span class="numbers">4</span> Images</a></div>
 
 
 def _get_relevant_lines_from_html(url, min_images):
@@ -58,14 +58,19 @@ def _get_relevant_lines_from_html(url, min_images):
     htmldata.text
     lines = []
     string = "list_extras images"
-    for line in tqdm(htmldata.iter_lines(decode_unicode='utf-8'), desc="Reading HTML lines", unit=" lines"):
+    for line in tqdm(
+        htmldata.iter_lines(decode_unicode="utf-8"),
+        desc="Reading HTML lines",
+        unit=" lines",
+    ):
         if line:
             if string in line:
-                if re.findall('\d+', line):
-                    nb_images = int(re.search(r'\d+', line).group())
+                if re.findall("\d+", line):
+                    nb_images = int(re.search(r"\d+", line).group())
                     if nb_images >= min_images:
                         lines.append(line)
     return lines
+
 
 def most_imaged_species_to_csv(output, min_images=100):
     """
@@ -76,8 +81,8 @@ def most_imaged_species_to_csv(output, min_images=100):
     # print(relevant_lines)
     rows = []
     for line in relevant_lines:
-        nb_images = int(re.search(r'\d+', line).group())
-        genus, species  = _get_species_name_from_line(line)
+        nb_images = int(re.search(r"\d+", line).group())
+        genus, species = _get_species_name_from_line(line)
         row = [genus, species, nb_images]
         rows.append(row)
     df = pd.DataFrame(rows, columns=("genus", "species", "nb_images"))

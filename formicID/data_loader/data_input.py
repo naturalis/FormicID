@@ -171,7 +171,11 @@ def split_in_directory(config, bad=None):
         bad_data = pd.read_csv(bad, header=0)
         bad_list = list(bad_data.Catalog_number)
         bad_list = [x.lower() for x in bad_list]
-        print("Ommitting {} specimens for {} shottype.".format(len(bad_list), shottype))
+        print(
+            "Ommitting {} specimens for {} shottype.".format(
+                len(bad_list), shottype
+            )
+        )
     for species in tqdm(os.listdir(input_dir), desc="Splitting into subsets"):
         if species in dirs_split:
             continue
@@ -190,33 +194,36 @@ def split_in_directory(config, bad=None):
             if image.endswith(".jpg"):
                 for img in to_test:
                     if bad_list is not None:
-                        if any(catal in img.split("_") for catal in bad_list) is False:
+                        if any(
+                            catal in img.split("_") for catal in bad_list
+                        ) is False:
                             shutil.copy2(
                                 os.path.join(input_dir, species, img),
                                 os.path.join(test_dir, species, img),
                             )
                         else:
-                            print("{} is ommitted for copying to a training, validation or testing folder.".format(img))
                             continue
 
                 for img in to_val:
                     if bad_list is not None:
-                        if any(catal in img.split("_") for catal in bad_list) is False:
+                        if any(
+                            catal in img.split("_") for catal in bad_list
+                        ) is False:
                             shutil.copy2(
                                 os.path.join(input_dir, species, img),
                                 os.path.join(val_dir, species, img),
-                                )
+                            )
                         else:
-                            print("{} is ommitted for copying to a training, validation or testing folder.".format(img))
                             continue
 
                 for img in to_train:
                     if bad_list is not None:
-                        if any(catal in img.split("_") for catal in bad_list) is False:
+                        if any(
+                            catal in img.split("_") for catal in bad_list
+                        ) is False:
                             shutil.copy2(
                                 os.path.join(input_dir, species, img),
                                 os.path.join(train_dir, species, img),
                             )
                         else:
-                            print("{} is ommitted for copying to a training, validation or testing folder.".format(img))
                             continue
