@@ -77,7 +77,7 @@ def main():
     logging.basicConfig(
         filename=os.path.join("logs", config.exp_name + ".log"),
         format="[%(asctime)s] - [%(levelname)s]: %(message)s",
-        filemode="w",
+        filemode="a",
         level=logging.DEBUG,
     )
     logging.info("Logging started.")
@@ -107,7 +107,7 @@ def main():
 
     # Initializing the data
     ###########################################################################
-    split_in_directory(config=config)
+    split_in_directory(config=config, bad="data/badspecimens_d.csv")
 
     # Augmentation handeling
     ###########################################################################
@@ -167,40 +167,40 @@ def main():
 
     # Training in batches with iterator
     ###########################################################################
-    history = trainer_dir(
-        model=model_formicID, config=config, callbacks=logger
-    )
+    # history = trainer_dir(
+    #     model=model_formicID, config=config, callbacks=logger
+    # )
 
     # Evaluation
     ###########################################################################
-    plot_history(history=history, config=config, theme="ggplot", save=None)
-    evaluator(model=model_formicID, config=config)
+    # plot_history(history=history, config=config, theme="ggplot", save=None)
+    # evaluator(model=model_formicID, config=config)
 
     # Testing
     ###########################################################################
-    Y_true, Y_pred, labels, species_dict = predictor(
-        model=model_formicID, config=config, plot=True, n_img=10, n_cols=3
-    )
-    predictor_reports(
-        Y_true=Y_true,
-        Y_pred=Y_pred,
-        config=config,
-        species_dict=species_dict,
-        target_names=labels,
-        digits=5,
-    )
-    plot_confusion_matrix(
-        Y_pred=Y_pred,
-        Y_true=Y_true,
-        config=config,
-        target_names=labels,
-        title=False,
-        cmap="viridis",
-        normalize=True,
-        scores=True,
-        score_size=8,
-        save="confusion_matrix_test.png",
-    )
+    # Y_true, Y_pred, labels, species_dict = predictor(
+    #     model=model_formicID, config=config, plot=True, n_img=10, n_cols=3
+    # )
+    # predictor_reports(
+    #     Y_true=Y_true,
+    #     Y_pred=Y_pred,
+    #     config=config,
+    #     species_dict=species_dict,
+    #     target_names=labels,
+    #     digits=5,
+    # )
+    # plot_confusion_matrix(
+    #     Y_pred=Y_pred,
+    #     Y_true=Y_true,
+    #     config=config,
+    #     target_names=labels,
+    #     title=False,
+    #     cmap="viridis",
+    #     normalize=True,
+    #     scores=True,
+    #     score_size=8,
+    #     save="confusion_matrix_test.png",
+    # )
     # predict_image(
     #     model=model_formicID,
     #     url="https://i.imgur.com/uUcBKx8.jpg",

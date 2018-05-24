@@ -1,6 +1,6 @@
 {
-    "exp_name": "T97_CaAll_QuM_ShH_AugM_D05_LR0001_E200_I4_def",
-    "data_set": "top97species_Qmed_def",
+    "exp_name": "splittingtest_d",
+    "data_set": "top97species_Qmed_def_clean",
     "batch_size": 32,
     "dropout": 0.5,
     "learning_rate": 0.001,
@@ -10,5 +10,5 @@
     "seed": 1,
     "test_split": 0.1,
     "val_split": 0.2,
-    "shottype": "head"
+    "shottype": "dorsal"
 }
