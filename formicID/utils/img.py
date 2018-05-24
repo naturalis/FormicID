@@ -20,6 +20,7 @@ other files.
 import logging
 import os
 from math import ceil
+import random
 
 # Deeplearning tools imports
 from keras.preprocessing.image import array_to_img
@@ -139,3 +140,27 @@ def save_augmentation(image, config, show=False):
     logging.info("Augmented files can be found in {}".format(augment_dir))
     if show:
         _show_augmentation_from_dir(aug_dir=augment_dir, max_img=20, n_cols=5)
+
+
+def show_dataset(image_dir, config, max_img, n_cols=4):
+    seed = config.seed
+    exts = [".jpg", ".jpeg", ".png"]
+    img_list = []
+    for root, subdirs, files in os.walk(image_dir):
+        for file in files:
+            if os.path.splitext(file)[1].lower() in exts:
+                img_list.append(os.path.join(root, file))
+    random.shuffle(img_list)
+    img_list = img_list[:max_img]
+    n_rows = int(ceil(max_img // n_cols))
+    fig = plt.figure(figsize=(8, 8))
+    max_div = n_cols * n_rows
+    axes = [fig.add_subplot(n_rows, n_cols, i ) for i in range(1, max_div+1)]
+    plt.setp(axes, xticks=[], yticks=[])
+    for img, ax in zip(img_list, axes):
+        _, title = os.path.split(img)
+        title, _ = os.path.splitext(title)
+        img_plot = load_img(img)
+        ax.imshow(img_plot)
+        ax.set_title(title, size=7)
+    plt.show()
