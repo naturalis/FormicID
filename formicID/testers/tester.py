@@ -53,13 +53,16 @@ from trainers.train import _generator_dir
 ###############################################################################
 
 
-def evaluator(model, config):
+def evaluator(model, config, test_dir=None):
     """Evaluation will return the score of the model on a test set. This
     function will return the loss, accuracy and top-3 accuracy.
 
     Args:
         model (Keras model instance): A trained Keras model instance.
         config (Bunch object): The JSON configuration Bunch object.
+        test_dir (str): Directory that holds test images. Optional, if not
+            set, the default test directory (created by
+            `split_in_directory()`) will be used. Defaults to None.
 
     Returns:
         The loss, accuracy and top 3 accuracy for the trained model on the
@@ -68,7 +71,16 @@ def evaluator(model, config):
     """
     shottype = config.shottype
     dataset = config.data_set
-    test_data_gen_dir, _, _ = _generator_dir(config=config, target_gen="test")
+    seed = config.seed
+    if test_dir is None:
+        test_data_gen_dir, _, _ = _generator_dir(
+            config=config, target_gen="test", data_dir=None
+        )
+    if test_dir is not None:
+        print("Evaluating directory: '{}'.".format(test_dir))
+        test_data_gen_dir, _, _ = _generator_dir(
+            config=config, target_gen="test", data_dir=test_dir
+        )
     score = model.evaluate_generator(test_data_gen_dir)
     print(
         "Test metrics: "
@@ -83,12 +95,17 @@ def evaluator(model, config):
 ###############################################################################
 
 
-def predictor(model, config, plot=False, n_img=None, n_cols=None):
+def predictor(
+    model, config, plot=False, n_img=None, n_cols=None, test_dir=None
+):
     """Returns the prediction of labels for the test set.
 
     Args:
         model (Keras model instance): A trained Keras model instance.
         config (Bunch object): The JSON configuration Bunch object.
+        test_dir (str): Directory that holds test images. Optional, if not
+            set, the default test directory (created by
+            `split_in_directory()`) will be used. Defaults to None.
 
         Not implemented yet:
             plot (Bool): whether to plot images or not. Defaults to None.
@@ -107,9 +124,15 @@ def predictor(model, config, plot=False, n_img=None, n_cols=None):
         n_img, n_cols = None, None
     dataset = config.data_set
     shottype = config.shottype
-    test_data_gen_dir, classes, class_indices = _generator_dir(
-        config=config, target_gen="test"
-    )
+    if test_dir is None:
+        test_data_gen_dir, classes, class_indices = _generator_dir(
+            config=config, target_gen="test", data_dir=None
+        )
+    if test_dir is not None:
+        print("Predicting directory: '{}'.".format(test_dir))
+        test_data_gen_dir, classes, class_indices = _generator_dir(
+            config=config, target_gen="test", data_dir=test_dir
+        )
     labels = class_indices.keys()
     Y_true = classes
     # print("Classes indices from gen:", class_indices)

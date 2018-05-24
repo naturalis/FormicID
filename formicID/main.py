@@ -38,7 +38,6 @@ from testers.tester import predictor
 from testers.tester import predictor_reports
 from trainers.train import trainer_csv
 from trainers.train import trainer_dir
-from utils.img import save_augmentation
 from utils.load_config import process_config
 from utils.logger import build_csvl
 from utils.logger import build_es
@@ -77,7 +76,7 @@ def main():
     logging.basicConfig(
         filename=os.path.join("logs", config.exp_name + ".log"),
         format="[%(asctime)s] - [%(levelname)s]: %(message)s",
-        filemode="w",
+        filemode="a",
         level=logging.DEBUG,
     )
     logging.info("Logging started.")
@@ -88,34 +87,9 @@ def main():
     sess = tf.Session()
     K.set_session(sess)
 
-    # Creating a dataset
-    ###########################################################################
-    # get_dataset(
-    #     input="testall.csv",
-    #     n_jsonfiles=100,
-    #     config=config,
-    #     shottypes="hdp",
-    #     quality="medium",
-    #     update=True,
-    #     offset_set=0,
-    #     limit_set=99999,
-    # )
-
     # create experiment related directories
     ###########################################################################
     create_dirs([config.summary_dir, config.checkpoint_dir])
-
-    # Initializing the data
-    ###########################################################################
-    split_in_directory(config=config)
-
-    # Augmentation handeling
-    ###########################################################################
-    # save_augmentation(
-    #     image="data/top97species_Qmed/bothroponera_cambouei_blf0561(26)-1_h.jpg",
-    #     config=config,
-    #     show=True,
-    # )
 
     # Initialize the model
     ###########################################################################
@@ -167,40 +141,40 @@ def main():
 
     # Training in batches with iterator
     ###########################################################################
-    history = trainer_dir(
-        model=model_formicID, config=config, callbacks=logger
-    )
+    # history = trainer_dir(
+    #     model=model_formicID, config=config, callbacks=logger
+    # )
 
     # Evaluation
     ###########################################################################
-    plot_history(history=history, config=config, theme="ggplot", save=None)
-    evaluator(model=model_formicID, config=config)
+    # plot_history(history=history, config=config, theme="ggplot", save=None)
+    # evaluator(model=model_formicID, config=config)
 
     # Testing
     ###########################################################################
-    Y_true, Y_pred, labels, species_dict = predictor(
-        model=model_formicID, config=config, plot=True, n_img=10, n_cols=3
-    )
-    predictor_reports(
-        Y_true=Y_true,
-        Y_pred=Y_pred,
-        config=config,
-        species_dict=species_dict,
-        target_names=labels,
-        digits=5,
-    )
-    plot_confusion_matrix(
-        Y_pred=Y_pred,
-        Y_true=Y_true,
-        config=config,
-        target_names=labels,
-        title=False,
-        cmap="viridis",
-        normalize=True,
-        scores=True,
-        score_size=8,
-        save="confusion_matrix_test.png",
-    )
+    # Y_true, Y_pred, labels, species_dict = predictor(
+    #     model=model_formicID, config=config, plot=True, n_img=10, n_cols=3
+    # )
+    # predictor_reports(
+    #     Y_true=Y_true,
+    #     Y_pred=Y_pred,
+    #     config=config,
+    #     species_dict=species_dict,
+    #     target_names=labels,
+    #     digits=5,
+    # )
+    # plot_confusion_matrix(
+    #     Y_pred=Y_pred,
+    #     Y_true=Y_true,
+    #     config=config,
+    #     target_names=labels,
+    #     title=False,
+    #     cmap="viridis",
+    #     normalize=True,
+    #     scores=True,
+    #     score_size=8,
+    #     save="confusion_matrix_test.png",
+    # )
     # predict_image(
     #     model=model_formicID,
     #     url="https://i.imgur.com/uUcBKx8.jpg",

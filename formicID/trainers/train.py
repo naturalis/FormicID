@@ -673,7 +673,9 @@ def idg(config, target_gen="training"):
 ###############################################################################
 
 
-def _generator_dir(config, target_gen="training", shottype=None):
+def _generator_dir(
+    config, target_gen="training", shottype=None, data_dir=None
+):
     """Generator for reading images out of directories. Can be used for a
     `training`, `validation` or `test` set. `Validation` and `test` sets will
     not be shuffled.
@@ -685,7 +687,11 @@ def _generator_dir(config, target_gen="training", shottype=None):
         shottype (str): Should be either  `dorsal`, `head` or `profile`. If no
             shottype is provided, shottype will be taken from the
             configuration file. Defaults to None.
-
+        data_dir (str): Directory that holds training, validation or test
+            images. Optional, if not set, the default training, validation,
+            test directories (created by `split_in_directory()`) will be used.
+            Defaults to None.
+            
     Returns:
         Image directory generator.
         list: A list of all classes.
@@ -712,7 +718,8 @@ def _generator_dir(config, target_gen="training", shottype=None):
     if target_gen == "test":
         shuffle = False
         dir = "3-test"
-    data_dir = os.path.join("data", dataset, "images", shottype, dir)
+    if data_dir is None:
+        data_dir = os.path.join("data", dataset, "images", shottype, dir)
     idgen = idg(config=config, target_gen=target_gen)
     idgen = idgen.flow_from_directory(
         directory=data_dir,

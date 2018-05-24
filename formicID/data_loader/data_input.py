@@ -167,8 +167,15 @@ def split_in_directory(config, bad=None):
     train_dir = os.path.join(input_dir, dirs_split[0])
     val_dir = os.path.join(input_dir, dirs_split[1])
     test_dir = os.path.join(input_dir, dirs_split[2])
-    # with open("data/badspecimens.csv", r) as fp:
-    #     bad_specimens = [fp]
+    if bad is not None:
+        bad_data = pd.read_csv(bad, header=0)
+        bad_list = list(bad_data.Catalog_number)
+        bad_list = [x.lower() for x in bad_list]
+        print(
+            "Ommitting {} specimens for {} shottype.".format(
+                len(bad_list), shottype
+            )
+        )
     for species in tqdm(os.listdir(input_dir), desc="Splitting into subsets"):
         if species in dirs_split:
             continue
@@ -184,20 +191,39 @@ def split_in_directory(config, bad=None):
             num1:num2], shuffled[num2:]
         # fmt: on
         for image in os.listdir(os.path.join(input_dir, species)):
-            # if string in image contains any of bad_specimen_list dont move
             if image.endswith(".jpg"):
                 for img in to_test:
-                    shutil.copy2(
-                        os.path.join(input_dir, species, img),
-                        os.path.join(test_dir, species, img),
-                    )
+                    if bad_list is not None:
+                        if any(
+                            catal in img.split("_") for catal in bad_list
+                        ) is False:
+                            shutil.copy2(
+                                os.path.join(input_dir, species, img),
+                                os.path.join(test_dir, species, img),
+                            )
+                        else:
+                            continue
+
                 for img in to_val:
-                    shutil.copy(
-                        os.path.join(input_dir, species, img),
-                        os.path.join(val_dir, species, img),
-                    )
+                    if bad_list is not None:
+                        if any(
+                            catal in img.split("_") for catal in bad_list
+                        ) is False:
+                            shutil.copy2(
+                                os.path.join(input_dir, species, img),
+                                os.path.join(val_dir, species, img),
+                            )
+                        else:
+                            continue
+
                 for img in to_train:
-                    shutil.copy2(
-                        os.path.join(input_dir, species, img),
-                        os.path.join(train_dir, species, img),
-                    )
+                    if bad_list is not None:
+                        if any(
+                            catal in img.split("_") for catal in bad_list
+                        ) is False:
+                            shutil.copy2(
+                                os.path.join(input_dir, species, img),
+                                os.path.join(train_dir, species, img),
+                            )
+                        else:
+                            continue
