@@ -38,7 +38,6 @@ from testers.tester import predictor
 from testers.tester import predictor_reports
 from trainers.train import trainer_csv
 from trainers.train import trainer_dir
-from utils.img import save_augmentation
 from utils.load_config import process_config
 from utils.logger import build_csvl
 from utils.logger import build_es
@@ -88,34 +87,9 @@ def main():
     sess = tf.Session()
     K.set_session(sess)
 
-    # Creating a dataset
-    ###########################################################################
-    # get_dataset(
-    #     input="testall.csv",
-    #     n_jsonfiles=100,
-    #     config=config,
-    #     shottypes="hdp",
-    #     quality="medium",
-    #     update=True,
-    #     offset_set=0,
-    #     limit_set=99999,
-    # )
-
     # create experiment related directories
     ###########################################################################
     create_dirs([config.summary_dir, config.checkpoint_dir])
-
-    # Initializing the data
-    ###########################################################################
-    split_in_directory(config=config, bad="data/badspecimens_d.csv")
-
-    # Augmentation handeling
-    ###########################################################################
-    # save_augmentation(
-    #     image="data/top97species_Qmed/bothroponera_cambouei_blf0561(26)-1_h.jpg",
-    #     config=config,
-    #     show=True,
-    # )
 
     # Initialize the model
     ###########################################################################
