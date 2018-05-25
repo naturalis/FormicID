@@ -70,6 +70,7 @@ setuptools == 39.1.0
 # formicID/main.py: 24
 # formicID/utils/model_utils.py: 23
 tensorflow == 1.8.0
+tensorflow-gpu == 1.8.0
 
 # formicID/AntWeb/AW2_to_json.py: 34
 # formicID/AntWeb/AW3_to_json.py: 31
