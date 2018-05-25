@@ -55,8 +55,8 @@ def save_model(model, filename, config):
     """
     out = os.path.join(config.checkpoint_dir, filename)
     model.save(filepath=out)
-    logging.info("The model has been saved and deleted from use.")
-    del model
+    logging.info("The model has been saved.")
+    # del model
 
 
 def load_model_from_file(filename, input_dir):

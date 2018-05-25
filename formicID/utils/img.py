@@ -38,46 +38,6 @@ import PIL  # Imports PIL-SIMD. PIL is needed for load_img()
 # FormicID imports
 from trainers.train import idg
 
-from deprecation import deprecated
-
-
-# Load and show images
-###############################################################################
-
-
-def show_img(array):
-    # TODO: test and implement in other scripts?
-    image = array_to_img(array)
-    plt.imshow(image)
-    plt.show()
-
-
-@deprecated(
-    details="This function needs X_train and Y_train input, of which the loading function is deprecated."
-)
-def show_multi_img(X_train, Y_train, cols=4, rows=4):
-    """Plot n images of X_train using matplotlib.
-
-    Args:
-        X_train (array): Images, represented as a 4D array.
-        Y_train (array): Labels of the images .
-        cols (int): Number of images per column. Defaults to 4.
-        rows (int): Number of images per row. Defaults to 4.
-
-    Returns:
-        image: a plot of cols * rows images.
-
-    """
-    images = cols * rows
-    fig = plt.figure(figsize=(8, 8))
-    for i in range(1, images + 1):
-        img = array_to_img(X_train[i])
-        label = np.argmax(Y_train[i], axis=0, out=None)
-        fig.add_subplot(rows, cols, i, xticks=[], yticks=[])
-        plt.title(label)
-        plt.imshow(img)
-    plt.show()
-
 
 # Visualizing data agumentation
 ###############################################################################
@@ -142,7 +102,7 @@ def save_augmentation(image, config, show=False):
         _show_augmentation_from_dir(aug_dir=augment_dir, max_img=20, n_cols=5)
 
 
-def show_dataset(image_dir, config, max_img, n_cols=4):
+def show_dataset(image_dir, config, max_img, n_cols=4, save=None, transparent=True):
     seed = config.seed
     exts = [".jpg", ".jpeg", ".png"]
     img_list = []
@@ -164,3 +124,5 @@ def show_dataset(image_dir, config, max_img, n_cols=4):
         ax.imshow(img_plot)
         ax.set_title(title, size=7)
     plt.show()
+    if save is not None:
+        plt.savefig(save, transparent=transparent)

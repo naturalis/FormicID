@@ -276,7 +276,7 @@ def plot_confusion_matrix(
         A confusion matrix plot.
 
     """
-    if title is False:
+    if title is True:
         title = config.exp_name
     cm = confusion_matrix(y_pred=Y_pred, y_true=Y_true)
     accuracy = np.trace(cm) / float(np.sum(cm))
@@ -287,8 +287,9 @@ def plot_confusion_matrix(
         cm = cm.astype("float32") / cm.sum(axis=1)[:, np.newaxis]
         cm = np.round(cm, 2)
     thresh = cm.max() / 1.5 if normalize else cm.max() / 2
-    fig = plt.figure(figsize=(35, 37))
-    plt.title(title, fontsize=75)
+    fig = plt.figure(figsize=(35, 35))
+    if title is not None:
+        plt.title(title, fontsize=75)
     plt.imshow(cm, interpolation="nearest", cmap=cmap)
     plt.grid(False)
     cb = plt.colorbar(fraction=0.046, pad=0.04)
@@ -327,7 +328,7 @@ def plot_confusion_matrix(
     plt.tight_layout()
     plt.ylabel("True label", fontsize=45)
     plt.xlabel(
-        "Predicted label\naccuracy={:0.4f}\n misclass={:0.4f}".format(
+        "Predicted label\naccuracy={:0.4f},  misclass={:0.4f}".format(
             accuracy, misclass
         ),
         fontsize=45,
