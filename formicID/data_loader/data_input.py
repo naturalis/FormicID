@@ -174,6 +174,7 @@ def split_in_directory(config, bad=None):
         print(
             "Ommitting {} specimens for {} shottype.".format(
                 len(bad_list), shottype
+                # TODO: is the length of bad_list also counting header?
             )
         )
     for species in tqdm(os.listdir(input_dir), desc="Splitting into subsets"):

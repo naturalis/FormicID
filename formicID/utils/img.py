@@ -54,8 +54,10 @@ def _show_augmentation_from_dir(aug_dir, max_img, n_cols=4):
             maximum number of images. Defaults to 4.
 
     """
+    # TODO: Test the no tickmarks line
     img_list = os.listdir(aug_dir)
     fig = plt.figure(figsize=(8, 8))
+    plt.setp(axes, xticks=[], yticks=[])
     n_rows = int(ceil(max_img // n_cols))
     i = 1
     for img in img_list[0:max_img]:
