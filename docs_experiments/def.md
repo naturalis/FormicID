@@ -176,4 +176,6 @@ __Epochs are defined as E100, but should be E200 (naming is wrong, settings are 
 
 # Statia 2015
 
+![](/docs_experiments/Statiafolders.png)
+
 ![](/docs_experiments/mfloricola.png)
