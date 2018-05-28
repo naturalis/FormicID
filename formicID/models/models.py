@@ -66,7 +66,7 @@ from models.optimizer import Eve
 ###############################################################################
 
 
-def load_model(config):
+def load_model(config, num_species=None):
     """Load a predesigned neural network application from the Keras library or
     the self-designed neural network from `models/build.py`. See text below
     for more information on the different models that can be loaded.
@@ -109,9 +109,11 @@ def load_model(config):
     dropout = config.dropout
     shottype = config.shottype
     data_dir = os.path.join("data", dataset, "json_files")
-    num_species = sum(
-        os.path.isfile(os.path.join(data_dir, i)) for i in os.listdir(data_dir)
-    )
+    if num_species is None:
+        num_species = sum(
+            os.path.isfile(os.path.join(data_dir,
+                i)) for i in os.listdir(data_dir)
+            )
     if model not in [
         "InceptionV3",
         "InceptionResNetV2",

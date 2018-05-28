@@ -94,12 +94,15 @@ def main():
 
     # Initialize the model
     ###########################################################################
-    model_formicID = load_model(config=config)
+    model_formicID = load_model(
+        config=config,
+        num_species=97,
+    )
     model_formicID = compile_model(model=model_formicID, config=config)
-    # model_formicID = weights_load(
-    #     model=model_formicID,
-    #     weights="experiments\T97_CaAll_QuM_ShP_AugM_D05_LR0001_E200_I4_def\checkpoint\weights_73-1.80.hdf5",
-    # )
+    model_formicID = weights_load(
+        model=model_formicID,
+        weights="experiments/T97_CaAll_QuM_ShP_AugM_D05_LR0001_E200_I4_def_clean/checkpoint/weights_76-1.83.hdf5",
+    )
 
     # Initialize logger
     ###########################################################################
@@ -142,17 +145,17 @@ def main():
 
     # Training in batches with iterator
     ###########################################################################
-    history = trainer_dir(
-        model=model_formicID, config=config, callbacks=logger
-    )
-    save_model(
-        model=model_formicID, filename="final_weights.hdf5", config=config
-    )
+    # history = trainer_dir(
+    #     model=model_formicID, config=config, callbacks=logger
+    # )
+    # save_model(
+    #     model=model_formicID, filename="final_weights.hdf5", config=config
+    # )
 
     # Evaluation
     ###########################################################################
-    plot_history(history=history, config=config, theme="ggplot", save=None)
-    evaluator(model=model_formicID, config=config)
+    # plot_history(history=history, config=config, theme="ggplot", save=None)
+    # evaluator(model=model_formicID, config=config)
 
     # Testing
     ###########################################################################

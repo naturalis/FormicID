@@ -1,6 +1,6 @@
 {
-    "exp_name": "T97_CaAll_QuM_ShD_AugM_D05_LR0001_E200_I4_def_clean",
-    "data_set": "top97species_Qmed_def_clean",
+    "exp_name": "Statia2015_CaAll_QuH_ShD_I4_test",
+    "data_set": "statia2015_rmnh",
     "batch_size": 32,
     "dropout": 0.5,
     "learning_rate": 0.001,
@@ -10,5 +10,5 @@
     "seed": 1,
     "test_split": 0.1,
     "val_split": 0.2,
-    "shottype": "dorsal"
+    "shottype": "profile"
 }
