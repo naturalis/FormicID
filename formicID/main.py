@@ -94,17 +94,11 @@ def main():
 
     # Initialize the model
     ###########################################################################
-    model_formicID = load_model(
-        config=config,
-        num_species=97,
-    )
-    model_formicID = compile_model(
-        model=model_formicID,
-        config=config,
-    )
+    model_formicID = load_model(config=config, num_species=97)
+    model_formicID = compile_model(model=model_formicID, config=config)
     model_formicID = weights_load(
         model=model_formicID,
-        weights="experiments/T97_CaAll_QuM_ShP_AugM_D05_LR0001_E200_I4_def_clean/checkpoint/weights_76-1.83.hdf5",
+        weights="experiments/T97_CaAll_QuM_ShD_AugM_D05_LR0001_E200_I4_def_clean/checkpoint/weights_51-1.96.hdf5",
     )
 
     # Initialize logger
@@ -158,38 +152,46 @@ def main():
     # Evaluation
     ###########################################################################
     # plot_history(history=history, config=config, theme="ggplot", save=None)
-    # evaluator(model=model_formicID, config=config)
+    # evaluator(model=model_formicID, config=config, test_dir="data/statia2015_rmnh/images/dorsal/3-test")
 
     # Testing
     ###########################################################################
     Y_true, Y_pred, labels, species_dict = predictor(
-        model=model_formicID, config=config, plot=True, n_img=10, n_cols=3
-    )
-    predictor_reports(
-        Y_true=Y_true,
-        Y_pred=Y_pred,
+        model=model_formicID,
         config=config,
-        species_dict=species_dict,
-        target_names=labels,
-        digits=5,
+        species_json="data/species_dict.json",
+        plot=True,
+        n_img=10,
+        n_cols=3,
     )
-    plot_confusion_matrix(
-        Y_pred=Y_pred,
-        Y_true=Y_true,
-        config=config,
-        target_names=labels,
-        title=None,
-        cmap="viridis",
-        normalize=True,
-        scores=True,
-        score_size=8,
-        save="confusion_matrix_test.png",
-    )
-    # predict_image(
-    #     model=model_formicID,
-    #     url="https://i.imgur.com/uUcBKx8.jpg",
+    # predictor_reports(
+    #     Y_true=Y_true,
+    #     Y_pred=Y_pred,
+    #     config=config,
     #     species_dict=species_dict,
+    #     target_names=labels,
+    #     digits=5,
     # )
+    # plot_confusion_matrix(
+    #     Y_pred=Y_pred,
+    #     Y_true=Y_true,
+    #     config=config,
+    #     target_names=labels,
+    #     species_dict=species_dict,
+    #     title=None,
+    #     cmap="viridis",
+    #     normalize=True,
+    #     scores=True,
+    #     score_size=8,
+    #     save="confusion_matrix_test.png",
+    # )
+    predict_image(
+        model=model_formicID,
+        species_dict=species_dict,
+        image="data/statia2015_rmnh/images/dorsal/3-test/wasmannia_auropunctata/RMNHARA5082448_head_3_2xMontage.jpg",
+        url=None,
+        show=False,
+    )
 
     # Footer
     ###########################################################################

@@ -111,9 +111,9 @@ def load_model(config, num_species=None):
     data_dir = os.path.join("data", dataset, "json_files")
     if num_species is None:
         num_species = sum(
-            os.path.isfile(os.path.join(data_dir,
-                i)) for i in os.listdir(data_dir)
-            )
+            os.path.isfile(os.path.join(data_dir, i))
+            for i in os.listdir(data_dir)
+        )
     if model not in [
         "InceptionV3",
         "InceptionResNetV2",

@@ -173,7 +173,8 @@ def split_in_directory(config, bad=None):
         bad_list = [x.lower() for x in bad_list]
         print(
             "Ommitting {} specimens for {} shottype.".format(
-                len(bad_list), shottype
+                len(bad_list),
+                shottype
                 # TODO: is the length of bad_list also counting header?
             )
         )
@@ -195,9 +196,10 @@ def split_in_directory(config, bad=None):
             if image.endswith(".jpg"):
                 for img in to_test:
                     if bad_list is not None:
-                        if any(
-                            catal in img.split("_") for catal in bad_list
-                        ) is False:
+                        if (
+                            any(catal in img.split("_") for catal in bad_list)
+                            is False
+                        ):
                             shutil.copy2(
                                 os.path.join(input_dir, species, img),
                                 os.path.join(test_dir, species, img),
@@ -207,9 +209,10 @@ def split_in_directory(config, bad=None):
 
                 for img in to_val:
                     if bad_list is not None:
-                        if any(
-                            catal in img.split("_") for catal in bad_list
-                        ) is False:
+                        if (
+                            any(catal in img.split("_") for catal in bad_list)
+                            is False
+                        ):
                             shutil.copy2(
                                 os.path.join(input_dir, species, img),
                                 os.path.join(val_dir, species, img),
@@ -219,9 +222,10 @@ def split_in_directory(config, bad=None):
 
                 for img in to_train:
                     if bad_list is not None:
-                        if any(
-                            catal in img.split("_") for catal in bad_list
-                        ) is False:
+                        if (
+                            any(catal in img.split("_") for catal in bad_list)
+                            is False
+                        ):
                             shutil.copy2(
                                 os.path.join(input_dir, species, img),
                                 os.path.join(train_dir, species, img),
@@ -237,14 +241,20 @@ def split_in_directory(config, bad=None):
 def remove_reproductives(csv, dataset, config):
     shottype = config.shottype
     input_dir = os.path.join("data", dataset, "images", shottype, "3-test")
-    reproductives = pd.read_csv(bad, header=0)
+    reproductives = pd.read_csv(csv, header=0)
     repro_list = list(reproductives.Catalog_number)
     repro_list = [x.lower() for x in repro_list]
     i = 0
     for species in tqdm(os.listdir(input_dir), desc="Removing reproductives"):
-        for image in os.listdir(os.path.join(input_dir, species)):
+        for image in tqdm(
+            os.listdir(os.path.join(input_dir, species)),
+            desc="Checking species folders.",
+        ):
             if image.endswith(".jpg"):
-                if any(catal in image.split("_") for catal in repro_list) is True:
+                if (
+                    any(catal in image.split("_") for catal in repro_list)
+                    is True
+                ):
                     os.remove(os.path.join(input_dir, species, image))
-                    i + 1
+                    i += 1
     print("{} reproductive specimens were removed.".format(i))

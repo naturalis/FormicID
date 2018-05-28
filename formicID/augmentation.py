@@ -41,5 +41,5 @@ show_dataset(
     image_dir="data/top97species_Qmed_def_clean/images",
     config=config,
     max_img=42,
-    n_cols=6
+    n_cols=6,
 )

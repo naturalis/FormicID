@@ -104,7 +104,9 @@ def save_augmentation(image, config, show=False):
         _show_augmentation_from_dir(aug_dir=augment_dir, max_img=20, n_cols=5)
 
 
-def show_dataset(image_dir, config, max_img, n_cols=4, save=None, transparent=True):
+def show_dataset(
+    image_dir, config, max_img, n_cols=4, save=None, transparent=True
+):
     seed = config.seed
     exts = [".jpg", ".jpeg", ".png"]
     img_list = []
@@ -117,7 +119,7 @@ def show_dataset(image_dir, config, max_img, n_cols=4, save=None, transparent=Tr
     n_rows = int(ceil(max_img // n_cols))
     fig = plt.figure(figsize=(8, 8))
     max_div = n_cols * n_rows
-    axes = [fig.add_subplot(n_rows, n_cols, i ) for i in range(1, max_div+1)]
+    axes = [fig.add_subplot(n_rows, n_cols, i) for i in range(1, max_div + 1)]
     plt.setp(axes, xticks=[], yticks=[])
     for img, ax in zip(img_list, axes):
         _, title = os.path.split(img)

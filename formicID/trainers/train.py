@@ -213,7 +213,7 @@ class MyImageDataGenerator(object):
         if self.samplewise_center:
             x -= np.mean(x, keepdims=True)
         if self.samplewise_std_normalization:
-            x /= (np.std(x, keepdims=True) + K.epsilon())
+            x /= np.std(x, keepdims=True) + K.epsilon()
 
         if self.featurewise_center:
             if self.mean is not None:
@@ -227,7 +227,7 @@ class MyImageDataGenerator(object):
                 )
         if self.featurewise_std_normalization:
             if self.std is not None:
-                x /= (self.std + K.epsilon())
+                x /= self.std + K.epsilon()
             else:
                 warnings.warn(
                     "This ImageDataGenerator specifies "
@@ -463,7 +463,11 @@ class CsvIterator(Iterator):
                 self.image_shape = (1,) + self.target_size
         self.classes = classes
         if class_mode not in {
-            "categorical", "binary", "sparse", "input", None
+            "categorical",
+            "binary",
+            "sparse",
+            "input",
+            None,
         }:
             raise ValueError(
                 "Invalid class_mode:",
@@ -674,7 +678,11 @@ def idg(config, target_gen="training"):
 
 
 def _generator_dir(
-    config, target_gen="training", shottype=None, data_dir=None
+    config,
+    target_gen="training",
+    shottype=None,
+    data_dir=None,
+    batch_size=None,
 ):
     """Generator for reading images out of directories. Can be used for a
     `training`, `validation` or `test` set. `Validation` and `test` sets will
@@ -691,7 +699,8 @@ def _generator_dir(
             images. Optional, if not set, the default training, validation,
             test directories (created by `split_in_directory()`) will be used.
             Defaults to None.
-            
+        batch_size (int): set the batch size for the generator. If data_dir is None, batch should also be none. Defaults to None.
+
     Returns:
         Image directory generator.
         list: A list of all classes.
@@ -707,7 +716,8 @@ def _generator_dir(
         target_size = (299, 299)
     if model in ["ResNet50", "DenseNet169"]:
         target_size = (224, 224)
-    batch_size = config.batch_size
+    if batch_size is None:
+        batch_size = config.batch_size
     seed = config.seed
     if target_gen == "training":
         shuffle = True

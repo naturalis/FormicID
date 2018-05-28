@@ -26,10 +26,14 @@ from urllib.parse import urlparse
 import re
 from io import StringIO
 import pandas as pd
+import json
+from itertools import chain
+from operator import sub
 
 # Deeplearning tools imports
 from keras.applications.inception_v3 import preprocess_input
 from keras.preprocessing.image import img_to_array
+from keras.preprocessing.image import load_img
 from keras.utils.np_utils import to_categorical
 from keras import backend as K
 
@@ -96,7 +100,13 @@ def evaluator(model, config, test_dir=None):
 
 
 def predictor(
-    model, config, plot=False, n_img=None, n_cols=None, test_dir=None
+    model,
+    config,
+    species_json,
+    plot=False,
+    n_img=None,
+    n_cols=None,
+    test_dir=None,
 ):
     """Returns the prediction of labels for the test set.
 
@@ -133,6 +143,9 @@ def predictor(
         test_data_gen_dir, classes, class_indices = _generator_dir(
             config=config, target_gen="test", data_dir=test_dir
         )
+    if species_json is not None:
+        with open(species_json) as sjson:
+            class_indices = json.load(sjson)
     labels = class_indices.keys()
     Y_true = classes
     # print("Classes indices from gen:", class_indices)
@@ -186,7 +199,7 @@ def _process_species_dict(dict, species):
             return str(k)
 
 
-def predict_image(model, url=None, image=None, species_dict=None):
+def predict_image(model, species_dict, url=None, image=None, show=False):
     """Predict the label from one image, either retrieved by URL, or a local
     input.
 
@@ -204,20 +217,28 @@ def predict_image(model, url=None, image=None, species_dict=None):
         ValueError: When the image is not in the correct image exentsion.
 
     """
-    dissasembled = urlparse(url)
-    _, ext = os.path.splitext(os.path.basename(dissasembled.path))
-    if ext not in [".png", ".jpg", ".jpeg", ".gif", ".bmp"]:
-        raise ValueError(
-            "The image exenstion should be one of `.png`, `.jpg`, `.jpeg`, "
-            '`.gif`, `.bmp`, instead of "{}".'.format(ext)
-        )
-
     if url:
+        dissasembled = urlparse(url)
+        path, ext = os.path.splitext(os.path.basename(dissasembled.path))
+        if ext not in [".png", ".jpg", ".jpeg", ".gif", ".bmp"]:
+            raise ValueError(
+                "The image exenstion of {} should be one of `.png`, `.jpg`, "
+                "`.jpeg`, `.gif`, `.bmp`, instead of '{}'.".format(path, ext)
+            )
+
         response = requests.get(url)
         print("Predicting from URL: '{}''".format(url))
         img = Image.open(BytesIO(response.content))
         img = img.resize((299, 299), resample=Image.LANCZOS)
     if image:
+        dissasembled = urlparse(image)
+        path, ext = os.path.splitext(os.path.basename(dissasembled.path))
+        if ext not in [".png", ".jpg", ".jpeg", ".gif", ".bmp"]:
+            raise ValueError(
+                "The image exenstion of {} should be one of `.png`, `.jpg`, "
+                "`.jpeg`, `.gif`, `.bmp`, instead of '{}'.".format(path, ext)
+            )
+
         print("Predicting from local image: '{}''".format(image))
         img = load_img(image, target_size=(299, 299))
     plt.imshow(img)
@@ -232,7 +253,8 @@ def predict_image(model, url=None, image=None, species_dict=None):
     print("Predicted species: {}".format(species))
     plt.grid(False)
     plt.title("Predicted species: {}".format(species))
-    plt.show()
+    if show is True:
+        plt.show()
 
 
 # Plotting a confusion matrix
@@ -244,6 +266,7 @@ def plot_confusion_matrix(
     Y_true,
     config,
     target_names=None,
+    species_dict=None,
     title="Confusion matrix",
     cmap=None,
     normalize=False,
@@ -276,9 +299,31 @@ def plot_confusion_matrix(
         A confusion matrix plot.
 
     """
+    # Remove predictions if true labels are not in test set.
+    missings = list(
+        chain.from_iterable(
+            (Y_true[i] + d for d in range(1, diff))
+            for i, diff in enumerate(map(sub, Y_true[1:], Y_true))
+            if diff > 1
+        )
+    )
+    target_names = list(target_names)
+    # print(Y_pred)
+    # print(Y_true)
+    # print(len(target_names))
+    for k, v in species_dict.items():
+        if v in missings:
+            # Keep species in when it is predicted, but not in true label.
+            # if v not in Y_pred:
+            print("Removing species {}: {} from the dataset.".format(k, v))
+            target_names.remove(k)
+    # print(len(target_names))
+    i, = np.where(Y_pred in missings)
+
     if title is True:
         title = config.exp_name
     cm = confusion_matrix(y_pred=Y_pred, y_true=Y_true)
+    cm[np.isnan(cm)] = 1
     accuracy = np.trace(cm) / float(np.sum(cm))
     misclass = 1 - accuracy
     if cmap is None:
@@ -317,14 +362,15 @@ def plot_confusion_matrix(
                         fontsize=score_size,
                     )
             else:
-                plt.text(
-                    j,
-                    i,
-                    "{:,}".format(cm[i, j]),
-                    horizontalalignment="center",
-                    color="white" if cm[i, j] > thresh else "black",
-                    fontsize=score_size,
-                )
+                if cm[i, j] > 0:
+                    plt.text(
+                        j,
+                        i,
+                        "{:,}".format(cm[i, j]),
+                        horizontalalignment="center",
+                        color="white" if cm[i, j] > thresh else "black",
+                        fontsize=score_size,
+                    )
     plt.tight_layout()
     plt.ylabel("True label", fontsize=45)
     plt.xlabel(
@@ -356,13 +402,13 @@ def _report_to_df(report):
         Pandas DataFrame: DataFrame of a classification_report
 
     """
-    report = re.sub(r" +", " ", report).replace(
-        "avg / total", "avg/total"
-    ).replace(
-        "\n ", "\n"
+    report = (
+        re.sub(r" +", " ", report)
+        .replace("avg / total", "avg/total")
+        .replace("\n ", "\n")
     )
     report_df = pd.read_csv(StringIO("Classes" + report), sep=" ", index_col=0)
-    return (report_df)
+    return report_df
 
 
 def predictor_reports(
@@ -395,6 +441,20 @@ def predictor_reports(
             report 1. Defaults to 2.
 
     """
+    missings = list(
+        chain.from_iterable(
+            (Y_true[i] + d for d in range(1, diff))
+            for i, diff in enumerate(map(sub, Y_true[1:], Y_true))
+            if diff > 1
+        )
+    )
+    target_names = list(target_names)
+    for k, v in species_dict.items():
+        if v in missings:
+            # Keep species in when it is predicted, but not in true label.
+            if v not in Y_pred:
+                print("Removing species {}: {} from the dataset.".format(k, v))
+                target_names.remove(k)
     # Report 1: 5 column spreadsheat with classes, precision, recall, f1 and
     # support.
     output_cr = os.path.join(

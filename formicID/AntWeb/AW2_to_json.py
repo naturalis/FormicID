@@ -76,7 +76,9 @@ def most_imaged_species_to_csv(output, min_images=100):
     """
     these scripts work, problem is that some specimens have lots of close-up pictures, e.g. for genetelia (see https://www.antweb.org/specimenImages.do?name=antweb1008499&project=allantwebants)
     """
-    url = "https://www.antweb.org/taxonomicPage.do?rank=species&project=allantwebants&statusSetSize=max&statusSet=valid%20extant&statusSet=typed"
+    url = (
+        "https://www.antweb.org/taxonomicPage.do?rank=species&project=allantwebants&statusSetSize=max&statusSet=valid%20extant&statusSet=typed"
+    )
     relevant_lines = _get_relevant_lines_from_html(url, min_images)
     # print(relevant_lines)
     rows = []

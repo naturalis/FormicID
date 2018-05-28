@@ -96,7 +96,10 @@ def _filter_json(json_file, quality):
                 image_url["d"] = row[2]["d"]["img"][qlty]
             for key in image_url:
                 new_row = [
-                    catalog_number, scientific_name, key, image_url[key]
+                    catalog_number,
+                    scientific_name,
+                    key,
+                    image_url[key],
                 ]
                 lst.append(new_row)
     return lst
@@ -159,7 +162,10 @@ def batch_json_to_csv(
 
         df2 = pd.DataFrame()
         columns = [
-            "catalog_number", "scientific_name", "shot_type", "image_url"
+            "catalog_number",
+            "scientific_name",
+            "shot_type",
+            "image_url",
         ]
         for filename in tqdm(
             os.listdir(input_direc),
