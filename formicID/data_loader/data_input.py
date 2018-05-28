@@ -228,3 +228,23 @@ def split_in_directory(config, bad=None):
                             )
                         else:
                             continue
+
+
+# remove reproductives from test sets
+###############################################################################
+
+
+def remove_reproductives(csv, dataset, config):
+    shottype = config.shottype
+    input_dir = os.path.join("data", dataset, "images", shottype, "3-test")
+    reproductives = pd.read_csv(bad, header=0)
+    repro_list = list(reproductives.Catalog_number)
+    repro_list = [x.lower() for x in repro_list]
+    i = 0
+    for species in tqdm(os.listdir(input_dir), desc="Removing reproductives"):
+        for image in os.listdir(os.path.join(input_dir, species)):
+            if image.endswith(".jpg"):
+                if any(catal in image.split("_") for catal in repro_list) is True:
+                    os.remove(os.path.join(input_dir, species, image))
+                    i + 1
+    print("{} reproductive specimens were removed.".format(i))

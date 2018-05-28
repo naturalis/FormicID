@@ -36,6 +36,7 @@
 		- [Training graph](#training-graph)
 		- [Confusion matrix](#confusion-matrix)
 - [Statia 2015](#statia-2015)
+- [Caste distribution](#caste-distribution)
 
 <!-- /TOC -->
 
@@ -98,7 +99,7 @@ The prelast Dense Layer activation="relu"
 `T97_CaAll_QuM_ShD_AugM_D05_LR0001_E200_I4_def`
 
 ### Training
-- txt
+- Epoch 00047: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
 
 ### Training graph
 ![](/docs_experiments/T97_CaAll_QuM_ShD_AugM_D05_LR0001_E200_I4_def_clean.png)
@@ -179,3 +180,7 @@ __Epochs are defined as E100, but should be E200 (naming is wrong, settings are 
 ![](/docs_experiments/Statiafolders.png)
 
 ![](/docs_experiments/mfloricola.png)
+
+# Caste distribution
+
+![](/docs_experiments/caste_distribution.png)

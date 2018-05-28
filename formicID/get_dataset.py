@@ -18,6 +18,7 @@ from utils.load_config import process_config
 from utils.utils import get_args
 from data_loader.data_input import split_in_directory
 from data_scraper.scrape import get_dataset
+from data_loader.data_input import remove_reproductives
 
 # Main code
 ###############################################################################
@@ -29,7 +30,7 @@ except:
     exit(0)
 
 # Creating a dataset
-###########################################################################
+###############################################################################
 get_dataset(
     input="testall.csv",
     n_jsonfiles=100,
@@ -41,6 +42,10 @@ get_dataset(
     limit_set=99999,
 )
 
-# Initializing the data
-###########################################################################
+# split into training, validation and test
+###############################################################################
 split_in_directory(config=config, bad="data/badspecimens_p.csv")
+
+# Remove reproductives from dataset
+###############################################################################
+remove_reproductives(csv="data/reproductives.csv", dataset="top97species_Qmed_def_clean_wtest", config=config)
