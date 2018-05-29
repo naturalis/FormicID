@@ -31,7 +31,7 @@ from itertools import chain
 from operator import sub
 
 # Deeplearning tools imports
-from keras.applications.inception_v3 import preprocess_input
+from keras.applications.inception_resnet_v2 import preprocess_input
 from keras.preprocessing.image import img_to_array
 from keras.preprocessing.image import load_img
 from keras.utils.np_utils import to_categorical
@@ -102,7 +102,7 @@ def evaluator(model, config, test_dir=None):
 def predictor(
     model,
     config,
-    species_json,
+    species_json=None,
     plot=False,
     n_img=None,
     n_cols=None,
@@ -143,13 +143,14 @@ def predictor(
         test_data_gen_dir, classes, class_indices = _generator_dir(
             config=config, target_gen="test", data_dir=test_dir
         )
+    nb_samples = test_data_gen_dir.samples
     if species_json is not None:
         with open(species_json) as sjson:
             class_indices = json.load(sjson)
     labels = class_indices.keys()
     Y_true = classes
     # print("Classes indices from gen:", class_indices)
-    Y_pred = model.predict_generator(test_data_gen_dir, verbose=0)
+    Y_pred = model.predict_generator(test_data_gen_dir, steps=nb_samples, verbose=0)
     # print('Y_true before argmax:', Y_true)
     # print('Y_pred before argmax:',Y_pred)
     # Y_true = K.argmax(to_categorical(Y_true, 5), axis=-1)
@@ -227,7 +228,7 @@ def predict_image(model, species_dict, url=None, image=None, show=False):
             )
 
         response = requests.get(url)
-        print("Predicting from URL: '{}''".format(url))
+        print("Predicting from URL: '{}'".format(url))
         img = Image.open(BytesIO(response.content))
         img = img.resize((299, 299), resample=Image.LANCZOS)
     if image:
@@ -239,7 +240,7 @@ def predict_image(model, species_dict, url=None, image=None, show=False):
                 "`.jpeg`, `.gif`, `.bmp`, instead of '{}'.".format(path, ext)
             )
 
-        print("Predicting from local image: '{}''".format(image))
+        print("Predicting from local image: '{}'".format(image))
         img = load_img(image, target_size=(299, 299))
     plt.imshow(img)
     img = img_to_array(img, data_format="channels_last")

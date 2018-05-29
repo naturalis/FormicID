@@ -682,7 +682,6 @@ def _generator_dir(
     target_gen="training",
     shottype=None,
     data_dir=None,
-    batch_size=None,
 ):
     """Generator for reading images out of directories. Can be used for a
     `training`, `validation` or `test` set. `Validation` and `test` sets will
@@ -716,18 +715,18 @@ def _generator_dir(
         target_size = (299, 299)
     if model in ["ResNet50", "DenseNet169"]:
         target_size = (224, 224)
-    if batch_size is None:
-        batch_size = config.batch_size
-    seed = config.seed
     if target_gen == "training":
         shuffle = True
         dir = "1-training"
+        batch_size = config.batch_size
     if target_gen == "validation":
         shuffle = False
         dir = "2-validation"
+        batch_size = config.batch_size
     if target_gen == "test":
         shuffle = False
         dir = "3-test"
+        batch_size = 1
     if data_dir is None:
         data_dir = os.path.join("data", dataset, "images", shottype, dir)
     idgen = idg(config=config, target_gen=target_gen)

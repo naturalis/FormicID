@@ -33,7 +33,6 @@ from models.models import compile_model
 from models.models import load_model
 from testers.tester import evaluator
 from testers.tester import plot_confusion_matrix
-from testers.tester import predict_image
 from testers.tester import predictor
 from testers.tester import predictor_reports
 from trainers.train import trainer_csv
@@ -98,7 +97,7 @@ def main():
     model_formicID = compile_model(model=model_formicID, config=config)
     model_formicID = weights_load(
         model=model_formicID,
-        weights="experiments/T97_CaAll_QuM_ShD_AugM_D05_LR0001_E200_I4_def_clean/checkpoint/weights_51-1.96.hdf5",
+        weights="experiments/T97_CaAll_QuM_ShH_AugM_D05_LR0001_E200_I4_def_clean/checkpoint/weights_73-1.29.hdf5",
     )
 
     # Initialize logger
@@ -152,26 +151,30 @@ def main():
     # Evaluation
     ###########################################################################
     # plot_history(history=history, config=config, theme="ggplot", save=None)
-    # evaluator(model=model_formicID, config=config, test_dir="data/statia2015_rmnh/images/dorsal/3-test")
+    evaluator(
+        model=model_formicID,
+        config=config,
+        # test_dir="data/statia2015_rmnh/images/dorsal/3-test",
+    )
 
     # Testing
     ###########################################################################
     Y_true, Y_pred, labels, species_dict = predictor(
         model=model_formicID,
         config=config,
-        species_json="data/species_dict.json",
+        # species_json="data/species_dict.json",
         plot=True,
         n_img=10,
         n_cols=3,
     )
-    # predictor_reports(
-    #     Y_true=Y_true,
-    #     Y_pred=Y_pred,
-    #     config=config,
-    #     species_dict=species_dict,
-    #     target_names=labels,
-    #     digits=5,
-    # )
+    predictor_reports(
+        Y_true=Y_true,
+        Y_pred=Y_pred,
+        config=config,
+        species_dict=species_dict,
+        target_names=labels,
+        digits=5,
+    )
     # plot_confusion_matrix(
     #     Y_pred=Y_pred,
     #     Y_true=Y_true,
@@ -185,14 +188,6 @@ def main():
     #     score_size=8,
     #     save="confusion_matrix_test.png",
     # )
-    predict_image(
-        model=model_formicID,
-        species_dict=species_dict,
-        image="data/statia2015_rmnh/images/dorsal/3-test/wasmannia_auropunctata/RMNHARA5082448_head_3_2xMontage.jpg",
-        url=None,
-        show=False,
-    )
-
     # Footer
     ###########################################################################
     K.clear_session()
