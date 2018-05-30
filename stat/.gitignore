@@ -2,6 +2,5 @@
 *tfevents.*
 *.csv
 *.pdf
-*.png
 *.RData
 *.RHistory

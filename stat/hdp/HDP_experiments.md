@@ -1,11 +1,12 @@
 -   [Reading data](#reading-data)
 -   [Reading CMs](#reading-cms)
 -   [Plotting](#plotting)
+-   [Creating a combined plot and saving to PDF](#creating-a-combined-plot-and-saving-to-pdf)
 
 ``` r
 setwd("~/Internships/Internship CNN 2017-2018/FormicID/stat/hdp")
 data_dir <- file.path("shottype training")
-
+plot_out_name <- "Uncleaned dataset.pdf"
 library(ggplot2) # for plotting
 library(gridExtra)
 library(gtable)
@@ -79,13 +80,17 @@ Plotting
 dd <-
     ggplot(data = dorsal, aes(x = epoch, y = value, colour = variable)) +
     geom_line() +
-    scale_x_continuous(breaks = c(0,25,50,75,100, 125), limits = c(0, max_x)) +
+    scale_x_continuous(breaks = c(0, 25, 50, 75, 100, 125),
+                       limits = c(0, max_x)) +
     scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
-    theme(axis.text.x  = element_text(size = 8)) +
+    theme() +
     ylab(NULL) +
-    xlab(NULL) +
-    ggtitle("Dorsal") +
-    theme(legend.position = "none") +
+    # xlab(NULL) +
+    # ggtitle("Dorsal") +
+    theme(
+        legend.position = "none",
+        axis.text = element_text(size = 8), axis.title=element_text(size=10,face="bold")
+    ) +
     background_grid(major = c("xy"), minor = ("xy"))
 ddlegend <- dd +
     theme(legend.position = "right",
@@ -95,81 +100,35 @@ ddlegend <- dd +
 hh <-
     ggplot(data = head, aes(x = epoch, y = value, colour = variable)) +
     geom_line() +
-    scale_x_continuous(breaks = c(0,25,50,75,100, 125), limits = c(0, max_x)) +
+    scale_x_continuous(breaks = c(0, 25, 50, 75, 100, 125),
+                       limits = c(0, max_x)) +
     scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
-    theme(axis.text.x  = element_text(size = 8)) +
     ylab(NULL) +
-    xlab(NULL) +
-    ggtitle("Head") +
-    theme(legend.position = "none") +
+    # xlab(NULL) +
+    # ggtitle("Head") +
+    theme(
+        legend.position = "none",
+        axis.text = element_text(size = 8), axis.title=element_text(size=10,face="bold")
+    ) +
     background_grid(major = c("xy"), minor = ("xy"))
 pp <-
     ggplot(data = profile, aes(x = epoch, y = value, colour = variable)) +
     geom_line() +
-    scale_x_continuous(breaks = c(0,25,50,75,100, 125), limits = c(0, max_x)) +
+    scale_x_continuous(breaks = c(0, 25, 50, 75, 100, 125),
+                       limits = c(0, max_x)) +
     scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
-    theme(axis.text.x  = element_text(size = 8)) +
     ylab(NULL) +
-    xlab(NULL) +
-    ggtitle("Profile") +
-    theme(legend.position = "none") +
+    # xlab(NULL) +
+    # ggtitle("Profile") +
+    theme(
+        legend.position = "none",
+        axis.text = element_text(size = 8), axis.title=element_text(size=10,face="bold")
+    ) +
     background_grid(major = c("xy"), minor = ("xy"))
 ```
 
-``` r
-# legend = gtable_filter(ggplotGrob(dd), "guide-box")
-# 
-# grid.arrange(
-#     arrangeGrob(
-#         dd + theme(legend.position = "none"),
-#         dorsalcm,
-#         hh + theme(legend.position = "none"),
-#         headcm,
-#         pp + theme(legend.position = "none"),
-#         profilecm,
-#         nrow = 3,
-#         top = textGrob(
-#             "Validation accuracy",
-#             vjust = 1,
-#             gp = gpar(fontface = "bold", cex = 1.5)
-#         ),
-#         left = textGrob("Accuracy (%)", rot = 90, vjust = 1),
-#         bottom = textGrob("Epochs", vjust = 1)
-#     ),
-#     legend,
-#     widths = unit.c(unit(1, "npc") - legend$width, legend$width),
-#     nrow = 1
-# )
-```
-
-``` r
-# dorsalcm <- rasterGrob(dorsalcm)
-# headcm <- rasterGrob(headcm)
-# profilecm <- rasterGrob(profilecm)
-# 
-# p1 <- ggarrange(
-#     dd,
-#     hh,
-#     pp,
-#     labels = c("A","B", "C"),
-#     common.legend = TRUE,
-#     legend = "bottom",
-#     align = "v",
-#     ncol = 1,
-#     nrow = 3
-# )
-# 
-# p2 <- ggarrange(
-#     dorsalcm,
-#     headcm,
-#     profilecm,
-#     labels = c("D", "E", "F"),
-#     align = "v",
-#     ncol = 1,
-#     nrow = 3
-# )
-# ggarrange(p1, p2, align="v", ncol = 2, nrow = 1)
-```
+Creating a combined plot and saving to PDF
+------------------------------------------
 
 ``` r
 ggdorsal <- ggdraw() + draw_image(dorsalcm, scale = 1)
@@ -178,25 +137,74 @@ ggprofile <- ggdraw() + draw_image(profilecm, scale = 1)
 legend <- get_legend(ddlegend)
 legend_bottom <- plot_grid(legend, ncol = 2)
 
-graphs <- plot_grid(
+# Dorsal
+titledd <- ggdraw() +
+    draw_label("Dorsal shottype", fontface = 'bold')
+graphsdd <- plot_grid(
     dd,
     ggdorsal,
+    ncol = 2,
+    nrow = 1,
+    align = "v",
+    rel_widths = c(1,0.85), 
+    labels = c("A", "B"), label_x = .16
+)
+plotdd <-
+    plot_grid(titledd,
+              graphsdd,
+              ncol = 1,
+              rel_heights = c(0.1, 1))
+# Head
+titlehh <- ggdraw() +
+    draw_label("Head shottype", fontface = 'bold')
+graphshh <- plot_grid(
     hh,
     gghead,
+    ncol = 2,
+    nrow = 1,
+    align = "v",
+    rel_widths = c(1,0.85), 
+    labels = c("C", "D"), label_x = .16
+)
+plothh <-
+    plot_grid(titlehh,
+              graphshh,
+              ncol = 1,
+              rel_heights = c(0.1, 1))
+# Profile
+titlepp <- ggdraw() +
+    draw_label("Profile shottype", fontface = 'bold')
+graphspp <- plot_grid(
     pp,
     ggprofile,
     ncol = 2,
-    nrow = 3,
-    labels = "AUTO"
+    nrow = 1,
+    align = "v",
+    rel_widths = c(1,0.85), 
+    labels = c("E", "F"), label_x = .16
 )
+plotpp <-
+    plot_grid(titlepp,
+              graphspp,
+              ncol = 1,
+              rel_heights = c(0.1, 1))
 
-plot_grid(
+graphs <- plot_grid(plotdd,
+                    plothh,
+                    plotpp,
+                    ncol = 1,
+                    nrow = 3)
+
+final <- plot_grid(
     graphs,
     legend_bottom,
-    ncol=1,
-    nrow=2,
-    rel_heights = c(1,.05)
+    ncol = 1,
+    nrow = 2,
+    rel_heights = c(1, .05)
 )
-```
 
-![](HDP_experiments_files/figure-markdown_github/unnamed-chunk-4-1.png)
+save_plot(plot_out_name,
+          final,
+          base_width = 8.27,
+          base_height =  11.69)
+```

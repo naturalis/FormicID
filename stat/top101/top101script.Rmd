@@ -77,8 +77,8 @@ shotcount <- melt(shotcount[(1),])
 ```{r Shot type plot, echo = FALSE}
 g1 <- ggplot(shotcount, aes(x=variable, y=value, fill=variable)) + 
     geom_bar(stat="identity", position = "dodge") +
-    coord_cartesian(ylim = c(3350, 3450)) +
-    xlab("Shot types") + ylab("Number of images") +
+    coord_cartesian(ylim = c(3350, 3425)) +
+    xlab("Shottypes") + ylab("Image count") +
     labs(title = "Shottype distribution") +
     geom_text(aes(label = value), position=position_dodge(width=0.9), vjust=1.6, color="white") +
     theme(
@@ -88,8 +88,6 @@ g1 <- ggplot(shotcount, aes(x=variable, y=value, fill=variable)) +
         # legend.text = element_text(size = 10),
         legend.position = "none"
     )
-    # scale_fill_manual(values=c("#F8766D", "#00C094", "#00B6EB"))
-g1
 ```
 
 # Image distribution per species
@@ -97,40 +95,44 @@ Here we can see how images are distributed per species. Within species there are
 
 ```{r Image-species distribution, fig.height = 9, echo = FALSE}
 g2 <-
-    ggplot(melted) + # Ploting image distribution per species per shot type 
-geom_bar(aes(x = scientific_name, y = value, fill = variable),
+    ggplot(melted) + # Ploting image distribution per species per shot type
+    geom_bar(aes(x = scientific_name, y = value, fill = variable),
              stat = 'identity',
              width = 0.5) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) +
-    labs(title = "Species distribition per shot type") +
+    labs(title = "Species distribition per shottype") +
     coord_flip() +
-    labs(x = "Species", y = "Number of images") +
+    labs(x = "Species", y = "Image count") +
     theme(
         # plot.title = element_text(size = 15),
         # axis.title = element_text(size = 10),
         # legend.title = element_text(size = 10),
         # legend.text = element_text(size = 10),
-        legend.position = "top", 
-        legend.background = element_rect(linetype="solid", colour= "Black"),
-        axis.text=element_text(size=10)
+        legend.position = "top",
+        legend.background = element_rect(linetype = "solid", colour = "Black"),
+        axis.text = element_text(size = 10)
     )  +
-    scale_x_discrete(limits = (levels(melted$scientific_name))) + 
+    scale_x_discrete(limits = (levels(melted$scientific_name))) +
     scale_fill_discrete(name = 'Shot type',
-                        labels = c('Dorsal', 'Head', 'Profile')) 
+                        labels = c('Dorsal', 'Head', 'Profile'))
 
-exampledata <- image_read("dataset_example.png")
+exampledata <- image_read("dataset_example2.png")
 
-prefinal <- ggdraw() +
+final <- ggdraw() +
     draw_plot(g2, 0, 0, 1, 1) +
-    draw_plot(g1, 0.45, 0.1, 0.5, 0.4) +
-    draw_plot_label(c("A", "B"), c(0, 0.45), c(1, 0.5), size = 15) +
-    draw_image(exampledata, 0.2, 0.2, clip="on", scale = 1)
+    draw_plot(g1, 0.43, 0.06, 0.5, 0.4) +
+    draw_image(exampledata, 0.23, 0.17, scale = 0.50) +
+    draw_plot_label(c("A", "B", "C"), c(0.05, 0.47, 0.47), c(1, 0.87, 0.46), size = 15)
 
-title <- ggdraw() + draw_label("Distribution of the clean dataset", size = 18, fontface = 'bold')
-final <- plot_grid(title,
-                   prefinal,
-                   ncol = 1,
-                   rel_heights = c(0.05, 1))
+# title <-
+#     ggdraw() + draw_label("The dataset (cleaned)",
+#                           size = 18,
+#                           fontface = 'bold')
+# final <- plot_grid(title,
+#                    prefinal,
+#                    ncol = 1,
+#                    rel_heights = c(0.05, 1))
+final
 save_plot("species_shot_dist.pdf",
           final,
           base_width = 8.27,
@@ -143,13 +145,18 @@ save_plot("species_shot_dist.pdf",
 File size is important because it is related to the pixel dimensions of images and therefore it will have an impact on training / validation speed.
 
 ```{r File size - reading data, echo = FALSE}
-files_info <- # Reading all the images in the directory
+path <-  file.path(
+            data_dir,
+            "images"
+        )
+files_info <-
     file.info(list.files(
-        path = data_dir,
+        path = path,
         pattern = ".jpg",
-        full.names = TRUE
+        full.names = TRUE,
+        recursive = TRUE
     ))
-# head(files_info)
+head(files_info)
 ```
 
 ## What is the mean size in kilobytes?
@@ -172,31 +179,30 @@ File size is viewed in Kb's.
 # https://www.statmethods.net/graphs/density.html
 size_kb_df <- data.frame(size_kb)
 
-g <- ggplot(size_kb_df, aes(size_kb))
-g + geom_histogram(
-    binwidth = 1,
-    colour = 'black',
-    aes(y = ..density..),
-    fill = 'deepskyblue3'
-) +
+g <- ggplot(size_kb_df, aes(size_kb)) +
+    geom_histogram(
+        binwidth = 1,
+        colour = 'black',
+        aes(y = ..density..),
+        fill = 'deepskyblue3'
+    ) +
     stat_function(fun = dnorm,
                   color = 'red',
                   args = list(
                       mean = mean(size_kb_df$size_kb),
                       sd = sd(size_kb_df$size_kb)
                   )) +
-    labs(title = "Histogram of file size density",
-         subtitle = "for FormicID-97") +
+    labs(title = "Histogram of file size density") +
     labs(x = "File size (Kb)", y = "Density (%)")  +
     theme(
-        plot.title = element_text(size = 15),
-        plot.subtitle = element_text(size = 10),
-        axis.title = element_text(size = 10),
-        legend.title = element_text(size = 10),
-        legend.text = element_text(size = 10),
-        legend.position = 'top'
-    ) +
+        # plot.title = element_text(size = 15),
+        # plot.subtitle = element_text(size = 10),
+        # axis.title = element_text(size = 10),
+        # legend.title = element_text(size = 10),
+        # legend.text = element_text(size = 10),
+        legend.position = 'top') +
     guides(fill = FALSE)
+g
 ```
 
 # Image dimensions
@@ -206,7 +212,8 @@ to inspect if all images are the same dimension and if they are RGB or gray-scal
 images <-
     list.files(path = data_dir,
                pattern = ".jpg",
-               full.names = TRUE)
+               full.names = TRUE,
+               recursive = TRUE)
 str(images)
 
 x <- image_read(images[1])
@@ -227,7 +234,7 @@ for (image in images) {
 df <-
     data.frame(matrix(
         unlist(lst2),
-        nrow = 10204,
+        nrow = 10118,
         byrow = TRUE,
         ncol = 4
     ))
@@ -241,7 +248,7 @@ df_channel_wrong <- subset(df, channel <= 2)
 df_good <- subset(df, channel > 2)
 df_good$names <- rownames(df_good)
 
-df_good2 <- as.data.frame(sapply(df_good,gsub,pattern="/Users/nijram13/Google Drive/4. Biologie/Studie Biologie/Master Year 2/Internship CNN/8. FormicID/FormicID/data/2018-01-17_top101-images/", replacement = ""))
+df_good2 <- as.data.frame(sapply(df_good,gsub,pattern="//fs-smb-019.ad.naturalis.nl/homedir/Marijn.Boer/Internships/Internship CNN 2017-2018/FormicID/data/top97species_Qmed_def_clean/images/dorsal/1-training/amblyopone_australis/", replacement = ""))
 df_good2 <- as.data.frame(sapply(df_good2,gsub,pattern=".jpg", replacement = ""))
 library(stringr)
 df_shot_types <- str_sub(df_good2$names, -1, -1)
@@ -287,6 +294,7 @@ h <- hist(
     xlab = "Number of pixels",
     main = "Pixel width distribution of the top 101 most imaged species"
 )
+h
 # Plotting a normal distribution over the histogram
 xfit <- seq(min(df_good$width), max(df_good$width), length = 40)
 yfit <-
