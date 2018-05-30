@@ -1,2 +1,7 @@
 *.hdf5
 *tfevents.*
+*.csv
+*.pdf
+*.png
+*.RData
+*.RHistory
