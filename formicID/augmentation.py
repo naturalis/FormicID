@@ -40,6 +40,7 @@ create_dirs([config.summary_dir, config.checkpoint_dir])
 show_dataset(
     image_dir="data/top97species_Qmed_def_clean/images",
     config=config,
-    max_img=42,
-    n_cols=6,
+    max_img=32,
+    n_cols=4,
+    # save="dataset_example.png",
 )

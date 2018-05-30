@@ -118,6 +118,7 @@ def show_dataset(
     img_list = img_list[:max_img]
     n_rows = int(ceil(max_img // n_cols))
     fig = plt.figure(figsize=(8, 8))
+    plt.tight_layout()
     max_div = n_cols * n_rows
     axes = [fig.add_subplot(n_rows, n_cols, i) for i in range(1, max_div + 1)]
     plt.setp(axes, xticks=[], yticks=[])
@@ -127,6 +128,7 @@ def show_dataset(
         img_plot = load_img(img)
         ax.imshow(img_plot)
         ax.set_title(title, size=7)
+    plt.tight_layout()
     plt.show()
     if save is not None:
         plt.savefig(save, transparent=transparent)
