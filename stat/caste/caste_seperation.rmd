@@ -1,0 +1,77 @@
+---
+title: "HDP experiments"
+author: "MarijnJABoer"
+date: "14/05/2018"
+output:
+  md_document:
+    variant: markdown_github
+    toc: true
+    fig_width: 7
+    fig_height: 6
+---
+
+```{r Setup, echo=T, message=FALSE, warning=FALSE, results='hide'}
+setwd("~/Internships/Internship CNN 2017-2018/FormicID/stat/caste")
+plot_out_name <- "Uncleaned dataset.pdf"
+library(ggplot2) # for plotting
+library(gridExtra)
+library(reshape2)
+library(cowplot)
+library(plyr)
+library(magrittr)
+```
+
+```{r}
+
+data <- read.csv("caste_seperation.csv", sep=";")
+data <- data[,c(4,5)]
+freqtable <- table(data$caste)
+castes <- c("Alate queen", "Dealate queen", "Ergatoid male", "Ergatoid queen", "Male",  "Worker")
+castes_big <- c("Queens", "Queens", "Males", "Queens", "Males", "Workers")
+df <- as.data.frame.table(freqtable)
+df$Castes <- as.factor(castes_big)
+levels(df$Var1) <- castes
+df <- melt(df)
+df$label_ypos <- c(602, 1160, 12, 1211, 642, 8457)
+df <- df[order(df$Castes),]
+head(df)
+```
+
+
+```{r}
+p <-
+    ggplot(df, aes(x = Castes,
+                    y = value,
+                    fill = Var1)) +
+    geom_bar(stat = "identity", position = "dodge") +
+    geom_text(aes(
+        x = Castes,
+        y = value,
+        label = value,
+        vjust = -0.5
+    ),
+    position = position_dodge(width = 0.9)) +
+    ggtitle("Caste distribution (clean dataset)") +
+    xlab("Caste") +
+    ylab("Count")
+p
+```
+
+```{r}
+df %>%
+    ggplot(aes(x = reorder(Var1, value),  y = value, fill = Var1))  +
+    geom_col(position = "dodge") +
+    geom_text(aes(
+        x = Var1,
+        y = value,
+        label = value,
+        vjust = -0.5
+    ),
+    position = position_dodge(width = 0.9)) +
+    ggtitle("Caste distribution (clean dataset)") +
+    xlab("Caste") +
+    ylab("Count") +
+    theme(legend.position = "none")+
+    facet_grid( ~ Castes, scales = "free_x", space = "free_x")
+```
+

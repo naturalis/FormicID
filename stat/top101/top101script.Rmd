@@ -21,6 +21,7 @@ library(imager) # for reading jpg files
 library(reshape2) # for using melt()
 library(magick) # for image conversion because jpg files are read
 library(plyr)
+library(magrittr)
 
 data_dir <- # Setting the directory that contains all the images
     "~/Internships/Internship CNN 2017-2018/FormicID/data/top97species_Qmed_def_clean"
@@ -78,6 +79,7 @@ shotcount <- melt(shotcount[(1),])
 g1 <- ggplot(shotcount, aes(x=variable, y=value, fill=variable)) + 
     geom_bar(stat="identity", position = "dodge") +
     coord_cartesian(ylim = c(3350, 3425)) +
+    scale_y_continuous(breaks=c(3350,3375,3400,3425)) +
     xlab("Shottypes") + ylab("Image count") +
     labs(title = "Shottype distribution") +
     geom_text(aes(label = value), position=position_dodge(width=0.9), vjust=1.6, color="white") +
@@ -90,17 +92,54 @@ g1 <- ggplot(shotcount, aes(x=variable, y=value, fill=variable)) +
     )
 ```
 
+```{r}
+
+data <- read.csv("caste_seperation.csv", sep=";")
+data <- data[,c(4,5)]
+freqtable <- table(data$caste)
+castes <- c("Alate queen", "Dealate queen", "Ergatoid male", "Ergatoid queen", "Male",  "Worker")
+castes_big <- c("Queens", "Queens", "Males", "Queens", "Males", "Workers")
+caste_df <- as.data.frame.table(freqtable)
+caste_df$Castes <- as.factor(castes_big)
+# levels(caste_df$Var1) <- castes
+caste_df <- melt(caste_df)
+caste_df$label_ypos <- c(602, 1160, 12, 1211, 642, 8457)
+caste_df <- caste_df[order(caste_df$Castes),]
+head(caste_df)
+```
+
+```{r}
+caste_plot <-
+    ggplot(caste_df) +
+    geom_col(aes(
+        x = reorder(Var1, value),
+        y = value,
+        fill = Var1
+    ), position = "dodge") +
+    geom_text(aes(
+        x = Var1,
+        y = value,
+        label = value,
+        vjust = -0.5
+    ),
+    position = position_dodge(width = 0.9)) +
+    ggtitle("Caste distribution (clean dataset)") +
+    xlab("Caste") +
+    ylab("Count") +
+    theme(legend.position = "none") +
+    facet_grid( ~ Castes, scales = "free_x", space = "free_x")
+```
 # Image distribution per species
 Here we can see how images are distributed per species. Within species there are 3 different shot types. p = profile, d = dorsal, and h = head view.
 
 ```{r Image-species distribution, fig.height = 9, echo = FALSE}
 g2 <-
-    ggplot(melted) + # Ploting image distribution per species per shot type
+    ggplot(melted) +
     geom_bar(aes(x = scientific_name, y = value, fill = variable),
              stat = 'identity',
              width = 0.5) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) +
-    labs(title = "Species distribition per shottype") +
+    labs(title = "Sum species images per shottype") +
     coord_flip() +
     labs(x = "Species", y = "Image count") +
     theme(
@@ -109,36 +148,98 @@ g2 <-
         # legend.title = element_text(size = 10),
         # legend.text = element_text(size = 10),
         legend.position = "top",
-        legend.background = element_rect(linetype = "solid", colour = "Black"),
+        # legend.background = element_rect(linetype = "solid", colour = "Black"),
         axis.text = element_text(size = 10)
     )  +
     scale_x_discrete(limits = (levels(melted$scientific_name))) +
-    scale_fill_discrete(name = 'Shot type',
+    scale_y_continuous(breaks = c(0,100,200,300,400,500,600)) +
+    scale_fill_discrete(name = 'Shottype',
                         labels = c('Dorsal', 'Head', 'Profile'))
 
 exampledata <- image_read("dataset_example2.png")
+```
 
-final <- ggdraw() +
+```{r}
+prefinal <- ggdraw() +
     draw_plot(g2, 0, 0, 1, 1) +
-    draw_plot(g1, 0.43, 0.06, 0.5, 0.4) +
-    draw_image(exampledata, 0.23, 0.17, scale = 0.50) +
-    draw_plot_label(c("A", "B", "C"), c(0.05, 0.47, 0.47), c(1, 0.87, 0.46), size = 15)
+    draw_image(exampledata, 0.2, -0.22, scale = 0.55) +
+    draw_plot(g1, 0.45, 0.7, 0.45, 0.2) +
+    draw_plot(caste_plot, 0.45, 0.48, 0.5, 0.25) +
+    draw_plot_label(c("A", "B", "C                  Dataset examples", "D"),
+                    c(0, 0.5, 0.25, 0.5),
+                    c(1, 0.8455, 0.5, 0.7),
+                    size = 15)
+title <-
+    ggdraw() + draw_label("Formicidae image dataset (clean)",
+                          size = 18,
+                          fontface = 'bold')
+final <- plot_grid(title,
+                   prefinal,
+                   ncol = 1,
+                   rel_heights = c(0.05, 1))
+# final
+```
 
-# title <-
-#     ggdraw() + draw_label("The dataset (cleaned)",
-#                           size = 18,
-#                           fontface = 'bold')
-# final <- plot_grid(title,
-#                    prefinal,
-#                    ncol = 1,
-#                    rel_heights = c(0.05, 1))
-final
-save_plot("species_shot_dist.pdf",
-          final,
+```{r}
+image <-  ggdraw() + draw_image(exampledata, scale = 1)
+final2 <- plot_grid(g1, caste_plot, nrow=2, labels=c("B", "C"), rel_heights = c(0.4,1))
+final3 <- ggdraw() +
+    draw_plot(g2, 0, 0, 1, 1) +
+    draw_plot(final2, x=0.42, y=0.07, width=0.585, height=0.65) +
+    draw_plot_label("A", 0, 1)
+# final3
+```
+
+
+```{r}
+
+save_plot("species_shot_dist2.pdf",
+          final3,
           base_width = 8.27,
           base_height = 11.69)
 ```
 
+```{r Image-species distribution, fig.height = 9, echo = FALSE}
+g2 <-
+    ggplot(melted) +
+    geom_bar(aes(x = scientific_name, y = value, fill = variable),
+             stat = 'identity',
+             width = 0.5) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) +
+    labs(title = "Sum species images per shottype") +
+    # coord_flip() +
+    labs(x = "Species", y = "Image count") +
+    theme(
+        # plot.title = element_text(size = 15),
+        # axis.title = element_text(size = 10),
+        # legend.title = element_text(size = 10),
+        # legend.text = element_text(size = 10),
+        legend.position = "top",
+        # legend.background = element_rect(linetype = "solid", colour = "Black"),
+        axis.text = element_text(size = 10)
+    )  +
+    scale_x_discrete(limits = (levels(melted$scientific_name))) +
+    scale_y_continuous(breaks = c(0,100,200,300,400,500,600)) +
+    scale_fill_discrete(name = 'Shottype',
+                        labels = c('Dorsal', 'Head', 'Profile'))
+
+exampledata <- image_read("dataset_example2.png")
+
+prefinal <- ggdraw() +
+    draw_plot(g2, 0, 0, 1, 1) +
+    draw_image(exampledata, -0.3, 0.12, scale = 0.55) +
+    draw_plot(g1, 0.5, 0.45, 0.35, 0.25) +
+    draw_plot_label(c("A", "C", "B                  Dataset examples"), c(0, 0.5, 0), c(1, 0.75, 0.92), size = 15)
+title <-
+    ggdraw() + draw_label("Formicidae image dataset (clean)",
+                          size = 18,
+                          fontface = 'bold')
+final <- plot_grid(title,
+                   prefinal,
+                   ncol = 1,
+                   rel_heights = c(0.05, 1))
+final
+```
 
 
 # File size distribution 
@@ -260,18 +361,24 @@ df_good_melt$width <- as.numeric(as.character(df_good_melt$width))
 df_good_melt$shot_type <- as.factor(df_good_melt$shot_type)
 df_good_small <- df_good_melt[,c(1,2,6)]
 melted_df <- melt(df_good_small)
-
+summary(melted_df)
+# keep <- "Width"
+# shotypesformean <- filter(df, 
+#                 x %in% "Width")
+# aggregate(x=shotypesformean$value,
+#           by=list(shotypesformean$shottype),
+#           FUN=mean)
 ```
 
 ## Plotting the image dimensions
 
 ```{r Image dimensions - Plotting, echo=FALSE}
 # Boxplot of the hight and width distribution
-g <- ggplot(melted_df, aes(x = variable, y = value))
-g + geom_boxplot(aes(fill = shot_type), alpha = 0.7) +
+g <- ggplot(melted_df, aes(x = variable, y = value)) + 
+    geom_boxplot(aes(fill = shot_type), alpha = 0.7) +
     scale_y_continuous(name = "Number of Pixels",
-                       breaks = seq(0, 225, 25),
-                       limits = c(0, 225)) +
+                       breaks = seq(0, 500, 25),
+                       limits = c(0, 500)) +
     scale_x_discrete(name = "Channel", labels = c('Height', 'Width')) +
     labs(title = "Boxplot of hight and width distribution",
          subtitle = "for FormicID-97") +
@@ -285,7 +392,7 @@ g + geom_boxplot(aes(fill = shot_type), alpha = 0.7) +
     ) +
     scale_fill_discrete(name = 'Shot type',
                         labels = c('dorsal', 'head', 'profile')) 
-
+g
 # histogram of distribution of the width
 h <- hist(
     df_good$width,

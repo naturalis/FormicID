@@ -136,6 +136,36 @@ pp <-
 
 ```
 
+```{r}
+evolution <- plot_grid(
+    dd + xlab(NULL) + ggtitle("Dorsal"),
+    hh + xlab(NULL) + ggtitle("Head"),
+    pp + xlab(NULL) + ggtitle("Profile"),
+    nrow = 1,
+    ncol = 3,
+    scale = 0.9
+) + #perhaps reduce this for a bit more space
+    draw_label(
+        "Epoch",
+        x = 0.5,
+        y = 0,
+        vjust = -0.5,
+        angle = 0
+    ) +
+    draw_label(
+        "Accuracy",
+        x = 0,
+        y = 0.5,
+        vjust = 1.5,
+        angle = 90
+    )
+legend <- get_legend(ddlegend)
+legend_bottom <- plot_grid(legend, ncol = 2)
+evolution_final <- plot_grid(legend_bottom, evolution, nrow=2, ncol=1,  rel_heights = c(0.1, 1))
+evolution_final
+```
+
+
 ## Creating a combined plot and saving to PDF
 
 ```{r Plotting and saving to pdf}
