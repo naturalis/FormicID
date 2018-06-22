@@ -1,5 +1,5 @@
 {
-    "exp_name": "Statia2015_CaAll_QuM_ShH_I4_test",
+    "exp_name": "Statia2015_CaAll_QuM_ShP_I4_test",
     "data_set": "statia2015_rmnh",
     "batch_size": 32,
     "dropout": 0.5,
@@ -10,5 +10,5 @@
     "seed": 1,
     "test_split": 0.1,
     "val_split": 0.2,
-    "shottype": "head"
+    "shottype": "profile"
 }
