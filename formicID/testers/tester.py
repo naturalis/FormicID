@@ -309,21 +309,26 @@ def plot_confusion_matrix(
         )
     )
     target_names = list(target_names)
-    # print(Y_pred)
-    # print(Y_true)
-    # print(len(target_names))
+    # print("Y_pred:", Y_pred)
+    # print("Y_true:", Y_true)
+    # print("len(target_names):", len(target_names))
+    v_missings = []
     for k, v in species_dict.items():
         if v in missings:
-            # Keep species in when it is predicted, but not in true label.
-            # if v not in Y_pred:
-            print("Removing species {}: {} from the dataset.".format(k, v))
-            target_names.remove(k)
-    # print(len(target_names))
-    i, = np.where(Y_pred in missings)
-
+            print("Species {}: {} has no test images anymore.".format(v, k))
+            if v not in Y_pred:
+                v_missings.append(v)
+    # print("v_missings:", v_missings)
+    # print("len(target_names):", len(target_names))
+    # i, = np.where(Y_pred in missings)
     if title is True:
         title = config.exp_name
     cm = confusion_matrix(y_pred=Y_pred, y_true=Y_true)
+    for m in v_missings:
+        cm = np.insert(cm, m, 0, axis=0)
+        cm = np.insert(cm, m, 0, axis=1)
+    # print(cm.shape)
+    # print(cm)
     cm[np.isnan(cm)] = 1
     accuracy = np.trace(cm) / float(np.sum(cm))
     misclass = 1 - accuracy

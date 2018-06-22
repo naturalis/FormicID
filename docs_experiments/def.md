@@ -184,3 +184,19 @@ __Epochs are defined as E100, but should be E200 (naming is wrong, settings are 
 # Caste distribution
 
 ![](/docs_experiments/caste_distribution.png)
+
+## No test images anymore
+### Dorsal
+- Species 3: azteca_alfari has no test images anymore.
+- Species 49: mystrium_mirror has no test images anymore.
+- Species 54: nylanderia_madagascarensis has no test images anymore.
+- Species 75: polyrhachis_dives has no test images anymore.
+- Species 86: technomyrmex_vitiensis has no test images anymore.
+
+### Head
+- Species 76: pseudomyrmex_gracilis has no test images anymore.
+
+### Profile
+- Species 47: monomorium_termitobium has no test images anymore.
+- Species 75: polyrhachis_dives has no test images anymore.
+- Species 82: strumigenys_rogeri has no test images anymore.

@@ -185,7 +185,7 @@ def build_rlrop(
     patience=10,
     verbose=1,
     mode="auto",
-    epsilon=1e-4,
+    min_delta=1e-4,
     cooldown=0,
     min_lr=0,
 ):
@@ -218,7 +218,7 @@ def build_rlrop(
         patience=patience,
         verbose=verbose,
         mode=mode,
-        epsilon=epsilon,
+        min_delta=min_delta,
         cooldown=cooldown,
         min_lr=min_lr,
     )

@@ -35,7 +35,6 @@ from testers.tester import evaluator
 from testers.tester import plot_confusion_matrix
 from testers.tester import predictor
 from testers.tester import predictor_reports
-from trainers.train import trainer_csv
 from trainers.train import trainer_dir
 from utils.load_config import process_config
 from utils.logger import build_csvl
@@ -117,7 +116,7 @@ def main():
             patience=25,
             verbose=1,
             mode="min",
-            epsilon=1e-4,
+            min_delta=1e-4,
             cooldown=0,
             min_lr=0,
         ),
@@ -154,7 +153,7 @@ def main():
     evaluator(
         model=model_formicID,
         config=config,
-        # test_dir="data/statia2015_rmnh/images/dorsal/3-test",
+        test_dir=None,
     )
 
     # Testing
@@ -167,14 +166,16 @@ def main():
         n_img=10,
         n_cols=3,
     )
-    predictor_reports(
-        Y_true=Y_true,
-        Y_pred=Y_pred,
-        config=config,
-        species_dict=species_dict,
-        target_names=labels,
-        digits=5,
-    )
+    print(Y_true)
+    print(Y_pred)
+    # predictor_reports(
+    #     Y_true=Y_true,
+    #     Y_pred=Y_pred,
+    #     config=config,
+    #     species_dict=species_dict,
+    #     target_names=labels,
+    #     digits=5,
+    # )
     # plot_confusion_matrix(
     #     Y_pred=Y_pred,
     #     Y_true=Y_true,
