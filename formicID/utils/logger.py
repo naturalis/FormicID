@@ -251,6 +251,71 @@ def build_csvl(filename, config, separator=",", append=False):
     return csvlogger
 
 
+# Logger list
+###############################################################################
+
+
+def build_logger(
+    use_mc=True, use_rlrop=True, use_es=True, use_tb=True, use_csvl=True
+):
+    logger = []
+    if use_mc is True:
+        logger.append(
+            build_mc(
+                config=config,
+                monitor="val_loss",
+                verbose=0,
+                mode="min",
+                save_best_only=True,
+                period=1,
+            )
+        )
+    if use_rlrop is True:
+        logger.append(
+            build_rlrop(
+                monitor="val_loss",
+                factor=0.1,
+                patience=25,
+                verbose=1,
+                mode="min",
+                min_delta=1e-4,
+                cooldown=0,
+                min_lr=0,
+            )
+        )
+    if use_es is True:
+        logger.append(
+            build_es(
+                monitor="val_loss",
+                min_delta=0,
+                patience=50,
+                verbose=1,
+                mode="min",
+            )
+        )
+    if use_tb is True:
+        logger.append(
+            build_tb(
+                model=model_formicID,
+                config=config,
+                histogram_freq=0,
+                write_graph=True,
+                write_images=True,
+            )
+        )
+    if use_csvl is True:
+        logger.append(
+            build_csvl(
+                filename="metricslog.csv",
+                config=config,
+                separator=",",
+                append=False,
+            )
+        )
+
+    return logger
+
+
 # Plot the history from training - Loss, accuracy, top k accuracy
 ###############################################################################
 

@@ -150,7 +150,9 @@ def predictor(
     labels = class_indices.keys()
     Y_true = classes
     # print("Classes indices from gen:", class_indices)
-    Y_pred = model.predict_generator(test_data_gen_dir, steps=nb_samples, verbose=0)
+    Y_pred = model.predict_generator(
+        test_data_gen_dir, steps=nb_samples, verbose=0
+    )
     # print('Y_true before argmax:', Y_true)
     # print('Y_pred before argmax:',Y_pred)
     # Y_true = K.argmax(to_categorical(Y_true, 5), axis=-1)

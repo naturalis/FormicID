@@ -673,10 +673,7 @@ def idg(config, target_gen="training"):
 
 
 def _generator_dir(
-    config,
-    target_gen="training",
-    shottype=None,
-    data_dir=None,
+    config, target_gen="training", shottype=None, data_dir=None
 ):
     """Generator for reading images out of directories. Can be used for a
     `training`, `validation` or `test` set. `Validation` and `test` sets will
@@ -757,6 +754,7 @@ def trainer_dir(model, config, callbacks=None):
         Keras History instance with training and validation metrics.
 
     """
+    logging.info("Training started.")
     epochs = config.num_epochs
     batch_size = config.batch_size
     train_data_gen_dir, _, _ = _generator_dir(
@@ -775,6 +773,7 @@ def trainer_dir(model, config, callbacks=None):
         validation_steps=val_samples // batch_size,
         callbacks=callbacks,
     )
+    logging.info("Training ended.")
     return history
 
 

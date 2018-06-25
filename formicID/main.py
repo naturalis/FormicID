@@ -27,8 +27,6 @@ from keras import __version__ as keras_version
 from keras import backend as K
 
 # FormicID imports
-from data_loader.data_input import split_in_directory
-from data_scraper.scrape import get_dataset
 from models.models import compile_model
 from models.models import load_model
 from testers.tester import evaluator
@@ -37,16 +35,11 @@ from testers.tester import predictor
 from testers.tester import predictor_reports
 from trainers.train import trainer_dir
 from utils.load_config import process_config
-from utils.logger import build_csvl
-from utils.logger import build_es
-from utils.logger import build_mc
-from utils.logger import build_rlrop
-from utils.logger import build_tb
+from utils.logger import build_logger
 from utils.logger import plot_history
 from utils.model_utils import weights_load
 from utils.utils import create_dirs
 from utils.utils import get_args
-from utils.utils import today_time_clean
 from utils.model_utils import save_model
 
 # Parameters and settings
@@ -99,49 +92,10 @@ def main():
         weights="experiments/T97_CaAll_QuM_ShP_AugM_D05_LR0001_E200_I4_def_clean/checkpoint/weights_76-1.83.hdf5",
     )
 
-    # Initialize logger
-    ###########################################################################
-    logger = [
-        build_mc(
-            config=config,
-            monitor="val_loss",
-            verbose=0,
-            mode="min",
-            save_best_only=True,
-            period=1,
-        ),
-        build_rlrop(
-            monitor="val_loss",
-            factor=0.1,
-            patience=25,
-            verbose=1,
-            mode="min",
-            min_delta=1e-4,
-            cooldown=0,
-            min_lr=0,
-        ),
-        build_es(
-            monitor="val_loss", min_delta=0, patience=50, verbose=1, mode="min"
-        ),
-        build_tb(
-            model=model_formicID,
-            config=config,
-            histogram_freq=0,
-            write_graph=True,
-            write_images=True,
-        ),
-        build_csvl(
-            filename="metricslog.csv",
-            config=config,
-            separator=",",
-            append=False,
-        ),
-    ]
-
     # Training in batches with iterator
     ###########################################################################
     # history = trainer_dir(
-    #     model=model_formicID, config=config, callbacks=logger
+    #     model=model_formicID, config=config, callbacks=build_logger
     # )
     # save_model(
     #     model=model_formicID, filename="final_weights.hdf5", config=config
@@ -150,11 +104,7 @@ def main():
     # Evaluation
     ###########################################################################
     # plot_history(history=history, config=config, theme="ggplot", save=None)
-    evaluator(
-        model=model_formicID,
-        config=config,
-        test_dir=None,
-    )
+    evaluator(model=model_formicID, config=config, test_dir=None)
 
     # Testing
     ###########################################################################
@@ -166,29 +116,27 @@ def main():
         n_img=10,
         n_cols=3,
     )
-    print(Y_true)
-    print(Y_pred)
-    # predictor_reports(
-    #     Y_true=Y_true,
-    #     Y_pred=Y_pred,
-    #     config=config,
-    #     species_dict=species_dict,
-    #     target_names=labels,
-    #     digits=5,
-    # )
-    # plot_confusion_matrix(
-    #     Y_pred=Y_pred,
-    #     Y_true=Y_true,
-    #     config=config,
-    #     target_names=labels,
-    #     species_dict=species_dict,
-    #     title=None,
-    #     cmap="viridis",
-    #     normalize=True,
-    #     scores=True,
-    #     score_size=8,
-    #     save="confusion_matrix_test.png",
-    # )
+    predictor_reports(
+        Y_true=Y_true,
+        Y_pred=Y_pred,
+        config=config,
+        species_dict=species_dict,
+        target_names=labels,
+        digits=5,
+    )
+    plot_confusion_matrix(
+        Y_pred=Y_pred,
+        Y_true=Y_true,
+        config=config,
+        target_names=labels,
+        species_dict=species_dict,
+        title=None,
+        cmap="viridis",
+        normalize=True,
+        scores=True,
+        score_size=8,
+        save="confusion_matrix.png",
+    )
     # Footer
     ###########################################################################
     K.clear_session()

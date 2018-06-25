@@ -9,9 +9,9 @@
 #                                AntWeb to json                               #
 ###############################################################################
 """Description:
-This script requires the use of an csv file with 2 columns, filled with a genus
-and a species name. The script will go over the csv file and download a json
-file for this genus+species and places the JSON file in a folder.
+These functions are for accessing the AntWeb servers, using the API version 2.
+It is possible to download the a most imaged species list and the all specimen
+information for these species stored in json files.
 """
 # Packages
 ###############################################################################
@@ -41,6 +41,15 @@ from tqdm import tqdm
 
 
 def _get_species_name_from_line(htmlline):
+    """Inside a htmlline, return the genus and species name of a specimen.
+
+    Args:
+        htmlline (str): A string of html, should be from AntWeb.
+
+    Returns:
+        str: Genus and species
+
+    """
     a = "?genus="
     b = "&species="
     genus = htmlline.split(a)[-1].split(b)[0]
@@ -50,10 +59,19 @@ def _get_species_name_from_line(htmlline):
     return genus, species
 
 
-# <div class="list_extras images"><a href="https://www.antweb.org/images.do?genus=acanthognathus&amp;species=rudis&amp;rank=species&amp;project=allantwebants"><span class="numbers">4</span> Images</a></div>
-
-
 def _get_relevant_lines_from_html(url, min_images):
+    """From the AntWeb html code get lines with relevant code for most imaged
+    species extraction. Relevant lines are those containing the string:
+    "list_extras images" and with images over `min_images`.
+
+    Args:
+        url (str): An url, should be from AntWeb.org.
+        min_images (int): Defines the minimum number of images per species to
+            download.
+    Returns:
+        list: A list of strings; html lines.
+
+    """
     htmldata = requests.get(url)
     htmldata.text
     lines = []
@@ -73,12 +91,24 @@ def _get_relevant_lines_from_html(url, min_images):
 
 
 def most_imaged_species_to_csv(output, min_images=100):
+    """This function works, problem is that some specimens have lots of
+    close-up pictures, e.g. for genetelia (see
+    https://www.antweb.org/specimenImages.do?name=antweb1008499). These
+    specimens show much more images than the standard 3 (dorsal, head,
+    profile) and therefore the list will be wrong. I have yet to find a good
+    function to get a most imaged species list.
+
+    Args:
+        output (str): the path or name the output csv file.
+        min_images (int): Defines the minimum number of images per species to
+            download. Defaults to 100.
+
+    Returns:
+        csv file with genus and species names in 2 columns
+
+
     """
-    these scripts work, problem is that some specimens have lots of close-up pictures, e.g. for genetelia (see https://www.antweb.org/specimenImages.do?name=antweb1008499&project=allantwebants)
-    """
-    url = (
-        "https://www.antweb.org/taxonomicPage.do?rank=species&project=allantwebants&statusSetSize=max&statusSet=valid%20extant&statusSet=typed"
-    )
+    url = "https://www.antweb.org/taxonomicPage.do?rank=species&project=allantwebants&statusSetSize=max&statusSet=valid%20extant&statusSet=typed"
     relevant_lines = _get_relevant_lines_from_html(url, min_images)
     # print(relevant_lines)
     rows = []
