@@ -24,10 +24,14 @@ import os
 import re
 from urllib.error import HTTPError
 from urllib.request import urlretrieve
+import sys
+from PIL import Image
+from itertools import islice, chain
 
 # Data tools imports
 import csv
 import pandas as pd
+import numpy as np
 
 # Additional project imports
 import requests
@@ -106,7 +110,13 @@ def _csv_update(dataset, csvfile):
 
 
 def image_scraper(
-    csvfile, dataset, shottypes="hdp", start=None, end=None, update=False
+    csvfile,
+    dataset,
+    shottypes="dhp",
+    start=None,
+    end=None,
+    update=False,
+    multi_view=False,
 ):
     """This function scrapes images of urls found in the csv file that is made
     with the download_to_csv function. It will check if files already exist.
@@ -115,11 +125,12 @@ def image_scraper(
     Args:
         csvfile (str): Name of the csvfile in the `data` folder.
         dataset (str): Name of the dataset (directory).
-        shottypes (str): One, two or all of `h`, `d`, `p`. Defaults to `hdp`.
+        shottypes (str): One, two or all of `h`, `d`, `p`. Defaults to `dhp`.
         start (int): Set the starting row for downloading. Defaults to `None`.
         end (int): Set the end row for downloading. Defaults to `None`.
         update (bool): If [default=True]; the csv_update() function will be
             called. Defaults to `False`.
+        # TODO: multi_view
 
     """
     csvfile = os.path.join("data", dataset, csvfile)
@@ -134,19 +145,30 @@ def image_scraper(
     logging.info("Checking Folders...")
     if not os.path.exists(os.path.join("data", dataset, "images")):
         os.mkdir(os.path.join("data", dataset, "images"))
+    if multi_view is False:
         if "h" in shottypes:
-            os.mkdir(os.path.join("data", dataset, "images", "head"))
+            if not os.path.exists(
+                os.path.join("data", dataset, "images", "head")
+            ):
+                os.mkdir(os.path.join("data", dataset, "images", "head"))
         if "d" in shottypes:
-            os.mkdir(os.path.join("data", dataset, "images", "dorsal"))
+            if not os.path.exists(
+                os.path.join("data", dataset, "images", "dorsal")
+            ):
+                os.mkdir(os.path.join("data", dataset, "images", "dorsal"))
         if "p" in shottypes:
-            os.mkdir(os.path.join("data", dataset, "images", "profile"))
-        logging.info("Folders are created")
-    if os.path.exists(os.path.join("data", dataset, "images", "head")):
-        dir_h = os.path.join("data", dataset, "images", "head")
-    if os.path.exists(os.path.join("data", dataset, "images", "profile")):
-        dir_p = os.path.join("data", dataset, "images", "profile")
-    if os.path.exists(os.path.join("data", dataset, "images", "dorsal")):
-        dir_d = os.path.join("data", dataset, "images", "dorsal")
+            if not os.path.exists(
+                os.path.join("data", dataset, "images", "profile")
+            ):
+                os.mkdir(os.path.join("data", dataset, "images", "profile"))
+    if multi_view is True:
+        if not os.path.exists(os.path.join("data", dataset, "images", "dhp")):
+            os.mkdir(os.path.join("data", dataset, "images", "dhp"))
+    logging.info("Folders are created")
+    dir_d = os.path.join("data", dataset, "images", "dorsal")
+    dir_h = os.path.join("data", dataset, "images", "head")
+    dir_p = os.path.join("data", dataset, "images", "profile")
+    dir_dhp = os.path.join("data", dataset, "images", "dhp")
     nb_rows = sum(1 for line in open(csvfile))
     logging.info("The csv file contains {} images.".format(nb_rows))
     if end == None:
@@ -154,6 +176,7 @@ def image_scraper(
     if start == None:
         start = 0
     nb_images = end - start
+    logging.info("Downloading has started.")
     with open(csvfile, "rt") as images:
         imagereader = csv.reader(itertools.islice(images, start, end + 1))
         logging.info("Starting to scrape {} images...".format(nb_images))
@@ -166,73 +189,187 @@ def image_scraper(
             if image[3] != "image_url":  # Don't scrape the header line
                 # Create a folder for the species in a shot type folder if it
                 # does not exist already, then download the image.
-                if "h" in shottypes.lower():
-                    if image[2] == "h":
-                        if not os.path.exists(os.path.join(dir_h, image[1])):
-                            os.mkdir(os.path.join(dir_h, image[1]))
-                        filename = os.path.join(
-                            dir_h,
-                            image[1],
-                            "{}_{}_{}.jpg".format(
-                                image[1], image[0], image[2]
-                            ),
-                        )
-                        try:
-                            if not os.path.isfile(filename):
-                                urlretrieve(url=image[3], filename=filename)
-                            else:
-                                continue
+                if multi_view is True:
+                    if not os.path.exists(os.path.join(dir_dhp, image[1])):
+                        os.mkdir(os.path.join(dir_dhp, image[1]))
+                    filename = os.path.join(
+                        dir_dhp,
+                        image[1],
+                        "{}_{}_{}.jpg".format(image[1], image[0], image[2]),
+                    )
+                    try:
+                        if not os.path.isfile(filename):
+                            urlretrieve(url=image[3], filename=filename)
+                        else:
+                            continue
 
-                        except HTTPError as err:
-                            if err.code == 404:
-                                logging.error("Error 404: {}".format(image[3]))
-                                continue
+                    except HTTPError as err:
+                        if err.code == 404:
+                            logging.error("Error 404: {}".format(image[3]))
+                            continue
+                if multi_view is False:
+                    if "h" in shottypes.lower():
+                        if image[2] == "h":
+                            if not os.path.exists(
+                                os.path.join(dir_h, image[1])
+                            ):
+                                os.mkdir(os.path.join(dir_h, image[1]))
+                            filename = os.path.join(
+                                dir_h,
+                                image[1],
+                                "{}_{}_{}.jpg".format(
+                                    image[1], image[0], image[2]
+                                ),
+                            )
+                            try:
+                                if not os.path.isfile(filename):
+                                    urlretrieve(
+                                        url=image[3], filename=filename
+                                    )
+                                else:
+                                    continue
 
-                if "d" in shottypes.lower():
-                    if image[2] == "d":
-                        if not os.path.exists(os.path.join(dir_d, image[1])):
-                            os.mkdir(os.path.join(dir_d, image[1]))
-                        filename = os.path.join(
-                            dir_d,
-                            image[1],
-                            "{}_{}_{}.jpg".format(
-                                image[1], image[0], image[2]
-                            ),
-                        )
-                        try:
-                            if not os.path.isfile(filename):
-                                urlretrieve(url=image[3], filename=filename)
-                            else:
-                                continue
+                            except HTTPError as err:
+                                if err.code == 404:
+                                    logging.error(
+                                        "Error 404: {}".format(image[3])
+                                    )
+                                    continue
 
-                        except HTTPError as err:
-                            if err.code == 404:
-                                logging.error("Error 404: {}".format(image[3]))
-                                continue
+                    if "d" in shottypes.lower():
+                        if image[2] == "d":
+                            if not os.path.exists(
+                                os.path.join(dir_d, image[1])
+                            ):
+                                os.mkdir(os.path.join(dir_d, image[1]))
+                            filename = os.path.join(
+                                dir_d,
+                                image[1],
+                                "{}_{}_{}.jpg".format(
+                                    image[1], image[0], image[2]
+                                ),
+                            )
+                            try:
+                                if not os.path.isfile(filename):
+                                    urlretrieve(
+                                        url=image[3], filename=filename
+                                    )
+                                else:
+                                    continue
 
-                if "p" in shottypes.lower():
-                    if image[2] == "p":
-                        if not os.path.exists(os.path.join(dir_p, image[1])):
-                            os.mkdir(os.path.join(dir_p, image[1]))
-                        filename = os.path.join(
-                            dir_p,
-                            image[1],
-                            "{}_{}_{}.jpg".format(
-                                image[1], image[0], image[2]
-                            ),
-                        )
-                        try:
-                            if not os.path.isfile(filename):
-                                urlretrieve(url=image[3], filename=filename)
-                            else:
-                                continue
+                            except HTTPError as err:
+                                if err.code == 404:
+                                    logging.error(
+                                        "Error 404: {}".format(image[3])
+                                    )
+                                    continue
 
-                        except HTTPError as err:
-                            if err.code == 404:
-                                logging.error("Error 404: {}".format(image[3]))
-                                continue
+                    if "p" in shottypes.lower():
+                        if image[2] == "p":
+                            if not os.path.exists(
+                                os.path.join(dir_p, image[1])
+                            ):
+                                os.mkdir(os.path.join(dir_p, image[1]))
+                            filename = os.path.join(
+                                dir_p,
+                                image[1],
+                                "{}_{}_{}.jpg".format(
+                                    image[1], image[0], image[2]
+                                ),
+                            )
+                            try:
+                                if not os.path.isfile(filename):
+                                    urlretrieve(
+                                        url=image[3], filename=filename
+                                    )
+                                else:
+                                    continue
 
+                            except HTTPError as err:
+                                if err.code == 404:
+                                    logging.error(
+                                        "Error 404: {}".format(image[3])
+                                    )
+                                    continue
+    logging.info("Downloading has ended.")
     logging.info("{} images were downloaded.".format(nb_images))
+
+
+def stitch_images(image_one, image_two, image_three, output_name):
+    """Short summary.
+
+    Args:
+        image_one (type): Description of parameter `image_one`.
+        image_two (type): Description of parameter `image_two`.
+        image_three (type): Description of parameter `image_three`.
+        output_name (type): Description of parameter `output_name`.
+
+    Returns:
+        type: Description of returned object.
+
+    """
+    list_im = [image_one, image_two, image_three]
+    imgs = [Image.open(i) for i in list_im]
+    min_shape = sorted( [(np.sum(i.size), i.size ) for i in imgs])[0][1]
+    imgs_comb = np.hstack( (np.asarray( i.resize(min_shape) ) for i in imgs ) )
+    imgs_comb = Image.fromarray( imgs_comb)
+    imgs_comb.save(output_name)
+
+
+def batch(iterable, size):
+    """Short summary.
+
+    Args:
+        iterable (type): Description of parameter `iterable`.
+        size (type): Description of parameter `size`.
+
+    Returns:
+        type: Description of returned object.
+
+    """
+    sourceiter = iter(iterable)
+    while True:
+        batchiter = islice(sourceiter, size)
+        yield list(chain([next(batchiter)], batchiter))
+
+
+def stitch_maker(config):
+    """Short summary.
+
+    Args:
+        config (type): Description of parameter `config`.
+
+    Returns:
+        type: Description of returned object.
+
+    """
+    dataset = config.data_set
+    dir_dhp = os.path.join("data", dataset, "images", "dhp")
+    if not os.path.exists(os.path.join("data", dataset, "images", "stitched")):
+        os.mkdir(os.path.join("data", dataset, "images", "stitched"))
+    stitched = os.path.join("data", dataset, "images", "stitched")
+    for species in tqdm(os.listdir(dir_dhp), desc="Stitching species"):
+        if not os.path.exists(os.path.join(stitched, species)):
+            os.makedirs(os.path.join(stitched, species))
+        images = os.listdir(os.path.join(dir_dhp, species))
+        for image in batch(images, 3):
+            identifier1 = os.path.split(image[0])[1].split("_")[2]
+            identifier2 = os.path.split(image[1])[1].split("_")[2]
+            identifier3 = os.path.split(image[2])[1].split("_")[2]
+            if identifier1 == identifier2 == identifier3:
+                genus = os.path.split(image[0])[1].split("_")[0]
+                species_name = os.path.split(image[0])[1].split("_")[1]
+                fname = os.path.join(
+                    stitched,
+                    species,
+                    "{}_{}_{}_stitched.jpg".format(
+                        identifier1, genus, species_name
+                    ),
+                )
+                image_one = os.path.join(dir_dhp, species, image[0])
+                image_two = os.path.join(dir_dhp, species, image[1])
+                image_three = os.path.join(dir_dhp, species, image[2])
+                stitch_images(image_one, image_two, image_three, fname)
 
 
 # Getting the dataset - final function
@@ -243,12 +380,12 @@ def get_dataset(
     input,
     n_jsonfiles,
     config,
-    shottypes="hdp",
+    shottypes="dhp",
     quality="low",
     update=True,
     offset_set=0,
     limit_set=9999,
-    multi_only=False
+    multi_only=False,
 ):
     """This function combines all the functions for downloading the dataset.
 
@@ -292,6 +429,7 @@ def get_dataset(
         # start=0,
         # end=1491,
         update=update,
+        multi_view=multi_only,
     )
     image_path_csv(config=config)
     logging.info("The dataset is created.")

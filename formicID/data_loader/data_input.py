@@ -188,13 +188,11 @@ def split_in_directory(config, bad=None):
         random.shuffle(shuffled)
         num1 = round(len(shuffled) * test_split)
         num2 = round(len(shuffled) * val_split)
-        # fmt: off
         to_test, to_val, to_train = (
             shuffled[:num1],
             shuffled[num1:num2],
             shuffled[num2:],
         )
-        # fmt: on
         for image in os.listdir(os.path.join(input_dir, species)):
             if image.endswith(".jpg"):
                 for img in to_test:

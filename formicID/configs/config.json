@@ -1,14 +1,14 @@
 {
-    "exp_name": "Multi_test",
+    "exp_name": "T97_CaAll_QuM_ShAll_AugM_D05_LR0001_E200_I4_def_clean",
     "data_set": "top97species_Qmed_def_clean_multi",
     "batch_size": 32,
     "dropout": 0.5,
     "learning_rate": 0.001,
     "model": "InceptionResNetV2",
-    "num_epochs": 5,
+    "num_epochs": 200,
     "optimizer": "Nadam",
     "seed": 1,
     "test_split": 0.1,
     "val_split": 0.2,
-    "shottype": "head"
+    "shottype": "stitched"
 }

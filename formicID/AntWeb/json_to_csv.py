@@ -90,7 +90,7 @@ def _filter_json(json_file, quality, multi_only):
             scientific_name = row[1]
             image_url = {}
             if multi_only is True:
-                if ("d" in row[2] and "h" in row[2] and "p" in row[2]):
+                if "d" in row[2] and "h" in row[2] and "p" in row[2]:
                     image_url["d"] = row[2]["d"]["img"][qlty]
                     image_url["h"] = row[2]["h"]["img"][qlty]
                     image_url["p"] = row[2]["p"]["img"][qlty]
@@ -118,7 +118,12 @@ def _filter_json(json_file, quality, multi_only):
 
 
 def batch_json_to_csv(
-    csvname, dataset, quality="low", output_dir=None, overwrite=False, multi_only=False
+    csvname,
+    dataset,
+    quality="low",
+    output_dir=None,
+    overwrite=False,
+    multi_only=False,
 ):
     """Creates a csvfile, from a batch of json files, filling it with all the
     relevant information for downloading images and naming the files.

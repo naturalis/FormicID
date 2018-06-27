@@ -94,16 +94,16 @@ def main():
 
     # Training in batches with iterator
     ###########################################################################
-    # history = trainer_dir(
-    #     model=model_formicID, config=config, callbacks=build_logger
-    # )
-    # save_model(
-    #     model=model_formicID, filename="final_weights.hdf5", config=config
-    # )
+    history = trainer_dir(
+        model=model_formicID, config=config, callbacks=build_logger
+    )
+    save_model(
+        model=model_formicID, filename="final_weights.hdf5", config=config
+    )
 
     # Evaluation
     ###########################################################################
-    # plot_history(history=history, config=config, theme="ggplot", save=None)
+    plot_history(history=history, config=config, theme="ggplot", save=None)
     evaluator(model=model_formicID, config=config, test_dir=None)
 
     # Testing
