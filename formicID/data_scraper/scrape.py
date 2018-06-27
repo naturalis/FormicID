@@ -248,6 +248,7 @@ def get_dataset(
     update=True,
     offset_set=0,
     limit_set=9999,
+    multi_only=False
 ):
     """This function combines all the functions for downloading the dataset.
 
@@ -282,6 +283,7 @@ def get_dataset(
         output_dir=dataset_name,
         quality=quality,
         csvname="image_urls.csv",
+        multi_only=multi_only,
     )
     image_scraper(
         csvfile="image_urls.csv",

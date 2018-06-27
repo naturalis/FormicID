@@ -37,7 +37,7 @@ from utils.utils import today_time_clean
 ###############################################################################
 
 
-def _filter_json(json_file, quality):
+def _filter_json(json_file, quality, multi_only):
     """Load a JSON object and filter for only relevant values using a set
     quality for images.
 
@@ -49,6 +49,7 @@ def _filter_json(json_file, quality):
             needs to be set when filtering the JSON file. Set the quility to
             either one of (from highest quality to lowest): `high`,
             `thumbview`, `medium`, `low`. Defaults to `low`.
+        multi_only (bool): Set this to True if you want a dataset with specimens that hold all three of head, dorsal and profile shotviews.
 
     Returns:
         list: A list of
@@ -88,12 +89,19 @@ def _filter_json(json_file, quality):
             catalog_number = row[0]
             scientific_name = row[1]
             image_url = {}
-            if "h" in row[2]:
-                image_url["h"] = row[2]["h"]["img"][qlty]
-            if "p" in row[2]:
-                image_url["p"] = row[2]["p"]["img"][qlty]
-            if "d" in row[2]:
-                image_url["d"] = row[2]["d"]["img"][qlty]
+            if multi_only is True:
+                if ("d" in row[2] and "h" in row[2] and "p" in row[2]):
+                    image_url["d"] = row[2]["d"]["img"][qlty]
+                    image_url["h"] = row[2]["h"]["img"][qlty]
+                    image_url["p"] = row[2]["p"]["img"][qlty]
+            if multi_only is False:
+                if "d" in row[2]:
+                    image_url["d"] = row[2]["d"]["img"][qlty]
+                if "h" in row[2]:
+                    image_url["h"] = row[2]["h"]["img"][qlty]
+                if "p" in row[2]:
+                    image_url["p"] = row[2]["p"]["img"][qlty]
+
             for key in image_url:
                 new_row = [
                     catalog_number,
@@ -110,10 +118,10 @@ def _filter_json(json_file, quality):
 
 
 def batch_json_to_csv(
-    csvname, dataset, quality="low", output_dir=None, overwrite=False
+    csvname, dataset, quality="low", output_dir=None, overwrite=False, multi_only=False
 ):
-    """From a json file or batch of json files a csvfile is created with
-    relevant information for downloading the images and naming the files.
+    """Creates a csvfile, from a batch of json files, filling it with all the
+    relevant information for downloading images and naming the files.
 
     Args:
         csvname (str): Name of the output csv file.
@@ -125,9 +133,11 @@ def batch_json_to_csv(
             `thumbview`, `medium`, `low`. Defaults to `low`.
         output_dir (str): name of the output directory. Defaults to `None`. If
             `None`, the images will be placed in an `image` subfolder in the
-            dataset directory.
+            dataset directory. Defaults to `None`.
         overwrite (bool): Whether to overwrite the csv file with (new) json
-            data, if the csv file already exists.
+            data, if the csv file already exists. If set to `False`, the
+            function will not create a csvfile if there already is one.
+            Defaults to `False`.
 
     Returns:
         file: A csv file containing the necesarry information for the scrape
@@ -175,7 +185,7 @@ def batch_json_to_csv(
         ):
             if filename.endswith(".json"):
                 with open(os.path.join(input_direc, filename)) as data_file:
-                    lst = _filter_json(data_file, quality=quality)
+                    lst = _filter_json(data_file, quality, multi_only)
                     df = pd.DataFrame(lst, columns=columns)
                     df2 = df2.append(df)
         # replace spaces between genus and species names with underscores
