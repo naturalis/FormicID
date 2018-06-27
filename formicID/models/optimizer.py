@@ -10,120 +10,144 @@
 ###############################################################################
 """From here the optimizer Eve can be loaded.
 
-This implementation is adjusted from:
-https://github.com/tdeboissiere/DeepLearningImplementations/tree/master/Eve
+Which is an implementation from:
 
-Which is an implementation from the original:
 Paper
 https://arxiv.org/pdf/1611.01505v1.pdf
 
-Original
-https://github.com/jayanthkoushik/sgd-feedback/blob/master/src/eve.py
+Code
+https://github.com/rooa/eve
 """
 
 # Packages
 ###############################################################################
 
-# Deeplearning tools imports
+import numpy as np
+
 import keras.backend as K
 from keras.optimizers import Optimizer
+
+from eve.optim.utils import fmin_pos_floatx
 
 
 # Eve
 ###############################################################################
 
 
+def fmin_pos(dtype):
+    """Return the smallest positive number representable
+    in the given data type.
+    Arguments:
+        dtype: a numpy datatype like "float32", "float64" etc.
+    """
+    return np.nextafter(np.cast[dtype](0), np.cast[dtype](1))
+
+
+def fmin_pos_floatx():
+    """Return the smallest positive number representable
+    using the Keras floatX data type.
+    """
+    return fmin_pos(K.floatx())
+
+
 class Eve(Optimizer):
-    """Eve optimizer. Default parameters follow those provided in the original
-    paper. See page description for more information.
 
-    Args:
-        lr: float >= 0. Learning rate.
-        beta_1: floats, 0 < beta < 1. Generally close to 1.
-        beta_2: floats, 0 < beta < 1. Generally close to 1.
-        beta_3: floats, 0 < beta < 1. Generally close to 1.
-        small_k: floats
-        big_K: floats
-        epsilon: float >= 0. Fuzz factor.
-
+    """Eve optimizer.
+    Arguments:
+        lr: float > 0. Learning rate.
+        beta_1: float in (0, 1). Decay rate for first moment estimate.
+        beta_2: float in (0, 1). Decay rate for second moment estimate.
+        beta_3: float in (0, 1). Decay rate for Eve coefficient.
+        c: float > 0. Clipping parameter for Eve.
+        epsilon: float > 0. Fuzz factor.
+        decay: float > 0. Learning rate linear decay rate.
+        loss_min: float. Minimum of the loss function.
     """
 
     def __init__(
         self,
-        lr=0.0001,
+        lr=0.001,
         beta_1=0.9,
         beta_2=0.999,
         beta_3=0.999,
-        small_k=0.1,
-        big_K=10,
+        c=10.,
         epsilon=1e-8,
-        decay=0.0001,
-        **kwargs,
+        decay=0.,
+        loss_min=0.,
+        **kwargs
     ):
         super(Eve, self).__init__(**kwargs)
-        # self.__dict__.update(locals())
-        with K.name_scope(self.__class__.__name__):
-            self.iterations = K.variable(0, dtype="int64", name="iterations")
-            self.lr = K.variable(lr, name="lr")
-            self.beta_1 = K.variable(beta_1, name="beta_1")
-            self.beta_2 = K.variable(beta_2, name="beta_2")
-            self.beta_3 = K.variable(beta_3, name="beta_3")
-            self.small_k = K.variable(small_k, name="small_k")
-            self.big_K = K.variable(big_K, name="big_K")
-            self.decay = K.variable(decay, name="decay")
-        if epsilon is None:
-            epsilon = K.epsilon()
-        self.epsilon = epsilon
-        self.initial_decay = decay
+        self.iterations = K.variable(0)
+        self.lr = K.variable(lr)
+        self.beta_1 = K.variable(beta_1)
+        self.beta_2 = K.variable(beta_2)
+        self.beta_3 = K.variable(beta_3)
+        self.c = c  # K.variable(c)
+        self.epsilon = K.variable(epsilon)
+        self.decay = K.variable(decay)
+        self.loss_min = K.variable(loss_min)
+        self.fmin_pos = K.variable(fmin_pos_floatx())
+        self.d_num = K.variable(0)
+        self.d_den = K.variable(0)
+        self.d = K.variable(0)
+        self.lr_eff = K.variable(0)
 
-    def get_updates(self, loss, params):
+    def get_updates(self, params, constraints, loss):
         grads = self.get_gradients(loss, params)
+
         self.updates = [K.update_add(self.iterations, 1)]
-        lr = self.lr
-        if self.initial_decay > 0:
-            lr = lr * (
-                1.
-                / (
-                    1.
-                    + self.decay * K.cast(self.iterations, K.dtype(self.decay))
-                )
-            )
-        t = K.cast(self.iterations, K.floatx()) + 1
-        lr_t = lr * (
-            K.sqrt(1. - K.pow(self.beta_2, t)) / (1. - K.pow(self.beta_1, t))
-        )
-        shapes = [K.int_shape(p) for p in params]
+        t = self.iterations + 1
+
+        shapes = [K.get_variable_shape(p) for p in params]
         ms = [K.zeros(shape) for shape in shapes]
         vs = [K.zeros(shape) for shape in shapes]
-        f = K.variable(0)
-        d = K.variable(0)
-        self.weights = [self.iterations] + ms + vs + [f, d]
-        cond = K.greater(t, K.variable(1))
-        small_delta_t = K.switch(
-            K.greater(loss, f), self.small_k + 1, 1. / (self.big_K + 1)
+
+        loss_prev = K.variable(0)
+        self.updates.append(K.update(loss_prev, loss))
+
+        # Calculate the numerator of the Eve coefficient
+        d_num_t = K.abs(loss_prev - loss)
+        self.updates.append(K.update(self.d_num, d_num_t))
+
+        # Calculate the denominator of the Eve coefficient
+        d_den_t = K.abs(K.minimum(loss_prev, loss) - self.loss_min)
+        self.updates.append(K.update(self.d_den, d_den_t))
+
+        # Calculate the Eve coefficient. At the first iteration, it is 1.
+        d_tilde_t = K.clip(
+            (d_num_t + self.fmin_pos) / (d_den_t + self.fmin_pos),
+            1. / self.c,
+            self.c,
         )
-        big_delta_t = K.switch(
-            K.greater(loss, f), self.big_K + 1, 1. / (self.small_k + 1)
+        d_t = (self.beta_3 * self.d) + (1. - self.beta_3) * d_tilde_t
+        d_t = K.switch(K.greater(t, 1), d_t, K.constant(1))
+        self.updates.append(K.update(self.d, d_t))
+
+        # Calculate the effective learning rate as lr / (d * decay)
+        lr_eff_t = self.lr / (d_t * (1. + (self.iterations * self.decay)))
+        self.updates.append(K.update(self.lr_eff, lr_eff_t))
+
+        # Apply bias correction to the learning rate
+        lr_hat_t = (
+            lr_eff_t
+            * K.sqrt(1. - K.pow(self.beta_2, t))
+            / (1. - K.pow(self.beta_1, t))
         )
-        c_t = K.minimum(
-            K.maximum(small_delta_t, loss / (f + self.epsilon)), big_delta_t
-        )
-        f_t = c_t * f
-        r_t = K.abs(f_t - f) / (K.minimum(f_t, f))
-        d_t = self.beta_3 * d + (1 - self.beta_3) * r_t
-        f_t = K.switch(cond, f_t, loss)
-        d_t = K.switch(cond, d_t, K.variable(1.))
-        self.updates.append(K.update(f, f_t))
-        self.updates.append(K.update(d, d_t))
+
+        # Update per parameter
         for p, g, m, v in zip(params, grads, ms, vs):
             m_t = (self.beta_1 * m) + (1. - self.beta_1) * g
-            v_t = (self.beta_2 * v) + (1. - self.beta_2) * K.square(g)
-            p_t = p - lr_t * m_t / (d_t * K.sqrt(v_t) + self.epsilon)
             self.updates.append(K.update(m, m_t))
+
+            v_t = (self.beta_2 * v) + (1. - self.beta_2) * K.square(g)
             self.updates.append(K.update(v, v_t))
+
+            p_t = p - lr_hat_t * m_t / (K.sqrt(v_t) + self.epsilon)
             new_p = p_t
-            if getattr(p, "constraint", None) is not None:
-                new_p = p.constraint(new_p)
+            # Apply constraints
+            if p in constraints:
+                c = constraints[p]
+                new_p = c(new_p)
             self.updates.append(K.update(p, new_p))
         return self.updates
 
@@ -133,9 +157,10 @@ class Eve(Optimizer):
             "beta_1": float(K.get_value(self.beta_1)),
             "beta_2": float(K.get_value(self.beta_2)),
             "beta_3": float(K.get_value(self.beta_3)),
-            "small_k": float(K.get_value(self.small_k)),
-            "big_K": float(K.get_value(self.big_K)),
+            "c": float(K.get_value(self.c)),
             "epsilon": float(K.get_value(self.epsilon)),
+            "decay": float(K.get_value(self.decay)),
+            "loss_min": float(K.get_value(self.loss_min)),
         }
         base_config = super(Eve, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
