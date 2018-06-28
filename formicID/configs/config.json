@@ -1,5 +1,5 @@
 {
-    "exp_name": "T97_CaAll_QuM_ShSti_AugM_D05_LR0001_E200_I4_def_clean",
+    "exp_name": "T97_CaAll_QuM_ShSti_AugM_D05_LR0001_E200_I4_def_clean_best",
     "data_set": "top97species_Qmed_def_clean_multi",
     "batch_size": 32,
     "dropout": 0.5,

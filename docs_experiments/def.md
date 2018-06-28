@@ -159,8 +159,6 @@ __Epochs are defined as E100, but should be E200 (naming is wrong, settings are 
 ![](/docs_experiments/CM-T97_CaAll_QuM_ShP_AugM_D05_LR0001_E200_I4_def.png)
 
 
-# Profile
-
 ## Experiment profile clean
 `T97_CaAll_QuM_ShP_AugM_D05_LR0001_E200_I4_def_clean`
 
@@ -200,3 +198,21 @@ __Epochs are defined as E100, but should be E200 (naming is wrong, settings are 
 - Species 47: monomorium_termitobium has no test images anymore.
 - Species 75: polyrhachis_dives has no test images anymore.
 - Species 82: strumigenys_rogeri has no test images anymore.
+
+
+# Multiview - stitched
+
+## Experiment
+`T97_CaAll_QuM_ShSti_AugM_D05_LR0001_E200_I4_def_clean`
+
+### Training
+- Epoch 00050: ReduceLROnPlateau reducing learning rate to `0.00010000000474974513`.
+- Epoch 00080: ReduceLROnPlateau reducing learning rate to `1.0000000474974514e-05`.
+- Epoch 00105: ReduceLROnPlateau reducing learning rate to `1.0000000656873453e-06`.
+- Epoch 00105: early stopping
+
+### Training graph
+![](/docs_experiments/T97_CaAll_QuM_ShSti_AugM_D05_LR0001_E200_I4_def_clean.png)
+
+### Confusion matrix
+![](/docs_experiments/CM-T97_CaAll_QuM_ShSti_AugM_D05_LR0001_E200_I4_def_clean.png)
