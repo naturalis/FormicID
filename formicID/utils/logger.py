@@ -256,7 +256,13 @@ def build_csvl(filename, config, separator=",", append=False):
 
 
 def build_logger(
-    use_mc=True, use_rlrop=True, use_es=True, use_tb=True, use_csvl=True
+    config,
+    model,
+    use_mc=True,
+    use_rlrop=True,
+    use_es=True,
+    use_tb=True,
+    use_csvl=True,
 ):
     logger = []
     if use_mc is True:
@@ -296,7 +302,7 @@ def build_logger(
     if use_tb is True:
         logger.append(
             build_tb(
-                model=model_formicID,
+                model=model,
                 config=config,
                 histogram_freq=0,
                 write_graph=True,

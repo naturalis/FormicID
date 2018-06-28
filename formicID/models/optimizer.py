@@ -27,9 +27,6 @@ import numpy as np
 import keras.backend as K
 from keras.optimizers import Optimizer
 
-from eve.optim.utils import fmin_pos_floatx
-
-
 # Eve
 ###############################################################################
 

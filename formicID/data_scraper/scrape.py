@@ -296,35 +296,39 @@ def image_scraper(
 
 
 def stitch_images(image_one, image_two, image_three, output_name):
-    """Short summary.
+    """Stitching 3 images together, based on the image that is highest. It
+    creates black bands underneath the images if the image is less in height.
 
     Args:
-        image_one (type): Description of parameter `image_one`.
-        image_two (type): Description of parameter `image_two`.
-        image_three (type): Description of parameter `image_three`.
-        output_name (type): Description of parameter `output_name`.
-
-    Returns:
-        type: Description of returned object.
+        image_one (str): Path to the first image, usually dorsal.
+        image_two (str): Path to the second image, usually head.
+        image_three (str): Path to the third image, usually profile.
+        output_name (str): Give the output name to the stitched image.
 
     """
     list_im = [image_one, image_two, image_three]
-    imgs = [Image.open(i) for i in list_im]
-    min_shape = sorted( [(np.sum(i.size), i.size ) for i in imgs])[0][1]
-    imgs_comb = np.hstack( (np.asarray( i.resize(min_shape) ) for i in imgs ) )
-    imgs_comb = Image.fromarray( imgs_comb)
-    imgs_comb.save(output_name)
+    images = [Image.open(i) for i in list_im]
+    widths, heights = zip(*(i.size for i in images))
+
+    total_width = sum(widths)
+    max_height = max(heights)
+
+    new_im = Image.new("RGB", (total_width, max_height))
+
+    x_offset = 0
+    for im in images:
+        new_im.paste(im, (x_offset, 0))
+        x_offset += im.size[0]
+
+    new_im.save(output_name)
 
 
-def batch(iterable, size):
-    """Short summary.
+def _batch(iterable, size):
+    """Yields batches of size `size` with an iterator as input.
 
     Args:
-        iterable (type): Description of parameter `iterable`.
-        size (type): Description of parameter `size`.
-
-    Returns:
-        type: Description of returned object.
+        iterable (iterator): Iterator.
+        size (int): Size of a batch.
 
     """
     sourceiter = iter(iterable)
@@ -334,13 +338,10 @@ def batch(iterable, size):
 
 
 def stitch_maker(config):
-    """Short summary.
+    """Creates the stitched images from a data directory. It will put the stiched images in a stitched "shottype" folder.
 
     Args:
-        config (type): Description of parameter `config`.
-
-    Returns:
-        type: Description of returned object.
+        config (Bunch object): The JSON configuration Bunch object.
 
     """
     dataset = config.data_set
@@ -348,11 +349,13 @@ def stitch_maker(config):
     if not os.path.exists(os.path.join("data", dataset, "images", "stitched")):
         os.mkdir(os.path.join("data", dataset, "images", "stitched"))
     stitched = os.path.join("data", dataset, "images", "stitched")
-    for species in tqdm(os.listdir(dir_dhp), desc="Stitching species"):
+    for species in tqdm(
+        os.listdir(dir_dhp), desc="Stitching images of  species"
+    ):
         if not os.path.exists(os.path.join(stitched, species)):
             os.makedirs(os.path.join(stitched, species))
         images = os.listdir(os.path.join(dir_dhp, species))
-        for image in batch(images, 3):
+        for image in _batch(images, 3):
             identifier1 = os.path.split(image[0])[1].split("_")[2]
             identifier2 = os.path.split(image[1])[1].split("_")[2]
             identifier3 = os.path.split(image[2])[1].split("_")[2]

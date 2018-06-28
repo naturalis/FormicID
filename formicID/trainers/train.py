@@ -31,6 +31,7 @@ the following calculation:
 # Standard library imports
 import os
 import warnings
+import logging
 
 # Deeplearning tools imports
 from keras import backend as K

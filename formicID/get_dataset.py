@@ -35,19 +35,19 @@ except:
 
 # Creating a dataset
 ###############################################################################
-get_dataset(
-    input="testall.csv",
-    n_jsonfiles=100,
-    config=config,
-    shottypes="dhp",
-    quality="medium",
-    update=False,
-    offset_set=0,
-    limit_set=99999,
-    multi_only=True,
-)
+# get_dataset(
+#     input="testall.csv",
+#     n_jsonfiles=100,
+#     config=config,
+#     shottypes="dhp",
+#     quality="medium",
+#     update=False,
+#     offset_set=0,
+#     limit_set=99999,
+#     multi_only=True,
+# )
 
-stitch_maker(config=config)
+# stitch_maker(config=config)
 
 # split into training, validation and test
 ###############################################################################
