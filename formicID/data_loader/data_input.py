@@ -55,7 +55,6 @@ from sklearn.model_selection import train_test_split
 # Additional project imports
 from tqdm import tqdm
 
-
 # Create image loading csvfiles
 ###############################################################################
 

@@ -37,10 +37,10 @@ from trainers.train import trainer_dir
 from utils.load_config import process_config
 from utils.logger import build_logger
 from utils.logger import plot_history
+from utils.model_utils import save_model
 from utils.model_utils import weights_load
 from utils.utils import create_dirs
 from utils.utils import get_args
-from utils.model_utils import save_model
 
 # Parameters and settings
 ###############################################################################

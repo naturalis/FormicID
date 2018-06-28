@@ -14,14 +14,18 @@
 
 # Packages
 ###############################################################################
+
+# Standard library imports
 import os
-from utils.load_config import process_config
-from utils.utils import get_args
-from utils.model_utils import weights_load
-from testers.tester import predict_image
-from testers.tester import predictor
+
+# FormicID imports
 from models.models import compile_model
 from models.models import load_model
+from testers.tester import predict_image
+from testers.tester import predictor
+from utils.load_config import process_config
+from utils.model_utils import weights_load
+from utils.utils import get_args
 
 # Parameters and settings
 ###############################################################################

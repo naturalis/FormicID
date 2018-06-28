@@ -19,8 +19,8 @@ other files.
 # Standard library imports
 import logging
 import os
-from math import ceil
 import random
+from math import ceil
 
 # Deeplearning tools imports
 from keras.preprocessing.image import array_to_img
@@ -37,7 +37,6 @@ import PIL  # Imports PIL-SIMD. PIL is needed for load_img()
 
 # FormicID imports
 from trainers.train import idg
-
 
 # Visualizing data agumentation
 ###############################################################################

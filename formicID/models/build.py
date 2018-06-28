@@ -25,7 +25,6 @@ from keras.layers import Flatten
 from keras.layers import MaxPooling2D
 from keras.models import Sequential
 
-
 # Build the network
 ###############################################################################
 

@@ -32,7 +32,6 @@ from tqdm import tqdm
 # FormicID imports
 from utils.utils import today_time_clean
 
-
 # Filter JSON files for needed information
 ###############################################################################
 

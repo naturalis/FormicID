@@ -48,8 +48,8 @@ from keras.applications.xception import Xception
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import GlobalAveragePooling2D
-from keras.models import Model
 from keras.layers import PReLU
+from keras.models import Model
 from keras.optimizers import SGD
 from keras.optimizers import Adam
 from keras.optimizers import Nadam
@@ -57,10 +57,9 @@ from keras.optimizers import RMSprop
 
 # FormicID imports
 from models.build import build_model
-from utils.logger import top_k_cat_accuracy
-from utils.logger import rmse
 from models.optimizer import Eve
-
+from utils.logger import rmse
+from utils.logger import top_k_cat_accuracy
 
 # Load models
 ###############################################################################

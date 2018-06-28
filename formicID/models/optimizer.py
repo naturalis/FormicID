@@ -22,10 +22,12 @@ https://github.com/rooa/eve
 # Packages
 ###############################################################################
 
-import numpy as np
-
+# Deeplearning tools imports
 import keras.backend as K
 from keras.optimizers import Optimizer
+
+# Data tools imports
+import numpy as np
 
 # Eve
 ###############################################################################

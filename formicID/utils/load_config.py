@@ -25,7 +25,6 @@ import json
 # Additional project imports
 from bunch import Bunch
 
-
 # Load and process config
 ###############################################################################
 

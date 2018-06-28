@@ -15,14 +15,16 @@
 # Packages
 ###############################################################################
 
+# Standard library imports
 import logging
 
-from utils.load_config import process_config
-from utils.utils import get_args
+# FormicID imports
+from data_loader.data_input import remove_reproductives
 from data_loader.data_input import split_in_directory
 from data_scraper.scrape import get_dataset
 from data_scraper.scrape import stitch_maker
-from data_loader.data_input import remove_reproductives
+from utils.load_config import process_config
+from utils.utils import get_args
 
 # Main code
 ###############################################################################

@@ -36,7 +36,6 @@ import matplotlib.pyplot as plt
 
 from .utils import today_timestr
 
-
 # TensorBoard
 ###############################################################################
 

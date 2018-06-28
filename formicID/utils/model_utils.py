@@ -36,7 +36,6 @@ import pydot_ng  # Needed for keras.utils.vis_utils.plot_model()
 
 from .utils import wd
 
-
 # Model utilities
 ###############################################################################
 

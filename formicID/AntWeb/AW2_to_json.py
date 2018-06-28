@@ -19,12 +19,12 @@ information for these species stored in json files.
 # Standard library imports
 import logging
 import os
+import re
 import sys
 import time
 from itertools import islice
 from urllib.error import HTTPError
 from urllib.request import urlopen
-import re
 
 # Data tools imports
 import json
@@ -34,7 +34,6 @@ from csv import Sniffer
 # Additional project imports
 import requests
 from tqdm import tqdm
-
 
 # Extract most imaged species from AntWeb
 ###############################################################################

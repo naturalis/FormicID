@@ -14,11 +14,13 @@
 
 # Packages
 ###############################################################################
-from utils.load_config import process_config
-from utils.utils import get_args
-from utils.utils import create_dirs
+
+# FormicID imports
 from utils.img import save_augmentation
 from utils.img import show_dataset
+from utils.load_config import process_config
+from utils.utils import create_dirs
+from utils.utils import get_args
 
 # Main code
 ###############################################################################

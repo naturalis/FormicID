@@ -20,27 +20,27 @@ Testing functions will check if the model is accurately trained using the test s
 import itertools
 import logging
 import os
-from io import BytesIO
-from math import ceil
-from urllib.parse import urlparse
 import re
+from io import BytesIO
 from io import StringIO
-import pandas as pd
-import json
 from itertools import chain
+from math import ceil
 from operator import sub
+from urllib.parse import urlparse
 
 # Deeplearning tools imports
+from keras import backend as K
 from keras.applications.inception_resnet_v2 import preprocess_input
 from keras.preprocessing.image import img_to_array
 from keras.preprocessing.image import load_img
 from keras.utils.np_utils import to_categorical
-from keras import backend as K
 
 # Data tools imports
+import json
 import numpy as np
-from sklearn.metrics import confusion_matrix
+import pandas as pd
 from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
 
 # Graphical tools imports
 import matplotlib.pyplot as plt
@@ -51,7 +51,6 @@ import requests
 
 # FormicID imports
 from trainers.train import _generator_dir
-
 
 # Evaluate generator for test metrics
 ###############################################################################

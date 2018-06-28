@@ -22,16 +22,19 @@ import itertools
 import logging
 import os
 import re
+import sys
+from itertools import chain
+from itertools import islice
 from urllib.error import HTTPError
 from urllib.request import urlretrieve
-import sys
-from PIL import Image
-from itertools import islice, chain
 
 # Data tools imports
 import csv
-import pandas as pd
 import numpy as np
+import pandas as pd
+
+# Graphical tools imports
+from PIL import Image
 
 # Additional project imports
 import requests
@@ -41,7 +44,6 @@ from tqdm import tqdm
 from AntWeb.AW2_to_json import urls_to_json
 from AntWeb.json_to_csv import batch_json_to_csv
 from data_loader.data_input import image_path_csv
-
 
 # Repair broken `blf`and `hjr`specimens
 ###############################################################################
