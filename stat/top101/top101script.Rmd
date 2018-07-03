@@ -180,8 +180,7 @@ final <- plot_grid(title,
 # final
 ```
 
-```{r}
-image <-  ggdraw() + draw_image(exampledata, scale = 1)
+```{r castes, shottype and species}
 final2 <- plot_grid(g1, caste_plot, nrow=2, labels=c("B", "C"), rel_heights = c(0.4,1))
 final3 <- ggdraw() +
     draw_plot(g2, 0, 0, 1, 1) +
@@ -199,46 +198,52 @@ save_plot("species_shot_dist2.pdf",
           base_height = 11.69)
 ```
 
-```{r Image-species distribution, fig.height = 9, echo = FALSE}
+```{r for PP, fig.height = 9, echo = FALSE}
 g2 <-
     ggplot(melted) +
-    geom_bar(aes(x = scientific_name, y = value, fill = variable),
-             stat = 'identity',
-             width = 0.5) +
+    geom_bar(aes(
+        x = reorder(scientific_name, -value, sum),
+        y = value,
+        label = value
+        fill = variable
+    ),
+    stat = 'identity',
+    width = 0.5) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) +
     labs(title = "Sum species images per shottype") +
     # coord_flip() +
     labs(x = "Species", y = "Image count") +
-    theme(
-        # plot.title = element_text(size = 15),
-        # axis.title = element_text(size = 10),
-        # legend.title = element_text(size = 10),
-        # legend.text = element_text(size = 10),
-        legend.position = "top",
-        # legend.background = element_rect(linetype = "solid", colour = "Black"),
-        axis.text = element_text(size = 10)
-    )  +
+    theme(legend.position = "top",
+          axis.text = element_text(size = 10))  +
     scale_x_discrete(limits = (levels(melted$scientific_name))) +
-    scale_y_continuous(breaks = c(0,100,200,300,400,500,600)) +
+    scale_y_continuous(breaks = c(0, 100, 200, 300, 400, 500, 600)) +
     scale_fill_discrete(name = 'Shottype',
                         labels = c('Dorsal', 'Head', 'Profile'))
 
-exampledata <- image_read("dataset_example2.png")
-
-prefinal <- ggdraw() +
+final2 <-
+    plot_grid(
+        g1,
+        caste_plot,
+        nrow = 1,
+        labels = c("B", "C"),
+        rel_widths = c(0.6, 1)
+    )
+final3 <- ggdraw() +
     draw_plot(g2, 0, 0, 1, 1) +
-    draw_image(exampledata, -0.3, 0.12, scale = 0.55) +
-    draw_plot(g1, 0.5, 0.45, 0.35, 0.25) +
-    draw_plot_label(c("A", "C", "B                  Dataset examples"), c(0, 0.5, 0), c(1, 0.75, 0.92), size = 15)
-title <-
-    ggdraw() + draw_label("Formicidae image dataset (clean)",
-                          size = 18,
-                          fontface = 'bold')
-final <- plot_grid(title,
-                   prefinal,
-                   ncol = 1,
-                   rel_heights = c(0.05, 1))
-final
+    draw_plot(
+        final2,
+        x = 0.2,
+        y = 0.35,
+        width = 0.585,
+        height = 0.55
+    ) +
+    draw_plot_label("A", 0, 1)
+
+final3 <- plot_grid(title,
+                    final3,
+                    ncol = 1,
+                    rel_heights = c(0.05, 1))
+final3
 ```
 
 

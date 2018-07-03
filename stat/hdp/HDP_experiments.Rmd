@@ -12,8 +12,8 @@ output:
 
 ```{r Setup, echo=T, message=FALSE, warning=FALSE, results='hide'}
 setwd("~/Internships/Internship CNN 2017-2018/FormicID/stat/hdp")
-data_dir <- file.path("shottype training")
-plot_out_name <- "Uncleaned dataset.pdf"
+data_dir <- file.path("shottype training clean")
+plot_out_name <- "Cleaned dataset.pdf"
 library(ggplot2) # for plotting
 library(gridExtra)
 library(gtable)
@@ -22,42 +22,19 @@ library(reshape2)
 library(magick)
 library(ggpubr)
 library(cowplot)
+library(tidyr)
 
-```
 
-## Reading data
-
-```{r Reading data}
-needed <- c("epoch", "val_acc", "val_top_k_cat_accuracy")
-dorsal <-
-    read.csv(
-        file.path(data_dir, "dorsal", "20180518_094541_metricslog.csv"),
-        header = TRUE,
-        sep = ","
-    )
-dorsal <- dorsal[needed]
-dorsal <- melt(dorsal, id = "epoch")
-head <-
-    read.csv(
-        file.path(data_dir, "head", "20180523_084437_metricslog.csv"),
-        header = TRUE,
-        sep = ","
-    )
-head <- head[needed]
-head <- melt(head, id = "epoch")
-profile <-
-    read.csv(
-        file.path(data_dir, "profile", "20180516_094945_metricslog.csv"),
-        header = TRUE,
-        sep = ","
-    )
-profile <- profile[needed]
-profile <- melt(profile, id = "epoch")
-factor_rename <- factor(c("Validation accuracy","Validation top 3 accuracy"))
-levels(dorsal$variable) <- factor_rename
-levels(head$variable) <- factor_rename
-levels(dorsal$variable) <- factor_rename
-
+maxd <- max(dorsal$epoch, na.rm = TRUE)
+maxh <- max(head$epoch, na.rm = TRUE)
+maxp <- max(profile$epoch, na.rm = TRUE)
+maxs <- max(stitched$epoch, na.rm = TRUE)
+maxlist <- c(maxd, maxh, maxp, maxs)
+max_x <- max(maxlist)
+roundUp <- function(x, to = 10) {
+    to * (x %/% to + as.logical(x %% to))
+}
+max_x <- roundUp(max_x, to = 25)
 ```
 
 ## Reading CMs
@@ -66,20 +43,136 @@ levels(dorsal$variable) <- factor_rename
 dorsalcm <- image_read(file.path(data_dir, "dorsal", "cmdorsal.png"))
 headcm <- image_read(file.path(data_dir, "head", "cmhead.png"))
 profilecm <- image_read(file.path(data_dir, "profile", "cmprofile.png"))
+stitchedcm <- image_read(file.path(data_dir, "stitched", "cmstitched.png"))
 ```
 
 
 ```{r}
-maxd <- max(dorsal$epoch, na.rm = TRUE)
-maxh <- max(head$epoch, na.rm = TRUE)
-maxp <- max(profile$epoch, na.rm = TRUE)
-maxlist <- c(maxd, maxh, maxp)
-max_x <- max(maxlist)
-roundUp <- function(x, to = 10) {
-    to * (x %/% to + as.logical(x %% to))
-}
-max_x <- roundUp(max_x, to = 25)
+needed <- c("epoch", "val_acc", "val_top_k_cat_accuracy")
+dorsal <-
+    read.csv(
+        file.path(data_dir, "dorsal", "20180528_081217_metricslog.csv"),
+        header = TRUE,
+        sep = ","
+    )
+dorsal <- dorsal[needed]
+dorsal$shottype <- "Dorsal"
+head <-
+    read.csv(
+        file.path(data_dir, "head", "20180525_094245_metricslog.csv"),
+        header = TRUE,
+        sep = ","
+    )
+head <- head[needed]
+head$shottype <- "Head"
+profile <-
+    read.csv(
+        file.path(data_dir, "profile", "20180525_110621_metricslog.csv"),
+        header = TRUE,
+        sep = ","
+    )
+profile <- profile[needed]
+profile$shottype <- "Profile"
+
+stitched <-
+    read.csv(
+        file.path(data_dir, "stitched", "20180628_093442_metricslog.csv"),
+        header = TRUE,
+        sep = ","
+    )
+stitched <- stitched[needed]
+stitched$shottype <- "Stitched"
+
+total <- rbind(dorsal, head, profile, stitched)
+
+
+total <- melt(total, measure.vars = c("val_acc", "val_top_k_cat_accuracy"), value.name = "shottype")
+names(total) <- c("Epoch", "Shottype", "Accuracy", "value")
+levels(total$Accuracy)[levels(total$Accuracy)=="val_acc"] <- "Top 1"
+levels(total$Accuracy)[levels(total$Accuracy)=="val_top_k_cat_accuracy"] <- "Top 3"
+
+evo <- ggplot(total) + 
+    geom_line(aes(x = Epoch, y = value, color = Accuracy), size = 1) + 
+    facet_grid(~Shottype) + 
+    scale_x_continuous(breaks = c(0, 25, 50, 75, 100, 125),
+                       limits = c(0, max_x)) +
+    scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
+    theme() +
+    ylab(NULL) +
+    # xlab(NULL) +
+    # ggtitle("Dorsal") +
+    theme(legend.position = "top", 
+        axis.text = element_text(size = 8), axis.title=element_text(size=10,face="bold")
+    ) +
+    ggtitle("Evolution of the validation Accuracy") +
+    background_grid(major = c("xy"), minor = ("xy"))
+evo
+
+ggdorsal <- ggdraw() + draw_image(dorsalcm, scale = 1)
+gghead <- ggdraw() + draw_image(headcm, scale = 1)
+ggprofile <- ggdraw() + draw_image(profilecm, scale = 1)
+ggstitched <- ggdraw() + draw_image(stitchedcm, scale = 1)
+
+cms <- plot_grid(ggdorsal, gghead, ggprofile, ggstitched, nrow=2, ncol=2, labels = c("B     Dorsal", "C     Head", "D     Profile", "E     Stitched"))
+
+final_maybe <- plot_grid(evo, cms, nrow=2, ncol=1, rel_heights = c(0.5, 1), labels = c("A",""))
+final_maybe
 ```
+
+
+```{r}
+save_plot("testresults9.pdf",
+          final_maybe,
+          base_width = 8.27,
+          base_height =  11.69)
+```
+
+## Reading data
+
+```{r Reading data}
+needed <- c("epoch", "val_acc", "val_top_k_cat_accuracy")
+dorsal <-
+    read.csv(
+        file.path(data_dir, "dorsal", "20180528_081217_metricslog.csv"),
+        header = TRUE,
+        sep = ","
+    )
+dorsal <- dorsal[needed]
+dorsal <- melt(dorsal, id = "epoch")
+head <-
+    read.csv(
+        file.path(data_dir, "head", "20180525_094245_metricslog.csv"),
+        header = TRUE,
+        sep = ","
+    )
+head <- head[needed]
+head <- melt(head, id = "epoch")
+profile <-
+    read.csv(
+        file.path(data_dir, "profile", "20180525_110621_metricslog.csv"),
+        header = TRUE,
+        sep = ","
+    )
+profile <- profile[needed]
+profile <- melt(profile, id = "epoch")
+
+stitched <-
+    read.csv(
+        file.path(data_dir, "stitched", "20180628_093442_metricslog.csv"),
+        header = TRUE,
+        sep = ","
+    )
+stitched <- stitched[needed]
+stitched <- melt(stitched, id = "epoch")
+
+factor_rename <- factor(c("Validation accuracy","Validation top 3 accuracy"))
+levels(dorsal$variable) <- factor_rename
+levels(head$variable) <- factor_rename
+levels(profile$variable) <- factor_rename
+levels(stitched$variable) <- factor_rename
+
+```
+
 
 
 ## Plotting
@@ -134,6 +227,20 @@ pp <-
     ) +
     background_grid(major = c("xy"), minor = ("xy"))
 
+ss <-
+    ggplot(data = stitched, aes(x = epoch, y = value, colour = variable)) +
+    geom_line() +
+    scale_x_continuous(breaks = c(0, 25, 50, 75, 100, 125),
+                       limits = c(0, max_x)) +
+    scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
+    ylab(NULL) +
+    # xlab(NULL) +
+    # ggtitle("Profile") +
+    theme(
+        legend.position = "none",
+        axis.text = element_text(size = 8), axis.title=element_text(size=10,face="bold")
+    ) +
+    background_grid(major = c("xy"), minor = ("xy"))
 ```
 
 ```{r}
@@ -141,8 +248,9 @@ evolution <- plot_grid(
     dd + xlab(NULL) + ggtitle("Dorsal"),
     hh + xlab(NULL) + ggtitle("Head"),
     pp + xlab(NULL) + ggtitle("Profile"),
+    ss + xlab(NULL) + ggtitle("Stitched"),
     nrow = 1,
-    ncol = 3,
+    ncol = 4,
     scale = 0.9
 ) + #perhaps reduce this for a bit more space
     draw_label(
@@ -172,6 +280,8 @@ evolution_final
 ggdorsal <- ggdraw() + draw_image(dorsalcm, scale = 1)
 gghead <- ggdraw() + draw_image(headcm, scale = 1)
 ggprofile <- ggdraw() + draw_image(profilecm, scale = 1)
+ggprofile <- ggdraw() + draw_image(profilecm, scale = 1)
+
 legend <- get_legend(ddlegend)
 legend_bottom <- plot_grid(legend, ncol = 2)
 
@@ -241,8 +351,8 @@ final <- plot_grid(
     rel_heights = c(1, .05)
 )
 
-save_plot(plot_out_name,
-          final,
+save_plot("data.pdf",
+          final_maybe,
           base_width = 8.27,
           base_height =  11.69)
 

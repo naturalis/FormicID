@@ -17,9 +17,106 @@ library(cowplot)
 library(reshape2)
 library(gridExtra)
 library(plyr)
+library(dplyr)
+library(ggpubr)
+
+brks <- c(0.0, 0.25, 0.50, 0.75, 1.0)
 ```
 
-```{r}
+
+
+
+# Plot version 2 using facet wrap
+## Reading data
+
+```{r reading data 2}
+data2 <- read.csv("testresults2.csv", header = 1, sep = ";")
+data2$diff <- data2$Test_top_3 - data2$Test_top_1
+data2 <- data2[, c(1, 2, 4, 5)]
+names(data2) <- c("Experiment", "Top 1", "Shottype", "Top 3")
+data2 <- melt(data2, value.name = "Percentage")
+data2 <- head(data2, -9)
+data2$Shottype <- as.character(data2$Shottype)
+data2$Shottype[c(17,20,23)] <- rep("dorsal (genus)", 2)
+data2$Shottype[c(18,21,24)] <- rep("head (genus)", 2)
+data2$Shottype[c(19,22,25)] <- rep("profile (genus)", 2)
+data2$Shottype <- as.factor(data2$Shottype)
+data2$Experiment <- as.character(data2$Experiment)
+data2$Experiment[c(17:19)] <- rep("Best", 3)
+data2$Experiment[c(20:22)] <- rep("Workers only", 3)
+data2$Experiment[c(23:25)] <- rep("St. Eustatius collection", 3)
+data2$Experiment <- as.factor(data2$Experiment)
+data2$variable <- as.character(data2$variable)
+data2$variable[c(17:25)] <- rep("Top 1 (genus)", 9)
+data2$variable <- as.factor(data2$variable)
+data2$Experiment <-
+    factor(
+        data2$Experiment,
+        levels = c(
+            'Unclean',
+            'Clean',
+            'Best',
+            'Multi-view',
+            'Workers only',
+            'St. Eustatius collection'
+        ),
+        ordered = TRUE
+    )
+data2$variable <-
+    factor(
+        data2$variable,
+        levels = c("Top 1",  "Top 3", "Top 1 (genus)"),
+        ordered = TRUE
+    )
+data2 <- ddply(data2,
+               c("Experiment", "Shottype"),
+               transform,
+               label_ypos = cumsum(Percentage))
+```
+
+## Saving and plotting
+
+```{r facet wrap chart}
+g1 <-
+    ggplot() +
+    geom_bar(
+        data = data2,
+        mapping = aes(
+            x = Shottype,
+            y = Percentage,
+            fill = variable
+        ),
+        stat = "identity",
+        position = position_stack(reverse = TRUE)
+    ) +
+    # facet_wrap( ~ Experiment, scales = 'free',  nrow = 2, strip.position="top") +
+    geom_text(data = data2,
+              aes(x = Shottype, y = label_ypos, label = sprintf("%0.4f", round(label_ypos, digits = 4))),
+              vjust = 1.6,
+              color = "white") +
+    scale_y_continuous(breaks = brks, limits = c(0, 1)) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+          legend.position = "top",
+          legend.title = element_blank()) +
+    ggtitle("Accuracy results for different datasets") +
+    xlab(NULL) +
+    ylab("Accuracy")
+
+facet(g1, facet.by = "Experiment", nrow=2, scales = "free", short.panel.labs = FALSE)
+```
+
+```{r Saving plot to pdf version 2}
+save_plot("testresults8.pdf",
+          g1,
+          base_width = 8.27 * 1.2,
+          base_height = 11.69 * 1.2)
+```
+
+# Making plots version 1
+
+## Reading data version 1
+
+```{r reading data}
 data <- read.csv("testresults.csv", header = 1, sep = ";")
 data$diff <- data$Test_top_3 - data$Test_top_1
 data <- data[, c(1, 2, 4, 5)]
@@ -49,14 +146,16 @@ workers <- melt(workers, value.name = "Percentage")
 workers <- ddply(workers, "Shottype",
                    transform, label_ypos=cumsum(Percentage))
 
+stitched <- data[c(16), ]
+stitched <- melt(stitched, value.name = "Percentage")
+stitched <- ddply(stitched, "Shottype",
+                   transform, label_ypos=cumsum(Percentage))
+
 ```
 
-```{r}
-brks <- c(0.0, 0.25, 0.50, 0.75, 1.0)
-```
+## The plots for unclean, clean, best, statia, workers only, stitched
 
-
-```{r}
+```{r unclean}
 p1 <-
     ggplot(unclean, aes(x = Shottype, y = Percentage, fill = variable)) +
     geom_bar(stat = "identity", position = position_stack(reverse = TRUE)) +
@@ -74,7 +173,7 @@ p1 <-
 legend_t <- get_legend(p1)
 ```
     
-```{r}
+```{r clean}
 p2 <-
     ggplot(clean, aes(x = Shottype, y = Percentage, fill = variable)) +
     geom_bar(stat = "identity", position = position_stack(reverse = TRUE)) +
@@ -90,7 +189,7 @@ p2 <-
     ylab(NULL)
 ```
 
-```{r}
+```{r best}
 p3 <-
     ggplot(best, aes(x = Shottype, y = Percentage, fill = variable)) +
     geom_bar(stat = "identity", position = position_stack(reverse = TRUE)) +
@@ -106,7 +205,7 @@ p3 <-
     ylab(NULL)
 ```
 
-```{r}
+```{r Statia}
 p4 <-
     ggplot(statia, aes(x = Shottype, y = Percentage, fill = variable)) +
     geom_bar(stat = "identity", position = position_stack(reverse = TRUE)) +
@@ -122,7 +221,7 @@ p4 <-
     ylab(NULL)
 ```
 
-```{r}
+```{r Workers only}
 p5 <-
     ggplot(workers, aes(x = Shottype, y = Percentage, fill = variable)) +
     geom_bar(stat = "identity", position = position_stack(reverse = TRUE)) +
@@ -138,15 +237,34 @@ p5 <-
     ylab(NULL)
 ```
 
+```{r stitched}
+p6 <-
+    ggplot(stitched, aes(x = Shottype, y = Percentage, fill = variable)) +
+    geom_bar(stat = "identity", position = position_stack(reverse = TRUE)) +
+    geom_text(
+        aes(y = label_ypos, label = sprintf("%0.4f", label_ypos)),
+        vjust = 1.6,
+        color = "white"
+    ) +
+    scale_y_continuous(breaks = brks, limits = c(0, 1)) +
+    theme(axis.text.x = element_text(angle = 0.65, vjust = 0.6)) +
+    ggtitle("Stitched together") +
+    xlab(NULL) +
+    ylab(NULL)
+p6
+```
 
-```{r}
+## Unclean, Clean, Best, Statia, workers only, Stitched
+
+```{r plot grid}
 plots <- plot_grid(
     p1 + theme(legend.position = "none"),
     p2 + theme(legend.position = "none"),
     p3 + theme(legend.position = "none"),
     p5 + theme(legend.position = "none"),
     p4 + theme(legend.position = "none"),
-    ncol = 5,
+    p6 + theme(legend.position = "none"),
+    ncol = 6,
     nrow = 1,
     align = "h",
     labels = c("AUTO")
@@ -164,10 +282,44 @@ final
 ```
 
 
-```{r}
-save_plot("testresults3.pdf",
+```{r save plot to pdf}
+save_plot("testresults5.pdf",
           final,
           base_width = 15,
           base_height = 5)
 ```
+
+## Best, Statia, workers only and stitched
+
+```{r plot grid 2}
+plots <- plot_grid(
+    p3 + theme(legend.position = "none"),
+    p5 + theme(legend.position = "none"),
+    p4 + theme(legend.position = "none"),
+    p6 + theme(legend.position = "none"),
+    ncol = 4,
+    nrow = 1,
+    align = "h",
+    labels = c("AUTO")
+)
+prefinal <- plot_grid(plots, legend_t, rel_widths = c(5, .45))
+title <-
+    ggdraw() + draw_label("Test accuracy (top 1 and top 3)",
+                          size = 18,
+                          fontface = 'bold')
+final <- plot_grid(title,
+                   prefinal,
+                   ncol = 1,
+                   rel_heights = c(0.1, 1))
+final
+```
+
+
+```{r save plot to pdf 2}
+save_plot("testresults6.pdf",
+          final,
+          base_width = 10,
+          base_height = 4)
+```
+
 
