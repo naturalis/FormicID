@@ -99,6 +99,7 @@ def image_path_csv(config):
         df, test_size=test_split, shuffle=True, random_state=seed, stratify=y
     )
     y2 = train.species
+#     Fix the train and val to csv naming
     val, train = train_test_split(
         train,
         test_size=val_split,
