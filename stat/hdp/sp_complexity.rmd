@@ -22,12 +22,15 @@ library(reshape2) # for using melt()
 library(magick) # for image conversion because jpg files are read
 library(plyr)
 library(magrittr)
+library(PRROC)
 
 ```
 # Loading data
 ```{r}
 sp_complex <-
     read.csv("speciescomplexexport.csv", sep=";")
+sp_complexall <- 
+    read.csv("speciescomplexexportall.csv", sep=";")
 ```
 
 # Function: getting equation
@@ -51,7 +54,7 @@ lm_eqn = function(df) {
 ## Equation
 ```{r}
 eq <- ddply(sp_complex,.(Shottypes),lm_eqn)
-
+eq2 <- ddply(sp_complexall,.(Shottypes),lm_eqn)
 ```
 
 # F1 Score
@@ -59,6 +62,7 @@ F1 Score is needed when you want to seek a balance between Precision and Recall.
 
 
 # Plotting
+## Number of species in complex vs F1-score
 ```{r}
 sp_complex_plot <-
     ggplot(sp_complex, aes(x = x,
@@ -81,4 +85,87 @@ sp_complex_plot <-
     theme(legend.position = "none")
 
 sp_complex_plot
+```
+
+## Support vs F1-Score
+```{r}
+sp_complexall_plot <-
+    ggplot(sp_complexall, aes(x = x,
+                           y = y,
+                           col = Shottypes)) +
+    geom_point() +
+    geom_smooth(method = "lm",
+                se = FALSE,
+                formula = y ~ x) +
+    geom_text(
+        data = eq2,
+        aes(x = 15, y = 0.5, label = V1),
+        parse = T,
+        inherit.aes = FALSE
+    ) +
+    xlim(c(0,25)) +
+    facet_grid(~ Shottypes, scales = "free_x", space = "free_x") +
+    ggtitle("Support vs F1-score") +
+    xlab("Support") +
+    ylab("F1-score") +
+    theme(legend.position = "none")
+
+sp_complexall_plot
+```
+
+
+# PR + ROC curves
+I don't think these curves are correct
+## Dorsal
+
+```{r}
+par(mfrow=c(1,1))
+dorsalpr <- 
+    read.csv("T97_CaAll_QuM_ShD_AugM_D05_LR0001_E200_I4_def_clean_best_classification_report.csv", sep="," )
+plot(dorsalpr$recall, dorsalpr$precision)
+# abline(lm(dorsalpr$recall~dorsalpr$precision), col="red") # regression line (y~x) 
+lines(lowess(dorsalpr$recall, dorsalpr$precision), col="blue") # lowess line (x,y)
+
+
+pr <- pr.curve(dorsalpr$recall, dorsalpr$precision)
+print(pr)
+# compute area under ROC curve
+roc <- roc.curve(dorsalpr$recall, dorsalpr$precision)
+print( roc )
+# compute PR curve and area under curve
+pr <- pr.curve(dorsalpr$recall, dorsalpr$precision, curve = TRUE )
+# plot curve
+plot(pr)
+# compute ROC curve and area under curve
+roc <- roc.curve(dorsalpr$recall, dorsalpr$precision, curve = TRUE)
+# plot curve
+plot(roc)
+```
+## Head
+```{r}
+headpr <- 
+    read.csv("T97_CaAll_QuM_ShH_AugM_D05_LR0001_E200_I4_def_clean_best_classification_report.csv", sep="," )
+pr <- pr.curve(headpr$recall, headpr$precision)
+print(pr)
+roc <- roc.curve(headpr$recall, headpr$precision)
+print( roc )
+pr <- pr.curve(headpr$recall, headpr$precision, curve = TRUE )
+plot(pr)
+roc <- roc.curve(headpr$recall, headpr$precision, curve = TRUE)
+plot(roc)
+```
+
+## Profile
+```{r}
+profilepr <- 
+    read.csv("T97_CaAll_QuM_ShP_AugM_D05_LR0001_E200_I4_def_clean_best_classification_report.csv", sep="," )
+pr <- pr.curve(profilepr$recall, profilepr$precision)
+print(pr)
+roc <- roc.curve(profilepr$recall, profilepr$precision)
+print( roc )
+pr <- pr.curve(profilepr$recall, profilepr$precision, curve = TRUE )
+plot(pr)
+roc <- roc.curve(profilepr$recall, profilepr$precision, curve = TRUE)
+plot(roc)
+
 ```
