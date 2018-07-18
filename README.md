@@ -13,19 +13,28 @@ _Classification of images of ants using deep learning_
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 
-
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [FormicID](#formicid)
 - [Description](#description)
-	- [Proposal](#proposal)
+	- [Reports](#reports)
+		- [Proposal](#proposal)
+		- [Report](#report)
 - [How to use](#how-to-use)
-	- [Step 1 - Get the code](#step-1-get-the-code)
-	- [Step 2 - Downloading the data](#step-2-downloading-the-data)
-	- [Step 3 - Configuration](#step-3-configuration)
-	- [Step 4 - Model initialisation and training](#step-4-model-initialisation-and-training)
-	- [Step 5 - Evaluation](#step-5-evaluation)
-	- [Step 6 - Optional](#step-6-optional)
+	- [Step 1 Get the code](#step-1-get-the-code)
+	- [Step 2 Species list](#step-2-species-list)
+		- [Note:](#note)
+	- [Step 3 Configuration](#step-3-configuration)
+	- [Step 4 Data](#step-4-data)
+		- [Downloading](#downloading)
+		- [Stitching for multi-view](#stitching-for-multi-view)
+		- [Splitting data](#splitting-data)
+		- [Removing reproductives](#removing-reproductives)
+	- [Step 5 Model initialisation and training](#step-5-model-initialisation-and-training)
+		- [Callbacks](#callbacks)
+	- [Step 6 Evaluation](#step-6-evaluation)
+		- [Predicting an image](#predicting-an-image)
+	- [Step 7 Optional functions](#step-7-optional-functions)
 - [Project Structure](#project-structure)
 - [AntWeb](#antweb)
 	- [AntWeb API](#antweb-api)
@@ -39,28 +48,32 @@ _Classification of images of ants using deep learning_
 
 <!-- /TOC -->
 
+
 # Description
 
 Code repository for CNN-based image classification of AntWeb images
 
 ![](https://github.com/naturalis/FormicID/blob/master/img/25images.gif?raw=true)
 
-## Proposal
-
+## Reports
+### Proposal
 The proposal can be found [here](https://github.com/naturalis/FormicID-proposal).
 
+### Report
+The proposal can be found [here](https://github.com/naturalis/FormicID-report).
+
 # How to use
+Below are some steps to get you going. Futhermore, all functions have descriptions and should get you more information.
 
-## Step 1 - Get the code
-
-Clone the repository
+## Step 1 Get the code
+Clone the repository.
 
 ```sh
 $ git clone https://github.com/naturalis/FormicID
 $ cd ./FormicID
 ```
 
-## Step 2 - Downloading the data
+## Step 2 Species list
 
 _Skip step 2 if you don't need to download the data._
 
@@ -72,30 +85,19 @@ genus1 | species1
 genus2 | species2
 ...    | ...
 
-Next, set the correct values for the function below. This function will download json files that will hold all the information on species (such as names, catalog identifier and URLs to images). Then it will filter out the relevant information for downloading and naming the images, after which it will download the images. Quality of images is one of: `low`, `medium`, `thumbview` or `high`.
+### Note:
+`get_species_list.py` is made to do this for you. Here you just have to set the number of minimum images you want species to have and a 2 column csv file is created with genus and species names. However, due to the problem that some species have more than 3 images (e.g. close-ups), the counting of images per species is incorrect if you just want to have dorsal, head and profile shot types. Therefore, use this script with caution.
 
-```python
-get_dataset(
-    input='species.csv',    # The csv file from step `2.1.
-    n_jsonfiles=5,          # Set a max number of JSON files to download.
-    config=config,          # The configuration file.
-    quality='low',          # The quality of images.
-    update=True,            # Whether to update for broken URLs.
-    offset_set=0,           # The offset for specimens in a JSON file.
-    limit_set=9999          # The specimen limit in a JSON file.
-)
-```
+## Step 3 Configuration
+Configure the configuration file `formicID/configs/config.json` or create your own configuration file based on this one.
 
-## Step 3 - Configuration
-
-Configure `formicID/configs/config.json`
-- Give the experiment a name.
-- Set a dataset to use.
+- Set an experiment name using `exp_name`.
+- Set a data set name in `data_set`.
 - Set the following (as integers):
-  - `epochs`
-  - `learning rate`
-  - `batch size`
+  - `batch size` (for InceptionResNetV2: 32)
   - `dropout`
+  - `learning rate`
+  - `num_epochs`
   - `seed`
 - Set the `model` to one of:
   - `InceptionV3`
@@ -109,10 +111,10 @@ Configure `formicID/configs/config.json`
   - `Adam`
   - `RMSprop`
   - `SGD`
-  - `Eve`
-- Set the `test_split` and `val_split` percentages as float.
-- Set the `shottype` to use (`dorsal`, `head` or `profile`).
-- The prelast Dense Layer activation: `"relu"` or `PReLU`
+  - `Eve` (not working as of now)
+- Set the `test_split` and `val_split` as float percentages.
+- Set the `shottype` to use (`dorsal`, `head`, `profile` or `stitched`).
+
 ```json
 {
     "exp_name": "experiment_name",
@@ -120,7 +122,7 @@ Configure `formicID/configs/config.json`
     "batch_size": 32,
     "dropout": 0.5,
     "learning_rate": 0.001,
-    "model": "InceptionV3",
+    "model": "InceptionResNetV2",
     "num_epochs": 100,
     "num_iter_per_epoch": 32,
     "optimizer": "Nadam",
@@ -131,29 +133,86 @@ Configure `formicID/configs/config.json`
 }
 ```
 
-## Step 4 - Model initialisation and training
+## Step 4 Data
+Next, using the python file `get_dataset.py` you can download, stitch, split data and/or remove reproductives. 
 
-Now you can run `formicID/main.py` with `config.json` as system argument and the data will be downloaded, split, and prepared. Then the model will be initialized, compiled and trained.
+### Downloading 
+Set the correct values for the function below. This function will download json files that will hold all the information on species (such as names, catalog identifier and URLs to images). Then it will filter out the relevant information, after which it will download the images. Quality of images is one of: `low`, `medium`, `thumbview` or `high`. `Shottypes` can be `d`, `h`, or `p` or a combination of those. If you flag `multi_only` to `True`, shottypes needs to be `dhp`.
 
-## Step 5 - Evaluation
+```python
+get_dataset(
+    input='species.csv', # The csv file from step `2.1.
+    n_jsonfiles=5,       # Should be equal to the number of species from step 2
+    config=config,       # The configuration file.
+	shottypes="dhp",	 # Specifies the shottypes to download images
+    quality='medium',    # The quality of images.
+    update=True,         # Whether to update for broken URLs.
+    offset_set=0,        # The offset for specimens in a JSON file.
+    limit_set=99999,     # The specimen limit to add to the JSON file.
+	multi_only=True		 # Flag `True` if doing multi-view
+)
+```
 
-After training it will be possible to launch TensorBoard to view loss, accuracy, and top-3 accuracy for training and validation. Using `evaluator()` the test set could be run against the model to see test metrics.
+### Stitching for multi-view
+Run the function below to stitch together the images from three shottypes, if you are doing the multi-view approach.
 
-Possible callbacks, loaded using `utils/logger.py`, are `EarlyStopping`, `ModelCheckpoint`, `CSVLogger` and `ReduceLROnPlateau`.
+```python
+stitch_maker(config=config)
+```
+
+### Splitting data
+Run this function to split the data in a training, validation and test set, configured by the config file. You can also set a 1 column csv file containing bad specimens (e.g. affected by funghi, or missing bodyparts).
+
+```python
+split_in_directory(config=config, bad="data/badspecimens.csv")
+```
+
+### Removing reproductives
+Together with a 1 column csv file containing catalognumbers, you can remove the reproductives from a test set using the function below.
+
+```python
+remove_reproductives(
+     csv="data/reproductives.csv",
+     dataset="top97species_Qmed_def_clean_wtest",
+     config=config,
+ )
+```
+
+## Step 5 Model initialisation and training
+
+Now you can run `formicID/main.py` with `config.json` as a system argument and the model will be initialized, compiled and training will begin, as set by the configuration file.
+
+### Callbacks
+Possible callbacks, loaded using `utils/logger.py`, are `Tensorboard`, `EarlyStopping`, `ModelCheckpoint`, `CSVLogger` and `ReduceLROnPlateau`.
+
+- Using TensorBoard you can get insight in training metrics.
+- Earlystopping will make sure the model does not overfit and continue training for too long
+- Weights will be saved every time the model is improved, based on the validation loss and at the end of training.
+- A csvlogger is logging all the training and validation metrics per epoch
+- Learning rate is reduced if the model has stopped improving.
+
+## Step 6 Evaluation
+
+After training it will be possible to launch TensorBoard to view loss, accuracy, and top-3 accuracy for training and validation. Using `evaluator()` the test set will be run against the model to see test metrics.
 
 Further evaluation options are:
-- It is possible to plot these metrics using `plot_history()`.  
+- It is possible to plot metrics, right after training, using `plot_history()`.  
 - Predict labels for the test set using `predictor()`.
-- Predict the label for a URL retrieved image using `predict_image_from_url()`.
+- Get prediction reports for the test set using `predictor_reports()` in 2 forms:
+  - classification report with precision, recall, f1 and support
+  - true labels and its corresponding predicted label
 - Plot a confusion matrix using the species names, true labels and predicted labels using `plot_confusion_matrix()`.
 
-## Step 6 - Optional
+### Predicting an image
+Using `predict_image.py` it is possible to initialize a model, load pre-trained weights and add an image to get a classification for that image.
+
+## Step 7 Optional functions
 
 Utilities that can be loaded are:
 - Image utilities
-  - Saving data augmentation examples of 1 sample image `save_augmentation()`.
+  - Saving data augmentation examples of 1 sample image `augmentation.py`.
   - Viewing data augmentation for 1 sample images  `show_augmentation_from_dir()`.
-  - Viewing a few images `show_multi_imgimg()`.
+  - Viewing multiple images `show_multi_img()`.
 - Handeling models and weights.
   - Saving a model `save_model()`.
   - Loading a model from a file `load_model_from_file()`.
@@ -164,14 +223,17 @@ Utilities that can be loaded are:
   - Load a model from a JSON file `model_from_architecture()`.
   - Visualize the model `model_visualization()`.
   - Train multiple GPUs `make_multi_gpu()`.
-- _More coming later_
-
 
 # Project Structure
 
 ```
 |-- formicID
-    |-- main.py
+    |-- __version__.py
+	|-- augmentation.py
+	|-- get_dataset.py
+	|-- get_species_list.py
+	|-- main.py
+	|-- predict_image.py
     |-- AntWeb
     |   |-- AW2_to_json.py
     |   |-- AW3_to_json.py    
@@ -207,7 +269,7 @@ _Text is taken from [www.AntWeb.org](www.antweb.org)_
 
 ## AntWeb API
 
-Images are harvested from [www.AntWeb.org](www.antweb.org). At this moment version 2 is used because version 3 was not released when the project started. Version 3 is also still in beta. Later, the scripts will be changed to use version 3.
+Images are harvested from [www.AntWeb.org](www.antweb.org). At this moment API version 2 is used, because version 3 was still in beta when the project started. Later, the scripts could be changed to use version 3.
 
 - [AntWeb API version 2](https://www.antweb.org/api/v2/)
 - [AntWeb API version 3 beta](https://www.antweb.org/documentation/api/apiV3.jsp)
@@ -223,10 +285,11 @@ Below you can see two images representing the dataset. One is an image of _Lasiu
 # Neural Network
 
 ## Ready to use models
-
+Inception based
 - Inception v3
 - Inception-ResNet V2 (recommended)
 - Xception (Inception based)
+ResNet based
 - ResNet
 - DenseNet (ResNet based)
 

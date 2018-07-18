@@ -130,9 +130,9 @@ def image_scraper(
         shottypes (str): One, two or all of `h`, `d`, `p`. Defaults to `dhp`.
         start (int): Set the starting row for downloading. Defaults to `None`.
         end (int): Set the end row for downloading. Defaults to `None`.
-        update (bool): If [default=True]; the csv_update() function will be
+        update (bool): If True the csv_update() function will be
             called. Defaults to `False`.
-        # TODO: multi_view
+        multi_view (bool): If True, creates the a multiview folder.
 
     """
     csvfile = os.path.join("data", dataset, csvfile)
@@ -409,7 +409,10 @@ def get_dataset(
             batches. Defaults to `0`.
         limit_set (int): The limit for downloading a set of AntWeb records.
             Defaults to `9999`.
-
+        multi_only (bool): Set this to True if you want a dataset with 
+            specimens that hold all three of head, dorsal and profile 
+            shotviews.
+            
     """
     logging.info("Dataset creation is starting.")
     dataset_name = config.data_set

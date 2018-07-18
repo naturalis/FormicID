@@ -90,10 +90,10 @@ def _get_relevant_lines_from_html(url, min_images):
 
 
 def most_imaged_species_to_csv(output, min_images=100):
-    """This function works, problem is that some specimens have lots of
-    close-up pictures, e.g. for genetelia (see
-    https://www.antweb.org/specimenImages.do?name=antweb1008499). These
-    specimens show much more images than the standard 3 (dorsal, head,
+    """Create a list with the most imaged species. However there is a problem, 
+    as some specimens have lots of close-up pictures, e.g. for genetelia (see
+    https://www.antweb.org/specimenImages.do?name=antweb1008499). These 
+    specimens show much more images than the standard 3 (dorsal, head, 
     profile) and therefore the list will be wrong. I have yet to find a good
     function to get a most imaged species list.
 
@@ -104,7 +104,6 @@ def most_imaged_species_to_csv(output, min_images=100):
 
     Returns:
         csv file with genus and species names in 2 columns
-
 
     """
     url = "https://www.antweb.org/taxonomicPage.do?rank=species&project=allantwebants&statusSetSize=max&statusSet=valid%20extant&statusSet=typed"
