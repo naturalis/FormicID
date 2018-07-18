@@ -22,6 +22,8 @@ library(reshape2) # for using melt()
 library(magick) # for image conversion because jpg files are read
 library(plyr)
 library(magrittr)
+library(forcats)
+library(dplyr)
 
 data_dir <- # Setting the directory that contains all the images
     "~/Internships/Internship CNN 2017-2018/FormicID/data/top97species_Qmed_def_clean"
@@ -90,22 +92,39 @@ variable = c("Dorsal", "Head", "Profile")
 shotcount = data.frame(variable, value) 
 ```
 
+```{r Data input 2}
+data2 <- read.csv("Sup02_top97species_Qmed_def_info.csv", sep = ";")
+capitalize <- function(x) {
+    first <-
+        toupper(substr(x, start = 1, stop = 1)) ## capitalize first letter
+    rest <-
+        tolower(substr(x, start = 2, stop = nchar(x)))   ## everything else lowercase
+    sub("_", " ", paste0(first, rest))
+}
+levels(data2$scientific_name) <- capitalize(levels(data2$scientific_name))
+
+```
+
+
 ## Shot type plot
 
 ```{r Shot type plot, echo = FALSE}
-g1 <- ggplot(shotcount, aes(x = variable, y = value, fill = variable)) +
-    geom_bar(stat = "identity", position = "dodge") +
-    coord_cartesian(ylim = c(3350, 3425)) +
-    scale_y_continuous(breaks = c(3350, 3375, 3400, 3425)) +
+g1 <-
+    ggplot(data2, aes(x = shot_type, fill = shot_type)) +
+    geom_bar(stat = "count", position = "dodge") +
+    coord_cartesian(ylim = c(3300, 3400)) +
+    scale_y_continuous(breaks = c(3300, 3350, 3400)) +
     xlab("Shottypes") + ylab("Image count") +
-    labs(title = "Shottype distribution") +
+    labs(title = "Shottypes (Clean)") +
     geom_text(
-        aes(label = value),
+        stat = "count",
+        aes(label= ..count..),
         position = position_dodge(width = 0.9),
         vjust = 1.6,
         color = "white"
     ) +
-    theme(# plot.title = element_text(size = 15),
+    theme(
+        # plot.title = element_text(size = 15),
         # axis.title = element_text(size = 10),
         # legend.title = element_text(size = 10),
         # legend.text = element_text(size = 10),
@@ -114,74 +133,155 @@ g1
 ```
 
 ```{r}
-data <- read.csv("caste_seperation.csv", sep = ";")
-data <- data[, c(4, 5)]
-freqtable <- table(data$caste)
-castes <-
-    c("Alate queen",
-      "Dealate queen",
-      "Ergatoid male",
-      "Ergatoid queen",
-      "Male",
-      "Worker")
-castes_big <-
-    c("Queens", "Queens", "Males", "Queens", "Males", "Workers")
-caste_df <- as.data.frame.table(freqtable)
-caste_df$Castes <- as.factor(castes_big)
-# levels(caste_df$Var1) <- castes
-caste_df <- melt(caste_df)
-caste_df$label_ypos <- c(602, 1160, 12, 1211, 642, 8457)
-caste_df <- caste_df[order(caste_df$Castes), ]
-head(caste_df)
+datacaste <- read.csv("Sup02_top97species_Qmed_def_info.csv", sep = ";")
+summary(datacaste)
+# datacaste <- datacaste[, c(4, 5)]
+# freqtable <- table(datacaste$caste)
+# castes <-
+#     c("Alate queen",
+#       "Dealate queen",
+#       "Ergatoid male",
+#       "Ergatoid queen",
+#       "Male",
+#       "Worker")
+# castes_big <-
+#     c("Queens", "Queens", "Males", "Queens", "Males", "Workers")
+# caste_df <- as.data.frame.table(freqtable)
+# caste_df$Castes <- as.factor(castes_big)
+# # levels(caste_df$Var1) <- castes
+# caste_df <- melt(caste_df)
+# caste_df <- caste_df[order(caste_df$Castes), ]
+# caste_df <- caste_df[order(caste_df$value), ]
+# caste_df <- caste_df[order(caste_df$Castes), ]
+# caste_df$label_ypos <- c(630, NA, NA, 1196, NA, NA)
+# sum(caste_df$value)
+# head(caste_df)
+
 ```
 
 ```{r}
-caste_plot <-
-    ggplot(caste_df) +
-    geom_col(aes(
-        x = reorder(Var1, value),
-        y = value,
-        fill = Var1
-    ), position = "dodge") +
-    geom_text(aes(
-        x = Var1,
-        y = value,
-        label = value,
-        vjust = -0.5
-    ),
-    position = position_dodge(width = 0.9)) +
-    ggtitle("Caste distribution (clean dataset)") +
-    xlab("Caste") +
-    ylab("Count") +
-    theme(legend.position = "none") +
-    facet_grid(~ Castes, scales = "free_x", space = "free_x")
-caste_plot
+castesclean <- read.csv(
+    "Sup07_top97species_Qmed_def_clean_castes.csv", sep=";"
+)
+summary(castesclean)
+```
+
+```{r}
+# caste_plot <-
+#     ggplot(caste_df) +
+#     geom_col(aes(
+#         x = reorder(Var1, value),
+#         y = value,
+#         fill = Var1
+#     ), position = "dodge") +
+#     geom_text(aes(
+#         x = Var1,
+#         y = value,
+#         label = value,
+#         vjust = -0.5
+#     ),
+#     position = position_dodge(width = 0.9)) +
+#     # geom_text(aes(x = 0,
+#     #               y = 2500,
+#     #               label = label_ypos),
+#     #           size = 12,
+#     #           hjust = -2) +
+#     ggtitle("Caste distribution (Unclean)") +
+#     xlab("Caste") +
+#     ylab("Caste count") +
+#     theme(legend.position = "none") +
+#     facet_grid(~ Castes, scales = "free_x", space = "free_x")
+# caste_plot
+# castesclean$caste <- factor(castesclean$caste, levels = c("eM","m", "eQ", "dQ", "aQ", "w"))
+
+datacaste$caste <- ordered(datacaste$caste, levels = c("eM","m", "eQ", "dQ", "aQ", "w"))
+levels(datacaste$caste) 
+levels(datacaste$caste) <- c("Ergatoid male", "Male", "Ergatoid queen", "Dealate queen", "Alate queen", "Worker")
+levels(datacaste$caste_big) <- c("Male", "Queen", "Worker")
+# castesclean$caste <- factor(castesclean$caste, levels = c("eM","m", "eQ", "dQ", "aQ", "w"))
+
+caste_plot2 <-
+    ggplot(datacaste, aes(x = caste, fill = caste)) +
+    geom_bar(stat = "count", position = "dodge") +
+    # coord_cartesian(ylim = c(3300, 3400)) +
+    # scale_y_continuous(breaks = c(3300, 3350, 3400)) +
+    xlab("Caste") + ylab("Image count") +
+    labs(title = "Caste distribution") +
+    geom_text(
+        stat = "count",
+        data = filter(
+            datacaste,
+            caste == "Male" |
+                caste == "Dealate queen" |
+                caste == "Alate queen" |
+                caste == "Ergatoid male" | caste == "Ergatoid queen"
+        ),
+        aes(x = caste, label = ..count..),
+        position = position_dodge(width = 0.9),
+        hjust = 0.5,
+        vjust = -1.6
+    ) +
+    geom_text(
+        stat = "count",
+        data = filter(datacaste, caste == "Worker"),
+        aes(x = caste, label = ..count..),
+        position = position_dodge(width = 0.9),
+        hjust = 0.5,
+        vjust = 1.6,
+        color = "white"
+    ) +
+    theme(# plot.title = element_text(size = 15),
+        # axis.title = element_text(size = 10),
+        # legend.title = element_text(size = 10),
+        # legend.text = element_text(size = 10),
+        legend.position = "none") +
+    facet_grid(~ caste_big, scales = "free_x", space = "free_x")
+caste_plot2
 ```
 # Image distribution per species
 Here we can see how images are distributed per species. Within species there are 3 different shot types. p = profile, d = dorsal, and h = head view.
 
 ```{r Image-species distribution, fig.height = 9, echo = FALSE}
+limit_order <- levels(fct_rev(fct_infreq(data2$scientific_name)))
+levels(data2$shot_type) <- c("Dorsal", "Head", "Profile")
 g2 <-
-    ggplot(melted) +
-    geom_bar(aes(x = scientific_name, y = value, fill = variable),
-             stat = 'identity',
+    ggplot(data2) +
+    geom_bar(aes(x = scientific_name, fill = shot_type),
+             stat = 'count',
              width = 0.5) +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) +
-    labs(title = "Sum species images per shottype") +
+    labs(title = "Image distribution per species") +
     coord_flip() +
     labs(x = "Species", y = "Image count") +
-    theme(# plot.title = element_text(size = 15),
-        # axis.title = element_text(size = 10),
-        # legend.title = element_text(size = 10),
-        # legend.text = element_text(size = 10),
-        legend.position = "top",
-        # legend.background = element_rect(linetype = "solid", colour = "Black"),
-        axis.text = element_text(size = 10))  +
-    scale_x_discrete(limits = (levels(melted$scientific_name))) +
-    scale_y_continuous(breaks = c(0, 100, 200, 300, 400, 500, 600)) +
-    scale_fill_discrete(name = 'Shottype',
-                        labels = c('Dorsal', 'Head', 'Profile'))
-
+    ylim(0,250) + 
+    geom_text(
+        data = subset(data2, shot_type == "Dorsal"),
+        stat = "count",
+        aes(x = scientific_name, label = ..count..),
+        position = position_dodge(width = 0.9),
+        hjust = -0.5,
+        size=1.5
+    ) +
+    geom_text(
+        data = subset(data2, shot_type == "Head"),
+        stat = "count",
+        aes(x = scientific_name, label = ..count..),
+        position = position_dodge(width = 0.9),
+        hjust = -0.5,
+        size=1.5
+    ) +
+        geom_text(
+        data = subset(data2, shot_type == "Profile"),
+        stat = "count",
+        aes(x = scientific_name, label = ..count..),
+        position = position_dodge(width = 0.9),
+        hjust = -0.5,
+        size=1.5
+    ) +
+    theme(legend.position = "none",
+          axis.text = element_text(size = 6.5, face = "italic"))  +
+    scale_x_discrete(limits = limit_order) +
+    facet_grid(~ shot_type, scales = "free_x", space = "free_x")
+g2
 # exampledata <- image_read("dataset_example2.png")
 ```
 
@@ -210,30 +310,31 @@ g2 <-
 ```{r castes, shottype and species}
 final2 <-
     plot_grid(
-        g1,
-        caste_plot,
+        g2,
+        caste_plot2,
         nrow = 2,
-        labels = c("B", "C"),
-        rel_heights = c(0.4, 1)
+        labels = c("a)", "b)"),
+        rel_heights = c(1, 0.4)
     )
-final3 <- ggdraw() +
-    draw_plot(g2, 0, 0, 1, 1) +
-    draw_plot(
-        final2,
-        x = 0.42,
-        y = 0.07,
-        width = 0.585,
-        height = 0.65
-    ) +
-    draw_plot_label("A", 0, 1)
-final3
+final2
+# final3 <- ggdraw() +
+#     draw_plot(g2, 0, 0, 1, 1) +
+#     draw_plot(
+#         final2,
+#         x = 0.32,
+#         y = 0.10,
+#         width = 0.585,
+#         height = 0.75
+#     ) +
+#     draw_plot_label("A", 0, 1)
+# final3
 ```
 
 
 ```{r}
 
-save_plot("species_shot_dist2.pdf",
-          final3,
+save_plot("testspeciescastes2.pdf",
+          final2,
           base_width = 8.27,
           base_height = 11.69)
 ```
@@ -250,7 +351,7 @@ g2 <-
     stat = 'identity',
     width = 0.5) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.6)) +
-    labs(title = "Sum species images per shottype") +
+    labs(title = "Image-species distribution per shottype") +
     # coord_flip() +
     labs(x = "Species", y = "Image count") +
     theme(legend.position = "top",

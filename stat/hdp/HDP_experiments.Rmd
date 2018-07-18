@@ -25,16 +25,7 @@ library(cowplot)
 library(tidyr)
 
 
-maxd <- max(dorsal$epoch, na.rm = TRUE)
-maxh <- max(head$epoch, na.rm = TRUE)
-maxp <- max(profile$epoch, na.rm = TRUE)
-maxs <- max(stitched$epoch, na.rm = TRUE)
-maxlist <- c(maxd, maxh, maxp, maxs)
-max_x <- max(maxlist)
-roundUp <- function(x, to = 10) {
-    to * (x %/% to + as.logical(x %% to))
-}
-max_x <- roundUp(max_x, to = 25)
+
 ```
 
 ## Reading CMs
@@ -91,8 +82,29 @@ names(total) <- c("Epoch", "Shottype", "Accuracy", "value")
 levels(total$Accuracy)[levels(total$Accuracy)=="val_acc"] <- "Top 1"
 levels(total$Accuracy)[levels(total$Accuracy)=="val_top_k_cat_accuracy"] <- "Top 3"
 
+maxd <- max(dorsal$epoch, na.rm = TRUE)
+maxh <- max(head$epoch, na.rm = TRUE)
+maxp <- max(profile$epoch, na.rm = TRUE)
+maxs <- max(stitched$epoch, na.rm = TRUE)
+maxlist <- c(maxd, maxh, maxp, maxs)
+max_x <- max(maxlist)
+roundUp <- function(x, to = 10) {
+    to * (x %/% to + as.logical(x %% to))
+}
+max_x <- roundUp(max_x, to = 25)
+
+```
+
+```{r}
+ggdorsal <- ggdraw() + draw_image(dorsalcm, scale = 1)
+gghead <- ggdraw() + draw_image(headcm, scale = 1)
+ggprofile <- ggdraw() + draw_image(profilecm, scale = 1)
+ggstitched <- ggdraw() + draw_image(stitchedcm, scale = 1)
+```
+
+```{r} 
 evo <- ggplot(total) + 
-    geom_line(aes(x = Epoch, y = value, color = Accuracy), size = 1) + 
+    geom_line(aes(x = Epoch, y = value, color = Accuracy), size = 0.5) + 
     facet_grid(~Shottype) + 
     scale_x_continuous(breaks = c(0, 25, 50, 75, 100, 125),
                        limits = c(0, max_x)) +
@@ -108,12 +120,11 @@ evo <- ggplot(total) +
     background_grid(major = c("xy"), minor = ("xy"))
 evo
 
-ggdorsal <- ggdraw() + draw_image(dorsalcm, scale = 1)
-gghead <- ggdraw() + draw_image(headcm, scale = 1)
-ggprofile <- ggdraw() + draw_image(profilecm, scale = 1)
-ggstitched <- ggdraw() + draw_image(stitchedcm, scale = 1)
 
-cms <- plot_grid(ggdorsal, gghead, ggprofile, ggstitched, nrow=2, ncol=2, labels = c("B     Dorsal", "C     Head", "D     Profile", "E     Stitched"))
+```
+
+```{r}
+cms <- plot_grid(ggdorsal, gghead, ggprofile, ggstitched, nrow=2, ncol=2, labels = c("a)     Dorsal", "b)     Head", "c)     Profile", "d)     Stitched"))
 
 final_maybe <- plot_grid(evo, cms, nrow=2, ncol=1, rel_heights = c(0.5, 1), labels = c("A",""))
 final_maybe
@@ -121,7 +132,17 @@ final_maybe
 
 
 ```{r}
-save_plot("testresults9.pdf",
+save_plot("validationevolution.pdf",
+          evo,
+          base_width = 11.69,
+          base_height =  4)
+
+save_plot("cms.pdf",
+          cms,
+          base_width = 8.27,
+          base_height =  8.0)
+
+save_plot("testresults10.pdf",
           final_maybe,
           base_width = 8.27,
           base_height =  11.69)
