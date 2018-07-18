@@ -13,27 +13,18 @@ _Classification of images of ants using deep learning_
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+<!-- TOC depthFrom:1 depthTo:2 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [FormicID](#formicid)
 - [Description](#description)
 	- [Reports](#reports)
-		- [Proposal](#proposal)
-		- [Report](#report)
 - [How to use](#how-to-use)
 	- [Step 1 Get the code](#step-1-get-the-code)
 	- [Step 2 Species list](#step-2-species-list)
-		- [Note:](#note)
 	- [Step 3 Configuration](#step-3-configuration)
 	- [Step 4 Data](#step-4-data)
-		- [Downloading](#downloading)
-		- [Stitching for multi-view](#stitching-for-multi-view)
-		- [Splitting data](#splitting-data)
-		- [Removing reproductives](#removing-reproductives)
 	- [Step 5 Model initialisation and training](#step-5-model-initialisation-and-training)
-		- [Callbacks](#callbacks)
 	- [Step 6 Evaluation](#step-6-evaluation)
-		- [Predicting an image](#predicting-an-image)
 	- [Step 7 Optional functions](#step-7-optional-functions)
 - [Project Structure](#project-structure)
 - [AntWeb](#antweb)
@@ -60,7 +51,7 @@ Code repository for CNN-based image classification of AntWeb images
 The proposal can be found [here](https://github.com/naturalis/FormicID-proposal).
 
 ### Report
-The proposal can be found [here](https://github.com/naturalis/FormicID-report).
+The report can be found [here](https://github.com/naturalis/FormicID-report).
 
 # How to use
 Below are some steps to get you going. Futhermore, all functions have descriptions and should get you more information.
@@ -183,7 +174,7 @@ remove_reproductives(
 Now you can run `formicID/main.py` with `config.json` as a system argument and the model will be initialized, compiled and training will begin, as set by the configuration file.
 
 ### Callbacks
-Possible callbacks, loaded using `utils/logger.py`, are `Tensorboard`, `EarlyStopping`, `ModelCheckpoint`, `CSVLogger` and `ReduceLROnPlateau`.
+Possible callbacks, loaded from `utils/logger.py`, are `Tensorboard`, `EarlyStopping`, `ModelCheckpoint`, `CSVLogger` and `ReduceLROnPlateau`.
 
 - Using TensorBoard you can get insight in training metrics.
 - Earlystopping will make sure the model does not overfit and continue training for too long
