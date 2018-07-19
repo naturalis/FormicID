@@ -33,16 +33,16 @@ except:
 
 create_dirs([config.summary_dir, config.checkpoint_dir])
 
-# save_augmentation(
-#     image="data/top97species_Qmed_def_clean/images/head/eciton_burchellii/eciton_burchellii_casent0009221_h.jpg",
-#     config=config,
-#     show=True,
-# )
-
-show_dataset(
-    image_dir="data/top97species_Qmed_def_clean/images",
+save_augmentation(
+    image="data/top97species_Qmed_def_clean/images/head/1-training/eciton_burchellii/eciton_burchellii_casent0009221_h.jpg",
     config=config,
-    max_img=32,
-    n_cols=4,
-    # save="dataset_example.png",
+    show=True,
 )
+
+# show_dataset(
+#     image_dir="data/top97species_Qmed_def_clean/images",
+#     config=config,
+#     max_img=32,
+#     n_cols=4,
+#     # save="dataset_example.png",
+# )

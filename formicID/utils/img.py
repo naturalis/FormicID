@@ -56,14 +56,19 @@ def _show_augmentation_from_dir(aug_dir, max_img, n_cols=4):
     # TODO: Test the no tickmarks line
     img_list = os.listdir(aug_dir)
     fig = plt.figure(figsize=(8, 8))
-    plt.setp(axes, xticks=[], yticks=[])
     n_rows = int(ceil(max_img // n_cols))
+    max_div = n_cols * n_rows
+
     i = 1
+    plt.tight_layout()
+    axes = [fig.add_subplot(n_rows, n_cols, i) for i in range(1, max_div + 1)]
+    plt.setp(axes, xticks=[], yticks=[])
     for img in img_list[0:max_img]:
         image = load_img(path=os.path.join(aug_dir, img))
         fig.add_subplot(n_rows, n_cols, i)
         plt.imshow(image)
         i += 1
+    plt.tight_layout()
     plt.show()
 
 
