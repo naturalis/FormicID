@@ -9,8 +9,7 @@
 #                                    Logger                                   #
 ###############################################################################
 """Description:
-Loggers are created in this file. They can be used while training to get
-feedback on the models performance.
+Here, all callbacks are defined.
 """
 
 # Packages
@@ -254,6 +253,7 @@ def build_csvl(filename, config, separator=",", append=False):
 ###############################################################################
 
 
+
 def build_logger(
     config,
     model,
@@ -263,6 +263,21 @@ def build_logger(
     use_tb=True,
     use_csvl=True,
 ):
+    """Function to combine the callbacks in a list.
+
+    Args:
+        config (Bunch object): The JSON configuration Bunch object.
+        model (type): Set the model, needed by TensorBoard.
+        use_mc (Bool): Wheter to use ModelCheckpoint. Defaults to True.
+        use_rlrop (Bool): Whether to use ReduceLROnPlateau. Defaults to True.
+        use_es (Bool): Wheter to use EarlyStopping. Defaults to True.
+        use_tb (Bool): Wheter to use TensorBoard. Defaults to True.
+        use_csvl (Bool): Wheter to use CSVLogger. Defaults to True.
+
+    Returns:
+        list: A list of callbacks.
+
+    """
     logger = []
     if use_mc is True:
         logger.append(
@@ -333,6 +348,8 @@ def plot_history(history, config, theme="ggplot", save=None):
         history (str): A Keras History object.
         theme (str): Sets the theme for the plot. Defaults to `ggplot`.
         export (str): Path of an file for saving the plot. Defaults to None.
+        save (str): Set the file and path to where the plot should be saved.
+            Defaulst to None.
 
     Returns:
         plot: A plot image made with `matplotlib.pyplot`.
@@ -505,9 +522,7 @@ def top_k_cat_accuracy(y_true, y_pred, k=3):
         k (int): Defines the number for a top k accuracy. Defaults to 3.
 
     Returns:
-        type: Description of returned object.
-
-    Raises:        ExceptionName: Why the exception is raised.
+        type: Top k categorical accuracy.
 
     """
     return K.mean(K.in_top_k(y_pred, K.argmax(y_true, axis=-1), k), axis=-1)

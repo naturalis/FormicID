@@ -40,10 +40,8 @@ def _get_config_from_json(json_file):
         dict: the configuration as a dictionary.
 
     """
-    # parse the configurations from the config json file provided
     with open(json_file, "r") as config_file:
         config_dict = json.load(config_file)
-    # convert the dictionary to a namespace using bunch lib
     config = Bunch(config_dict)
     return config, config_dict
 

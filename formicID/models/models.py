@@ -70,14 +70,6 @@ def load_model(config, num_species=None):
     the self-designed neural network from `models/build.py`. See text below
     for more information on the different models that can be loaded.
 
-    Args:
-        config (Bunch object): The JSON configuration Bunch object, which
-            states the model to load, dropout and the correct dataset for
-            counting the number of species.
-
-    Returns:
-        A Keras model instance.
-
     Model information:
         Build:
             This is the self-designed model from this research. For more
@@ -101,6 +93,17 @@ def load_model(config, num_species=None):
             due to its reliance on SeparableConvolution layers. Additionally
             it only supports the data format 'channels_last' (height, width,
             channels). The default input size for this model is 299x299.
+
+    Args:
+        config (Bunch object): The JSON configuration Bunch object, which
+            states the model to load, dropout and the correct dataset for
+            counting the number of species.
+        num_species (int): Set the number of species. If `None`, the number of
+            species will be infered from the folder directories, where it
+            counts the number of folders. Defaults to None.
+
+    Returns:
+        A Keras model instance.
 
     """
     model = config.model

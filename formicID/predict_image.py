@@ -5,11 +5,11 @@
 #                   |  _| (_) | |  | | | | | | | (__ | || |_| |               #
 #                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                #
 #                                                                             #
-#                                 Predict image                               #
+#                                 Predict image(s)                            #
 #                                                                             #
 ###############################################################################
 """Description:
-
+Load a model with trained weights and predict an image or a test set.
 """
 
 # Packages
@@ -62,8 +62,10 @@ Y_true, Y_pred, labels, species_dict = predictor(
     n_img=10,
     n_cols=3,
 )
+
 # print(Y_true)
 # print(Y_pred)
+
 predict_image(
     model=model_formicID,
     species_dict=species_dict,

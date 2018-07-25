@@ -9,9 +9,8 @@
 #                                                                             #
 ###############################################################################
 """Description:
-This is were it all happens. This file loads the data, initializes the model
-and trains the model. Log files are made and a prediction can be made for the
-test set.
+This is were it all happens. This file initializes the model and trains the
+model, after which training is evaluated and the model is tested.
 """
 
 # Packages
@@ -94,18 +93,18 @@ def main():
 
     # Training in batches with iterator
     ###########################################################################
-    # history = trainer_dir(
-    #     model=model_formicID,
-    #     config=config,
-    #     callbacks=build_logger(config=config, model=model_formicID),
-    # )
-    # save_model(
-    #     model=model_formicID, filename="final_weights.hdf5", config=config
-    # )
+    history = trainer_dir(
+        model=model_formicID,
+        config=config,
+        callbacks=build_logger(config=config, model=model_formicID),
+    )
+    save_model(
+        model=model_formicID, filename="final_weights.hdf5", config=config
+    )
 
     # Evaluation
     ###########################################################################
-    # plot_history(history=history, config=config, theme="ggplot", save=None)
+    plot_history(history=history, config=config, theme="ggplot", save=None)
     evaluator(model=model_formicID, config=config, test_dir=None)
 
     # Testing

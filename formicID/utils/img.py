@@ -53,7 +53,6 @@ def _show_augmentation_from_dir(aug_dir, max_img, n_cols=4):
             maximum number of images. Defaults to 4.
 
     """
-    # TODO: Test the no tickmarks line
     img_list = os.listdir(aug_dir)
     fig = plt.figure(figsize=(8, 8))
     n_rows = int(ceil(max_img // n_cols))
@@ -79,7 +78,8 @@ def save_augmentation(image, config, show=False):
     Args:
         image (str): path to image.
         config (Bunch object): The JSON configuration Bunch object.
-        show (Bool): Wheter to show the augmentation after saving or not. Defaults to False.
+        show (Bool): Wheter to show the augmentation after saving or not.
+            Defaults to False.
 
     """
     if not os.path.exists(os.path.join(config.summary_dir, "augmented")):
@@ -108,9 +108,27 @@ def save_augmentation(image, config, show=False):
         _show_augmentation_from_dir(aug_dir=augment_dir, max_img=20, n_cols=5)
 
 
+
 def show_dataset(
     image_dir, config, max_img, n_cols=4, save=None, transparent=True
 ):
+    """Short summary.
+
+    Args:
+        image_dir (str): Path to a directory containing the images.
+        config (Bunch object): The JSON configuration Bunch object.
+        max_img (int): Set the maximum number of images to plot.
+        n_cols (int): Set the number of columns. Defaults to 4.
+        save (str): Path and filename for saving the image. Defaults to None.
+        transparent (Bool): Wheter the background should be transparant or
+            not. Defaults to True.
+
+    Returns:
+        type: Description of returned object.
+
+    Raises:        ExceptionName: Why the exception is raised.
+
+    """
     seed = config.seed
     exts = [".jpg", ".jpeg", ".png"]
     img_list = []

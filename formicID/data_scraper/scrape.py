@@ -9,9 +9,7 @@
 #                                                                             #
 ###############################################################################
 """Description:
-Use this script to updating the csv file for broken URLs. After that you can
-download all images. The images will be saved in different folders per shot
-type and per species.
+Here, all functions to download images and scrape information is combined in a `get_dataset()` function. The scrape function is added, to download images and it is possible to fix broken urls (as some catalog numbers containing `(` or `)` break the url). Lastly the file contains a function for creating a combined (stitched) view of three shot types.
 """
 
 # Packages
@@ -409,10 +407,10 @@ def get_dataset(
             batches. Defaults to `0`.
         limit_set (int): The limit for downloading a set of AntWeb records.
             Defaults to `9999`.
-        multi_only (bool): Set this to True if you want a dataset with 
-            specimens that hold all three of head, dorsal and profile 
+        multi_only (bool): Set this to True if you want a dataset with
+            specimens that hold all three of head, dorsal and profile
             shotviews.
-            
+
     """
     logging.info("Dataset creation is starting.")
     dataset_name = config.data_set

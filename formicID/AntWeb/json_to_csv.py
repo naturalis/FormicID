@@ -6,7 +6,7 @@
 #                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                #
 #                                                                             #
 #                                  ANTWEB API                                 #
-#                                  JSON 2 csv                                 #
+#                                  JSON to csv                                #
 ###############################################################################
 """Description:
 Iterate over a number of JSON files in a folder and save relevant information
@@ -48,8 +48,8 @@ def _filter_json(json_file, quality, multi_only):
             needs to be set when filtering the JSON file. Set the quility to
             either one of (from highest quality to lowest): `high`,
             `thumbview`, `medium`, `low`. Defaults to `low`.
-        multi_only (bool): Set this to True if you want a dataset with 
-            specimens that hold all three of head, dorsal and profile 
+        multi_only (bool): Set this to True if you want a dataset with
+            specimens that hold all three of head, dorsal and profile
             shotviews.
 
     Returns:
@@ -144,10 +144,10 @@ def batch_json_to_csv(
             data, if the csv file already exists. If set to `False`, the
             function will not create a csvfile if there already is one.
             Defaults to `False`.
-        multi_only (bool): Set this to True if you want a dataset with 
-            specimens that hold all three of head, dorsal and profile 
+        multi_only (bool): Set this to True if you want a dataset with
+            specimens that hold all three of head, dorsal and profile
             shotviews.
-        
+
     Returns:
         file: A csv file containing the necesarry information for the scrape
             function.

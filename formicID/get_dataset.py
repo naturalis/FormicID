@@ -5,11 +5,11 @@
 #                   |  _| (_) | |  | | | | | | | (__ | || |_| |               #
 #                   |_|  \___/|_|  |_| |_| |_|_|\___|___|____/                #
 #                                                                             #
-#                                Get species list                             #
+#                             Downloading the dataset                         #
 #                                                                             #
 ###############################################################################
 """Description:
-
+Functions for downloading and handeling the datasets.
 """
 
 # Packages
@@ -37,28 +37,28 @@ except:
 
 # Creating a dataset
 ###############################################################################
-# get_dataset(
-#     input="testall.csv",
-#     n_jsonfiles=100,
-#     config=config,
-#     shottypes="dhp",
-#     quality="medium",
-#     update=False,
-#     offset_set=0,
-#     limit_set=99999,
-#     multi_only=True,
-# )
+get_dataset(
+    input="testall.csv",
+    n_jsonfiles=100,
+    config=config,
+    shottypes="dhp",
+    quality="medium",
+    update=False,
+    offset_set=0,
+    limit_set=99999,
+    multi_only=True,
+)
 
-# stitch_maker(config=config)
+stitch_maker(config=config)
 
-# split into training, validation and test
+# Split into training, validation and test
 ###############################################################################
 split_in_directory(config=config, bad="data/badspecimens_multi.csv")
 
 # Remove reproductives from dataset
 ###############################################################################
-# remove_reproductives(
-#     csv="data/reproductives.csv",
-#     dataset="top97species_Qmed_def_clean_wtest",
-#     config=config,
-# )
+remove_reproductives(
+    csv="data/reproductives.csv",
+    dataset="top97species_Qmed_def_clean_wtest",
+    config=config,
+)

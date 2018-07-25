@@ -23,6 +23,8 @@ the following calculation:
      x -= 1.
      return x`
 
+
+Note: The work on a multiview generator and a csv with paths iterator is not finished.
 """
 
 # Packages
@@ -44,6 +46,215 @@ from keras.preprocessing.image import *
 # Data tools imports
 import numpy as np
 import pandas as pd
+
+
+# Parameters and settings
+###############################################################################
+
+
+# ImageDataGenerator
+###############################################################################
+
+
+def idg(config, target_gen="training"):
+    """Initialize an augmentation generator for either a `training`,
+    `validation`, `test` dataset.
+
+    Args:
+        config (Bunch object): The JSON configuration Bunch object.
+        target_gen (str): Should be either `training`, `validation`, or
+            `test`. Defaults to `training`.
+
+    Returns:
+        generator: A Keras image data generator object.
+
+    Raises:
+        ValueError: If target_gen is not set to acorrectly value.
+
+    """
+    model = config.model
+    if model in ["InceptionV3", "Xception", "Build"]:
+        preprocess_input = ppi_I3
+    if model == "InceptionResNetV2":
+        preprocess_input = ppi_IR
+    if model == "ResNet50":
+        preprocess_input = ppi_Rn
+    if model == "DenseNet169":
+        preprocess_input = ppi_Dn
+    if target_gen not in ["training", "validation", "test"]:
+        raise ValueError(
+            "Argument {} is in invalid  for `target_gen`. It should be one of "
+            "`training`, `validation`, or `testing`.".format(target_gen)
+        )
+
+    if target_gen == "training":
+        idg = ImageDataGenerator(
+            preprocessing_function=preprocess_input,
+            rotation_range=40,
+            width_shift_range=0.2,
+            height_shift_range=0.2,
+            shear_range=0.2,
+            zoom_range=0.2,
+            horizontal_flip=True,
+        )
+    if target_gen in ["validation", "test"]:
+        idg = ImageDataGenerator(preprocessing_function=preprocess_input)
+    return idg
+
+
+# flow_from_directory
+###############################################################################
+
+
+def _generator_dir(
+    config, target_gen="training", shottype=None, data_dir=None
+):
+    """Generator for reading images out of directories. Can be used for a
+    `training`, `validation` or `test` set. `Validation` and `test` sets will
+    not be shuffled.
+
+    Args:
+        config (Bunch object): The JSON configuration Bunch object.
+        target_gen (str): Sets the generator to either 'training',
+            `validation` or `test.`. Defaults to 'training'.
+        shottype (str): Should be either  `dorsal`, `head` or `profile`. If no
+            shottype is provided, shottype will be taken from the
+            configuration file. Defaults to None.
+        data_dir (str): Directory that holds training, validation or test
+            images. Optional, if not set, the default training, validation,
+            test directories (created by `split_in_directory()`) will be used.
+            Defaults to None.
+        batch_size (int): set the batch size for the generator. If data_dir is
+            None, batch should also be none. Defaults to None.
+
+    Returns:
+        Image directory generator.
+        list: A list of all classes.
+        dict: A dictionary mapping of the classes.
+
+    """
+    model = config.model
+    seed = config.seed
+    dataset = config.data_set
+    if shottype == None:
+        shottype = config.shottype
+    if model in ["InceptionV3", "InceptionResNetV2", "Xception"]:
+        target_size = (299, 299)
+    if model in ["ResNet50", "DenseNet169"]:
+        target_size = (224, 224)
+    if target_gen == "training":
+        shuffle = True
+        dir = "1-training"
+        batch_size = config.batch_size
+    if target_gen == "validation":
+        shuffle = False
+        dir = "2-validation"
+        batch_size = config.batch_size
+    if target_gen == "test":
+        shuffle = False
+        dir = "3-test"
+        batch_size = 1
+    if data_dir is None:
+        data_dir = os.path.join("data", dataset, "images", shottype, dir)
+    idgen = idg(config=config, target_gen=target_gen)
+    idgen = idgen.flow_from_directory(
+        directory=data_dir,
+        target_size=target_size,
+        color_mode="rgb",
+        class_mode="categorical",
+        batch_size=batch_size,
+        shuffle=shuffle,
+        seed=seed,
+    )
+    classes = idgen.classes
+    class_indices = idgen.class_indices
+    return idgen, classes, class_indices
+
+
+# Stitching idg and flow_from_directory in to one function
+###############################################################################
+
+
+def trainer_dir(model, config, callbacks=None):
+    """The directory trainer. This combines the validation and training data
+        generators and trains on the input model.
+
+    Args:
+        model (Keras model instance): A trained Keras model instance.
+        config (Bunch object): The JSON configuration Bunch object.
+        callbacks (type): A list of the callbacks for viewing training and
+            validation metrics. Defaults to None.
+
+    Returns:
+        Keras History instance with training and validation metrics.
+
+    """
+    logging.info("Training started.")
+    epochs = config.num_epochs
+    batch_size = config.batch_size
+    train_data_gen_dir, _, _ = _generator_dir(
+        config=config, target_gen="training"
+    )
+    train_samples = train_data_gen_dir.samples
+    val_data_gen_dir, _, _ = _generator_dir(
+        config=config, target_gen="validation"
+    )
+    val_samples = val_data_gen_dir.samples
+    history = model.fit_generator(
+        generator=train_data_gen_dir,
+        steps_per_epoch=train_samples // batch_size,
+        epochs=epochs,
+        validation_data=val_data_gen_dir,
+        validation_steps=val_samples // batch_size,
+        callbacks=callbacks,
+    )
+    logging.info("Training ended.")
+    return history
+
+
+# # Multi-view generator with flow_from_directory
+# ###############################################################################
+#
+#
+# # TODO: Fix functions below.
+#
+#
+# def multiview_generator_dir():
+#     train_h_data_gen_dir, _, _ = _generator_dir(
+#         config=config, target_gen="training", shottype="head"
+#     )
+#     train_d_data_gen_dir, _, _ = _generator_dir(
+#         config=config, target_gen="training", shottype="dorsal"
+#     )
+#     train_p_data_gen_dir, _, _ = _generator_dir(
+#         config=config, target_gen="training", shottype="profile"
+#     )
+#     while True:
+#         hgen = train_h_data_gen_dir.next()
+#         dgen = train_d_data_gen_dir.next()
+#         pgen = train_p_data_gen_dir.next()
+#         # TODO: catch the specimens that don't have all 3 shottypes
+#         yield [hgen[0], dgen[0], pgen[0]], hgen[1]
+#
+#
+# def train_multiview_dir(model, config, generator, callbacks=None):
+#     epochs = config.num_epochs
+#     batch_size = config.batch_size
+#     train_samples = generator.samples
+#     # TODO: fix validation
+#     # val_samples = val_data_gen_dir.samples
+#     history = model.fit_generator(
+#         generator=generator,
+#         steps_per_epoch=train_samples // batch_size,
+#         epochs=epochs,
+#         # validation_data=val_data_gen_dir,
+#         # validation_steps=val_samples // batch_size,
+#         callbacks=callbacks,
+#     )
+#     return history
+
+
+
 
 ###############################################################################
 
@@ -77,11 +288,6 @@ import pandas as pd
 #     x = imgenhancer_Brightness.enhance(u)
 #     x = img_to_array(x)
 #     return x
-#
-#
-# # Parameters and settings
-# ###############################################################################
-#
 #
 # # CSV Iterator and ImageDataGenerator
 # ###############################################################################
@@ -520,7 +726,7 @@ import pandas as pd
 #             )
 #         )
 #
-#         #######################################################################
+#         ######################################################################
 #         # second build an index of the images in the different class subfolders
 #         # results = []
 #         # self.pathways = []
@@ -618,203 +824,3 @@ import pandas as pd
 #         callbacks=callbacks,
 #     )
 #
-
-# ImageDataGenerator
-###############################################################################
-
-
-def idg(config, target_gen="training"):
-    """Initialize an augmentation generator for either a `training`,
-    `validation`, `test` dataset.
-
-    Args:
-        config (Bunch object): The JSON configuration Bunch object.
-        target_gen (str): Should be either `training`, `validation`, or
-            `test`. Defaults to `training`.
-
-    Returns:
-        generator: A Keras image data generator object.
-
-    Raises:
-        ValueError: If target_gen is not set to acorrectly value.
-
-    """
-    model = config.model
-    if model in ["InceptionV3", "Xception", "Build"]:
-        preprocess_input = ppi_I3
-    if model == "InceptionResNetV2":
-        preprocess_input = ppi_IR
-    if model == "ResNet50":
-        preprocess_input = ppi_Rn
-    if model == "DenseNet169":
-        preprocess_input = ppi_Dn
-    if target_gen not in ["training", "validation", "test"]:
-        raise ValueError(
-            "Argument {} is in invalid  for `target_gen`. It should be one of "
-            "`training`, `validation`, or `testing`.".format(target_gen)
-        )
-
-    if target_gen == "training":
-        idg = ImageDataGenerator(
-            preprocessing_function=preprocess_input,
-            rotation_range=40,
-            width_shift_range=0.2,
-            height_shift_range=0.2,
-            shear_range=0.2,
-            zoom_range=0.2,
-            horizontal_flip=True,
-        )
-    if target_gen in ["validation", "test"]:
-        idg = ImageDataGenerator(preprocessing_function=preprocess_input)
-    return idg
-
-
-# flow_from_directory
-###############################################################################
-
-
-def _generator_dir(
-    config, target_gen="training", shottype=None, data_dir=None
-):
-    """Generator for reading images out of directories. Can be used for a
-    `training`, `validation` or `test` set. `Validation` and `test` sets will
-    not be shuffled.
-
-    Args:
-        config (Bunch object): The JSON configuration Bunch object.
-        target_gen (str): Sets the generator to either 'training',
-            `validation` or `test.`. Defaults to 'training'.
-        shottype (str): Should be either  `dorsal`, `head` or `profile`. If no
-            shottype is provided, shottype will be taken from the
-            configuration file. Defaults to None.
-        data_dir (str): Directory that holds training, validation or test
-            images. Optional, if not set, the default training, validation,
-            test directories (created by `split_in_directory()`) will be used.
-            Defaults to None.
-        batch_size (int): set the batch size for the generator. If data_dir is None, batch should also be none. Defaults to None.
-
-    Returns:
-        Image directory generator.
-        list: A list of all classes.
-        dict: A dictionary mapping of the classes.
-
-    """
-    model = config.model
-    seed = config.seed
-    dataset = config.data_set
-    if shottype == None:
-        shottype = config.shottype
-    if model in ["InceptionV3", "InceptionResNetV2", "Xception"]:
-        target_size = (299, 299)
-    if model in ["ResNet50", "DenseNet169"]:
-        target_size = (224, 224)
-    if target_gen == "training":
-        shuffle = True
-        dir = "1-training"
-        batch_size = config.batch_size
-    if target_gen == "validation":
-        shuffle = False
-        dir = "2-validation"
-        batch_size = config.batch_size
-    if target_gen == "test":
-        shuffle = False
-        dir = "3-test"
-        batch_size = 1
-    if data_dir is None:
-        data_dir = os.path.join("data", dataset, "images", shottype, dir)
-    idgen = idg(config=config, target_gen=target_gen)
-    idgen = idgen.flow_from_directory(
-        directory=data_dir,
-        target_size=target_size,
-        color_mode="rgb",
-        class_mode="categorical",
-        batch_size=batch_size,
-        shuffle=shuffle,
-        seed=seed,
-    )
-    classes = idgen.classes
-    class_indices = idgen.class_indices
-    return idgen, classes, class_indices
-
-
-# Stitching idg and flow_from_directory in to one function
-###############################################################################
-
-
-def trainer_dir(model, config, callbacks=None):
-    """The directory trainer. This combines the validation and training data
-        generators and trains on the input model.
-
-    Args:
-        model (Keras model instance): A trained Keras model instance.
-        config (Bunch object): The JSON configuration Bunch object.
-        callbacks (type): A list of the callbacks for viewing training and
-            validation metrics. Defaults to None.
-
-    Returns:
-        Keras History instance with training and validation metrics.
-
-    """
-    logging.info("Training started.")
-    epochs = config.num_epochs
-    batch_size = config.batch_size
-    train_data_gen_dir, _, _ = _generator_dir(
-        config=config, target_gen="training"
-    )
-    train_samples = train_data_gen_dir.samples
-    val_data_gen_dir, _, _ = _generator_dir(
-        config=config, target_gen="validation"
-    )
-    val_samples = val_data_gen_dir.samples
-    history = model.fit_generator(
-        generator=train_data_gen_dir,
-        steps_per_epoch=train_samples // batch_size,
-        epochs=epochs,
-        validation_data=val_data_gen_dir,
-        validation_steps=val_samples // batch_size,
-        callbacks=callbacks,
-    )
-    logging.info("Training ended.")
-    return history
-
-
-# Multi-view generator with flow_from_directory
-###############################################################################
-
-
-# TODO: Fix functions below.
-
-
-def multiview_generator_dir():
-    train_h_data_gen_dir, _, _ = _generator_dir(
-        config=config, target_gen="training", shottype="head"
-    )
-    train_d_data_gen_dir, _, _ = _generator_dir(
-        config=config, target_gen="training", shottype="dorsal"
-    )
-    train_p_data_gen_dir, _, _ = _generator_dir(
-        config=config, target_gen="training", shottype="profile"
-    )
-    while True:
-        hgen = train_h_data_gen_dir.next()
-        dgen = train_d_data_gen_dir.next()
-        pgen = train_p_data_gen_dir.next()
-        # TODO: catch the specimens that don't have all 3 shottypes
-        yield [hgen[0], dgen[0], pgen[0]], hgen[1]
-
-
-def train_multiview_dir(model, config, generator, callbacks=None):
-    epochs = config.num_epochs
-    batch_size = config.batch_size
-    train_samples = generator.samples
-    # TODO: fix validation
-    # val_samples = val_data_gen_dir.samples
-    history = model.fit_generator(
-        generator=generator,
-        steps_per_epoch=train_samples // batch_size,
-        epochs=epochs,
-        # validation_data=val_data_gen_dir,
-        # validation_steps=val_samples // batch_size,
-        callbacks=callbacks,
-    )
-    return history

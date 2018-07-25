@@ -8,15 +8,11 @@
 #                                    Optimizers                               #
 #                                                                             #
 ###############################################################################
-"""From here the optimizer Eve can be loaded.
-
-Which is an implementation from:
-
-Paper
-https://arxiv.org/pdf/1611.01505v1.pdf
-
-Code
-https://github.com/rooa/eve
+"""From here the optimizer Eve can be loaded. Which is an implementation from:
+Paper:
+    https://arxiv.org/pdf/1611.01505v1.pdf
+Code:
+    https://github.com/rooa/eve
 """
 
 # Packages

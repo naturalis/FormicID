@@ -9,7 +9,7 @@
 #                                                                             #
 ###############################################################################
 """Description:
-
+Script to create a csv file with the species that are imaged the most. As of now, the list is not entirely correct, as some specimens have extra images, like close-ups and these also count as images.
 """
 
 # Packages

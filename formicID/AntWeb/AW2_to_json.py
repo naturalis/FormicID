@@ -9,10 +9,11 @@
 #                                AntWeb to json                               #
 ###############################################################################
 """Description:
-These functions are for accessing the AntWeb servers, using the API version 2.
-It is possible to download the a most imaged species list and the all specimen
-information for these species stored in json files.
+These functions are for accessing the AntWeb servers, exploiting the API
+version 2. It is possible to download the most imaged species list and the all
+specimen information for these species stored in json files.
 """
+
 # Packages
 ###############################################################################
 
@@ -90,10 +91,10 @@ def _get_relevant_lines_from_html(url, min_images):
 
 
 def most_imaged_species_to_csv(output, min_images=100):
-    """Create a list with the most imaged species. However there is a problem, 
+    """Create a list with the most imaged species. However there is a problem,
     as some specimens have lots of close-up pictures, e.g. for genetelia (see
-    https://www.antweb.org/specimenImages.do?name=antweb1008499). These 
-    specimens show much more images than the standard 3 (dorsal, head, 
+    https://www.antweb.org/specimenImages.do?name=antweb1008499). These
+    specimens show much more images than the standard 3 (dorsal, head,
     profile) and therefore the list will be wrong. I have yet to find a good
     function to get a most imaged species list.
 
@@ -211,6 +212,10 @@ def urls_to_json(
         dataset_name (str): Name for the dataset, and also for naming the
             directory that will hold this dataset. The JSON files will be
             saved here.
+        n_jsonfiles (int): Set the number of jsonfiles you want to process.
+            Usually this will to be the same number as species you are
+            processing. If `None`, all jsonfiles will be processed. Defaults
+            to `None.`
         offset_set (int): The offset for downloading AntWeb records in
             batches. Defaults to `0`.
         limit_set (int): The limit for downloading a set of AntWeb records.

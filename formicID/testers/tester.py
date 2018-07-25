@@ -10,7 +10,8 @@
 ###############################################################################
 """
 Description:
-Testing functions will check if the model is accurately trained using the test set or other images.
+Testing and evaluating functions will check if the model is accurately trained
+using the test set or other images.
 """
 
 # Packages
@@ -112,6 +113,9 @@ def predictor(
     Args:
         model (Keras model instance): A trained Keras model instance.
         config (Bunch object): The JSON configuration Bunch object.
+        species_json (str): Path to a json file stating a species name and key
+            for returning the name after Softmax, instead of the key. Defaults
+            to None.
         test_dir (str): Directory that holds test images. Optional, if not
             set, the default test directory (created by
             `split_in_directory()`) will be used. Defaults to None.
@@ -207,10 +211,13 @@ def predict_image(model, species_dict, url=None, image=None, show=False):
 
     Args:
         model (Keras model instance): A trained Keras model instance.
-        url (str): An URL leading to an image. Defaults to None.
-        image (str): The pathway to an image. Defaults to None.
         species_dict (dict): dictionary mapping of the species, as output by
             the `predictor` function. Defaults to None.
+        url (str): An URL leading to an image. Defaults to None.
+        image (str): The pathway to an image. Defaults to None.
+        show (Bool): Whether to show the images with its prediction or not.
+            Defaults to False.
+
 
     Returns:
         A prediction of the correct species.
@@ -286,6 +293,9 @@ def plot_confusion_matrix(
         config (Bunch object): The JSON configuration Bunch object.
         target_names (list): The species names as genus + species. Defaults to
             None.
+        species_dict (str): Path to a json file stating a species name and key
+            for returning the name after Softmax, instead of the key. Defaults
+            to None.
         title (str): Title of the confusion matrix. Defaults to 'Confusion
             matrix'.
         cmap (str): Colormap of the plot. Defaults to None.

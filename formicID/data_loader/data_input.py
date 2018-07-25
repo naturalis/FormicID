@@ -8,13 +8,16 @@
 #                                  data_input                                 #
 ###############################################################################
 """Description:
-These scripts will sort out the images so they can be loaded by a trainer
-function. One function could split folders containing images in different
-subsets. The other function can create training, validation, test csv files
-with the pathway to the images stored in them. If data is downloaded using the
-scraper script the files should be in a correct folder structure (divided per
-shottype and species). The files should be structured as follows:
+These scripts are utilities for the data input. It is possible to split the
+data into training, validation and test sets in two ways. First by randomly
+copying images into training, validation and test directories or second by
+creating a training, validation and test csv file, containing paths to the
+original images. It is also possible to remove reproductive specimens, using a
+list of catalog numbers of reproductives, from a test set.
 
+Initially, images should be in the following folder structure, see below. This
+should be the case if you downloaded the images using the scripts in this
+project.
 ```
     directory_name/
         head/
@@ -138,6 +141,9 @@ def split_in_directory(config, bad=None):
 
     Args:
         config (Bunch object): The JSON configuration Bunch object.
+        bad (str): Point to a csv file containing catalog numbers of bad
+            specimens, if you wish to ommit these from the training,
+            validation and test set. Defaults to None.
 
     """
     dataset = config.data_set
@@ -240,6 +246,15 @@ def split_in_directory(config, bad=None):
 
 
 def remove_reproductives(csv, dataset, config):
+    """Remove reproductives by supplying the catalognumber..
+
+    Args:
+        csv (str): csv file that holds the catalog numbers.
+        dataset (str): Name of the dataset, that holds the test set, of which
+            the reproductives should be removed.
+        config (Bunch object): The JSON configuration Bunch object.
+
+    """
     shottype = config.shottype
     input_dir = os.path.join("data", dataset, "images", shottype, "3-test")
     reproductives = pd.read_csv(csv, header=0)
