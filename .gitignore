@@ -1,8 +1,5 @@
 experiments/*
-<<<<<<< .merge_file_g0U69S
-=======
 logs/*
->>>>>>> .merge_file_KcgFUv
 
 # Gitignore template from Github
 # https://github.com/github/gitignore/blob/master/Python.gitignore
