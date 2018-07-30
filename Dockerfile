@@ -18,4 +18,4 @@ RUN pip3 install --upgrade pip && \
 ENV NAME FormicID
 
 # Run the program when the container launches
-CMD ["python3", "formicID/main.py", "-c", "formicID/configs/config.json"]
+CMD ["python3", "formicID/get_dataset.py", "-c", "formicID/configs/config.json"]
