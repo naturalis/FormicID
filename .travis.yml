@@ -1,6 +1,8 @@
 language: python
 python:
   - 3.6
+git:
+  submodules: false
 # command to install dependencies
 install:
   - pip install -r requirements.txt
@@ -8,4 +10,4 @@ install:
 notifications:
   email: false
 script:
-  - python3 formicID/main.py -c formicID/configs/config.json
+  - python3 formicID/get_dataset.py -c formicID/configs/config.json
